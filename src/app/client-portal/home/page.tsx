@@ -46,6 +46,7 @@ const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 export default function ClientPortalHomePage() {
   const [isClient, setIsClient] = React.useState(false);
   const [updatePostText, setUpdatePostText] = React.useState("");
+  const quillRef = React.useRef(null);
 
   React.useEffect(() => {
     setIsClient(true);
@@ -106,6 +107,7 @@ export default function ClientPortalHomePage() {
                   <div className="flex-1 space-y-4">
                     {isClient && ( 
                         <ReactQuill
+                        ref={quillRef}
                         theme="snow"
                         value={updatePostText}
                         onChange={setUpdatePostText}
