@@ -511,22 +511,56 @@ export default function ModelMatrixPage() {
       
       <PlaceholderCard title="Model Strategy Performance Matrix (All Strategies)" className="overflow-x-auto mt-8">
         <Table>
-          <TableHeader><TableRow> <TableHead className="font-bold">Manager</TableHead> <TableHead className="font-bold">Strategy Name</TableHead> <TableHead className="font-bold text-right">AUM</TableHead> <TableHead className="font-bold text-right">Fee %</TableHead> <TableHead className="font-bold text-center">Style</TableHead> <TableHead className="font-bold text-right">YTD Ret</TableHead> <TableHead className="font-bold text-right">YTD Bench</TableHead> <TableHead className="font-bold text-right">1Y Ret</TableHead> <TableHead className="font-bold text-right">1Y Bench</TableHead> <TableHead className="font-bold text-right">3Y Ret</TableHead> <TableHead className="font-bold text-right">3Y Bench</TableHead> <TableHead className="font-bold text-right">5Y Ret</TableHead> <TableHead className="font-bold text-right">5Y Bench</TableHead> <TableHead className="font-bold text-right">Sharpe</TableHead> <TableHead className="font-bold text-right">IRR</TableHead> <TableHead className="font-bold text-right">Beta</TableHead> </TableRow></TableHeader>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="font-bold">Manager</TableHead>
+              <TableHead className="font-bold">Strategy Name</TableHead>
+              <TableHead className="font-bold text-right">AUM</TableHead>
+              <TableHead className="font-bold text-right">Fee %</TableHead>
+              <TableHead className="font-bold text-center">Style</TableHead>
+              <TableHead className="font-bold text-right">YTD Ret</TableHead>
+              <TableHead className="font-bold text-right">YTD Bench</TableHead>
+              <TableHead className="font-bold text-right">1Y Ret</TableHead>
+              <TableHead className="font-bold text-right">1Y Bench</TableHead>
+              <TableHead className="font-bold text-right">3Y Ret</TableHead>
+              <TableHead className="font-bold text-right">3Y Bench</TableHead>
+              <TableHead className="font-bold text-right">5Y Ret</TableHead>
+              <TableHead className="font-bold text-right">5Y Bench</TableHead>
+              <TableHead className="font-bold text-right">Sharpe</TableHead>
+              <TableHead className="font-bold text-right">IRR</TableHead>
+              <TableHead className="font-bold text-right">Beta</TableHead>
+            </TableRow>
+          </TableHeader>
           <TableBody>
             {modelPerformanceData.map((model) => (
               <TableRow key={model.id} className="hover:bg-muted/50">
-                <TableCell className="font-medium whitespace-nowrap">{model.manager}</TableCell> <TableCell className="whitespace-nowrap">{model.strategyName}</TableCell> <TableCell className="text-right whitespace-nowrap">{model.aum}</TableCell> <TableCell className="text-right whitespace-nowrap">{model.feePercent}</TableCell>
-                <TableCell className="text-center whitespace-nowrap"> <Badge variant={model.style === "Growth" ? "default" : model.style === "Value" ? "secondary" : "outline"} className={cn( model.style === "Growth" && "bg-purple-500/70 hover:bg-purple-500/90 border-purple-400", model.style === "Value" && "bg-blue-500/70 hover:bg-blue-500/90 border-blue-400", model.style === "Fixed Income" && "bg-teal-500/70 hover:bg-teal-500/90 border-teal-400", model.style === "Balanced" && "bg-amber-500/70 hover:bg-amber-500/90 border-amber-400", model.style.startsWith("Sector") && "bg-pink-500/70 hover:bg-pink-500/90 border-pink-400", "text-white" )}>{model.style}</Badge></TableCell>
-                <TableCell className={cn("text-right whitespace-nowrap font-semibold", getReturnClass(model.ytdReturn))}>{model.ytdReturn}</TableCell> <TableCell className="text-right whitespace-nowrap text-muted-foreground">{model.ytdBenchmark}</TableCell>
-                <TableCell className={cn("text-right whitespace-nowrap font-semibold", getReturnClass(model.oneYearReturn))}>{model.oneYearReturn}</TableCell> <TableCell className="text-right whitespace-nowrap text-muted-foreground">{model.oneYearBenchmark}</TableCell>
-                <TableCell className={cn("text-right whitespace-nowrap font-semibold", getReturnClass(model.threeYearReturn))}>{model.threeYearReturn}</TableCell> <TableCell className="text-right whitespace-nowrap text-muted-foreground">{model.threeYearBenchmark}</TableCell>
-                <TableCell className={cn("text-right whitespace-nowrap font-semibold", getReturnClass(model.fiveYearReturn))}>{model.fiveYearReturn}</TableCell> <TableCell className="text-right whitespace-nowrap text-muted-foreground">{model.fiveYearBenchmark}</TableCell>
-                <TableCell className="text-right whitespace-nowrap">{model.sharpeRatio}</TableCell> <TableCell className="text-right whitespace-nowrap">{model.irr}</TableCell> <TableCell className="text-right whitespace-nowrap">{model.beta}</TableCell>
+                <TableCell className="font-medium whitespace-nowrap">{model.manager}</TableCell>
+                <TableCell className="whitespace-nowrap">{model.strategyName}</TableCell>
+                <TableCell className="text-right whitespace-nowrap">{model.aum}</TableCell>
+                <TableCell className="text-right whitespace-nowrap">{model.feePercent}</TableCell>
+                <TableCell className="text-center whitespace-nowrap">
+                  <Badge variant={model.style === "Growth" ? "default" : model.style === "Value" ? "secondary" : "outline"} className={cn( model.style === "Growth" && "bg-purple-500/70 hover:bg-purple-500/90 border-purple-400", model.style === "Value" && "bg-blue-500/70 hover:bg-blue-500/90 border-blue-400", model.style === "Fixed Income" && "bg-teal-500/70 hover:bg-teal-500/90 border-teal-400", model.style === "Balanced" && "bg-amber-500/70 hover:bg-amber-500/90 border-amber-400", model.style.startsWith("Sector") && "bg-pink-500/70 hover:bg-pink-500/90 border-pink-400", "text-white" )}>{model.style}</Badge>
+                </TableCell>
+                <TableCell className={cn("text-right whitespace-nowrap font-semibold", getReturnClass(model.ytdReturn))}>{model.ytdReturn}</TableCell>
+                <TableCell className="text-right whitespace-nowrap text-muted-foreground">{model.ytdBenchmark}</TableCell>
+                <TableCell className={cn("text-right whitespace-nowrap font-semibold", getReturnClass(model.oneYearReturn))}>{model.oneYearReturn}</TableCell>
+                <TableCell className="text-right whitespace-nowrap text-muted-foreground">{model.oneYearBenchmark}</TableCell>
+                <TableCell className={cn("text-right whitespace-nowrap font-semibold", getReturnClass(model.threeYearReturn))}>{model.threeYearReturn}</TableCell>
+                <TableCell className="text-right whitespace-nowrap text-muted-foreground">{model.threeYearBenchmark}</TableCell>
+                <TableCell className={cn("text-right whitespace-nowrap font-semibold", getReturnClass(model.fiveYearReturn))}>{model.fiveYearReturn}</TableCell>
+                <TableCell className="text-right whitespace-nowrap text-muted-foreground">{model.fiveYearBenchmark}</TableCell>
+                <TableCell className="text-right whitespace-nowrap">{model.sharpeRatio}</TableCell>
+                <TableCell className="text-right whitespace-nowrap">{model.irr}</TableCell>
+                <TableCell className="text-right whitespace-nowrap">{model.beta}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-        <div className="flex justify-end mt-6"> <Button variant="outline"> <Download className="mr-2 h-4 w-4" /> Download PDF Summary </Button> </div>
+        <div className="flex justify-end mt-6">
+          <Button variant="outline">
+            <Download className="mr-2 h-4 w-4" /> Download PDF Summary
+          </Button>
+        </div>
       </PlaceholderCard>
 
       <PlaceholderCard title="Model Rebalancing Sandbox" className="mt-8">
@@ -599,4 +633,3 @@ export default function ModelMatrixPage() {
     </main>
   );
 }
-
