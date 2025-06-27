@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from 'react';
@@ -40,8 +39,8 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-// Dynamically import ReactQuill to avoid SSR issues and memoize it
-const ReactQuill = React.useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
+// Dynamically import ReactQuill to avoid SSR issues
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 
 export default function ClientPortalHomePage() {
