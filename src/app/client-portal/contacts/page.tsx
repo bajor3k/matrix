@@ -135,13 +135,7 @@ export default function ClientPortalContactsPage() {
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-b-border/20">
-                      <TableHead className="w-10 px-6 py-4 whitespace-nowrap"></TableHead> {/* For Checkbox */}
-                      <TableHead className="px-6 py-4 whitespace-nowrap">Name</TableHead>
-                      <TableHead className="px-6 py-4 whitespace-nowrap">Phone</TableHead>
-                      <TableHead className="px-6 py-4 whitespace-nowrap">Email</TableHead>
-                      <TableHead className="px-6 py-4 whitespace-nowrap">Tags</TableHead>
-                    </TableRow>
+                    <TableRow className="border-b-border/20"><TableHead className="w-10 px-6 py-4 whitespace-nowrap"></TableHead><TableHead className="px-6 py-4 whitespace-nowrap">Name</TableHead><TableHead className="px-6 py-4 whitespace-nowrap">Phone</TableHead><TableHead className="px-6 py-4 whitespace-nowrap">Email</TableHead><TableHead className="px-6 py-4 whitespace-nowrap">Tags</TableHead></TableRow>
                   </TableHeader>
                   <TableBody>
                     {contactCount === 0 ? (
@@ -152,18 +146,13 @@ export default function ClientPortalContactsPage() {
                       </TableRow>
                     ) : (
                       contacts.map(contact => (
-                        <TableRow key={contact.id} className="hover:bg-muted/10 border-b-border/20">
-                          <TableCell className="px-6 py-4">
+                        <TableRow key={contact.id} className="hover:bg-muted/10 border-b-border/20"><TableCell className="px-6 py-4">
                             <Checkbox id={`contact-${contact.id}`} aria-label={`Select contact ${contact.name}`} />
-                          </TableCell>
-                          <TableCell className="font-medium text-foreground px-6 py-4 whitespace-nowrap truncate">
+                          </TableCell><TableCell className="font-medium text-foreground px-6 py-4 whitespace-nowrap truncate">
                              <a href={`/client-portal/contacts/${contact.id}`} className="hover:underline hover:text-primary">
                               {contact.name}
                             </a>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground px-6 py-4 whitespace-nowrap truncate">{contact.phone}</TableCell>
-                          <TableCell className="text-muted-foreground px-6 py-4 whitespace-nowrap truncate">{contact.email}</TableCell>
-                          <TableCell className="px-6 py-4 whitespace-nowrap">
+                          </TableCell><TableCell className="text-muted-foreground px-6 py-4 whitespace-nowrap truncate">{contact.phone}</TableCell><TableCell className="text-muted-foreground px-6 py-4 whitespace-nowrap truncate">{contact.email}</TableCell><TableCell className="px-6 py-4 whitespace-nowrap">
                             <div className="flex flex-wrap gap-1">
                               {contact.tags.map(tag => (
                                 <Badge 
@@ -174,8 +163,7 @@ export default function ClientPortalContactsPage() {
                                 </Badge>
                               ))}
                             </div>
-                          </TableCell>
-                        </TableRow>
+                          </TableCell></TableRow>
                       ))
                     )}
                   </TableBody>
@@ -371,5 +359,3 @@ export default function ClientPortalContactsPage() {
     </>
   );
 }
-
-    
