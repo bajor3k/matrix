@@ -1,8 +1,6 @@
 "use client";
 
 import * as React from 'react';
-import dynamic from 'next/dynamic';
-import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import { PlaceholderCard } from '@/components/dashboard/placeholder-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -39,34 +37,9 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-// Dynamically import ReactQuill to avoid SSR issues
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-
 
 export default function ClientPortalHomePage() {
-  const [isClient, setIsClient] = React.useState(false);
   const [updatePostText, setUpdatePostText] = React.useState("");
-
-  React.useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const quillModules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{'list': 'ordered'}, {'list': 'bullet'}],
-      ['link', 'image'],
-      ['clean']
-    ],
-  };
-
-  const quillFormats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike',
-    'list', 'bullet',
-    'link', 'image'
-  ];
 
   return (
     <main className="min-h-screen p-6 space-y-8 md:p-8">
@@ -104,19 +77,15 @@ export default function ClientPortalHomePage() {
                     </Avatar>
                   </div>
                   <div className="flex-1 space-y-4">
-                    {isClient && ( 
-                        <ReactQuill
-                        theme="snow"
-                        value={updatePostText}
-                        onChange={setUpdatePostText}
-                        modules={quillModules}
-                        formats={quillFormats}
-                        placeholder="Share an update..."
-                        className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary rounded-md [&_.ql-editor]:min-h-[120px]"
-                        />
-                    )}
+                    <Textarea
+                      rows={5}
+                      value={updatePostText}
+                      onChange={(e) => setUpdatePostText(e.target.value)}
+                      placeholder="Share an update..."
+                      className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary resize-none"
+                    />
                     <div className="flex items-center justify-end">
-                      <Button onClick={() => console.log("Post content (HTML):", updatePostText)} className="bg-primary hover:bg-primary/90 text-primary-foreground px-6">Post</Button>
+                      <Button onClick={() => console.log("Post content (Plain Text):", updatePostText)} className="bg-primary hover:bg-primary/90 text-primary-foreground px-6">Post</Button>
                     </div>
                     <div>
                       <Input
