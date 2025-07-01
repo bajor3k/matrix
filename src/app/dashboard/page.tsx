@@ -175,22 +175,22 @@ export default function DashboardPage() {
       });
       setMarketApiData(initialApiData);
 
-      const promises = initialMarketOverviewData.map(market =>
-        fetchIndexData(market.polygonTicker).then(data => ({ symbol: market.polygonTicker, data }))
-      );
+      // Fetch data sequentially to respect API rate limits (5 reqs/min).
+      for (const market of initialMarketOverviewData) {
+        const data = await fetchIndexData(market.polygonTicker);
+        setMarketApiData(prevData => ({
+          ...prevData,
+          [market.polygonTicker]: data,
+        }));
 
-      const results = await Promise.allSettled(promises);
-
-      const newApiData: Record<string, FetchedIndexData> = {};
-      results.forEach(result => {
-        if (result.status === 'fulfilled') {
-          newApiData[result.value.symbol] = result.value.data;
-        } else {
-          console.error("[Polygon API] Promise rejected unexpectedly in loadMarketData:", result.reason);
+        // Wait for 12.5 seconds before the next request to stay within the 5 reqs/min limit.
+        // This check prevents waiting after the last item.
+        if (initialMarketOverviewData.indexOf(market) < initialMarketOverviewData.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 12500));
         }
-      });
-      setMarketApiData(prevData => ({ ...prevData, ...newApiData }));
+      }
     };
+
     loadMarketData();
   }, []);
 
