@@ -1,4 +1,6 @@
-
-// This file is intentionally left blank as it's being deleted.
-// The build system will handle the actual deletion if possible,
-// or this will effectively make the route inactive.
+// This page is deprecated and is intentionally left blank
+// to prevent build errors. The functional reports page
+// is at /client-portal/reports.
+export default function DeprecatedReportsPage() {
+  return null;
+}
