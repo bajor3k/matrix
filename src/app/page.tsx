@@ -31,25 +31,11 @@ export default function LandingPage() {
       </header>
 
       <main className="flex-1 px-6 md:px-8">
-        <div className="w-full max-w-7xl mx-auto min-h-screen grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="text-left relative z-10">
+        <div className="w-full max-w-7xl mx-auto min-h-screen grid grid-cols-1 gap-16 items-center">
+          <div className="text-center relative z-10">
             <h1 className="text-[10rem] sm:text-[12rem] md:text-[16rem] lg:text-[18rem] font-extrabold leading-none tracking-tighter text-black dark:text-white">
               matrix
             </h1>
-          </div>
-          <div className="hidden lg:flex justify-center items-center relative h-[600px]">
-            {/* Computer Mockup 1 */}
-            <div className="absolute w-[500px] h-[320px] bg-gray-200 dark:bg-gray-700 p-2 rounded-lg transform -rotate-6 shadow-2xl border-4 border-gray-200 dark:border-gray-700">
-              <div className="bg-black h-full w-full rounded-sm overflow-hidden relative" data-ai-hint="analytics dashboard">
-                  <Image src="/images/asset-analytics.png" alt="Assets analytics dashboard screenshot" layout="fill" objectFit="cover" />
-              </div>
-            </div>
-            {/* Computer Mockup 2 */}
-            <div className="absolute w-[500px] h-[320px] bg-gray-200 dark:bg-gray-700 p-2 rounded-lg transform rotate-6 z-10 shadow-2xl border-4 border-gray-200 dark:border-gray-700">
-              <div className="bg-black h-full w-full rounded-sm overflow-hidden relative" data-ai-hint="analytics dashboard">
-                   <Image src="/images/asset-analytics.png" alt="Assets analytics dashboard screenshot 2" layout="fill" objectFit="cover" />
-              </div>
-            </div>
           </div>
         </div>
         <div className="w-full max-w-7xl mx-auto py-32 md:py-48 text-center">
