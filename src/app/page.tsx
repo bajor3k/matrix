@@ -53,7 +53,7 @@ export default function LandingPage() {
           </div>
         </div>
         <div className="w-full max-w-7xl mx-auto py-32 md:py-48 text-center">
-          <h2 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter text-black dark:text-white">
+          <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
             One Login. One Matrix.
           </h2>
         </div>
