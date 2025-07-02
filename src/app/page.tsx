@@ -30,8 +30,8 @@ export default function LandingPage() {
         </nav>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-6 md:px-8">
-        <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <main className="flex-1 px-6 md:px-8">
+        <div className="w-full max-w-7xl mx-auto min-h-screen grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="text-left relative z-10">
             <h1 className="text-[10rem] sm:text-[12rem] md:text-[16rem] lg:text-[18rem] font-extrabold leading-none tracking-tighter text-black dark:text-white">
               matrix
@@ -46,6 +46,11 @@ export default function LandingPage() {
                  <Image src="https://placehold.co/300x600.png" alt="App screenshot 2" layout="fill" objectFit="cover" />
             </div>
           </div>
+        </div>
+        <div className="w-full max-w-7xl mx-auto py-32 md:py-48 text-center">
+          <h2 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter text-black dark:text-white">
+            One Login. One Matrix.
+          </h2>
         </div>
       </main>
     </div>
