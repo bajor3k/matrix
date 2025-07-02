@@ -109,8 +109,8 @@
     --sidebar-ring: 240 4.9% 83.9%;
 
     /* Shadows (Dark) */
-    --shadow-card-custom: 0 6px 28px 0 rgba(0,0,0,0.85);
-    --shadow-card-custom-hover: 0 6px 28px 0 rgba(0,0,0,0.85), 0 0 0 4px rgba(255,255,255,0.06);
+    --shadow-card-custom: 0 6px 32px 0 rgba(0,0,0,0.85), 0 0 0 1px hsl(var(--border) / 0.5);
+    --shadow-card-custom-hover: 0 12px 48px 0 rgba(0,0,0,0.95), 0 0 0 2px rgba(255,255,255,0.08);
   }
 }
 
