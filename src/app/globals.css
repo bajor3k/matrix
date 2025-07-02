@@ -268,3 +268,13 @@
     background-position: 200%;
   }
 }
+
+/* Chat Bubble Styles */
+@layer components {
+  .chat-bubble-user {
+    @apply bg-primary text-primary-foreground rounded-lg rounded-br-none;
+  }
+  .chat-bubble-ai {
+    @apply bg-muted/80 text-foreground rounded-lg rounded-bl-none border border-border/30;
+  }
+}
