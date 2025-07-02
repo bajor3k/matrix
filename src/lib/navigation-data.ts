@@ -25,10 +25,12 @@ import {
 export const toolbarSections: ToolbarSection[] = [
     { id: 'CRM', title: 'CRM' },
     { id: 'Analytics', title: 'Analytics' },
+    { id: 'Outreach', title: 'Outreach' },
     { id: 'Trading', title: 'Trading' },
     { id: 'Resources', title: 'Resources' },
     { id: 'Asset Movement', title: 'Asset Movement' },
     { id: 'Advisory', title: 'Advisory' },
+    { id: 'Jira', title: 'Jira' },
 ];
 
 export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
@@ -56,8 +58,10 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Project X', icon: FlaskConical, href: '/project-x' },
     { name: 'Resource Matrix', icon: LayoutGrid, href: '/resource-matrix' },
   ],
+  'Outreach': [],
   'Trading': [],
   'Resources': [],
   'Asset Movement': [],
   'Advisory': [],
+  'Jira': [],
 };
