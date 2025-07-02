@@ -9,11 +9,14 @@ import {
   BellRing,
   Brain,
   Construction,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import type { NavItem } from "@/contexts/navigation-context";
 import { useNavigation } from "@/contexts/navigation-context";
 import { navigationData } from "@/lib/navigation-data";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const alertsNavItem: NavItem = {
   name: 'Alerts',
@@ -24,9 +27,10 @@ const alertsNavItem: NavItem = {
 
 interface SidebarProps {
     collapsed: boolean;
+    onToggle: () => void;
 }
 
-export default function Sidebar({ collapsed }: SidebarProps) {
+export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const currentPathname = usePathname();
   const { activeSection } = useNavigation();
 
@@ -90,22 +94,34 @@ export default function Sidebar({ collapsed }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "h-full bg-black border-r border-gray-800/50 text-white transition-all duration-300 flex flex-col relative",
+        "h-full bg-black border-r border-gray-800/50 text-white transition-all duration-300 flex flex-col",
         collapsed ? "w-16" : "w-64" 
       )}
     >
-      <div className={cn("flex items-center p-4 px-5 h-16 border-b border-gray-800/50", collapsed ? "justify-center" : "justify-start")}>
-        <Link href="/dashboard" className={cn("flex items-center", collapsed ? "justify-center w-full" : "space-x-3 group")}>
-          <Brain className={cn("text-gray-400 shrink-0", collapsed ? "w-7 h-7" : "w-8 h-8")} />
-          {!collapsed && (
-            <span className="text-3xl font-bold text-metallic-gradient leading-tight group-hover:brightness-110 transition-all">
-              Matrix
-            </span>
-          )}
-        </Link>
+      <div className={cn("flex flex-col items-center pt-5 pb-3 px-2")}>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Link href="/dashboard" className="mb-3">
+                    <Brain className="w-8 h-8 text-gray-400 hover:text-white transition-colors" />
+                </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="bg-popover text-popover-foreground">
+                <p>Dashboard</p>
+            </TooltipContent>
+        </Tooltip>
+
+        <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggle}
+            className="h-7 w-7 text-muted-foreground hover:bg-white/5 hover:text-white"
+        >
+            {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+            <span className="sr-only">Toggle Sidebar</span>
+        </Button>
       </div>
       
-      <nav className={cn("flex-1 space-y-2 px-2 py-4 overflow-y-auto no-visual-scrollbar")}>
+      <nav className={cn("flex-1 space-y-2 px-2 py-4 overflow-y-auto no-visual-scrollbar border-t border-gray-800/50")}>
         {currentNavItems.length > 0 ? (
            currentNavItems.map((item, itemIndex) => renderNavItem(item, itemIndex))
         ) : (

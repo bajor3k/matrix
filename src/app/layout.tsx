@@ -55,9 +55,9 @@ export default function RootLayout({
         <AuthProvider>
           <NavigationProvider>
             <TooltipProvider delayDuration={0}>
-              <TopToolbar onToggleSidebar={handleToggleSidebar} />
+              <TopToolbar collapsed={sidebarCollapsed} />
               <div className="flex flex-1 pt-16">
-                <Sidebar collapsed={sidebarCollapsed} />
+                <Sidebar collapsed={sidebarCollapsed} onToggle={handleToggleSidebar} />
                 <main className="flex-1 overflow-y-auto bg-transparent no-visual-scrollbar">
                   {children}
                 </main>
