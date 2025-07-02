@@ -37,7 +37,7 @@ export default function LandingPage() {
               matrix
             </h1>
             <div className="mt-8 flex justify-center items-center gap-6">
-              <p className="text-2xl md:text-3xl text-gray-700 dark:text-gray-400 font-light tracking-wide">
+              <p className="text-2xl md:text-3xl text-gray-700 dark:text-gray-400 font-bold tracking-wide">
                 see how deep the rabbit hole goes…
               </p>
               <div className="flex items-center gap-4">
