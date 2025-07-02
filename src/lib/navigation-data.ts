@@ -20,6 +20,10 @@ import {
   Shapes,
   FlaskConical,
   LayoutGrid,
+  Edit3,
+  Send,
+  Shield,
+  Settings,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -59,7 +63,15 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Project X', icon: FlaskConical, href: '/project-x' },
     { name: 'Resource Matrix', icon: LayoutGrid, href: '/resource-matrix' },
   ],
-  'Outreach': [],
+  'Outreach': [
+    { name: 'Inbox', icon: Mail, href: '/outreach/inbox' },
+    { name: 'Compose', icon: Edit3, href: '/outreach/compose' },
+    { name: 'Campaigns', icon: Send, href: '/outreach/campaigns' },
+    { name: 'Templates', icon: FileText, href: '/outreach/templates' },
+    { name: 'Engagement', icon: BarChart2, href: '/outreach/engagement' },
+    { name: 'Compliance', icon: Shield, href: '/outreach/compliance' },
+    { name: 'Settings', icon: Settings, href: '/outreach/settings' },
+  ],
   'Trading': [],
   'Resources': [],
   'Asset Movement': [],
