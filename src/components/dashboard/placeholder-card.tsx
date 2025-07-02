@@ -1,4 +1,3 @@
-
 import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -21,7 +20,7 @@ export function PlaceholderCard({ title, value, description, icon, iconClassName
 
   return (
     <Card className={cn(
-      "bg-card text-card-foreground rounded-lg shadow-card-custom border border-transparent",
+      "bg-card text-card-foreground rounded-lg shadow-card-custom border border-transparent transition-shadow duration-200 hover:shadow-card-custom-hover focus-within:shadow-card-custom-hover",
       "flex flex-col",
       className
     )}>
@@ -58,5 +57,3 @@ export function PlaceholderCard({ title, value, description, icon, iconClassName
     </Card>
   );
 }
-
-    
