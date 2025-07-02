@@ -90,7 +90,7 @@ export default {
   			'accordion-up': 'accordion-up 0.2s ease-out'
   		},
       boxShadow: {
-        'card-custom': '0 4px 24px rgba(0,0,0,0.75)',
+        'card-custom': '0 4px 32px rgba(0,0,0,0.85)',
       }
   	}
   },

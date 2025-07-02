@@ -8,10 +8,10 @@
     --background: 0 0% 0%; /* #000000 */
     --foreground: 0 0% 95%; /* #F2F2F2 */
     
-    --card: 0 0% 7%; /* #121212 */
+    --card: 0 0% 8%; /* #141414 */
     --card-foreground: 0 0% 95%; /* #F2F2F2 */
 
-    --popover: 0 0% 7%; /* #121212 */
+    --popover: 0 0% 8%; /* #141414 */
     --popover-foreground: 0 0% 95%; /* #F2F2F2 */
     
     --primary: 258 84% 61%; /* #7C3AED */
@@ -236,69 +236,4 @@
 .no-visual-scrollbar {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
-}
-
-/* React Quill Dark Theme Overrides */
-.ql-toolbar {
-  background-color: hsl(var(--muted)/0.8) !important; /* Slightly lighter than card for toolbar */
-  border-color: hsl(var(--border)/0.5) !important;
-  border-top-left-radius: 0.5rem; /* Matches card radius */
-  border-top-right-radius: 0.5rem;
-}
-.ql-toolbar .ql-stroke {
-  stroke: hsl(var(--muted-foreground)) !important;
-}
-.ql-toolbar .ql-fill {
-  fill: hsl(var(--muted-foreground)) !important;
-}
-.ql-toolbar .ql-picker-label {
-  color: hsl(var(--muted-foreground)) !important;
-}
-.ql-toolbar .ql-picker-options {
-  background-color: hsl(var(--popover)) !important;
-  border-color: hsl(var(--border)/0.7) !important;
-  border-radius: 0.375rem;
-}
-.ql-toolbar .ql-picker-item:hover,
-.ql-toolbar .ql-picker-label:hover {
-  color: hsl(var(--foreground)) !important;
-  background-color: hsl(var(--primary)/0.2) !important;
-}
-.ql-toolbar .ql-picker-item.ql-selected {
-  color: hsl(var(--primary)) !important;
-}
-.ql-toolbar button:hover .ql-stroke,
-.ql-toolbar button.ql-active .ql-stroke {
-  stroke: hsl(var(--primary)) !important;
-}
-.ql-toolbar button:hover .ql-fill,
-.ql-toolbar button.ql-active .ql-fill {
-  fill: hsl(var(--primary)) !important;
-}
-.ql-toolbar button:hover {
-    background-color: hsl(var(--primary)/0.1) !important; /* Ensure !important if needed */
-}
-.ql-toolbar button.ql-active {
-    background-color: hsl(var(--primary)/0.2) !important; /* Ensure !important if needed */
-}
-
-.ql-container.ql-snow {
-  border-color: hsl(var(--border)/0.5) !important;
-  border-bottom-left-radius: 0.5rem; /* Matches card radius */
-  border-bottom-right-radius: 0.5rem;
-  background-color: hsl(var(--input)) !important; /* Apply input background to container */
-}
-.ql-editor {
-  /* background-color: hsl(var(--input)) !important; /* This might be redundant if container has it */
-  color: hsl(var(--foreground)) !important;
-  min-height: 120px; /* Or match the previous textarea rows */
-  border-bottom-left-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
-  padding: 12px 15px !important; /* Standard padding */
-}
-.ql-editor.ql-blank::before {
-  color: hsl(var(--muted-foreground)) !important;
-  font-style: normal !important;
-  left: 15px !important; /* Align with padding */
-  right: 15px !important;
 }
