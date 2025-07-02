@@ -21,10 +21,7 @@ export function PlaceholderCard({ title, value, description, icon, iconClassName
 
   return (
     <Card className={cn(
-      "bg-black/[.60] backdrop-blur-sm rounded-lg shadow-card-float border border-transparent", // Removed default border, relying on shadow
-      "transition-all duration-200 ease-out",
-      "hover:-translate-y-1 hover:shadow-card-hover-glow",
-      "overflow-x-hidden",
+      "bg-card text-card-foreground rounded-lg shadow-card-custom border border-transparent",
       "flex flex-col",
       className
     )}>
@@ -61,3 +58,5 @@ export function PlaceholderCard({ title, value, description, icon, iconClassName
     </Card>
   );
 }
+
+    

@@ -5,14 +5,14 @@
 
 @layer base {
   :root {
-    --background: 225 100% 0.8%; /* #000104 */
-    --foreground: 0 0% 100%; /* #FFFFFF */
+    --background: 0 0% 0%; /* #000000 */
+    --foreground: 0 0% 95%; /* #F2F2F2 */
     
-    --card: 0 0% 0% / 0.6; /* rgba(0,0,0,0.6) */
-    --card-foreground: 0 0% 100%; /* #FFFFFF */
+    --card: 0 0% 10%; /* #1A1A1A */
+    --card-foreground: 0 0% 95%; /* #F2F2F2 */
 
-    --popover: 253 36% 15%; /* #1C1833 */
-    --popover-foreground: 0 0% 100%; /* #FFFFFF */
+    --popover: 0 0% 10%; /* #1A1A1A */
+    --popover-foreground: 0 0% 95%; /* #F2F2F2 */
     
     --primary: 258 84% 61%; /* #7C3AED */
     --primary-foreground: 0 0% 100%; /* #FFFFFF */
@@ -20,8 +20,8 @@
     --secondary: 230 15% 25%; 
     --secondary-foreground: 0 0% 100%;
     
-    --muted: 240 5% 15%; /* Darker muted for less contrast */
-    --muted-foreground: 240 4% 65%; /* #A1A1AA */
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%; /* #A6A6A6 */
     
     --accent: 258 84% 61%;
     --accent-foreground: 0 0% 100%;
@@ -29,8 +29,8 @@
     --destructive: 0 84% 60%; /* #EF4444 */
     --destructive-foreground: 0 0% 100%;
     
-    --border: 240 4% 20%; /* Slightly lighter border for subtle definition */
-    --input: 0 0% 0% / 0.4; /* rgba(0,0,0,0.4) for inputs */
+    --border: 0 0% 20%; /* #333333 */
+    --input: 0 0% 12%; /* #1F1F1F */
     --ring: 258 84% 70%;
 
     /* Chart Colors */
@@ -42,7 +42,7 @@
     --chart-orange: 30 90% 55%; /* Vibrant Orange for progress */
 
 
-    --radius: 1.25rem; /* 20px for cards */
+    --radius: 1.5rem; /* 24px for cards */
 
     /* Sidebar specific colors */
     --sidebar-background: transparent; 
@@ -65,8 +65,7 @@
   }
   body {
     @apply text-foreground;
-    background: radial-gradient(circle at center, #25066b 0%, #0a041d 30%, hsl(var(--background)) 70%);
-    background-color: hsl(var(--background)); /* Fallback */
+    background-color: hsl(var(--background));
     min-height: 100vh;
     height: 100%;
     background-attachment: fixed;
@@ -230,14 +229,6 @@
   animation-delay: 0.4s;
 }
 
-@keyframes typing-pulse {
-  0%, 80%, 100% {
-    transform: scale(0);
-  } 40% {
-    transform: scale(1.0);
-  }
-}
-
 /* Hide scrollbar but keep scroll functionality */
 .no-visual-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
@@ -311,3 +302,5 @@
   left: 15px !important; /* Align with padding */
   right: 15px !important;
 }
+
+    

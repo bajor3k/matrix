@@ -90,13 +90,11 @@ export default {
   			'accordion-up': 'accordion-up 0.2s ease-out'
   		},
       boxShadow: {
-        'card-float': '0 4px 20px rgba(0, 0, 0, 0.2)',
-        'card-hover-glow': '0 6px 24px rgba(124, 58, 237, 0.18)', 
-        'sidebar-glow': '4px 0 12px rgba(124, 58, 237, 0.2)',
-        'white-glow-soft': '0 0 10px 0 rgba(255, 255, 255, 0.05)',
-        'white-glow-hover': '0 0 20px 0 rgba(255, 255, 255, 0.1)',
+        'card-custom': '0 4px 24px rgba(0,0,0,0.4)',
       }
   	}
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+
+    
