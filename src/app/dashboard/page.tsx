@@ -158,6 +158,8 @@ export default function DashboardPage() {
   const [currentTimeEST, setCurrentTimeEST] = React.useState<string>('Loading...');
 
   React.useEffect(() => {
+    let isCancelled = false; // Flag to handle cleanup
+
     const loadMarketData = async () => {
       if (!process.env.NEXT_PUBLIC_POLYGON_API_KEY) {
         console.warn("[Polygon API] CRITICAL: NEXT_PUBLIC_POLYGON_API_KEY is not defined in the environment. Market data will not be fetched. Ensure .env.local is set and the dev server was restarted.");
@@ -165,7 +167,9 @@ export default function DashboardPage() {
         initialMarketOverviewData.forEach(market => {
           errorState[market.polygonTicker] = { error: 'API Key Missing. Check .env.local & restart server.' };
         });
-        setMarketApiData(errorState);
+        if (!isCancelled) {
+          setMarketApiData(errorState);
+        }
         return;
       }
 
@@ -173,25 +177,36 @@ export default function DashboardPage() {
       initialMarketOverviewData.forEach(market => {
         initialApiData[market.polygonTicker] = { loading: true };
       });
-      setMarketApiData(initialApiData);
+      if (!isCancelled) {
+        setMarketApiData(initialApiData);
+      }
 
       // Fetch data sequentially to respect API rate limits (5 reqs/min).
       for (const market of initialMarketOverviewData) {
+        if (isCancelled) return;
+
         const data = await fetchIndexData(market.polygonTicker);
+
+        if (isCancelled) return;
+
         setMarketApiData(prevData => ({
           ...prevData,
           [market.polygonTicker]: data,
         }));
 
-        // Wait for 12.5 seconds before the next request to stay within the 5 reqs/min limit.
-        // This check prevents waiting after the last item.
+        // Wait for 15 seconds before the next request to stay well within the 5 reqs/min limit.
         if (initialMarketOverviewData.indexOf(market) < initialMarketOverviewData.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 12500));
+          await new Promise(resolve => setTimeout(resolve, 15000));
         }
       }
     };
 
     loadMarketData();
+
+    // Cleanup function to run when the component unmounts
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   const calculateChangePercent = (currentPrice?: number, openPrice?: number) => {
