@@ -1,11 +1,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { Brain } from 'lucide-react';
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#f6f6f6] text-black flex flex-col font-sans">
       <header className="absolute top-0 left-0 right-0 p-6 md:p-8 z-20">
-        <nav className="flex justify-end items-center max-w-7xl mx-auto">
+        <nav className="flex justify-between items-center max-w-7xl mx-auto">
+          <Link href="/dashboard" className="transition-transform hover:scale-110 hover:drop-shadow-lg">
+            <Brain className="w-8 h-8 md:w-10 md:h-10 text-black" />
+          </Link>
+
           <div className="flex items-center space-x-6 md:space-x-8 text-sm md:text-base font-medium text-gray-800">
             <Link href="/dashboard" className="hover:text-black transition-colors">
               Login
