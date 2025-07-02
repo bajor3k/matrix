@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -109,19 +108,20 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 <p>Dashboard</p>
             </TooltipContent>
         </Tooltip>
-
-        <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggle}
-            className="h-7 w-7 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-        >
-            {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
-            <span className="sr-only">Toggle Sidebar</span>
-        </Button>
       </div>
       
       <nav className={cn("flex-1 space-y-2 px-2 py-4 overflow-y-auto no-visual-scrollbar border-t border-sidebar-border/30")}>
+        <div className={cn("flex mb-2", collapsed ? "justify-center" : "justify-end pr-2")}>
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={onToggle}
+                className="h-7 w-7 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+            >
+                {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+                <span className="sr-only">Toggle Sidebar</span>
+            </Button>
+        </div>
         {currentNavItems.length > 0 ? (
            currentNavItems.map((item, itemIndex) => renderNavItem(item, itemIndex))
         ) : (
