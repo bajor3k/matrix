@@ -270,50 +270,48 @@ export default function Sidebar() {
         </div>
       )}
       
-      <TooltipProvider delayDuration={0}>
-        <nav className={cn("flex-1 space-y-1 px-2 py-4 overflow-y-auto no-visual-scrollbar")}>
-          {currentDisplayCollapsed ? (
-            navSectionsData.flatMap((section, sectionIndex) => section.items.map((item, itemIndex) =>
-              renderNavItem(item, sectionIndex * 100 + itemIndex) // Ensure unique keys for flat list
-            ))
-          ) : (
-            navSectionsData.map((section) => (
-              <div key={section.id} className="mb-1">
-                <button
-                  onClick={() => toggleSection(section.id)}
-                  className={cn(
-                    "flex items-center w-full text-left px-4 py-3 rounded-md hover:bg-black/30 transition-colors duration-150 ease-out group/section",
-                    "border-b border-sidebar-border/30" 
-                  )}
-                  aria-expanded={openSections[section.id]}
-                >
-                  <section.icon className="w-5 h-5 shrink-0 text-gray-400 group-hover/section:text-gray-200" />
-                  <span className={cn(
-                    "ml-3 font-bold text-lg tracking-wider truncate flex-1 group-hover/section:text-gray-100 text-gray-300",
-                    section.title !== 'Analytics' && "uppercase"
-                  )}>
-                      {section.title}
-                  </span>
-                  <ChevronDown
-                      className={cn(
-                      "w-4 h-4 text-gray-400 shrink-0 transition-transform duration-200 group-hover/section:text-gray-200",
-                      openSections[section.id] && "rotate-180"
-                      )}
-                  />
-                </button>
-                {openSections[section.id] && (
-                  <div className="mt-1 space-y-1 py-2 pl-4 border-l border-sidebar-border/20">
-                    {section.items.map((item, itemIndex) => renderNavItem(item, itemIndex))}
-                  </div>
+      <nav className={cn("flex-1 space-y-1 px-2 py-4 overflow-y-auto no-visual-scrollbar")}>
+        {currentDisplayCollapsed ? (
+          navSectionsData.flatMap((section, sectionIndex) => section.items.map((item, itemIndex) =>
+            renderNavItem(item, sectionIndex * 100 + itemIndex) // Ensure unique keys for flat list
+          ))
+        ) : (
+          navSectionsData.map((section) => (
+            <div key={section.id} className="mb-1">
+              <button
+                onClick={() => toggleSection(section.id)}
+                className={cn(
+                  "flex items-center w-full text-left px-4 py-3 rounded-md hover:bg-black/30 transition-colors duration-150 ease-out group/section",
+                  "border-b border-sidebar-border/30" 
                 )}
-              </div>
-            ))
-          )}
-        </nav>
-        <div className="mt-auto p-2 border-t border-sidebar-border/30">
-          {renderNavItem(alertsNavItem, 999)} 
-        </div>
-      </TooltipProvider>
+                aria-expanded={openSections[section.id]}
+              >
+                <section.icon className="w-5 h-5 shrink-0 text-gray-400 group-hover/section:text-gray-200" />
+                <span className={cn(
+                  "ml-3 font-bold text-lg tracking-wider truncate flex-1 group-hover/section:text-gray-100 text-gray-300",
+                  section.title !== 'Analytics' && "uppercase"
+                )}>
+                    {section.title}
+                </span>
+                <ChevronDown
+                    className={cn(
+                    "w-4 h-4 text-gray-400 shrink-0 transition-transform duration-200 group-hover/section:text-gray-200",
+                    openSections[section.id] && "rotate-180"
+                    )}
+                />
+              </button>
+              {openSections[section.id] && (
+                <div className="mt-1 space-y-1 py-2 pl-4 border-l border-sidebar-border/20">
+                  {section.items.map((item, itemIndex) => renderNavItem(item, itemIndex))}
+                </div>
+              )}
+            </div>
+          ))
+        )}
+      </nav>
+      <div className="mt-auto p-2 border-t border-sidebar-border/30">
+        {renderNavItem(alertsNavItem, 999)} 
+      </div>
     </aside>
   );
 }
