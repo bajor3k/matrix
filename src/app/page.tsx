@@ -45,11 +45,7 @@ export default function LandingPage() {
             matrix
           </h1>
           
-           <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter text-black dark:text-white">
-            One Login. One Matrix.
-          </h2>
-          
-          <div className="flex items-center justify-center mt-8 gap-4">
+          <div className="flex items-center justify-center mt-4 gap-4">
             <p className="text-4xl md:text-5xl font-bold tracking-wide text-black dark:text-white">
                 see how deep the rabbit hole goes…
             </p>
@@ -93,9 +89,12 @@ export default function LandingPage() {
               )}
             </AnimatePresence>
           </div>
-          
-          <div className="py-24 md:py-32">
-            <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter text-black dark:text-white mt-8">
+
+          <div className="py-24 md:py-32 space-y-8 md:space-y-12">
+            <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
+              One Login. One Matrix.
+            </h2>
+            <h3 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
               Analytics that power your business.
             </h3>
           </div>
@@ -132,14 +131,6 @@ export default function LandingPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <Image
-                    src="https://placehold.co/64x64.png"
-                    alt="Reviewer Alex B."
-                    width={64}
-                    height={64}
-                    data-ai-hint="portrait person"
-                    className="w-16 h-16 rounded-full border-2 border-purple-200"
-                  />
                   <div className="font-semibold text-lg text-black dark:text-white">Alex B.</div>
                   <div className="italic text-neutral-700 dark:text-neutral-200">
                     “Whoever created this platform is a genius. If you ever get the chance to hire them, do it!”
@@ -148,14 +139,6 @@ export default function LandingPage() {
                 </div>
 
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <Image
-                    src="https://placehold.co/64x64.png"
-                    alt="Reviewer Jamie L."
-                    width={64}
-                    height={64}
-                    data-ai-hint="portrait person"
-                    className="w-16 h-16 rounded-full border-2 border-blue-200"
-                  />
                   <div className="font-semibold text-lg text-black dark:text-white">Jamie L.</div>
                   <div className="italic text-neutral-700 dark:text-neutral-200">
                     “Matrix has completely transformed the way I run my business. The analytics are next-level—nothing else comes close!”
@@ -164,14 +147,6 @@ export default function LandingPage() {
                 </div>
 
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <Image
-                    src="https://placehold.co/64x64.png"
-                    alt="Reviewer Priya S."
-                    width={64}
-                    height={64}
-                    data-ai-hint="portrait person"
-                    className="w-16 h-16 rounded-full border-2 border-green-200"
-                  />
                   <div className="font-semibold text-lg text-black dark:text-white">Priya S.</div>
                   <div className="italic text-neutral-700 dark:text-neutral-200">
                     “The integration, the speed, the intelligence—Matrix is lightyears ahead of any CRM or trading platform out there. Absolutely game-changing!”
@@ -180,14 +155,6 @@ export default function LandingPage() {
                 </div>
 
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <Image
-                    src="https://placehold.co/64x64.png"
-                    alt="Reviewer Chris T."
-                    width={64}
-                    height={64}
-                    data-ai-hint="portrait person"
-                    className="w-16 h-16 rounded-full border-2 border-yellow-200"
-                  />
                   <div className="font-semibold text-lg text-black dark:text-white">Chris T.</div>
                   <div className="italic text-neutral-700 dark:text-neutral-200">
                     “If I could give Matrix 10 stars, I would. It’s like having an entire team of experts in one platform. Simply phenomenal.”
