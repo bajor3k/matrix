@@ -278,3 +278,19 @@
     @apply bg-muted/80 text-foreground rounded-lg rounded-bl-none border border-border/30;
   }
 }
+
+@keyframes pulseGlow {
+  0% {
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.2));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+  }
+  100% {
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.2));
+  }
+}
+
+.brain-glow {
+  animation: pulseGlow 2s infinite ease-in-out;
+}

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -101,7 +102,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <Tooltip>
             <TooltipTrigger asChild>
                 <Link href="/dashboard" className="mb-3">
-                    <Brain className="w-8 h-8 text-muted-foreground hover:text-foreground transition-colors" />
+                    <Brain className="w-8 h-8 text-muted-foreground hover:text-foreground transition-colors brain-glow" />
                 </Link>
             </TooltipTrigger>
             <TooltipContent side="right" className="bg-popover text-popover-foreground">
