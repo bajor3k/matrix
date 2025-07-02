@@ -40,14 +40,14 @@ export default function LandingPage() {
           <div className="hidden lg:flex justify-center items-center relative h-[600px]">
             {/* Computer Mockup 1 */}
             <div className="absolute w-[500px] h-[320px] bg-gray-200 dark:bg-gray-700 p-2 rounded-lg transform -rotate-6 shadow-2xl border-4 border-gray-200 dark:border-gray-700">
-              <div className="bg-black h-full w-full rounded-sm overflow-hidden relative" data-ai-hint="desktop app">
-                  <Image src="https://placehold.co/800x500.png" alt="App screenshot 1" layout="fill" objectFit="cover" />
+              <div className="bg-black h-full w-full rounded-sm overflow-hidden relative" data-ai-hint="analytics dashboard">
+                  <Image src="https://placehold.co/800x500.png" alt="Assets analytics dashboard screenshot" layout="fill" objectFit="cover" />
               </div>
             </div>
             {/* Computer Mockup 2 */}
             <div className="absolute w-[500px] h-[320px] bg-gray-200 dark:bg-gray-700 p-2 rounded-lg transform rotate-6 z-10 shadow-2xl border-4 border-gray-200 dark:border-gray-700">
-              <div className="bg-black h-full w-full rounded-sm overflow-hidden relative" data-ai-hint="desktop app">
-                   <Image src="https://placehold.co/800x500.png" alt="App screenshot 2" layout="fill" objectFit="cover" />
+              <div className="bg-black h-full w-full rounded-sm overflow-hidden relative" data-ai-hint="analytics dashboard">
+                   <Image src="https://placehold.co/800x500.png" alt="Assets analytics dashboard screenshot 2" layout="fill" objectFit="cover" />
               </div>
             </div>
           </div>
