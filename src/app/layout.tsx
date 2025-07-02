@@ -62,12 +62,14 @@ export default function RootLayout({
           <AuthProvider>
             <NavigationProvider>
               <TooltipProvider delayDuration={0}>
-                <TopToolbar collapsed={sidebarCollapsed} onToggleSidebar={handleToggleSidebar} />
-                <div className="flex flex-1 pt-16">
+                <div className="flex flex-1">
                   <Sidebar collapsed={sidebarCollapsed} onToggle={handleToggleSidebar} />
-                  <main className="flex-1 overflow-y-auto bg-transparent no-visual-scrollbar">
-                    {children}
-                  </main>
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <TopToolbar />
+                    <main className="flex-1 overflow-y-auto bg-transparent no-visual-scrollbar">
+                      {children}
+                    </main>
+                  </div>
                 </div>
                 <Toaster />
               </TooltipProvider>

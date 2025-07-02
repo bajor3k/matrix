@@ -8,18 +8,12 @@ import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 import { ThemeToggle } from './theme-toggle';
 
-interface TopToolbarProps {
-  collapsed: boolean;
-  onToggleSidebar: () => void;
-}
-
-export function TopToolbar({ collapsed, onToggleSidebar }: TopToolbarProps) {
+export function TopToolbar() {
   const { activeSection, setActiveSection } = useNavigation();
 
   return (
     <header className={cn(
-      "fixed top-0 right-0 z-40 h-16 bg-background border-b flex items-center px-4 shadow-sm transition-all duration-300",
-      collapsed ? "left-16" : "left-64"
+      "relative h-16 shrink-0 bg-background border-b flex items-center px-4 shadow-sm"
     )}>
       <div className="flex w-full justify-between items-center">
         <nav className="flex items-center space-x-2">

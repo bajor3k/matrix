@@ -98,7 +98,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         collapsed ? "w-16" : "w-64" 
       )}
     >
-      <div className={cn("flex flex-col items-center pt-5 pb-3 px-2")}>
+      <div className={cn("flex flex-col items-center pt-4 pb-3 px-2")}>
         <Tooltip>
             <TooltipTrigger asChild>
                 <Link href="/dashboard" className="mb-3">
