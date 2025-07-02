@@ -83,7 +83,7 @@ const getSeverityBadgeClass = (severity: AlertItem["severity"]): string => {
 const getCategoryBadgeClass = (category: AlertItem["category"]): string => {
     switch (category) {
       case "Compliance":
-        return "bg-purple-500/20 border-purple-500/50 text-purple-400";
+        return "bg-slate-500/20 border-slate-500/50 text-slate-400";
       case "System":
         return "bg-gray-500/20 border-gray-500/50 text-gray-400";
       case "Portfolio":

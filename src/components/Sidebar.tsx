@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
 import React, { useState, useEffect, useCallback } from "react";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import {
   LayoutDashboard,
   BarChart3,
@@ -183,7 +183,7 @@ export default function Sidebar() {
     const iconClasses = cn(
       "w-5 h-5 shrink-0 transition-colors duration-200",
       isActive 
-        ? "text-primary" 
+        ? "text-sidebar-foreground" 
         : item.hasNewAlerts && isClient 
           ? "animate-red-pulse text-red-500" 
           : "text-sidebar-foreground/70 group-hover/navitem:text-sidebar-foreground"
@@ -191,7 +191,7 @@ export default function Sidebar() {
 
     const linkClasses = cn(
       "flex items-center gap-4 px-4 py-2.5 rounded-[8px] transition-all duration-200 ease-out group/navitem",
-      "bg-white/[.02] text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-white/[.05] hover:-translate-y-px",
+      isActive ? "bg-sidebar-primary text-sidebar-primary-foreground" : "text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-white/[.05] hover:-translate-y-px",
       currentDisplayCollapsed && "justify-center p-2.5"
     );
 
@@ -241,7 +241,7 @@ export default function Sidebar() {
     >
       <div className={cn("flex items-center p-4 px-5", currentDisplayCollapsed ? "justify-center" : "justify-between")}>
         <Link href="/dashboard" className={cn("flex items-center", currentDisplayCollapsed ? "justify-center w-full" : "space-x-3 group")}>
-          <Brain className={cn("text-purple-500 animate-pulse-neon", currentDisplayCollapsed ? "w-8 h-8" : "w-10 h-10")} />
+          <Brain className={cn("text-gray-400", currentDisplayCollapsed ? "w-8 h-8" : "w-10 h-10")} />
           {!currentDisplayCollapsed && (
             <span className="text-4xl font-bold text-metallic-gradient leading-tight group-hover:brightness-110 transition-all">
               Matrix

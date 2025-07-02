@@ -55,7 +55,7 @@ const renderTextWithLinks = (text: string) => {
   return parts.map((part, index) => {
     if (/\b\w+\.pdf\b/.test(part)) {
       return (
-        <a key={index} href="#" className="text-primary hover:underline font-medium">
+        <a key={index} href="#" className="text-foreground hover:underline font-medium">
           {part}
         </a>
       );
@@ -195,7 +195,7 @@ For more information, refer to document REF123.pdf or contact support. You can a
   return (
     <main className="min-h-screen bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#5b21b6]/10 to-[#000104] flex-1 p-6 md:p-8 flex flex-col space-y-8">
       <div className="flex items-center justify-center space-x-3">
-        <Brain className="w-10 h-10 text-purple-500 animate-pulse-neon" />
+        <Brain className="w-10 h-10 text-gray-400" />
         <span className="text-4xl font-bold text-metallic-gradient">
           Maven
         </span>
@@ -289,7 +289,7 @@ For more information, refer to document REF123.pdf or contact support. You can a
               />
               <Button
                 type="submit"
-                className="bg-primary hover:bg-primary/80 text-primary-foreground p-2.5 rounded-lg h-11 w-11 flex items-center justify-center animate-pulse-neon"
+                className="bg-primary hover:bg-primary/80 text-primary-foreground p-2.5 rounded-lg h-11 w-11 flex items-center justify-center"
                 aria-label="Send Message"
                 disabled={isLoadingAiResponse || !inputValue.trim()}
               >

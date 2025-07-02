@@ -485,7 +485,7 @@ export default function ModelMatrixPage() {
                   <p><strong className="text-muted-foreground">Advisory Fee:</strong> {data.feePercent}</p>
                   <p><strong className="text-muted-foreground">Program Fee:</strong> {data.programFeePercent}</p>
                   <p><strong className="text-muted-foreground">Total Cost:</strong> {data.totalCostPercent}</p>
-                  <p><strong className="text-muted-foreground">Style:</strong> <Badge variant="outline" className={cn( data.style === "Growth" && "bg-purple-500/70 hover:bg-purple-500/90 border-purple-400 text-white", data.style === "Value" && "bg-blue-500/70 hover:bg-blue-500/90 border-blue-400 text-white", data.style === "Fixed Income" && "bg-teal-500/70 hover:bg-teal-500/90 border-teal-400 text-white", data.style === "Balanced" && "bg-amber-500/70 hover:bg-amber-500/90 border-amber-400 text-white", data.style.startsWith("Sector") && "bg-pink-500/70 hover:bg-pink-500/90 border-pink-400 text-white" )}>{data.style}</Badge></p>
+                  <p><strong className="text-muted-foreground">Style:</strong> <Badge variant="secondary">{data.style}</Badge></p>
                   <h4 className="font-semibold text-base mt-3 pt-2 border-t border-border/50">Performance:</h4>
                   <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                     <span>YTD: <span className={getReturnClass(data.ytdReturn)}>{data.ytdReturn}</span></span> <span className="text-muted-foreground">Bench: {data.ytdBenchmark}</span>
@@ -539,7 +539,7 @@ export default function ModelMatrixPage() {
                 <TableCell className="text-right whitespace-nowrap">{model.aum}</TableCell>
                 <TableCell className="text-right whitespace-nowrap">{model.feePercent}</TableCell>
                 <TableCell className="text-center whitespace-nowrap">
-                  <Badge variant={model.style === "Growth" ? "default" : model.style === "Value" ? "secondary" : "outline"} className={cn( model.style === "Growth" && "bg-purple-500/70 hover:bg-purple-500/90 border-purple-400", model.style === "Value" && "bg-blue-500/70 hover:bg-blue-500/90 border-blue-400", model.style === "Fixed Income" && "bg-teal-500/70 hover:bg-teal-500/90 border-teal-400", model.style === "Balanced" && "bg-amber-500/70 hover:bg-amber-500/90 border-amber-400", model.style.startsWith("Sector") && "bg-pink-500/70 hover:bg-pink-500/90 border-pink-400", "text-white" )}>{model.style}</Badge>
+                  <Badge variant="secondary">{model.style}</Badge>
                 </TableCell>
                 <TableCell className={cn("text-right whitespace-nowrap font-semibold", getReturnClass(model.ytdReturn))}>{model.ytdReturn}</TableCell>
                 <TableCell className="text-right whitespace-nowrap text-muted-foreground">{model.ytdBenchmark}</TableCell>
@@ -571,7 +571,7 @@ export default function ModelMatrixPage() {
             <h3 className="text-lg font-semibold text-foreground">Selected Managers for Rebalancing</h3>
             {sandboxSelectedManagers.map((manager) => (
               <div key={manager.id} className="p-4 rounded-md border border-border/50 bg-black/20 space-y-3">
-                <div className="flex justify-between items-start"> <div> <p className="font-semibold text-foreground">{manager.manager}</p> <p className="text-xs text-muted-foreground">{manager.strategyName}</p> </div> <Badge variant="outline" className={cn( manager.style === "Growth" && "bg-purple-500/70 hover:bg-purple-500/90 border-purple-400 text-white", manager.style === "Value" && "bg-blue-500/70 hover:bg-blue-500/90 border-blue-400 text-white", manager.style === "Fixed Income" && "bg-teal-500/70 hover:bg-teal-500/90 border-teal-400 text-white", manager.style === "Balanced" && "bg-amber-500/70 hover:bg-amber-500/90 border-amber-400 text-white", manager.style.startsWith("Sector") && "bg-pink-500/70 hover:bg-pink-500/90 border-pink-400 text-white" )}>{manager.style}</Badge> </div>
+                <div className="flex justify-between items-start"> <div> <p className="font-semibold text-foreground">{manager.manager}</p> <p className="text-xs text-muted-foreground">{manager.strategyName}</p> </div> <Badge variant="secondary">{manager.style}</Badge> </div>
                 <div> <Label htmlFor={`weight-slider-${manager.id}`} className="text-xs text-muted-foreground mb-1 block"> Weight </Label> <div className="flex items-center gap-3 mt-1"> <Slider id={`weight-slider-${manager.id}`} value={[sandboxManagerWeights[manager.id] || 0]} max={100} step={1} className="flex-grow" onValueChange={(value) => handleSandboxWeightChange(manager.id, value[0])} aria-label={`Weight for ${manager.strategyName}`} /> <div className="flex items-baseline gap-1"> <Input type="number" value={sandboxManagerWeights[manager.id] || 0} onChange={(e) => handleSandboxWeightChange(manager.id, parseInt(e.target.value, 10) || 0)} className="w-16 h-10 text-lg font-semibold text-center bg-input border-border/50 text-foreground focus:ring-primary p-0" min="0" max="100" /> <span className="text-lg font-semibold text-foreground">%</span> </div> </div> </div>
               </div>
             ))}

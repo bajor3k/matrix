@@ -297,7 +297,7 @@ export default function ClientPortalCalendarPage() {
       start: eventStart,
       end: eventEnd,
       allDay: quickAddEventAllDay,
-      color: 'hsl(var(--primary))' // Default color
+      color: 'hsl(var(--secondary))' // Default color
     };
 
     setEvents(prevEvents => [...prevEvents, newEvent]);
@@ -403,7 +403,7 @@ export default function ClientPortalCalendarPage() {
                       )}
                        <div className="mt-5 space-y-0.5 max-h-[calc(100%-1.75rem)] overflow-y-auto no-scrollbar">
                         {dayEvents.map(event => (
-                          <div key={event.id} className="text-[10px] bg-purple-500/70 text-white p-0.5 rounded truncate">
+                          <div key={event.id} className="text-[10px] bg-secondary text-white p-0.5 rounded truncate">
                             {event.title}
                           </div>
                         ))}
@@ -493,7 +493,7 @@ export default function ClientPortalCalendarPage() {
                     </div>
                     <div className="flex-1">
                         <div className="h-10 flex flex-col items-center justify-center border-b border-border/30">
-                            <div className={cn("text-2xl font-semibold", isToday(currentDateForCalendar) ? "text-primary bg-primary/10 rounded-full w-10 h-10 flex items-center justify-center" : "text-foreground")}>
+                            <div className={cn("text-2xl font-semibold", isToday(currentDateForCalendar) ? "text-primary-foreground bg-primary/80 rounded-full w-10 h-10 flex items-center justify-center" : "text-foreground")}>
                                 {format(currentDateForCalendar, 'd')}
                             </div>
                         </div>
@@ -527,8 +527,8 @@ export default function ClientPortalCalendarPage() {
             <PlaceholderCard title="" className="p-0"> 
                 <Tabs defaultValue="calendars" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-muted/50">
-                    <TabsTrigger value="calendars" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">Calendars</TabsTrigger>
-                    <TabsTrigger value="tasks" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">Tasks</TabsTrigger>
+                    <TabsTrigger value="calendars" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary-foreground">Calendars</TabsTrigger>
+                    <TabsTrigger value="tasks" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary-foreground">Tasks</TabsTrigger>
                 </TabsList>
                 <TabsContent value="calendars" className="p-4 space-y-4">
                     <div>
@@ -621,7 +621,7 @@ export default function ClientPortalCalendarPage() {
             </div>
           </div>
           <DialogFooter className="justify-between sm:justify-between">
-            <Button variant="link" className="p-0 h-auto text-primary hover:text-primary/80 text-xs" onClick={openFullEventFormFromQuickAdd}>
+            <Button variant="link" className="p-0 h-auto text-foreground hover:text-foreground/80 text-xs" onClick={openFullEventFormFromQuickAdd}>
               Include more details?
             </Button>
             <div className="flex gap-2">
@@ -647,7 +647,7 @@ export default function ClientPortalCalendarPage() {
           </DialogHeader>
           <div className="flex-grow overflow-y-auto pr-2 py-4 space-y-6"> 
             <div><Label htmlFor="eventName-dialog">Event Name</Label><Input id="eventName-dialog" value={fullEventTitle} onChange={(e) => setFullEventTitle(e.target.value)} placeholder="Enter event name..." className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" /></div>
-            <div><Label htmlFor="eventCategory-dialog">Category</Label><div className="flex items-center gap-2"><Select><SelectTrigger id="eventCategory-dialog" className="bg-input border-border/50 text-foreground focus:ring-primary flex-grow"><SelectValue placeholder="Uncategorized" /></SelectTrigger><SelectContent><SelectItem value="uncategorized">Uncategorized</SelectItem><SelectItem value="meeting">Meeting</SelectItem><SelectItem value="client_review">Client Review</SelectItem><SelectItem value="prospect_introduction">Prospect Introduction</SelectItem><SelectItem value="social_event">Social Event</SelectItem><SelectItem value="conference">Conference</SelectItem></SelectContent></Select><Button variant="link" className="p-0 h-auto text-primary hover:text-primary/80 whitespace-nowrap">Edit Categories</Button></div></div>
+            <div><Label htmlFor="eventCategory-dialog">Category</Label><div className="flex items-center gap-2"><Select><SelectTrigger id="eventCategory-dialog" className="bg-input border-border/50 text-foreground focus:ring-primary flex-grow"><SelectValue placeholder="Uncategorized" /></SelectTrigger><SelectContent><SelectItem value="uncategorized">Uncategorized</SelectItem><SelectItem value="meeting">Meeting</SelectItem><SelectItem value="client_review">Client Review</SelectItem><SelectItem value="prospect_introduction">Prospect Introduction</SelectItem><SelectItem value="social_event">Social Event</SelectItem><SelectItem value="conference">Conference</SelectItem></SelectContent></Select><Button variant="link" className="p-0 h-auto text-foreground hover:text-foreground/80 whitespace-nowrap">Edit Categories</Button></div></div>
             <div className="space-y-3"><Label>Date &amp; Time</Label><div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-x-3 gap-y-2 items-center">
               <div className="md:col-span-2"><Input type="text" placeholder="Start Date" value={fullEventStartDate} onChange={(e) => setFullEventStartDate(e.target.value)} aria-label="Start Date" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" /></div>
               <div className="sm:col-span-1"><Input type="text" placeholder="Start Time" value={fullEventStartTime} onChange={(e) => setFullEventStartTime(e.target.value)} aria-label="Start Time" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" /></div>
@@ -665,7 +665,7 @@ export default function ClientPortalCalendarPage() {
             <div><Label htmlFor="eventRelatedTo-dialog">Related To</Label><Input id="eventRelatedTo-dialog" placeholder="Contact, project, or opportunity..." className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" /></div>
             <div><Label htmlFor="eventAttending-dialog">Attending</Label><Input id="eventAttending-dialog" placeholder="Search users or resources..." className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" /></div>
             <div><Label htmlFor="eventInvite-dialog">Invite</Label><Input id="eventInvite-dialog" placeholder="Search contacts to invite..." className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" /></div>
-            <div className="flex flex-wrap items-center justify-between gap-2"><div className="flex items-center space-x-2"><Checkbox id="sendEventInvitations-dialog" /><Label htmlFor="sendEventInvitations-dialog" className="text-sm font-normal text-muted-foreground">Send email invitations to new invitees and BCC the event creator</Label></div><Button variant="link" className="p-0 h-auto text-primary hover:text-primary/80 text-sm whitespace-nowrap">Preview Invite</Button></div>
+            <div className="flex flex-wrap items-center justify-between gap-2"><div className="flex items-center space-x-2"><Checkbox id="sendEventInvitations-dialog" /><Label htmlFor="sendEventInvitations-dialog" className="text-sm font-normal text-muted-foreground">Send email invitations to new invitees and BCC the event creator</Label></div><Button variant="link" className="p-0 h-auto text-foreground hover:text-foreground/80 text-sm whitespace-nowrap">Preview Invite</Button></div>
           </div>
           <DialogFooter className="pt-4 border-t border-border/30">
             <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
@@ -676,5 +676,3 @@ export default function ClientPortalCalendarPage() {
     </>
   );
 }
-
-    

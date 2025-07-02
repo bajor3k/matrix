@@ -125,7 +125,7 @@ export default function ClientAnalyticsPage() {
                   <div className="flex items-center gap-3 w-2/5 sm:w-1/2">
                     <div className="w-full h-2 bg-muted/30 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-gradient-to-r from-primary to-purple-400 rounded-full" 
+                        className="h-full bg-primary rounded-full" 
                         style={{ width: `${barWidthPercentage}%` }}
                       />
                     </div>
@@ -189,7 +189,7 @@ export default function ClientAnalyticsPage() {
                 <h4 className={cn("text-md font-semibold text-foreground", client.multipleChildBeneficiaries && "text-green-400")}>
                   {client.clientName} <span className="text-sm font-normal text-muted-foreground">({client.age})</span>
                 </h4>
-                <span className="text-sm font-semibold text-primary">{client.aumDisplay}</span>
+                <span className="text-sm font-semibold text-foreground">{client.aumDisplay}</span>
               </div>
               <div className="text-xs text-muted-foreground mb-1">
                 Beneficiary: {client.primaryBeneficiaryName} ({client.primaryBeneficiaryAge})
@@ -198,7 +198,7 @@ export default function ClientAnalyticsPage() {
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
-                Relationship Depth: <span className="font-semibold text-primary">{client.relationshipDepthPercent}%</span>
+                Relationship Depth: <span className="font-semibold text-foreground">{client.relationshipDepthPercent}%</span>
               </p>
             </div>
           ))}

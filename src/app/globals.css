@@ -14,28 +14,28 @@
     --popover: 0 0% 8%; /* #141414 */
     --popover-foreground: 0 0% 95%; /* #F2F2F2 */
     
-    --primary: 258 84% 61%; /* #7C3AED */
-    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --primary: 0 0% 13%; /* #222222 */
+    --primary-foreground: 0 0% 95%; /* #F2F2F2 */
     
-    --secondary: 230 15% 25%; 
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 0 0% 15%; /* #262626 */
+    --secondary-foreground: 0 0% 95%; /* #F2F2F2 */
     
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 69%; /* #B0B0B0 */
     
-    --accent: 258 84% 61%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 0 0% 20%; /* #333333 */
+    --accent-foreground: 0 0% 95%; /* #F2F2F2 */
     
     --destructive: 0 84% 60%; /* #EF4444 */
     --destructive-foreground: 0 0% 100%;
     
     --border: 0 0% 20%; /* #333333 */
     --input: 0 0% 12%; /* #1F1F1F */
-    --ring: 258 84% 70%;
+    --ring: 0 0% 50%; /* #808080 */
 
     /* Chart Colors */
-    --chart-1: 258 84% 61%; /* Primary Accent */
-    --chart-2: 200 92% 60%; /* Secondary Accent */
+    --chart-1: 0 0% 80%; /* #cccccc */
+    --chart-2: 0 0% 60%; /* #999999 */
     --chart-3: 120 61% 50%; /* Success Green e.g. #34D399 */
     --chart-4: 45 93% 57%;  /* Warning Yellow e.g. #FBBF24 */
     --chart-5: 0 72% 51%;   /* Error Red e.g. #F43F5E */
@@ -47,12 +47,12 @@
     /* Sidebar specific colors */
     --sidebar-background: transparent; 
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 258 84% 61%; /* Active item accent */
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 20%; /* Active item accent */
+    --sidebar-primary-foreground: 0 0% 95%; /* #F2F2F2 */
     --sidebar-accent: 233 27% 20%;
     --sidebar-accent-foreground: 0 0% 100%; 
     --sidebar-border: 240 4% 25%; /* Slightly lighter for subtle section divides */
-    --sidebar-ring: 258 84% 70%;
+    --sidebar-ring: 0 0% 50%;
   }
 }
 
@@ -73,43 +73,6 @@
   }
 }
 
-/* Neon Pulse for Brain Logo */
-@keyframes neonPulse {
-  0%, 100% {
-    filter: drop-shadow(0 0 5px #9147ff) drop-shadow(0 0 10px rgba(145, 71, 255, 0.4));
-    transform: scale(1);
-  }
-  50% {
-    filter: drop-shadow(0 0 10px #9147ff) drop-shadow(0 0 20px rgba(145, 71, 255, 0.6));
-    transform: scale(1.05);
-  }
-}
-
-.animate-pulse-neon {
-  animation: neonPulse 1.8s infinite ease-in-out;
-}
-
-.brain-logo-static-glow {
-  filter: drop-shadow(0 0 6px #8b5cf6);
-}
-
-.text-metallic-gradient {
-  background-image: linear-gradient(
-    180deg,
-    hsl(220, 10%, 90%) 0%,  /* Lighter top highlight */
-    hsl(220, 10%, 75%) 30%, /* Main steel color */
-    hsl(220, 10%, 65%) 50%, /* Darker mid-tone */
-    hsl(220, 10%, 75%) 70%, /* Main steel color */
-    hsl(220, 10%, 90%) 100% /* Lighter bottom highlight */
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 5px rgba(200, 200, 220, 0.2), 0 1px 1px rgba(0, 0, 0, 0.3);
-}
-
-
 /* Animation for missed opportunity rows */
 @keyframes flashRed {
   0%   { background-color: rgba(255, 0, 0, 0.08); }
@@ -125,19 +88,19 @@
 
 /* Ask Maven Button Style */
 .ask-maven-button {
-  background: linear-gradient(90deg, #8431ff, #a852ff);
-  color: white;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   padding: 10px 18px;
   border-radius: 20px;
   border: none;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 0 8px #a852ff80;
+  box-shadow: 0 0 8px hsla(var(--primary), 0.5);
   transition: all 0.3s ease;
 }
 
 .ask-maven-button:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.2);
 }
 
 /* Ticker Animation */
@@ -173,20 +136,6 @@
   animation: pulse-red 1.2s infinite;
 }
 
-/* Pulsating glow for high progress charts */
-@keyframes pulse-primary-glow {
-  0%, 100% {
-    filter: drop-shadow(0 0 8px hsla(var(--primary), 0.5)) drop-shadow(0 0 12px hsla(var(--primary), 0.3));
-  }
-  50% {
-    filter: drop-shadow(0 0 12px hsla(var(--primary), 0.7)) drop-shadow(0 0 18px hsla(var(--primary), 0.5));
-  }
-}
-
-.high-progress-glow .recharts-surface { /* Target the SVG surface for the glow */
-  animation: pulse-primary-glow 1.8s infinite ease-in-out;
-}
-
 @keyframes redPulse {
   0%, 100% {
     filter: drop-shadow(0 0 0px rgba(239, 68, 68, 0.7)); /* red-500 based */
@@ -216,7 +165,7 @@
   width: 6px;
   height: 6px;
   margin-right: 2px;
-  background-color: hsl(var(--primary) / 0.7);
+  background-color: hsl(var(--foreground) / 0.7);
   border-radius: 50%;
   animation: typing-pulse 1.4s infinite ease-in-out both;
 }
@@ -228,6 +177,22 @@
 .typing-dot.animation-delay-400 {
   animation-delay: 0.4s;
 }
+
+@keyframes typing-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 
 /* Hide scrollbar but keep scroll functionality */
 .no-visual-scrollbar::-webkit-scrollbar {

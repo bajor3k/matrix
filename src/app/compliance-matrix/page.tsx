@@ -25,7 +25,7 @@ const summaryCardsData = [
   { title: "Excessive Trading", value: "4", icon: RepeatIcon, iconClassName: "text-red-400" },
   { title: "Inactive Managed Accounts", value: "6", icon: UserX, iconClassName: "text-gray-400" },
   { title: "Trade Frequency Anomalies", value: "3", icon: Activity, iconClassName: "text-yellow-400" },
-  { title: "Unsuitable Products", value: "3", icon: Ban, iconClassName: "text-purple-400" },
+  { title: "Unsuitable Products", value: "3", icon: Ban, iconClassName: "text-slate-400" },
 ];
 
 const getFlagBadgeVariant = (flag: FlaggedActivity["complianceFlag"]): "destructive" | "default" => {
@@ -50,7 +50,7 @@ const getFlagBadgeClassName = (flag: FlaggedActivity["complianceFlag"]): string 
       case "Trade Frequency Anomaly":
         return "bg-yellow-500/20 border-yellow-500/50 text-yellow-400";
       case "Unsuitable Product":
-        return "bg-purple-500/20 border-purple-500/50 text-purple-400";
+        return "bg-slate-500/20 border-slate-500/50 text-slate-400";
       default:
         return "";
     }
