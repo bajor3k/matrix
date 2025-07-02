@@ -42,7 +42,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
     const iconClasses = cn(
       "w-5 h-5 shrink-0 transition-colors duration-200",
       isActive 
-        ? "text-white" 
+        ? "text-sidebar-primary-foreground" 
         : item.hasNewAlerts
           ? "animate-red-pulse text-red-500" 
           : "text-sidebar-foreground/70 group-hover/navitem:text-sidebar-foreground"
@@ -50,7 +50,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
     const linkClasses = cn(
       "flex items-center gap-4 px-4 py-2.5 rounded-[8px] transition-all duration-200 ease-out group/navitem",
-      isActive ? "bg-[#222222] text-white" : "text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-[#222222] hover:-translate-y-px",
+      isActive ? "bg-sidebar-primary text-sidebar-primary-foreground" : "text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-sidebar-primary/80 hover:-translate-y-px",
       collapsed && "justify-center p-2.5"
     );
 
@@ -94,7 +94,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "h-full bg-black border-r border-gray-800/50 text-white transition-all duration-300 flex flex-col",
+        "h-full bg-background border-r text-sidebar-foreground transition-all duration-300 flex flex-col",
         collapsed ? "w-16" : "w-64" 
       )}
     >
@@ -102,7 +102,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <Tooltip>
             <TooltipTrigger asChild>
                 <Link href="/dashboard" className="mb-3">
-                    <Brain className="w-8 h-8 text-gray-400 hover:text-white transition-colors" />
+                    <Brain className="w-8 h-8 text-muted-foreground hover:text-foreground transition-colors" />
                 </Link>
             </TooltipTrigger>
             <TooltipContent side="right" className="bg-popover text-popover-foreground">
@@ -114,14 +114,14 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
             variant="ghost"
             size="icon"
             onClick={onToggle}
-            className="h-7 w-7 text-muted-foreground hover:bg-white/5 hover:text-white"
+            className="h-7 w-7 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
         >
             {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
             <span className="sr-only">Toggle Sidebar</span>
         </Button>
       </div>
       
-      <nav className={cn("flex-1 space-y-2 px-2 py-4 overflow-y-auto no-visual-scrollbar border-t border-gray-800/50")}>
+      <nav className={cn("flex-1 space-y-2 px-2 py-4 overflow-y-auto no-visual-scrollbar border-t border-sidebar-border/30")}>
         {currentNavItems.length > 0 ? (
            currentNavItems.map((item, itemIndex) => renderNavItem(item, itemIndex))
         ) : (

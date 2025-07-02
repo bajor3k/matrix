@@ -11,6 +11,7 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { NavigationProvider } from '@/contexts/navigation-context';
 import { TopToolbar } from '@/components/TopToolbar';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { ThemeProvider } from '@/components/theme-provider';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -50,22 +51,29 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} ${robotoMono.variable} antialiased flex flex-col h-screen bg-black`}>
-        <AuthProvider>
-          <NavigationProvider>
-            <TooltipProvider delayDuration={0}>
-              <TopToolbar collapsed={sidebarCollapsed} />
-              <div className="flex flex-1 pt-16">
-                <Sidebar collapsed={sidebarCollapsed} onToggle={handleToggleSidebar} />
-                <main className="flex-1 overflow-y-auto bg-transparent no-visual-scrollbar">
-                  {children}
-                </main>
-              </div>
-              <Toaster />
-            </TooltipProvider>
-          </NavigationProvider>
-        </AuthProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} ${robotoMono.variable} antialiased flex flex-col h-screen`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <NavigationProvider>
+              <TooltipProvider delayDuration={0}>
+                <TopToolbar collapsed={sidebarCollapsed} onToggleSidebar={handleToggleSidebar} />
+                <div className="flex flex-1 pt-16">
+                  <Sidebar collapsed={sidebarCollapsed} onToggle={handleToggleSidebar} />
+                  <main className="flex-1 overflow-y-auto bg-transparent no-visual-scrollbar">
+                    {children}
+                  </main>
+                </div>
+                <Toaster />
+              </TooltipProvider>
+            </NavigationProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

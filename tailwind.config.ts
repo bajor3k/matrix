@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -89,8 +90,8 @@ export default {
   			'accordion-up': 'accordion-up 0.2s ease-out'
   		},
       boxShadow: {
-        'card-custom': '0 6px 28px 0 rgba(0,0,0,0.85)',
-        'card-custom-hover': '0 6px 28px 0 rgba(0,0,0,0.85), 0 0 0 4px rgba(255,255,255,0.06)',
+        'card-custom': 'var(--shadow-card-custom)',
+        'card-custom-hover': 'var(--shadow-card-custom-hover)',
       }
   	}
   },
