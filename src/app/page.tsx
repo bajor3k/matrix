@@ -56,7 +56,7 @@ export default function LandingPage() {
           <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white whitespace-nowrap">
             One Login. One Matrix.
           </h2>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-black dark:text-white mt-16 md:mt-24">
+          <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white mt-16 md:mt-24">
             Analytics that power your business.
           </h2>
         </div>
