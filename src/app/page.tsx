@@ -22,16 +22,13 @@ export default function LandingPage() {
             <Link href="#" className="hover:text-black dark:hover:text-white transition-colors">
               Features
             </Link>
-            <Link href="#" className="hover:text-black dark:hover:text-white transition-colors">
-              Use Cases
-            </Link>
             <ThemeToggle />
           </div>
         </nav>
       </header>
 
       <main className="flex-1 px-6 md:px-8 pt-24 md:pt-32">
-        <div className="w-full max-w-7xl mx-auto text-center">
+        <div className="w-full max-w-7xl mx-auto text-center pt-12">
           <div>
             <h1 className="text-[10rem] sm:text-[12rem] md:text-[16rem] lg:text-[18rem] font-extrabold leading-none tracking-tighter text-black dark:text-white">
               matrix
