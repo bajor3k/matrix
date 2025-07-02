@@ -41,13 +41,13 @@ export default function LandingPage() {
             {/* Computer Mockup 1 */}
             <div className="absolute w-[500px] h-[320px] bg-gray-200 dark:bg-gray-700 p-2 rounded-lg transform -rotate-6 shadow-2xl border-4 border-gray-200 dark:border-gray-700">
               <div className="bg-black h-full w-full rounded-sm overflow-hidden relative" data-ai-hint="analytics dashboard">
-                  <Image src="https://placehold.co/800x500.png" alt="Assets analytics dashboard screenshot" layout="fill" objectFit="cover" />
+                  <Image src="/images/asset-analytics.png" alt="Assets analytics dashboard screenshot" layout="fill" objectFit="cover" />
               </div>
             </div>
             {/* Computer Mockup 2 */}
             <div className="absolute w-[500px] h-[320px] bg-gray-200 dark:bg-gray-700 p-2 rounded-lg transform rotate-6 z-10 shadow-2xl border-4 border-gray-200 dark:border-gray-700">
               <div className="bg-black h-full w-full rounded-sm overflow-hidden relative" data-ai-hint="analytics dashboard">
-                   <Image src="https://placehold.co/800x500.png" alt="Assets analytics dashboard screenshot 2" layout="fill" objectFit="cover" />
+                   <Image src="/images/asset-analytics.png" alt="Assets analytics dashboard screenshot 2" layout="fill" objectFit="cover" />
               </div>
             </div>
           </div>
@@ -55,6 +55,9 @@ export default function LandingPage() {
         <div className="w-full max-w-7xl mx-auto py-32 md:py-48 text-center">
           <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white whitespace-nowrap">
             One Login. One Matrix.
+          </h2>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-black dark:text-white mt-16 md:mt-24">
+            Analytics that power your business.
           </h2>
         </div>
       </main>
