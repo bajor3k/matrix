@@ -36,34 +36,21 @@ export default function LandingPage() {
             <h1 className="text-[10rem] sm:text-[12rem] md:text-[16rem] lg:text-[18rem] font-extrabold leading-none tracking-tighter text-black dark:text-white">
               matrix
             </h1>
-            <div className="mt-8 flex justify-center items-center gap-6">
-              <p className="text-2xl md:text-3xl text-gray-700 dark:text-gray-400 font-bold tracking-wide">
+            <div className="mt-8 flex justify-center items-center gap-4">
+              <p className="text-4xl md:text-5xl text-black dark:text-white font-bold tracking-wide">
                 see how deep the rabbit hole goes…
               </p>
-              <div className="flex items-center gap-4">
-                {/* Blue Pill */}
-                <svg width="24" height="48" viewBox="0 0 24 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform -rotate-45 drop-shadow-lg">
-                  <defs>
-                    <linearGradient id="blue-pill-gloss" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="rgba(255,255,255,0.5)" />
-                      <stop offset="100%" stopColor="rgba(255,255,255,0.0)" />
-                    </linearGradient>
-                  </defs>
-                  <rect width="24" height="48" rx="12" fill="#2563eb" />
-                  <rect width="24" height="48" rx="12" fill="url(#blue-pill-gloss)" />
-                </svg>
-                {/* Red Pill */}
-                <svg width="24" height="48" viewBox="0 0 24 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform -rotate-45 drop-shadow-lg">
-                  <defs>
-                    <linearGradient id="red-pill-gloss" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="rgba(255,255,255,0.5)" />
-                      <stop offset="100%" stopColor="rgba(255,255,255,0.0)" />
-                    </linearGradient>
-                  </defs>
-                  <rect width="24" height="48" rx="12" fill="#dc2626" />
-                  <rect width="24" height="48" rx="12" fill="url(#red-pill-gloss)" />
-                </svg>
-              </div>
+              {/* Red Pill */}
+              <svg width="24" height="48" viewBox="0 0 24 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform -rotate-45 drop-shadow-lg">
+                <defs>
+                  <linearGradient id="red-pill-gloss" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="rgba(255,255,255,0.5)" />
+                    <stop offset="100%" stopColor="rgba(255,255,255,0.0)" />
+                  </linearGradient>
+                </defs>
+                <rect width="24" height="48" rx="12" fill="#dc2626" />
+                <rect width="24" height="48" rx="12" fill="url(#red-pill-gloss)" />
+              </svg>
             </div>
           </div>
           <div className="py-32 md:py-48">
