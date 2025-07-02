@@ -70,6 +70,11 @@ export default function OutreachInboxPage() {
   const [message, setMessage] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
   const { toast } = useToast();
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,7 +126,7 @@ export default function OutreachInboxPage() {
                     <div className="flex justify-between items-center">
                       <h4 className="font-semibold text-sm text-foreground truncate">{conv.client.name}</h4>
                       <p className="text-xs text-muted-foreground">
-                        {formatDistanceToNowStrict(conv.timestamp, { addSuffix: true })}
+                        {isClient && formatDistanceToNowStrict(conv.timestamp, { addSuffix: true })}
                       </p>
                     </div>
                     <p className="text-xs text-muted-foreground truncate">{conv.lastMessage}</p>
@@ -161,7 +166,7 @@ export default function OutreachInboxPage() {
                       )}>
                         <p>{msg.text}</p>
                         <p className="text-xs opacity-70 mt-1 text-right">
-                           {format(msg.timestamp, 'p')}
+                           {isClient && format(msg.timestamp, 'p')}
                         </p>
                       </div>
                     </div>
