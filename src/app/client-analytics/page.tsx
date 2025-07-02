@@ -129,7 +129,7 @@ export default function ClientAnalyticsPage() {
                     <span className="text-base text-foreground truncate" title={client.name}>{client.name}</span>
                   </div>
                   <div className="flex items-center gap-3 w-2/5 sm:w-1/2">
-                    <div className="w-full h-2 bg-muted/30 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-primary/20 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-primary rounded-full" 
                         style={{ width: `${barWidthPercentage}%` }}
