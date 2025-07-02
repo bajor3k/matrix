@@ -30,7 +30,7 @@ export default function LandingPage() {
         </nav>
       </header>
 
-      <main className="flex-1 px-6 md:px-8 pt-24 md:pt-32">
+      <main className="flex-1 px-6 md:px-8 pt-12 md:pt-24">
         <div className="w-full max-w-7xl mx-auto text-center">
           <h1 className="text-[10rem] sm:text-[12rem] md:text-[16rem] lg:text-[18rem] font-extrabold leading-none tracking-tighter text-black dark:text-white">
             matrix
@@ -44,10 +44,13 @@ export default function LandingPage() {
             <div className="red-pill"></div>
           </div>
           
-          <div className="py-32 md:py-48">
+          <div className="py-24 md:py-32">
             <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
               One Login. One Matrix.
             </h2>
+            <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter text-black dark:text-white mt-12 md:mt-16">
+              Analytics that power your business.
+            </h3>
           </div>
 
         </div>
