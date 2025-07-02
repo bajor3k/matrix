@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Inter, Roboto_Mono } from 'next/font/google';
@@ -12,6 +11,7 @@ import { NavigationProvider } from '@/contexts/navigation-context';
 import { TopToolbar } from '@/components/TopToolbar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ThemeProvider } from '@/components/theme-provider';
+import { usePathname } from 'next/navigation';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -30,6 +30,8 @@ export default function RootLayout({
 }>) {
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
   const isMobile = useIsMobile();
+  const pathname = usePathname();
+  const isLandingPage = pathname === '/';
 
   React.useEffect(() => {
     if (isMobile) {
@@ -62,15 +64,19 @@ export default function RootLayout({
           <AuthProvider>
             <NavigationProvider>
               <TooltipProvider delayDuration={0}>
-                <div className="flex flex-1">
-                  <Sidebar collapsed={sidebarCollapsed} onToggle={handleToggleSidebar} />
-                  <div className="flex flex-col flex-1 min-w-0">
-                    <TopToolbar />
-                    <main className="flex-1 overflow-y-auto bg-transparent no-visual-scrollbar">
-                      {children}
-                    </main>
+                {isLandingPage ? (
+                  <>{children}</>
+                ) : (
+                  <div className="flex flex-1">
+                    <Sidebar collapsed={sidebarCollapsed} onToggle={handleToggleSidebar} />
+                    <div className="flex flex-col flex-1 min-w-0">
+                      <TopToolbar />
+                      <main className="flex-1 overflow-y-auto bg-transparent no-visual-scrollbar">
+                        {children}
+                      </main>
+                    </div>
                   </div>
-                </div>
+                )}
                 <Toaster />
               </TooltipProvider>
             </NavigationProvider>
