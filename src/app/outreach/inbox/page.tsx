@@ -39,9 +39,9 @@ interface Message {
 }
 
 const mockClients: Record<string, Client> = {
-  'client-1': { id: 'client-1', name: 'Alina Becker', avatarUrl: 'https://placehold.co/40x40.png', email: 'alina.b@example.com', phone: '(555) 123-4567', tags: ['HNW', 'Referred'] },
-  'client-2': { id: 'client-2', name: 'Markus Voss', avatarUrl: 'https://placehold.co/40x40.png', email: 'markus.v@example.com', phone: '(555) 234-5678', tags: ['Prospect', 'Tech'] },
-  'client-3': { id: 'client-3', name: 'Chen Lin', avatarUrl: 'https://placehold.co/40x40.png', email: 'chen.l@example.com', phone: '(555) 345-6789', tags: ['Client'] },
+  'client-1': { id: 'client-1', name: 'Alina Becker', avatarUrl: '', email: 'alina.b@example.com', phone: '(555) 123-4567', tags: ['HNW', 'Referred'] },
+  'client-2': { id: 'client-2', name: 'Markus Voss', avatarUrl: '', email: 'markus.v@example.com', phone: '(555) 234-5678', tags: ['Prospect', 'Tech'] },
+  'client-3': { id: 'client-3', name: 'Chen Lin', avatarUrl: '', email: 'chen.l@example.com', phone: '(555) 345-6789', tags: ['Client'] },
 };
 
 const mockConversations: Conversation[] = [
@@ -114,7 +114,7 @@ export default function OutreachInboxPage() {
                   onClick={() => setSelectedConversation(conv)}
                 >
                   <Avatar className="h-10 w-10 border-2 border-primary/20">
-                    <AvatarImage src={conv.client.avatarUrl} alt={conv.client.name} data-ai-hint="person"/>
+                    <AvatarImage src={conv.client.avatarUrl} alt={conv.client.name} />
                     <AvatarFallback>{conv.client.name.substring(0, 1)}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 truncate">
@@ -152,7 +152,7 @@ export default function OutreachInboxPage() {
                         msg.sender === 'user' ? 'ml-auto flex-row-reverse' : 'mr-auto'
                     )}>
                        <Avatar className="h-8 w-8 border">
-                          <AvatarImage src={msg.sender === 'user' ? undefined : selectedConversation.client.avatarUrl} alt="Avatar" data-ai-hint="person"/>
+                          <AvatarImage src={msg.sender === 'user' ? undefined : selectedConversation.client.avatarUrl} alt="Avatar" />
                           <AvatarFallback>{msg.sender === 'user' ? 'JB' : selectedConversation.client.name.substring(0,1)}</AvatarFallback>
                         </Avatar>
                       <div className={cn(
@@ -201,7 +201,7 @@ export default function OutreachInboxPage() {
               <ScrollArea className="flex-1">
                 <div className="p-6 text-center">
                     <Avatar className="h-24 w-24 mx-auto border-4 border-primary/20">
-                      <AvatarImage src={selectedConversation.client.avatarUrl} alt={selectedConversation.client.name} data-ai-hint="person"/>
+                      <AvatarImage src={selectedConversation.client.avatarUrl} alt={selectedConversation.client.name} />
                       <AvatarFallback className="text-4xl">{selectedConversation.client.name.substring(0, 1)}</AvatarFallback>
                     </Avatar>
                     <h3 className="mt-4 text-xl font-semibold text-foreground">{selectedConversation.client.name}</h3>
