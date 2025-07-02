@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -44,8 +45,12 @@ export default function LandingPage() {
             matrix
           </h1>
           
+           <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter text-black dark:text-white">
+            One Login. One Matrix.
+          </h2>
+          
           <div className="flex items-center justify-center mt-8 gap-4">
-            <p className="text-4xl md:text-5xl text-black dark:text-white font-bold tracking-wide">
+            <p className="text-4xl md:text-5xl font-bold tracking-wide text-black dark:text-white">
                 see how deep the rabbit hole goes…
             </p>
             <AnimatePresence>
@@ -90,10 +95,7 @@ export default function LandingPage() {
           </div>
           
           <div className="py-24 md:py-32">
-            <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
-              One Login. One Matrix.
-            </h2>
-            <h3 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white mt-12 md:mt-16">
+            <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter text-black dark:text-white mt-8">
               Analytics that power your business.
             </h3>
           </div>
@@ -108,7 +110,7 @@ export default function LandingPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsReviewModalOpen(false)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/5 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/5 backdrop-blur-md p-4"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -116,31 +118,83 @@ export default function LandingPage() {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative flex w-full max-w-md flex-col items-center rounded-2xl bg-white/80 p-8 shadow-2xl dark:bg-neutral-900/80 border border-white/20"
+              className="relative flex w-full max-w-4xl flex-col items-center rounded-2xl bg-white/80 p-8 shadow-2xl dark:bg-neutral-900/80 border border-white/20"
             >
               <button
                 className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-xl font-bold hover:bg-neutral-200/50"
                 onClick={() => setIsReviewModalOpen(false)}
+                aria-label="Close review modal"
               >
                 <X className="w-4 h-4" />
               </button>
               
-              <Image
-                src="https://placehold.co/64x64.png"
-                alt="Reviewer"
-                width={64}
-                height={64}
-                data-ai-hint="portrait person"
-                className="w-16 h-16 rounded-full mb-4 border-2 border-purple-200"
-              />
-              
-              <div className="font-semibold text-lg mb-1 text-black dark:text-white">Alex B.</div>
-              
-              <div className="italic text-neutral-700 dark:text-neutral-200 text-center mb-2">
-                “Whoever created this platform is a genius.<br />
-                If you ever get the chance to hire them, do it!”
+              <h2 className="text-2xl font-bold mb-8 text-black dark:text-white">What People Are Saying</h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+                <div className="flex flex-col items-center text-center space-y-2">
+                  <Image
+                    src="https://placehold.co/64x64.png"
+                    alt="Reviewer Alex B."
+                    width={64}
+                    height={64}
+                    data-ai-hint="portrait person"
+                    className="w-16 h-16 rounded-full border-2 border-purple-200"
+                  />
+                  <div className="font-semibold text-lg text-black dark:text-white">Alex B.</div>
+                  <div className="italic text-neutral-700 dark:text-neutral-200">
+                    “Whoever created this platform is a genius. If you ever get the chance to hire them, do it!”
+                  </div>
+                  <div className="text-xs text-neutral-400">— Matrix Review</div>
+                </div>
+
+                <div className="flex flex-col items-center text-center space-y-2">
+                  <Image
+                    src="https://placehold.co/64x64.png"
+                    alt="Reviewer Jamie L."
+                    width={64}
+                    height={64}
+                    data-ai-hint="portrait person"
+                    className="w-16 h-16 rounded-full border-2 border-blue-200"
+                  />
+                  <div className="font-semibold text-lg text-black dark:text-white">Jamie L.</div>
+                  <div className="italic text-neutral-700 dark:text-neutral-200">
+                    “Matrix has completely transformed the way I run my business. The analytics are next-level—nothing else comes close!”
+                  </div>
+                  <div className="text-xs text-neutral-400">— Matrix Review</div>
+                </div>
+
+                <div className="flex flex-col items-center text-center space-y-2">
+                  <Image
+                    src="https://placehold.co/64x64.png"
+                    alt="Reviewer Priya S."
+                    width={64}
+                    height={64}
+                    data-ai-hint="portrait person"
+                    className="w-16 h-16 rounded-full border-2 border-green-200"
+                  />
+                  <div className="font-semibold text-lg text-black dark:text-white">Priya S.</div>
+                  <div className="italic text-neutral-700 dark:text-neutral-200">
+                    “The integration, the speed, the intelligence—Matrix is lightyears ahead of any CRM or trading platform out there. Absolutely game-changing!”
+                  </div>
+                  <div className="text-xs text-neutral-400">— Matrix Review</div>
+                </div>
+
+                <div className="flex flex-col items-center text-center space-y-2">
+                  <Image
+                    src="https://placehold.co/64x64.png"
+                    alt="Reviewer Chris T."
+                    width={64}
+                    height={64}
+                    data-ai-hint="portrait person"
+                    className="w-16 h-16 rounded-full border-2 border-yellow-200"
+                  />
+                  <div className="font-semibold text-lg text-black dark:text-white">Chris T.</div>
+                  <div className="italic text-neutral-700 dark:text-neutral-200">
+                    “If I could give Matrix 10 stars, I would. It’s like having an entire team of experts in one platform. Simply phenomenal.”
+                  </div>
+                  <div className="text-xs text-neutral-400">— Matrix Review</div>
+                </div>
               </div>
-              <div className="text-xs text-neutral-400">— Matrix Review</div>
             </motion.div>
           </motion.div>
         )}
