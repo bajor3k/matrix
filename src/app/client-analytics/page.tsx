@@ -96,7 +96,7 @@ const accountsWithoutBeneficiaryData: AccountWithoutBeneficiary[] = [
 
 export default function ClientAnalyticsPage() {
   return (
-    <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
+    <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8 bg-black">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Client Analytics</h1>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -140,13 +140,7 @@ export default function ClientAnalyticsPage() {
           <TooltipProvider>
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">Rank</TableHead>
-                  <TableHead>Client Name</TableHead>
-                  <TableHead className="text-center">Age</TableHead>
-                  <TableHead>Account Type</TableHead>
-                  <TableHead className="text-right">AUM</TableHead>
-                </TableRow>
+                <TableRow><TableHead className="w-12">Rank</TableHead><TableHead>Client Name</TableHead><TableHead className="text-center">Age</TableHead><TableHead>Account Type</TableHead><TableHead className="text-right">AUM</TableHead></TableRow>
               </TableHeader>
               <TableBody>
                 {accountsWithoutBeneficiaryData.map((account) => (
@@ -212,10 +206,3 @@ export default function ClientAnalyticsPage() {
     </main>
   );
 }
-
-
-    
-
-    
-
-    

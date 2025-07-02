@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -100,16 +101,6 @@
 
 .ask-maven-button:hover {
   filter: brightness(1.2);
-}
-
-/* Ticker Animation */
-@keyframes ticker {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-
-.animate-ticker {
-  animation: ticker 30s linear infinite;
 }
 
 /* Due Date Box Styles */

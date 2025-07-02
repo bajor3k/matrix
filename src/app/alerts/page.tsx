@@ -13,7 +13,6 @@ import { Switch } from "@/components/ui/switch";
 import { AlertTriangle, CalendarDays, Filter, MessageSquare, Send, Server, Landmark, Briefcase, Video, Mail, RefreshCcw } from "lucide-react";
 import { format, subDays, addDays, subMinutes } from "date-fns";
 import { cn } from "@/lib/utils";
-import { useTicker } from "@/contexts/ticker-context";
 import { useToast } from "@/hooks/use-toast";
 
 interface AlertItem {
@@ -115,7 +114,6 @@ export default function AlertsPage() {
   const [alerts, setAlerts] = React.useState<AlertItem[]>(mockAlerts);
   const [systemStatuses, setSystemStatuses] = React.useState<SystemStatusItem[]>(mockSystemStatuses);
   const [broadcastMessageInput, setBroadcastMessageInput] = React.useState("");
-  const { tickerMessage, setTickerMessage } = useTicker();
   const { toast } = useToast();
 
   const toggleReadStatus = (alertId: string) => {
@@ -128,25 +126,16 @@ export default function AlertsPage() {
 
   const handleSendBroadcast = () => {
     if (broadcastMessageInput.trim()) {
-      setTickerMessage(broadcastMessageInput.trim());
       toast({
         title: "Broadcast Sent!",
-        description: `Message "${broadcastMessageInput.trim()}" is now scrolling on the ticker.`,
+        description: `Message "${broadcastMessageInput.trim()}" has been broadcast.`,
       });
       setBroadcastMessageInput("");
     }
   };
 
-  const handleClearBroadcast = () => {
-    setTickerMessage("");
-    toast({
-      title: "Broadcast Cleared",
-      description: "The default ticker has been resumed.",
-    });
-  };
-
   return (
-    <main className="min-h-screen bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#5b21b6]/10 to-[#000104] flex-1 p-6 space-y-8 md:p-8">
+    <main className="min-h-screen bg-black flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Alert Center</h1>
 
       <PlaceholderCard title="Broadcast New Alert">
@@ -162,14 +151,9 @@ export default function AlertsPage() {
             <Button onClick={handleSendBroadcast} className="bg-primary hover:bg-primary/90 text-primary-foreground flex-1 sm:flex-none">
               <Send className="mr-2 h-4 w-4" /> Send Broadcast
             </Button>
-            {tickerMessage && (
-              <Button onClick={handleClearBroadcast} variant="outline" className="flex-1 sm:flex-none">
-                <RefreshCcw className="mr-2 h-4 w-4" /> Clear & Resume Ticker
-              </Button>
-            )}
           </div>
         </div>
-        <p className="text-xs text-muted-foreground mt-2">High-visibility alerts sent here will scroll across the top of all users' dashboards. Clearing resumes the default stock ticker.</p>
+        <p className="text-xs text-muted-foreground mt-2">High-visibility alerts sent here will be displayed to all users.</p>
       </PlaceholderCard>
 
       <PlaceholderCard title="System Status Monitor">

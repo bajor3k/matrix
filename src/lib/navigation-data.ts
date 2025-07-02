@@ -1,0 +1,63 @@
+
+import type { NavItem, ToolbarSection, ToolbarSectionKey } from '@/contexts/navigation-context';
+import {
+  Home as HomeIcon,
+  Mail,
+  Contact as ContactIcon,
+  ListChecks,
+  CalendarDays,
+  Briefcase,
+  Workflow,
+  KanbanSquare,
+  FileText,
+  BarChart2,
+  BarChart3,
+  Users,
+  TrendingUp,
+  Repeat,
+  ShieldAlert,
+  PieChart,
+  Shapes,
+  FlaskConical,
+  LayoutGrid,
+} from "lucide-react";
+
+export const toolbarSections: ToolbarSection[] = [
+    { id: 'CRM', title: 'CRM' },
+    { id: 'Analytics', title: 'Analytics' },
+    { id: 'Trading', title: 'Trading' },
+    { id: 'Resources', title: 'Resources' },
+    { id: 'Asset Movement', title: 'Asset Movement' },
+    { id: 'Advisory', title: 'Advisory' },
+];
+
+export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
+  'CRM': [
+    { name: 'Home', icon: HomeIcon, href: '/client-portal/home' },
+    { name: 'Email', icon: Mail, href: '/client-portal/email' },
+    { name: 'Contacts', icon: ContactIcon, href: '/client-portal/contacts' },
+    { name: 'Tasks', icon: ListChecks, href: '/client-portal/tasks' },
+    { name: 'Workflows', icon: Workflow, href: '/client-portal/workflows'},
+    { name: 'Calendar', icon: CalendarDays, href: '/client-portal/calendar' },
+    { name: 'Opportunities', icon: Briefcase, href: '/client-portal/opportunities' },
+    { name: 'Projects', icon: KanbanSquare, href: '/client-portal/projects'},
+    { name: 'Files', icon: FileText, href: '/client-portal/files'},
+    { name: 'Reports', icon: BarChart2, href: '/client-portal/reports' },
+  ],
+  'Analytics': [
+    { name: 'Asset Analytics', icon: BarChart3, href: '/asset-analytics' },
+    { name: 'Client Analytics', icon: Users, href: '/client-analytics' },
+    { name: 'Financial Analytics', icon: TrendingUp, href: '/financial-analytics' },
+    { name: 'Conversion Analytics', icon: Repeat, href: '/conversion-analytics' },
+    { name: 'Compliance Matrix', icon: ShieldAlert, href: '/compliance-matrix'},
+    { name: 'Portfolio Matrix', icon: PieChart, href: '/portfolio-matrix' },
+    { name: 'Model Matrix', icon: Shapes, href: '/model-matrix' },
+    { name: 'Contribution Matrix', icon: TrendingUp, href: '/contribution-matrix' },
+    { name: 'Project X', icon: FlaskConical, href: '/project-x' },
+    { name: 'Resource Matrix', icon: LayoutGrid, href: '/resource-matrix' },
+  ],
+  'Trading': [],
+  'Resources': [],
+  'Asset Movement': [],
+  'Advisory': [],
+};

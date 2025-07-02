@@ -62,7 +62,7 @@ export default function ClientPortalContactsPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#5b21b6]/10 to-[#000104] flex-1 p-6 space-y-8 md:p-8">
+      <main className="min-h-screen bg-black flex-1 p-6 space-y-8 md:p-8">
         {/* Top Control Bar */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
@@ -229,7 +229,7 @@ export default function ClientPortalContactsPage() {
               <div>
                 <Label htmlFor="prefix-dialog">Prefix</Label>
                 <Select>
-                  <SelectTrigger id="prefix-dialog" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary">
+                  <SelectTrigger id="prefix-dialog" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring">
                     <SelectValue placeholder="Prefix" />
                   </SelectTrigger>
                   <SelectContent><SelectItem value="mr">Mr.</SelectItem><SelectItem value="ms">Ms.</SelectItem><SelectItem value="mrs">Mrs.</SelectItem><SelectItem value="dr">Dr.</SelectItem></SelectContent>
@@ -237,31 +237,31 @@ export default function ClientPortalContactsPage() {
               </div>
               <div>
                 <Label htmlFor="firstName-dialog">First Name</Label>
-                <Input id="firstName-dialog" placeholder="First" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
+                <Input id="firstName-dialog" placeholder="First" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
               </div>
               <div>
                 <Label htmlFor="middleName-dialog">Middle</Label>
-                <Input id="middleName-dialog" placeholder="Middle" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
+                <Input id="middleName-dialog" placeholder="Middle" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
               </div>
               <div>
                 <Label htmlFor="lastName-dialog">Last Name</Label>
-                <Input id="lastName-dialog" placeholder="Last" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
+                <Input id="lastName-dialog" placeholder="Last" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
               </div>
               <div>
                 <Label htmlFor="suffix-dialog">Suffix</Label>
-                <Input id="suffix-dialog" placeholder="Suffix" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
+                <Input id="suffix-dialog" placeholder="Suffix" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="nickname-dialog">Nickname</Label>
-                <Input id="nickname-dialog" placeholder="Nickname" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
+                <Input id="nickname-dialog" placeholder="Nickname" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
               </div>
               <div>
                 <Label htmlFor="maritalStatus-dialog">Marital Status</Label>
                 <Select>
-                  <SelectTrigger id="maritalStatus-dialog" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary">
+                  <SelectTrigger id="maritalStatus-dialog" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent><SelectItem value="single">Single</SelectItem><SelectItem value="married">Married</SelectItem><SelectItem value="divorced">Divorced</SelectItem><SelectItem value="widowed">Widowed</SelectItem></SelectContent>
@@ -272,11 +272,11 @@ export default function ClientPortalContactsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="jobTitle-dialog">Job Title</Label>
-                <Input id="jobTitle-dialog" placeholder="Job Title" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
+                <Input id="jobTitle-dialog" placeholder="Job Title" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
               </div>
               <div>
                 <Label htmlFor="companyName-dialog">Company</Label>
-                <Input id="companyName-dialog" placeholder="Company Name" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
+                <Input id="companyName-dialog" placeholder="Company Name" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
               </div>
             </div>
 
@@ -284,7 +284,7 @@ export default function ClientPortalContactsPage() {
               <div>
                 <Label htmlFor="householdSelect-dialog">Household</Label>
                 <Select>
-                  <SelectTrigger id="householdSelect-dialog" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary">
+                  <SelectTrigger id="householdSelect-dialog" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring">
                     <SelectValue placeholder="Select or Create Household" />
                   </SelectTrigger>
                   <SelectContent><SelectItem value="existing">Existing Household A</SelectItem><SelectItem value="new">Create New Household</SelectItem></SelectContent>
@@ -292,16 +292,16 @@ export default function ClientPortalContactsPage() {
               </div>
                <div>
                 <Label htmlFor="householdName-dialog">Household Name</Label>
-                <Input id="householdName-dialog" placeholder="Household Name (if new)" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
+                <Input id="householdName-dialog" placeholder="Household Name (if new)" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
               </div>
             </div>
 
             <div className="space-y-2">
               <Label>Email Address</Label>
               <div className="flex items-center space-x-2">
-                <Input type="email" id="email-dialog" placeholder="Email" className="flex-grow bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
+                <Input type="email" id="email-dialog" placeholder="Email" className="flex-grow bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
                 <Select>
-                  <SelectTrigger id="emailType-dialog" className="w-[120px] bg-input border-border/50 text-foreground focus:ring-primary">
+                  <SelectTrigger id="emailType-dialog" className="w-[120px] bg-input border-border/50 text-foreground focus:ring-ring">
                     <SelectValue placeholder="Type" />
                   </SelectTrigger>
                   <SelectContent><SelectItem value="home">Home</SelectItem><SelectItem value="work">Work</SelectItem><SelectItem value="other">Other</SelectItem></SelectContent>
@@ -317,10 +317,10 @@ export default function ClientPortalContactsPage() {
             <div className="space-y-2">
               <Label>Phone Number</Label>
               <div className="flex items-center space-x-2">
-                <Input type="tel" id="phone-dialog" placeholder="Phone Number" className="flex-grow bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
-                <Input id="phoneExt-dialog" placeholder="Ext." className="w-[70px] bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
+                <Input type="tel" id="phone-dialog" placeholder="Phone Number" className="flex-grow bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
+                <Input id="phoneExt-dialog" placeholder="Ext." className="w-[70px] bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
                 <Select>
-                  <SelectTrigger id="phoneType-dialog" className="w-[120px] bg-input border-border/50 text-foreground focus:ring-primary">
+                  <SelectTrigger id="phoneType-dialog" className="w-[120px] bg-input border-border/50 text-foreground focus:ring-ring">
                     <SelectValue placeholder="Type" />
                   </SelectTrigger>
                   <SelectContent><SelectItem value="mobile">Mobile</SelectItem><SelectItem value="home">Home</SelectItem><SelectItem value="work">Work</SelectItem><SelectItem value="other">Other</SelectItem></SelectContent>
@@ -335,12 +335,12 @@ export default function ClientPortalContactsPage() {
 
             <div>
               <Label htmlFor="tags-dialog">Tags</Label>
-              <Input id="tags-dialog" placeholder="Add tags (e.g., Prospect, CPA Referral)" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
+              <Input id="tags-dialog" placeholder="Add tags (e.g., Prospect, CPA Referral)" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
             </div>
 
             <div>
               <Label htmlFor="backgroundInfo-dialog">Background Information</Label>
-              <Textarea id="backgroundInfo-dialog" rows={3} placeholder="Enter background details..." className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary" />
+              <Textarea id="backgroundInfo-dialog" rows={3} placeholder="Enter background details..." className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
             </div>
           </div>
           <DialogFooter className="pt-4 border-t border-border/30">

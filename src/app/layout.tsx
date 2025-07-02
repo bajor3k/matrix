@@ -8,7 +8,9 @@ import Sidebar from '@/components/Sidebar';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/auth-context";
-import { TickerProvider } from "@/contexts/ticker-context";
+import { NavigationProvider } from '@/contexts/navigation-context';
+import { TopToolbar } from '@/components/TopToolbar';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -25,22 +27,44 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
+  const isMobile = useIsMobile();
+
+  React.useEffect(() => {
+    if (isMobile) {
+      setSidebarCollapsed(true);
+    } else {
+      const storedCollapsed = localStorage.getItem("matrix-sidebar-collapsed");
+      if (storedCollapsed !== null) {
+        setSidebarCollapsed(storedCollapsed === "true");
+      }
+    }
+  }, [isMobile]);
+
+  const handleToggleSidebar = () => {
+    const newCollapsedState = !sidebarCollapsed;
+    setSidebarCollapsed(newCollapsedState);
+    if (!isMobile) {
+        localStorage.setItem("matrix-sidebar-collapsed", String(newCollapsedState));
+    }
+  };
 
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} ${robotoMono.variable} antialiased flex flex-col h-screen`}>
+      <body className={`${inter.variable} ${robotoMono.variable} antialiased flex flex-col h-screen bg-black`}>
         <AuthProvider>
-          <TickerProvider>
-            <div className="flex flex-1 h-screen">
-              <TooltipProvider delayDuration={0}>
-                <Sidebar />
+          <NavigationProvider>
+            <TooltipProvider delayDuration={0}>
+              <TopToolbar onToggleSidebar={handleToggleSidebar} />
+              <div className="flex flex-1 pt-16">
+                <Sidebar collapsed={sidebarCollapsed} />
                 <main className="flex-1 overflow-y-auto bg-transparent no-visual-scrollbar">
                   {children}
                 </main>
-              </TooltipProvider>
-            </div>
-            <Toaster />
-          </TickerProvider>
+              </div>
+              <Toaster />
+            </TooltipProvider>
+          </NavigationProvider>
         </AuthProvider>
       </body>
     </html>
