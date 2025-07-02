@@ -37,26 +37,14 @@ export default function LandingPage() {
               matrix
             </h1>
             <div className="mt-8 flex justify-center items-center gap-4">
-              <p className="text-4xl md:text-5xl text-black dark:text-white font-bold tracking-wide">
+              <p className="text-4xl md:text-5xl text-white font-bold tracking-wide">
                 see how deep the rabbit hole goes…
               </p>
               {/* Red Pill */}
-              <svg width="24" height="48" viewBox="0 0 24 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform -rotate-45 drop-shadow-lg">
-                <defs>
-                  <linearGradient id="red-pill-gloss" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="rgba(255,255,255,0.5)" />
-                    <stop offset="100%" stopColor="rgba(255,255,255,0.0)" />
-                  </linearGradient>
-                </defs>
-                <rect width="24" height="48" rx="12" fill="#dc2626" />
-                <rect width="24" height="48" rx="12" fill="url(#red-pill-gloss)" />
-              </svg>
+              <div className="red-pill"></div>
             </div>
           </div>
           <div className="py-32 md:py-48">
-            <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white whitespace-nowrap">
-              One Login. One Matrix.
-            </h2>
             <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white mt-16 md:mt-24">
               Analytics that power your business.
             </h2>
