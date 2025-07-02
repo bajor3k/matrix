@@ -62,7 +62,7 @@ export default function ClientPortalContactsPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-black flex-1 p-6 space-y-8 md:p-8">
+      <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
         {/* Top Control Bar */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">

@@ -135,7 +135,7 @@ export default function AlertsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-black flex-1 p-6 space-y-8 md:p-8">
+    <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Alert Center</h1>
 
       <PlaceholderCard title="Broadcast New Alert">

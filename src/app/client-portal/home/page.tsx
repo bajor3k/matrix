@@ -43,7 +43,7 @@ export default function ClientPortalHomePage() {
   const [updatePostText, setUpdatePostText] = React.useState("");
 
   return (
-    <main className="min-h-screen p-6 space-y-8 md:p-8 bg-black">
+    <main className="min-h-screen p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground">Home</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">

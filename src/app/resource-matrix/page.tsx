@@ -193,7 +193,7 @@ For more information, refer to document REF123.pdf or contact support. You can a
   };
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#5b21b6]/10 to-[#000104] flex-1 p-6 md:p-8 flex flex-col space-y-8">
+    <main className="min-h-screen flex-1 p-6 md:p-8 flex flex-col space-y-8">
       <div className="flex items-center justify-center space-x-3">
         <Brain className="w-10 h-10 text-gray-400" />
         <span className="text-4xl font-bold text-metallic-gradient">

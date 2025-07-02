@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
 
 export default function ClientPortalFilesPage() {
   return (
-    <main className="min-h-screen bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#5b21b6]/10 to-[#000104] flex-1 p-6 space-y-6 md:p-8">
+    <main className="min-h-screen flex-1 p-6 space-y-6 md:p-8">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Files</h1>

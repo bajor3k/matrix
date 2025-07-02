@@ -26,7 +26,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 interface MarketData {
   label: string;
@@ -333,7 +333,7 @@ export default function DashboardPage() {
 
 
   return (
-    <main className="min-h-screen bg-black flex-1 p-6 space-y-8 md:p-8">
+    <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground">
         Welcome Josh!
       </h1>
