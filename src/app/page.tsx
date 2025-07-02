@@ -32,20 +32,18 @@ export default function LandingPage() {
 
       <main className="flex-1 px-6 md:px-8 pt-24 md:pt-32">
         <div className="w-full max-w-7xl mx-auto text-center">
-          <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white mb-8">
+          <h1 className="text-[10rem] sm:text-[12rem] md:text-[16rem] lg:text-[18rem] font-extrabold leading-none tracking-tighter text-black dark:text-white">
+            matrix
+          </h1>
+          <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white mt-8">
             One Login. One Matrix.
           </h2>
-          <div>
-            <h1 className="text-[10rem] sm:text-[12rem] md:text-[16rem] lg:text-[18rem] font-extrabold leading-none tracking-tighter text-black dark:text-white">
-              matrix
-            </h1>
-            <div className="mt-8 flex justify-center items-center gap-4">
-              <p className="text-4xl md:text-5xl text-black dark:text-white font-bold tracking-wide">
-                see how deep the rabbit hole goes…
-              </p>
-              {/* Red Pill */}
-              <div className="red-pill"></div>
-            </div>
+          <div className="mt-8 flex justify-center items-center gap-4">
+            <p className="text-4xl md:text-5xl text-black dark:text-white font-bold tracking-wide">
+              see how deep the rabbit hole goes…
+            </p>
+            {/* Red Pill */}
+            <div className="red-pill"></div>
           </div>
           <div className="py-32 md:py-48">
             <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
