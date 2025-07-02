@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,10 +7,10 @@
     --background: 0 0% 0%; /* #000000 */
     --foreground: 0 0% 95%; /* #F2F2F2 */
     
-    --card: 0 0% 8%; /* #141414 */
+    --card: 0 0% 6%; /* #101010 */
     --card-foreground: 0 0% 95%; /* #F2F2F2 */
 
-    --popover: 0 0% 8%; /* #141414 */
+    --popover: 0 0% 6%; /* #101010 */
     --popover-foreground: 0 0% 95%; /* #F2F2F2 */
     
     --primary: 0 0% 13%; /* #222222 */
