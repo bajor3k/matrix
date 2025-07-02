@@ -31,20 +31,22 @@ export default function LandingPage() {
       </header>
 
       <main className="flex-1 px-6 md:px-8">
-        <div className="w-full max-w-7xl mx-auto min-h-screen grid grid-cols-1 gap-16 items-center">
-          <div className="text-center relative z-10">
-            <h1 className="text-[10rem] sm:text-[12rem] md:text-[16rem] lg:text-[18rem] font-extrabold leading-none tracking-tighter text-black dark:text-white">
-              matrix
-            </h1>
+        <div className="w-full max-w-7xl mx-auto">
+          <div className="min-h-screen grid grid-cols-1 items-center">
+            <div className="text-center">
+              <h1 className="text-[10rem] sm:text-[12rem] md:text-[16rem] lg:text-[18rem] font-extrabold leading-none tracking-tighter text-black dark:text-white">
+                matrix
+              </h1>
+            </div>
           </div>
-        </div>
-        <div className="w-full max-w-7xl mx-auto py-32 md:py-48 text-center">
-          <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white whitespace-nowrap">
-            One Login. One Matrix.
-          </h2>
-          <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white mt-16 md:mt-24">
-            Analytics that power your business.
-          </h2>
+          <div className="py-32 md:py-48 text-center">
+            <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white whitespace-nowrap">
+              One Login. One Matrix.
+            </h2>
+            <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white mt-16 md:mt-24">
+              Analytics that power your business.
+            </h2>
+          </div>
         </div>
       </main>
     </div>
