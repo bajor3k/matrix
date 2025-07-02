@@ -22,6 +22,9 @@ export default function LandingPage() {
             <Link href="#" className="hover:text-black dark:hover:text-white transition-colors">
               Features
             </Link>
+            <Link href="#" className="hover:text-black dark:hover:text-white transition-colors">
+              Review
+            </Link>
             <ThemeToggle />
           </div>
         </nav>
