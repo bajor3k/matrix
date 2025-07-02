@@ -3,10 +3,11 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Brain, X } from 'lucide-react';
+import { Brain, X, Download } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
   const [showPill, setShowPill] = useState(true);
@@ -94,7 +95,7 @@ export default function LandingPage() {
             <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
               One Login. One Matrix.
             </h2>
-            <h3 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
+            <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter text-black dark:text-white mt-12 md:mt-16">
               Analytics that power your business.
             </h3>
           </div>
@@ -162,6 +163,16 @@ export default function LandingPage() {
                   <div className="text-xs text-neutral-400">— Matrix Review</div>
                 </div>
               </div>
+
+              <div className="mt-8 text-center">
+                <Button asChild>
+                  <a href="/assets/JoshBajorek_Resume.pdf" download>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Resume
+                  </a>
+                </Button>
+              </div>
+
             </motion.div>
           </motion.div>
         )}
