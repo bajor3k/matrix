@@ -1,18 +1,19 @@
-
 // src/lib/firebase/config.ts
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
-// TODO: Replace with your actual Firebase project configuration
+// STEP 1: Go to your Firebase Console -> Project Settings -> General tab.
+// STEP 2: In the "Your apps" card, select the "SDK setup and configuration" option.
+// STEP 3: Copy the firebaseConfig object and paste it here, replacing the placeholder values.
 export const firebaseConfig = {
-  apiKey: "YOUR_FIREBASE_API_KEY_PLACEHOLDER",
-  authDomain: "YOUR_FIREBASE_AUTH_DOMAIN_PLACEHOLDER",
-  projectId: "YOUR_FIREBASE_PROJECT_ID_PLACEHOLDER",
-  storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET_PLACEHOLDER",
-  messagingSenderId: "YOUR_FIREBASE_MESSAGING_SENDER_ID_PLACEHOLDER",
-  appId: "YOUR_FIREBASE_APP_ID_PLACEHOLDER",
-  // measurementId: "YOUR_FIREBASE_MEASUREMENT_ID" // Optional
+  apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  authDomain: "your-project-id.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project-id.appspot.com",
+  messagingSenderId: "123456789012",
+  appId: "1:123456789012:web:1234567890abcdef123456",
+  // measurementId: "G-XXXXXXXXXX" // Optional
 };
 
 // Initialize Firebase
