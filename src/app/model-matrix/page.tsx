@@ -451,7 +451,6 @@ export default function ModelMatrixPage() {
 
   return (
     <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
-      <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Model Matrix</h1>
 
       <PlaceholderCard title="Manager Comparison Tool">
         <div className="mb-6">
