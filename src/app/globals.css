@@ -269,13 +269,56 @@
   }
 }
 
-/* Chat Bubble Styles */
+/* Chat Bubble & Tag Styles */
 @layer components {
   .chat-bubble-user {
     @apply bg-primary text-primary-foreground rounded-lg rounded-br-none;
   }
   .chat-bubble-ai {
     @apply bg-muted/80 text-foreground rounded-lg rounded-bl-none border border-border/30;
+  }
+
+  /* Enhanced Tag Styles */
+  .tag-base {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.2);
+    border-color: rgba(255, 255, 255, 0.15);
+    text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+  }
+
+  .tag-client {
+    @apply tag-base text-white;
+    background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+  }
+  
+  .tag-prospect {
+    @apply tag-base text-white;
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  }
+
+  .tag-lead {
+    @apply tag-base text-white;
+    background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+  }
+
+  .tag-referred {
+    @apply tag-base text-white;
+    background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  }
+  
+  .tag-vip {
+    @apply tag-base text-black;
+    background: linear-gradient(135deg, #facc15 0%, #fde047 100%);
+  }
+  
+  .tag-new {
+     @apply tag-base text-white;
+     background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+  }
+
+  .tag-default {
+    @apply tag-base text-white;
+    background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%);
   }
 }
 

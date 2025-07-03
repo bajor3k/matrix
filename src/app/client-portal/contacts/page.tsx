@@ -12,7 +12,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { Filter, UserPlus, MoreHorizontal, Tags as TagsIcon, UploadCloud, Trash2 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
@@ -42,14 +41,14 @@ const mockContacts: Contact[] = [
   { id: '15', name: 'Tom Martinez', phone: '555-579-6802', email: 'tomm@email.com', tags: ['Client'] },
 ];
 
-const tagColorMap: Record<string, string> = {
-  Client: 'bg-green-600 text-white',
-  Prospect: 'bg-blue-600 text-white',
-  Lead: 'bg-purple-600 text-white',
-  Referred: 'bg-orange-500 text-white',
-  VIP: 'bg-yellow-400 text-black',
-  New: 'bg-cyan-600 text-white',
-  Default: 'bg-gray-500 text-white', // Default for unmapped tags
+const tagClassMap: Record<string, string> = {
+  Client: 'tag-client',
+  Prospect: 'tag-prospect',
+  Lead: 'tag-lead',
+  Referred: 'tag-referred',
+  VIP: 'tag-vip',
+  New: 'tag-new',
+  Default: 'tag-default',
 };
 
 
@@ -155,12 +154,12 @@ export default function ClientPortalContactsPage() {
                           </TableCell><TableCell className="text-muted-foreground px-6 py-4 whitespace-nowrap truncate">{contact.phone}</TableCell><TableCell className="text-muted-foreground px-6 py-4 whitespace-nowrap truncate">{contact.email}</TableCell><TableCell className="px-6 py-4 whitespace-nowrap">
                             <div className="flex flex-wrap gap-1">
                               {contact.tags.map(tag => (
-                                <Badge 
-                                  key={tag} 
-                                  className={cn("text-xs", tagColorMap[tag] || tagColorMap.Default)}
+                                <span
+                                  key={tag}
+                                  className={cn(tagClassMap[tag] || tagClassMap.Default)}
                                 >
                                   {tag}
-                                </Badge>
+                                </span>
                               ))}
                             </div>
                           </TableCell></TableRow>
