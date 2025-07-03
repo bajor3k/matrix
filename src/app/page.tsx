@@ -72,6 +72,17 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
+          <div className="my-16 md:my-24 px-4">
+            <Image
+              src="https://placehold.co/1920x1338.png"
+              alt="Matrix Client Analytics Dashboard Screenshot"
+              width={1200}
+              height={836}
+              className="rounded-lg shadow-2xl border border-white/10 mx-auto"
+              data-ai-hint="dashboard screenshot"
+            />
+          </div>
+
           <div className="py-24 md:py-32 space-y-8 md:space-y-12">
             <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
                 One Login. One Matrix.
