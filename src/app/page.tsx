@@ -66,7 +66,7 @@ export default function LandingPage() {
       <main className="flex-1 px-6 md:px-8 pt-24 md:pt-32">
         <div className="w-full max-w-7xl mx-auto text-center">
           
-          <h1 className="font-extrabold text-[20vw] leading-none text-black dark:text-white tracking-tighter mb-24 [text-shadow:40px_80px_40px_rgba(0,0,0,0.25)]">
+          <h1 className="font-extrabold text-[20vw] leading-none text-black dark:text-white tracking-tighter mb-24 [text-shadow:48px_64px_24px_rgba(0,0,0,0.21)]">
             matrix
           </h1>
 
