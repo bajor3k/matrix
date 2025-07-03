@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -66,7 +65,7 @@ export default function LandingPage() {
       <main className="flex-1 px-6 md:px-8 pt-24 md:pt-32">
         <div className="w-full max-w-7xl mx-auto text-center">
           
-          <h1 className="font-extrabold text-[10vw] leading-none text-black dark:text-white tracking-tighter mb-12">
+          <h1 className="font-extrabold text-[20vw] leading-none text-black dark:text-white tracking-tighter mb-24">
             matrix
           </h1>
 
