@@ -3,14 +3,35 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Brain, X, Download } from 'lucide-react';
+import { Brain, X, Download, Loader2 } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { getDownloadURL, ref } from "firebase/storage";
+import { storage } from "@/lib/firebase/config";
 
 export default function LandingPage() {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const imageRef = ref(storage, 'dashboard-screenshot.png');
+        const url = await getDownloadURL(imageRef);
+        setImageUrl(url);
+      } catch (err) {
+        console.error("Firebase Storage Error:", err);
+        setImageError(true);
+      } finally {
+        setImageLoading(false);
+      }
+    };
+    fetchImage();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#f6f6f6] dark:bg-black text-black dark:text-[#f2f2f2] flex flex-col font-sans transition-colors duration-300 overflow-x-hidden">
@@ -37,10 +58,6 @@ export default function LandingPage() {
 
       <main className="flex-1 px-6 md:px-8 pt-36 md:pt-48">
         <div className="w-full max-w-7xl mx-auto text-center">
-          
-          <h1 className="text-[10rem] sm:text-[12rem] md:text-[16rem] lg:text-[18rem] font-extrabold leading-none tracking-tighter text-black dark:text-white">
-            matrix
-          </h1>
           
           <div className="flex items-center justify-center mt-4 gap-4">
             <p className="text-4xl md:text-5xl font-bold tracking-wide text-black dark:text-white">
@@ -71,24 +88,40 @@ export default function LandingPage() {
               </div>
             </motion.div>
           </div>
-
+          
           <div className="my-16 md:my-24 px-4">
-            <Image
-              src="/dashboard-screenshot.png"
-              alt="Matrix Client Analytics Dashboard Screenshot"
-              width={1200}
-              height={836}
-              className="rounded-lg shadow-2xl border border-white/10 mx-auto"
-              data-ai-hint="dashboard screenshot"
-            />
+            {imageLoading && (
+              <div className="w-full max-w-[1200px] aspect-[1200/836] mx-auto flex flex-col items-center justify-center bg-muted/30 rounded-lg shadow-2xl border border-white/10">
+                <Loader2 className="w-12 h-12 animate-spin text-muted-foreground" />
+                <p className="mt-4 text-muted-foreground">Loading Screenshot...</p>
+              </div>
+            )}
+            {imageError && (
+              <div className="w-full max-w-[1200px] aspect-[1200/836] mx-auto flex flex-col items-center justify-center bg-red-500/10 rounded-lg shadow-2xl border border-red-500/50">
+                <X className="w-12 h-12 text-red-400" />
+                <p className="mt-4 text-red-400">Failed to load image.</p>
+                <p className="mt-2 text-xs text-red-400/80">Check console & ensure 'dashboard-screenshot.png' is in Firebase Storage.</p>
+              </div>
+            )}
+            {!imageLoading && !imageError && imageUrl && (
+              <Image
+                src={imageUrl}
+                alt="Matrix Client Analytics Dashboard Screenshot"
+                width={1200}
+                height={836}
+                className="rounded-lg shadow-2xl border border-white/10 mx-auto"
+                priority
+                data-ai-hint="dashboard screenshot"
+              />
+            )}
           </div>
 
           <div className="py-24 md:py-32 space-y-8 md:space-y-12">
             <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
-              One Login. One Matrix.
+              Analytics that power your business.
             </h2>
             <h3 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white mt-8">
-              Analytics that power your business.
+              One Login. One Matrix.
             </h3>
           </div>
 
