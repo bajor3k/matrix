@@ -56,8 +56,8 @@
     --sidebar-ring: 240 5.9% 10%;
 
     /* Shadows (Light) */
-    --shadow-card-custom: 0 6px 28px 0 rgba(60,60,60,0.06);
-    --shadow-card-custom-hover: 0 8px 32px 0 rgba(60,60,60,0.1), 0 0 0 1px rgba(0,0,0,0.05);
+    --shadow-card-custom: 0 4px 24px 0 hsla(258 84% 58% / 0.08), 0 2px 8px 0 rgba(60,60,60,0.08);
+    --shadow-card-custom-hover: 0 6px 32px 0 hsla(258 84% 58% / 0.1), 0 4px 12px 0 rgba(60,60,60,0.1);
   }
  
   .dark {
@@ -109,8 +109,8 @@
     --sidebar-ring: 240 4.9% 83.9%;
 
     /* Shadows (Dark) */
-    --shadow-card-custom: 0 6px 32px 0 rgba(0,0,0,0.85), 0 0 0 1px hsl(var(--border) / 0.5);
-    --shadow-card-custom-hover: 0 12px 48px 0 rgba(0,0,0,0.95), 0 0 0 2px rgba(255,255,255,0.08);
+    --shadow-card-custom: 0 4px 24px 0 hsla(258 84% 58% / 0.12), 0 2px 8px 0 rgba(0,0,0,0.25);
+    --shadow-card-custom-hover: 0 6px 32px 0 hsla(258 84% 58% / 0.15), 0 4px 12px 0 rgba(0,0,0,0.3);
   }
 }
 
