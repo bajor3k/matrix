@@ -150,29 +150,29 @@ export default function ClientAnalyticsPage() {
               </TableHeader>
               <TableBody>
                 {accountsWithoutBeneficiaryData.map((account) => (
-                  <Tooltip key={account.id} delayDuration={0}>
-                    <TooltipTrigger asChild>
-                      <TableRow className="hover:bg-muted/20 cursor-pointer">
-                        <TableCell className="text-center font-medium">{account.rank}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center">
+                  <TableRow key={account.id} className="hover:bg-muted/20 cursor-pointer">
+                    <TableCell className="text-center font-medium">{account.rank}</TableCell>
+                    <TableCell>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger asChild>
+                           <div className="flex items-center">
                             {account.isHighAum && (
                               <AlertTriangle className="h-4 w-4 text-red-500 mr-2 shrink-0" />
                             )}
                             {account.clientName}
                           </div>
-                        </TableCell>
-                        <TableCell className="text-center text-muted-foreground">{account.age}</TableCell>
-                        <TableCell className="text-muted-foreground">{account.accountType}</TableCell>
-                        <TableCell className="text-right font-semibold">{account.aumDisplay}</TableCell>
-                      </TableRow>
-                    </TooltipTrigger>
-                    {isClient && (
-                      <TooltipContent side="top" className="bg-popover text-popover-foreground">
-                        <p>Tap to initiate beneficiary outreach task</p>
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
+                        </TooltipTrigger>
+                        {isClient && (
+                          <TooltipContent side="top" className="bg-popover text-popover-foreground">
+                            <p>Tap to initiate beneficiary outreach task</p>
+                          </TooltipContent>
+                        )}
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell className="text-center text-muted-foreground">{account.age}</TableCell>
+                    <TableCell className="text-muted-foreground">{account.accountType}</TableCell>
+                    <TableCell className="text-right font-semibold">{account.aumDisplay}</TableCell>
+                  </TableRow>
                 ))}
               </TableBody>
             </Table>
