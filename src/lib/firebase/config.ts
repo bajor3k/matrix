@@ -5,7 +5,7 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
 // TODO: Replace with your actual Firebase project configuration
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "YOUR_FIREBASE_API_KEY_PLACEHOLDER",
   authDomain: "YOUR_FIREBASE_AUTH_DOMAIN_PLACEHOLDER",
   projectId: "YOUR_FIREBASE_PROJECT_ID_PLACEHOLDER",
