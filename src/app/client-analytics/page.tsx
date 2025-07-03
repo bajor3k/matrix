@@ -129,10 +129,13 @@ export default function ClientAnalyticsPage() {
                     <span className="text-base text-foreground truncate" title={client.name}>{client.name}</span>
                   </div>
                   <div className="flex items-center gap-3 w-2/5 sm:w-1/2">
-                    <div className="w-full h-2 bg-primary/20 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-primary rounded-full" 
-                        style={{ width: `${barWidthPercentage}%` }}
+                    <div className="w-full h-2 bg-[hsl(var(--chart-1))]/20 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[hsl(var(--chart-1))] rounded-full"
+                        style={{
+                          width: `${barWidthPercentage}%`,
+                          filter: "drop-shadow(0 0 5px hsl(var(--chart-1)))",
+                        }}
                       />
                     </div>
                     <span className="text-sm font-semibold text-foreground min-w-[50px] text-right">{client.aumDisplay}</span>
