@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -19,7 +18,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     // Check if the Firebase config is still using placeholder values
-    if (firebaseConfig.apiKey.includes('PLACEHOLDER')) {
+    if (firebaseConfig.apiKey.includes('PLACEHOLDER') || firebaseConfig.apiKey === "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX") {
       setImageError("Firebase is not configured. Please add your credentials in /src/lib/firebase/config.ts");
       setImageLoading(false);
       return;
@@ -63,9 +62,13 @@ export default function LandingPage() {
         </nav>
       </header>
 
-      <main className="flex-1 px-6 md:px-8 pt-36 md:pt-48">
+      <main className="flex-1 px-6 md:px-8 pt-24 md:pt-32">
         <div className="w-full max-w-7xl mx-auto text-center">
           
+          <h1 className="font-extrabold text-[8vw] leading-none text-black dark:text-white tracking-tighter mb-4">
+            matrix
+          </h1>
+
           <div className="flex items-center justify-center mt-4 gap-4">
             <p className="text-4xl md:text-5xl font-bold tracking-wide text-black dark:text-white">
                 see how deep the rabbit hole goes…
