@@ -64,7 +64,6 @@ export default function LandingPage() {
                 see how deep the rabbit hole goes…
             </p>
             <motion.div
-              key="red-pill"
               initial={{ x: '100vw', rotate: -540 }}
               animate={{ x: 0, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 100, damping: 20, mass: 1.5 }}
