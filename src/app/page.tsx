@@ -10,7 +10,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
-  const [showPill, setShowPill] = useState(true);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   return (
@@ -47,45 +46,30 @@ export default function LandingPage() {
             <p className="text-4xl md:text-5xl font-bold tracking-wide text-black dark:text-white">
                 see how deep the rabbit hole goes…
             </p>
-            <AnimatePresence>
-              {showPill && (
-                <motion.div
-                  key="red-pill"
-                  initial={{ x: '100vw', rotate: -540 }}
-                  animate={{ x: 0, rotate: 0 }}
-                  exit={{ x: '100vw', rotate: 540, opacity: 0 }}
-                  transition={{ type: 'spring', stiffness: 100, damping: 20, mass: 1.5 }}
-                  className="relative"
-                >
-                  <div className="relative">
-                     <svg width="80" height="40" viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]">
-                        <defs>
-                            <linearGradient id="pillGradientRed" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stopColor="#ef4444"/>
-                                <stop offset="100%" stopColor="#b91c1c"/>
-                            </linearGradient>
-                            <linearGradient id="highlightGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stopColor="white" stopOpacity="0.7"/>
-                                <stop offset="100%" stopColor="white" stopOpacity="0.1"/>
-                            </linearGradient>
-                        </defs>
-                        <rect x="1" y="1" width="78" height="38" rx="19" fill="url(#pillGradientRed)" stroke="#7f1d1d" strokeWidth="2"/>
-                        <path d="M15 10C30 7 60 7 65 10" stroke="url(#highlightGradient)" strokeWidth="4" strokeLinecap="round"/>
-                    </svg>
-                    <motion.button
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 1.5, type: "spring", stiffness: 300, damping: 15 }}
-                        onClick={() => setShowPill(false)}
-                        className="absolute -top-2 -right-2 bg-white rounded-full text-red-600 font-bold w-6 h-6 flex items-center justify-center text-sm shadow-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer"
-                        aria-label="Dismiss pill"
-                    >
-                        <X className="w-4 h-4" />
-                    </motion.button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <motion.div
+              key="red-pill"
+              initial={{ x: '100vw', rotate: -540 }}
+              animate={{ x: 0, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 100, damping: 20, mass: 1.5 }}
+              className="relative"
+            >
+              <div className="relative">
+                 <svg width="80" height="40" viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]">
+                    <defs>
+                        <linearGradient id="pillGradientRed" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#ef4444"/>
+                            <stop offset="100%" stopColor="#b91c1c"/>
+                        </linearGradient>
+                        <linearGradient id="highlightGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="white" stopOpacity="0.7"/>
+                            <stop offset="100%" stopColor="white" stopOpacity="0.1"/>
+                        </linearGradient>
+                    </defs>
+                    <rect x="1" y="1" width="78" height="38" rx="19" fill="url(#pillGradientRed)" stroke="#7f1d1d" strokeWidth="2"/>
+                    <path d="M15 10C30 7 60 7 65 10" stroke="url(#highlightGradient)" strokeWidth="4" strokeLinecap="round"/>
+                </svg>
+              </div>
+            </motion.div>
           </div>
 
           <div className="py-24 md:py-32 space-y-8 md:space-y-12">
