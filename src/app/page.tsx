@@ -74,7 +74,7 @@ export default function LandingPage() {
 
           <div className="my-16 md:my-24 px-4">
             <Image
-              src="https://placehold.co/1920x1338.png"
+              src="/dashboard-screenshot.png"
               alt="Matrix Client Analytics Dashboard Screenshot"
               width={1200}
               height={836}
@@ -85,7 +85,7 @@ export default function LandingPage() {
 
           <div className="py-24 md:py-32 space-y-8 md:space-y-12">
             <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
-                One Login. One Matrix.
+              One Login. One Matrix.
             </h2>
             <h3 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white mt-8">
               Analytics that power your business.
