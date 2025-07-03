@@ -41,7 +41,6 @@ export const toolbarSections: ToolbarSection[] = [
     { id: 'Portal', title: 'Portal' },
     { id: 'Trading', title: 'Trading' },
     { id: 'Resources', title: 'Resources' },
-    { id: 'Advisory', title: 'Advisory' },
     { id: 'Jira', title: 'Jira' },
     { id: 'Matrix Pro', title: 'Matrix Pro' },
 ];
@@ -97,7 +96,6 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
   ],
   'Trading': [],
   'Resources': [],
-  'Advisory': [],
   'Jira': [],
   'Matrix Pro': [],
 };
