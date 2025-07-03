@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -65,11 +66,11 @@ export default function LandingPage() {
       <main className="flex-1 px-6 md:px-8 pt-24 md:pt-32">
         <div className="w-full max-w-7xl mx-auto text-center">
           
-          <h1 className="font-extrabold text-[8vw] leading-none text-black dark:text-white tracking-tighter mb-4">
+          <h1 className="font-extrabold text-[10vw] leading-none text-black dark:text-white tracking-tighter mb-12">
             matrix
           </h1>
 
-          <div className="flex items-center justify-center mt-4 gap-4">
+          <div className="flex items-center justify-center gap-4">
             <p className="text-4xl md:text-5xl font-bold tracking-wide text-black dark:text-white">
                 see how deep the rabbit hole goes…
             </p>
@@ -98,7 +99,7 @@ export default function LandingPage() {
             </motion.div>
           </div>
           
-          <div className="my-16 md:my-24 px-4">
+          <div className="my-24 md:my-32 px-4">
             {imageLoading && (
               <div className="w-full max-w-[1200px] aspect-[1200/836] mx-auto flex flex-col items-center justify-center bg-muted/30 rounded-lg shadow-2xl border border-white/10">
                 <Loader2 className="w-12 h-12 animate-spin text-muted-foreground" />
