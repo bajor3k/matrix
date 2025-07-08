@@ -3,42 +3,14 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Brain, X, Download, Loader2 } from 'lucide-react';
+import { Brain, X, Download } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { getDownloadURL, ref } from "firebase/storage";
-import { storage, firebaseConfig } from "@/lib/firebase/config";
 
 export default function LandingPage() {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [imageLoading, setImageLoading] = useState(true);
-  const [imageError, setImageError] = useState<string | boolean>(false);
-
-  useEffect(() => {
-    // Check if the Firebase config is still using placeholder values
-    if (firebaseConfig.apiKey.includes('PLACEHOLDER') || firebaseConfig.apiKey === "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX") {
-      setImageError("Firebase is not configured. Please add your credentials in /src/lib/firebase/config.ts");
-      setImageLoading(false);
-      return;
-    }
-
-    const fetchImage = async () => {
-      try {
-        const imageRef = ref(storage, 'dashboard-screenshot.png');
-        const url = await getDownloadURL(imageRef);
-        setImageUrl(url);
-      } catch (err) {
-        console.error("Firebase Storage Error:", err);
-        setImageError("Failed to load image. Ensure 'dashboard-screenshot.png' exists in your Firebase Storage and rules are set for public read.");
-      } finally {
-        setImageLoading(false);
-      }
-    };
-    fetchImage();
-  }, []);
 
   return (
     <div className="min-h-screen bg-[#f6f6f6] dark:bg-black text-black dark:text-[#f2f2f2] flex flex-col font-sans transition-colors duration-300 overflow-x-hidden">
@@ -100,34 +72,15 @@ export default function LandingPage() {
           </div>
           
           <div className="my-24 md:my-32 px-4">
-            {imageLoading && (
-              <div className="w-full max-w-[1200px] aspect-[1200/836] mx-auto flex flex-col items-center justify-center bg-muted/30 rounded-lg shadow-2xl border border-white/10">
-                <Loader2 className="w-12 h-12 animate-spin text-muted-foreground" />
-                <p className="mt-4 text-muted-foreground">Loading Screenshot...</p>
-              </div>
-            )}
-            {imageError && (
-              <div className="w-full max-w-[1200px] aspect-[1200/836] mx-auto flex flex-col items-center justify-center bg-red-500/10 rounded-lg shadow-2xl border border-red-500/50 p-4">
-                <X className="w-12 h-12 text-red-400" />
-                <p className="mt-4 text-red-400 font-semibold">
-                  {typeof imageError === 'string' ? 'Configuration Error' : 'Image Load Error'}
-                </p>
-                <p className="mt-2 text-xs text-red-400/80 text-center">
-                  {typeof imageError === 'string' ? imageError : "Failed to load image. Ensure 'dashboard-screenshot.png' exists and storage rules are public."}
-                </p>
-              </div>
-            )}
-            {!imageLoading && !imageError && imageUrl && (
-              <Image
-                src={imageUrl}
-                alt="Matrix Client Analytics Dashboard Screenshot"
-                width={1200}
-                height={836}
-                className="rounded-lg shadow-2xl border border-white/10 mx-auto"
-                priority
-                data-ai-hint="dashboard screenshot"
-              />
-            )}
+            <Image
+              src="https://placehold.co/1200x836.png"
+              alt="Matrix Client Analytics Dashboard Screenshot"
+              width={1200}
+              height={836}
+              className="rounded-lg shadow-2xl border border-white/10 mx-auto"
+              priority
+              data-ai-hint="dashboard screenshot"
+            />
           </div>
 
           <div className="py-24 md:py-32 space-y-8 md:space-y-12">
