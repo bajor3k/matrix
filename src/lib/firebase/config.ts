@@ -1,19 +1,16 @@
-// src/lib/firebase/config.ts
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
-// STEP 1: Go to your Firebase Console -> Project Settings -> General tab.
-// STEP 2: In the "Your apps" card, select the "SDK setup and configuration" option.
-// STEP 3: Copy the firebaseConfig object and paste it here, replacing the placeholder values.
+// Your web app's Firebase configuration (from Firebase Console)
 export const firebaseConfig = {
-  apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-  authDomain: "your-project-id.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project-id.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:1234567890abcdef123456",
-  // measurementId: "G-XXXXXXXXXX" // Optional
+  apiKey: "AIzaSyCPR9Oo096XWAjWsJmV1YTilsljf8aIsdw",
+  authDomain: "matrix-y2jfw.firebaseapp.com",
+  projectId: "matrix-y2jfw",
+  storageBucket: "matrix-y2jfw.appspot.com", // <-- FIXED typo here: should be .appspot.com
+  messagingSenderId: "222012964348",
+  appId: "1:222012964348:web:0941586f00d763acfd8679"
+  // measurementId: "G-XXXXXXXXXX" // Optional, can add if needed
 };
 
 // Initialize Firebase
@@ -28,7 +25,7 @@ const auth = getAuth(app);
 const storage = getStorage(app);
 const googleAuthProvider = new GoogleAuthProvider();
 
-// Add necessary Gmail API scopes
+// Add necessary Gmail API scopes (if you need Gmail features)
 googleAuthProvider.addScope('https://www.googleapis.com/auth/gmail.readonly');
 googleAuthProvider.addScope('https://www.googleapis.com/auth/gmail.send');
 // For full access, consider: googleAuthProvider.addScope('https://mail.google.com/');

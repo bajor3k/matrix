@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -13,7 +12,7 @@ export function TopToolbar() {
 
   return (
     <header className={cn(
-      "relative h-16 shrink-0 bg-background border-b flex items-center px-4 shadow-sm"
+      "sticky top-0 z-50 h-16 shrink-0 bg-background/95 backdrop-blur-sm border-b flex items-center px-4 shadow-sm"
     )}>
       <div className="flex w-full justify-between items-center">
         <nav className="flex items-center space-x-2">
