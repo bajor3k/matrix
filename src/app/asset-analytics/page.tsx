@@ -2,13 +2,25 @@
 "use client";
 import * as React from "react";
 import Image from "next/image";
-import { Landmark, TrendingUp, Target, ArrowDownCircle, ArrowUpCircle, ArrowRightLeft, Download, Users, DollarSign, CreditCard, PiggyBank } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { Landmark, TrendingUp, Target, ArrowDownCircle, ArrowUpCircle, ArrowRightLeft, Download, Users, DollarSign, CreditCard, PiggyBank, Loader2 } from 'lucide-react';
 import { PlaceholderCard } from '@/components/dashboard/placeholder-card';
-import { AssetAllocationDonutChart } from '@/components/charts/asset-allocation-donut-chart';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+const DynamicAssetAllocationDonutChart = dynamic(
+  () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
+  { 
+    loading: () => (
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    ),
+    ssr: false 
+  }
+);
 
 const metricCardsData = [
   {
@@ -129,7 +141,7 @@ export default function AssetAnalyticsPage() {
       <PlaceholderCard title="Asset Allocation by Type">
          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
             <div className="h-[400px] md:h-[450px] w-full">
-              <AssetAllocationDonutChart />
+              <DynamicAssetAllocationDonutChart />
             </div>
             <div className="space-y-2">
               <h3 className="text-2xl font-bold text-foreground mb-4">Asset Breakdown</h3>
