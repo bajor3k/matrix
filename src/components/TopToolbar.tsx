@@ -7,12 +7,17 @@ import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 import { ThemeToggle } from './theme-toggle';
 
-export function TopToolbar() {
+interface TopToolbarProps {
+  collapsed: boolean;
+}
+
+export function TopToolbar({ collapsed }: TopToolbarProps) {
   const { activeSection, setActiveSection } = useNavigation();
 
   return (
     <header className={cn(
-      "sticky top-0 z-50 h-16 shrink-0 bg-background/95 backdrop-blur-sm border-b flex items-center px-4 shadow-sm"
+      "fixed top-0 right-0 z-50 h-16 shrink-0 bg-background/95 backdrop-blur-sm border-b flex items-center px-4 shadow-sm transition-all duration-300",
+      collapsed ? "left-16" : "left-64"
     )}>
       <div className="flex w-full justify-between items-center">
         <nav className="flex items-center space-x-2">

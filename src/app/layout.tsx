@@ -69,9 +69,9 @@ export default function RootLayout({
                 ) : (
                   <div className="flex flex-1">
                     <Sidebar collapsed={sidebarCollapsed} onToggle={handleToggleSidebar} />
-                    <div className="flex flex-col flex-1 min-h-0 overflow-y-auto no-visual-scrollbar">
-                      <TopToolbar />
-                      <main className="flex-1 bg-transparent">
+                    <div className="flex flex-col flex-1 min-h-0">
+                      <TopToolbar collapsed={sidebarCollapsed} />
+                      <main className="flex-1 bg-transparent overflow-y-auto no-visual-scrollbar pt-16">
                         {children}
                       </main>
                     </div>
