@@ -69,7 +69,6 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Model Matrix', icon: Shapes, href: '/model-matrix' },
     { name: 'Contribution Matrix', icon: TrendingUp, href: '/contribution-matrix' },
     { name: 'Project X', icon: FlaskConical, href: '/project-x' },
-    { name: 'Resource Matrix', icon: LayoutGrid, href: '/resource-matrix' },
   ],
   'Outreach': [
     { name: 'Inbox', icon: Mail, href: '/outreach/inbox' },
@@ -98,7 +97,9 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
   'Trading': [
     { name: 'Trading Center', icon: CandlestickChart, href: '/trading' }
   ],
-  'Resources': [],
+  'Resources': [
+    { name: 'Resource Matrix', icon: LayoutGrid, href: '/resource-matrix' },
+  ],
   'Jira': [],
   'Matrix Pro': [],
 };
