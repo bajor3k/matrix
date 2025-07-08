@@ -32,6 +32,7 @@ import {
   ArrowRightLeft,
   Truck,
   StickyNote,
+  CandlestickChart,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -94,7 +95,9 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Tasks', icon: ListChecks, href: '/portal/tasks' },
     { name: 'Settings', icon: Settings, href: '/portal/settings' },
   ],
-  'Trading': [],
+  'Trading': [
+    { name: 'Trading Center', icon: CandlestickChart, href: '/trading' }
+  ],
   'Resources': [],
   'Jira': [],
   'Matrix Pro': [],
