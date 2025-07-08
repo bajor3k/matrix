@@ -3,20 +3,16 @@
 
 import * as React from 'react';
 import {
-  ArrowDown,
-  ArrowUp,
+  ArrowRightLeft,
   CandlestickChart,
   CheckCircle,
   Clock,
   Eye,
-  FileText,
+  ListChecks,
+  Package,
   Plus,
-  Search,
-  Settings,
-  XCircle,
   TrendingUp,
-  TrendingDown,
-  RefreshCcw,
+  XCircle
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -26,7 +22,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PlaceholderCard } from '@/components/dashboard/placeholder-card';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -86,15 +81,23 @@ export default function TradingPage() {
           <CandlestickChart className="h-8 w-8 text-primary"/>
           Trading Center
         </h1>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Trading Card */}
-            <Card className="lg:col-span-3 bg-card/80 border-border/50 shadow-lg">
+
+        <Tabs defaultValue="ticket" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <TabsTrigger value="ticket"><ArrowRightLeft className="mr-2 h-4 w-4"/>Trade Ticket</TabsTrigger>
+            <TabsTrigger value="positions"><Package className="mr-2 h-4 w-4"/>Positions</TabsTrigger>
+            <TabsTrigger value="orders"><ListChecks className="mr-2 h-4 w-4"/>Orders</TabsTrigger>
+            <TabsTrigger value="watchlist"><Eye className="mr-2 h-4 w-4"/>Watchlist</TabsTrigger>
+            <TabsTrigger value="movers"><TrendingUp className="mr-2 h-4 w-4"/>Market Movers</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="ticket" className="mt-6">
+            <Card className="bg-card/80 border-border/50 shadow-lg">
                 <CardHeader>
                     <CardTitle>Quick Trade</CardTitle>
                     <CardDescription>Select an account to start trading.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                    {/* Trade Ticket */}
+                <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-7 gap-4 items-end p-4 border border-border/50 rounded-lg bg-black/20">
                         <div className="md:col-span-2">
                             <Label htmlFor="account-select">Account</Label>
@@ -153,111 +156,134 @@ export default function TradingPage() {
                             <Button className="bg-primary hover:bg-primary/90">Submit</Button>
                         </div>
                     </div>
-
-                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                       {/* Positions */}
-                        <div className="xl:col-span-2">
-                            <h3 className="text-xl font-semibold mb-4 text-foreground">Positions</h3>
-                            <div className="overflow-x-auto">
-                               <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Symbol/Name</TableHead>
-                                        <TableHead className="text-right">Quantity</TableHead>
-                                        <TableHead className="text-right">Price</TableHead>
-                                        <TableHead className="text-right">Market Value</TableHead>
-                                        <TableHead className="text-right">Unrealized G/L</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {mockPositions.map(pos => (
-                                        <TableRow key={pos.symbol}>
-                                            <TableCell>
-                                                <div className="font-medium">{pos.symbol}</div>
-                                                <div className="text-xs text-muted-foreground">{pos.name}</div>
-                                            </TableCell>
-                                            <TableCell className="text-right">{pos.qty}</TableCell>
-                                            <TableCell className="text-right">{formatCurrency(pos.price)}</TableCell>
-                                            <TableCell className="text-right">{formatCurrency(pos.value)}</TableCell>
-                                            <TableCell className={cn("text-right font-medium", pos.gainLoss > 0 ? 'text-green-400' : 'text-red-400')}>
-                                                {formatCurrency(pos.gainLoss)} ({pos.gainLossPct.toFixed(1)}%)
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                            </div>
-                        </div>
-
-                        {/* Side Card for Orders & Market Movers */}
-                        <div className="space-y-8">
-                            {/* Orders */}
-                            <div>
-                                <h3 className="text-xl font-semibold mb-4 text-foreground">Open/Recent Orders</h3>
-                                <div className="space-y-3">
-                                   {mockOrders.map(order => (
-                                       <div key={order.id} className="p-3 bg-black/30 border border-border/30 rounded-md">
-                                           <div className="flex justify-between items-center">
-                                               <span className="font-semibold text-foreground">{order.symbol}</span>
-                                               {getStatusBadge(order.status)}
-                                           </div>
-                                           <div className="text-sm text-muted-foreground flex justify-between mt-1">
-                                               <span>{order.action} {order.qty}</span>
-                                               <span>{order.type}</span>
-                                           </div>
-                                            {order.status === 'Open' && <Button variant="link" size="sm" className="p-0 h-auto text-red-400 hover:text-red-500 mt-1">Cancel Order</Button>}
-                                       </div>
-                                   ))}
-                                </div>
-                            </div>
-                            
-                            {/* Market Movers/Watchlist */}
-                            <div>
-                                <Tabs defaultValue="movers">
-                                    <TabsList className="grid w-full grid-cols-2">
-                                        <TabsTrigger value="movers">Market Movers</TabsTrigger>
-                                        <TabsTrigger value="watchlist">Watchlist</TabsTrigger>
-                                    </TabsList>
-                                    <TabsContent value="movers" className="mt-4 space-y-2">
-                                        {mockMarketMovers.map(mover => (
-                                            <div key={mover.symbol} className="flex items-center justify-between text-sm p-2 rounded-md hover:bg-muted/30">
-                                               <div>
-                                                 <p className="font-bold">{mover.symbol}</p>
-                                                 <p className="text-xs text-muted-foreground truncate">{mover.name}</p>
-                                               </div>
-                                                <div className="text-right">
-                                                    <p>{formatCurrency(mover.price)}</p>
-                                                    <p className={cn("text-xs", mover.change > 0 ? 'text-green-400' : 'text-red-400')}>
-                                                        {mover.change > 0 ? '+' : ''}{mover.change.toFixed(2)} ({mover.changePct.toFixed(1)}%)
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </TabsContent>
-                                    <TabsContent value="watchlist" className="mt-4 space-y-2">
-                                        {mockWatchlist.map(item => (
-                                            <div key={item.symbol} className="flex items-center justify-between text-sm p-2 rounded-md hover:bg-muted/30">
-                                               <div>
-                                                 <p className="font-bold">{item.symbol}</p>
-                                                 <p className="text-xs text-muted-foreground truncate">{item.name}</p>
-                                               </div>
-                                                <div className="text-right">
-                                                    <p>{formatCurrency(item.price)}</p>
-                                                     <p className={cn("text-xs", item.change > 0 ? 'text-green-400' : 'text-red-400')}>
-                                                        {item.change > 0 ? '+' : ''}{item.change.toFixed(2)} ({item.changePct.toFixed(1)}%)
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                         <Button variant="outline" size="sm" className="w-full mt-2"><Plus className="mr-2 h-4 w-4"/>Add to Watchlist</Button>
-                                    </TabsContent>
-                                </Tabs>
-                            </div>
-                        </div>
+                </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="positions" className="mt-6">
+            <Card className="bg-card/80 border-border/50 shadow-lg">
+                <CardHeader>
+                    <CardTitle>Positions</CardTitle>
+                    <CardDescription>Current holdings for the selected account.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="overflow-x-auto">
+                       <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Symbol/Name</TableHead>
+                                <TableHead className="text-right">Quantity</TableHead>
+                                <TableHead className="text-right">Price</TableHead>
+                                <TableHead className="text-right">Market Value</TableHead>
+                                <TableHead className="text-right">Unrealized G/L</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {mockPositions.map(pos => (
+                                <TableRow key={pos.symbol}>
+                                    <TableCell>
+                                        <div className="font-medium">{pos.symbol}</div>
+                                        <div className="text-xs text-muted-foreground">{pos.name}</div>
+                                    </TableCell>
+                                    <TableCell className="text-right">{pos.qty}</TableCell>
+                                    <TableCell className="text-right">{formatCurrency(pos.price)}</TableCell>
+                                    <TableCell className="text-right">{formatCurrency(pos.value)}</TableCell>
+                                    <TableCell className={cn("text-right font-medium", pos.gainLoss > 0 ? 'text-green-400' : 'text-red-400')}>
+                                        {formatCurrency(pos.gainLoss)} ({pos.gainLossPct.toFixed(1)}%)
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
                     </div>
                 </CardContent>
             </Card>
-        </div>
+          </TabsContent>
+          
+          <TabsContent value="orders" className="mt-6">
+             <Card className="bg-card/80 border-border/50 shadow-lg">
+                <CardHeader>
+                    <CardTitle>Open & Recent Orders</CardTitle>
+                    <CardDescription>Track the status of your recent trading activity.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-3">
+                       {mockOrders.map(order => (
+                           <div key={order.id} className="p-3 bg-black/30 border border-border/30 rounded-md">
+                               <div className="flex justify-between items-center">
+                                   <span className="font-semibold text-foreground">{order.symbol}</span>
+                                   {getStatusBadge(order.status)}
+                               </div>
+                               <div className="text-sm text-muted-foreground flex justify-between mt-1">
+                                   <span>{order.action} {order.qty}</span>
+                                   <span>{order.type}</span>
+                               </div>
+                                {order.status === 'Open' && <Button variant="link" size="sm" className="p-0 h-auto text-red-400 hover:text-red-500 mt-1">Cancel Order</Button>}
+                           </div>
+                       ))}
+                    </div>
+                </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="watchlist" className="mt-6">
+            <Card className="bg-card/80 border-border/50 shadow-lg">
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                        <CardTitle>Watchlist</CardTitle>
+                        <CardDescription>Your personal list of tracked symbols.</CardDescription>
+                    </div>
+                    <Button variant="outline" size="sm" className="ml-auto"><Plus className="mr-2 h-4 w-4"/>Add Symbol</Button>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-2">
+                        {mockWatchlist.map(item => (
+                            <div key={item.symbol} className="flex items-center justify-between text-sm p-2 rounded-md hover:bg-muted/30">
+                               <div>
+                                 <p className="font-bold">{item.symbol}</p>
+                                 <p className="text-xs text-muted-foreground truncate">{item.name}</p>
+                               </div>
+                                <div className="text-right">
+                                    <p>{formatCurrency(item.price)}</p>
+                                     <p className={cn("text-xs", item.change > 0 ? 'text-green-400' : 'text-red-400')}>
+                                        {item.change > 0 ? '+' : ''}{item.change.toFixed(2)} ({item.changePct.toFixed(1)}%)
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="movers" className="mt-6">
+            <Card className="bg-card/80 border-border/50 shadow-lg">
+                <CardHeader>
+                    <CardTitle>Market Movers</CardTitle>
+                    <CardDescription>Top gainers and losers in the market today.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                     <div className="space-y-2">
+                        {mockMarketMovers.map(mover => (
+                            <div key={mover.symbol} className="flex items-center justify-between text-sm p-2 rounded-md hover:bg-muted/30">
+                               <div>
+                                 <p className="font-bold">{mover.symbol}</p>
+                                 <p className="text-xs text-muted-foreground truncate">{mover.name}</p>
+                               </div>
+                                <div className="text-right">
+                                    <p>{formatCurrency(mover.price)}</p>
+                                    <p className={cn("text-xs", mover.change > 0 ? 'text-green-400' : 'text-red-400')}>
+                                        {mover.change > 0 ? '+' : ''}{mover.change.toFixed(2)} ({mover.changePct.toFixed(1)}%)
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+          </TabsContent>
+
+        </Tabs>
       </main>
     </TooltipProvider>
   );
