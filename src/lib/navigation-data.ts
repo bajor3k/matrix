@@ -33,6 +33,10 @@ import {
   Truck,
   StickyNote,
   CandlestickChart,
+  LifeBuoy,
+  Calculator,
+  GraduationCap,
+  Link as LinkIcon,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -98,7 +102,11 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Trading Center', icon: CandlestickChart, href: '/trading' }
   ],
   'Resources': [
-    { name: 'Resource Matrix', icon: LayoutGrid, href: '/resource-matrix' },
+    { name: 'Quick Links', icon: LinkIcon, href: '/resource-matrix?tab=quick_links' },
+    { name: 'Documents', icon: FileText, href: '/resource-matrix?tab=documents' },
+    { name: 'Support', icon: LifeBuoy, href: '/resource-matrix?tab=support' },
+    { name: 'Tools', icon: Calculator, href: '/resource-matrix?tab=tools' },
+    { name: 'Training', icon: GraduationCap, href: '/resource-matrix?tab=training' },
   ],
   'Jira': [],
   'Matrix Pro': [],
