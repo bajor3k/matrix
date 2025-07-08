@@ -74,7 +74,7 @@ export default function AssetAnalyticsPage() {
       <div className="grid gap-6 md:grid-cols-3">
         <PlaceholderCard title="Advisor">
           <Select>
-            <SelectTrigger id="advisor-select" className="w-full bg-card border-none text-foreground shadow-white-glow-soft hover:shadow-white-glow-hover transition-shadow duration-200 ease-out">
+            <SelectTrigger id="advisor-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
               <SelectValue placeholder="Select Advisor" />
             </SelectTrigger>
             <SelectContent>
@@ -85,7 +85,7 @@ export default function AssetAnalyticsPage() {
         </PlaceholderCard>
         <PlaceholderCard title="Custodian">
           <Select defaultValue="all_custodians">
-            <SelectTrigger id="custodian-select" className="w-full bg-card border-none text-foreground shadow-white-glow-soft hover:shadow-white-glow-hover transition-shadow duration-200 ease-out">
+            <SelectTrigger id="custodian-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
               <SelectValue placeholder="Select Custodian" />
             </SelectTrigger>
             <SelectContent>
@@ -100,7 +100,7 @@ export default function AssetAnalyticsPage() {
         </PlaceholderCard>
         <PlaceholderCard title="Timeframe">
           <Select defaultValue="ytd">
-            <SelectTrigger id="timeframe-select" className="w-full bg-card border-none text-foreground shadow-white-glow-soft hover:shadow-white-glow-hover transition-shadow duration-200 ease-out">
+            <SelectTrigger id="timeframe-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
               <SelectValue placeholder="Select Timeframe" />
             </SelectTrigger>
             <SelectContent>
