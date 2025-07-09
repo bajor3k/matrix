@@ -73,13 +73,12 @@ export default function LandingPage() {
           
           <div className="my-24 md:my-32 px-4">
             <Image
-              src="https://placehold.co/1200x836.png"
+              src="/dashboard-screenshot.png"
               alt="Matrix Client Analytics Dashboard Screenshot"
               width={1200}
               height={836}
               className="rounded-lg shadow-2xl border border-white/10 mx-auto"
               priority
-              data-ai-hint="dashboard screenshot"
             />
           </div>
 
