@@ -568,7 +568,7 @@ export default function ClientPortalCalendarPage() {
       </main>
 
       <Dialog open={isQuickAddEventDialogOpen} onOpenChange={setIsQuickAddEventDialogOpen}>
-        <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-md border-border/50">
+        <DialogContent className="sm:max-w-md bg-transparent backdrop-blur-md border-border/50 shadow-none">
           <DialogHeader>
             <DialogTitle className="text-lg font-bold text-foreground">Quick Add Event</DialogTitle>
           </DialogHeader>
@@ -581,7 +581,7 @@ export default function ClientPortalCalendarPage() {
                         placeholder="Event Title"
                         value={quickAddEventTitle} 
                         onChange={(e) => setQuickAddEventTitle(e.target.value)} 
-                        className="bg-input border-border/50" 
+                        className="bg-input/50 border-border/50" 
                     />
                 </div>
                 <div className="col-span-1 flex items-center space-x-2 justify-end">
@@ -605,7 +605,7 @@ export default function ClientPortalCalendarPage() {
                         placeholder="Start" 
                         value={quickAddEventStartTime} 
                         onChange={(e) => setQuickAddEventStartTime(e.target.value)} 
-                        className="w-28 bg-input border-border/50 h-8 text-xs" 
+                        className="w-28 bg-input/50 border-border/50 h-8 text-xs" 
                     />
                     <span>-</span>
                     <Input 
@@ -614,7 +614,7 @@ export default function ClientPortalCalendarPage() {
                         placeholder="End" 
                         value={quickAddEventEndTime} 
                         onChange={(e) => setQuickAddEventEndTime(e.target.value)} 
-                        className="w-28 bg-input border-border/50 h-8 text-xs" 
+                        className="w-28 bg-input/50 border-border/50 h-8 text-xs" 
                     />
                 </div>
                 )}
