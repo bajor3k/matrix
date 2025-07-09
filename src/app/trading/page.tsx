@@ -3,6 +3,15 @@
 
 import * as React from 'react';
 import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer
+} from 'recharts';
+import {
   ArrowRightLeft,
   CandlestickChart,
   CheckCircle,
@@ -12,7 +21,11 @@ import {
   Package,
   Plus,
   TrendingUp,
-  XCircle
+  XCircle,
+  Search,
+  CalendarDays,
+  LineChart,
+  AreaChart as AreaChartIcon,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -44,6 +57,24 @@ const mockOrders = [
   { id: 'ord3', symbol: 'AMZN', action: 'Buy', status: 'Cancelled', qty: 5, type: 'Stop 175.00', timestamp: '2024-07-07T11:00:00Z' },
 ];
 
+const mockChartData = [
+    { name: '9:30', price: 184.50 },
+    { name: '10:00', price: 184.80 },
+    { name: '10:30', price: 185.10 },
+    { name: '11:00', price: 184.90 },
+    { name: '11:30', price: 185.50 },
+    { name: '12:00', price: 186.20 },
+    { name: '12:30', price: 186.00 },
+    { name: '1:00', price: 186.50 },
+    { name: '1:30', price: 186.30 },
+    { name: '2:00', price: 186.80 },
+    { name: '2:30', price: 187.10 },
+    { name: '3:00', price: 186.95 },
+    { name: '3:30', price: 187.25 },
+    { name: '4:00', price: 187.40 },
+];
+
+
 const getStatusBadge = (status: string) => {
   switch (status.toLowerCase()) {
     case 'open':
@@ -62,6 +93,10 @@ const formatCurrency = (value: number) => {
 };
 
 export default function TradingPage() {
+  const [activeChartRange, setActiveChartRange] = React.useState('1D');
+  const [activeChartType, setActiveChartType] = React.useState('Line');
+  const [activeChartInterval, setActiveChartInterval] = React.useState('5m');
+
   return (
     <TooltipProvider>
       <main className="min-h-screen flex-1 p-6 space-y-6 md:p-8 bg-background">
@@ -211,14 +246,87 @@ export default function TradingPage() {
                     </CardContent>
                 </Card>
                  {/* Trading Chart Card */}
-                <Card id="chart" className="shadow-card-custom border-transparent h-[400px] flex flex-col">
-                    <CardHeader>
-                        <CardTitle>Chart</CardTitle>
-                        <CardDescription>Real-time market data for selected symbol</CardDescription>
+                <Card id="chart" className="shadow-card-custom border-transparent h-full flex flex-col">
+                    <CardHeader className="relative z-10">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                           <div>
+                                <span className="font-bold text-xl mr-2">TSLA</span>
+                                <span className="text-lg font-semibold mr-2">$187.40</span>
+                                <span className="text-green-400 text-sm font-semibold">+2.90 (+1.57%)</span>
+                           </div>
+                           <div className="relative w-full sm:w-auto">
+                               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
+                               <Input placeholder="Search symbol..." className="pl-8 h-9 w-full sm:w-[150px]"/>
+                           </div>
+                        </div>
                     </CardHeader>
-                    <CardContent className="flex-grow flex items-center justify-center bg-black/30 m-4 rounded-md">
-                        <CandlestickChart className="h-16 w-16 text-muted-foreground/30" />
-                        <p className="text-muted-foreground/50 ml-4">Chart placeholder</p>
+                    <CardContent className="flex-grow flex flex-col p-0">
+                         <div className="h-[300px] w-full relative">
+                            {/* Optional: Soft neutral radial gradient for depth */}
+                            <div className="absolute inset-0 pointer-events-none"
+                                style={{
+                                    background: "radial-gradient(circle at 50% 50%, hsla(var(--primary) / 0.1) 0%, transparent 70%)",
+                                    filter: "blur(40px)",
+                                }} />
+                             <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={mockChartData} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4}/>
+                                            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.3)" vertical={false} />
+                                    <XAxis dataKey="name" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} tickLine={false} axisLine={false} />
+                                    <YAxis orientation="right" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} tickLine={false} axisLine={false} />
+                                    <RechartsTooltip 
+                                        contentStyle={{
+                                            backgroundColor: 'hsl(var(--background) / 0.9)',
+                                            borderColor: 'hsl(var(--border))',
+                                            borderRadius: 'var(--radius)',
+                                            backdropFilter: 'blur(4px)',
+                                        }}
+                                        labelStyle={{ color: 'hsl(var(--foreground))' }}
+                                    />
+                                    <Area type="monotone" dataKey="price" stroke="hsl(var(--primary))" strokeWidth={2} fillOpacity={1} fill="url(#chartFill)" 
+                                        dot={false}
+                                        activeDot={{ r: 5, strokeWidth: 2, fill: 'hsl(var(--background))', stroke: 'hsl(var(--primary))' }}
+                                    />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                         </div>
+                         <div className="flex flex-wrap items-center justify-between gap-2 p-2 border-t border-border/50 text-xs">
+                             <div className="flex items-center gap-1">
+                                {['1D', '5D', '1M', '3M', 'YTD'].map(range => (
+                                    <Button key={range} size="sm" variant={activeChartRange === range ? 'secondary' : 'ghost'} onClick={() => setActiveChartRange(range)} className="h-7 px-2">{range}</Button>
+                                ))}
+                             </div>
+                              <div className="flex items-center gap-1">
+                                 {['1m', '5m', '30m', '1h', 'D'].map(interval => (
+                                    <Button key={interval} size="sm" variant={activeChartInterval === interval ? 'secondary' : 'ghost'} onClick={() => setActiveChartInterval(interval)} className="h-7 px-2">{interval}</Button>
+                                ))}
+                             </div>
+                             <div className="flex items-center gap-1">
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button size="icon" variant={activeChartType === 'Line' ? 'secondary' : 'ghost'} onClick={() => setActiveChartType('Line')} className="h-7 w-7"><LineChart className="h-4 w-4"/></Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent><p>Line Chart</p></TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button size="icon" variant={activeChartType === 'Area' ? 'secondary' : 'ghost'} onClick={() => setActiveChartType('Area')} className="h-7 w-7"><AreaChartIcon className="h-4 w-4"/></Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent><p>Area Chart</p></TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button size="icon" variant={activeChartType === 'Candle' ? 'secondary' : 'ghost'} onClick={() => setActiveChartType('Candle')} className="h-7 w-7"><CandlestickChart className="h-4 w-4"/></Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent><p>Candlestick Chart</p></TooltipContent>
+                                </Tooltip>
+                             </div>
+                         </div>
                     </CardContent>
                 </Card>
             </div>
