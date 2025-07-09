@@ -33,7 +33,7 @@ interface OpportunityItem {
   amountValue: number;
   amountType: string;
   probability: number;
-  targetCloseDate: string; 
+  targetCloseDate: string; // This should match a column id
   stage: string; // This should match a column id
   description?: string;
   nextStep?: string;
@@ -117,6 +117,11 @@ export default function ClientPortalOpportunitiesPage() {
   const [opportunityTargetClose, setOpportunityTargetClose] = React.useState('');
   const [opportunityDescription, setOpportunityDescription] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const { toast } = useToast();
 
@@ -359,7 +364,7 @@ export default function ClientPortalOpportunitiesPage() {
                           <p className="text-xs text-muted-foreground mb-1">Re: {opp.contactName}</p>
                           <div className="flex justify-between items-end">
                             <p className="text-sm font-semibold text-foreground">{opp.amountDisplay}</p>
-                            <p className="text-xs text-muted-foreground">{new Date(opp.targetCloseDate).toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric'})}</p>
+                            <p className="text-xs text-muted-foreground">{isClient ? new Date(opp.targetCloseDate).toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric'}) : '...'}</p>
                           </div>
                         </div>
                       </div>
