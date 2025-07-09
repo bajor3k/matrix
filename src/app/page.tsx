@@ -71,13 +71,13 @@ export default function LandingPage() {
             </motion.div>
           </div>
           
-          <div className="my-24 md:my-32 px-4">
+          <div className="my-24 md:my-32 px-4 neon-glow rounded-lg">
             <Image
               src="/dashboard-screenshot.png"
               alt="Matrix Client Analytics Dashboard Screenshot"
               width={1200}
               height={836}
-              className="rounded-lg shadow-2xl border border-white/10 mx-auto"
+              className="rounded-lg border border-white/10 mx-auto"
               priority
             />
           </div>
