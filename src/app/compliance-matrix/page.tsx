@@ -28,31 +28,19 @@ const summaryCardsData = [
   { title: "Unsuitable Products", value: "3", icon: Ban, iconClassName: "text-slate-400" },
 ];
 
-const getFlagBadgeVariant = (flag: FlaggedActivity["complianceFlag"]): "destructive" | "default" => {
-  switch (flag) {
-    case "Excessive Trading":
-      return "destructive";
-    case "No Activity":
-    case "Trade Frequency Anomaly":
-    case "Unsuitable Product":
-      return "default";
-    default:
-      return "default";
-  }
-};
-
 const getFlagBadgeClassName = (flag: FlaggedActivity["complianceFlag"]): string => {
+    const baseClasses = "text-white font-semibold border-transparent";
     switch (flag) {
       case "Excessive Trading":
-        return "bg-red-500/20 border-red-500/50 text-red-400";
-      case "No Activity":
-        return "bg-gray-500/20 border-gray-500/50 text-gray-400";
+        return `${baseClasses} bg-[#A259F7] animate-glow-trading`;
       case "Trade Frequency Anomaly":
-        return "bg-yellow-500/20 border-yellow-500/50 text-yellow-400";
+        return `${baseClasses} bg-[#6C3FC5] animate-glow-anomaly`;
+      case "No Activity":
+        return `${baseClasses} bg-[#A084E8] animate-glow-activity`;
       case "Unsuitable Product":
-        return "bg-slate-500/20 border-slate-500/50 text-slate-400";
+        return `${baseClasses} bg-[#7300E6] animate-glow-unsuitable`;
       default:
-        return "";
+        return "bg-slate-500/20 border-slate-500/50 text-slate-400";
     }
   };
 
@@ -165,7 +153,7 @@ export default function ComplianceMatrixPage() {
                 <TableCell className="text-right">{activity.tradesLast30Days}</TableCell>
                 <TableCell className="text-right">{activity.daysSinceLastTrade === null ? "N/A" : activity.daysSinceLastTrade}</TableCell>
                 <TableCell>
-                  <Badge variant={getFlagBadgeVariant(activity.complianceFlag)} className={getFlagBadgeClassName(activity.complianceFlag)}>
+                  <Badge className={getFlagBadgeClassName(activity.complianceFlag)}>
                     {activity.complianceFlag}
                   </Badge>
                 </TableCell>
