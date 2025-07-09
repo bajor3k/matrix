@@ -16,29 +16,26 @@ interface FlaggedActivity {
   accountType: "Managed" | "Non-Managed";
   tradesLast30Days: number;
   daysSinceLastTrade: number | null;
-  complianceFlag: "Excessive Trading" | "No Activity" | "Trade Frequency Anomaly" | "Unsuitable Product";
+  complianceFlag: "Excessive Trading" | "No Activity" | "Trade Frequency Anomaly";
   aiSuggestion: string;
 }
 
 const summaryCardsData = [
-  { title: "Total Flagged Accounts", value: "16", icon: ShieldAlert, iconClassName: "text-red-400" },
-  { title: "Excessive Trading", value: "4", icon: RepeatIcon, iconClassName: "text-red-400" },
-  { title: "Inactive Managed Accounts", value: "6", icon: UserX, iconClassName: "text-gray-400" },
-  { title: "Trade Frequency Anomalies", value: "3", icon: Activity, iconClassName: "text-yellow-400" },
-  { title: "Unsuitable Products", value: "3", icon: Ban, iconClassName: "text-slate-400" },
+  { title: "Total Flagged Accounts", value: "12", icon: ShieldAlert, iconClassName: "text-red-400" },
+  { title: "Excessive Trading", value: "3", icon: RepeatIcon, iconClassName: "text-red-400" },
+  { title: "No Activity", value: "4", icon: UserX, iconClassName: "text-green-400" },
+  { title: "Trade Frequency Anomalies", value: "5", icon: Activity, iconClassName: "text-purple-400" },
 ];
 
 const getFlagBadgeClassName = (flag: FlaggedActivity["complianceFlag"]): string => {
-    const baseClasses = "text-white font-semibold border-transparent";
+    const baseClasses = "text-white font-bold border-transparent whitespace-nowrap";
     switch (flag) {
       case "Excessive Trading":
-        return `${baseClasses} bg-[#A259F7] animate-glow-trading`;
+        return `${baseClasses} bg-red-600 animate-glow-trading`;
       case "Trade Frequency Anomaly":
-        return `${baseClasses} bg-[#6C3FC5] animate-glow-anomaly`;
+        return `${baseClasses} bg-[#A259F7] animate-glow-anomaly`;
       case "No Activity":
-        return `${baseClasses} bg-[#A084E8] animate-glow-activity`;
-      case "Unsuitable Product":
-        return `${baseClasses} bg-[#7300E6] animate-glow-unsuitable`;
+        return `${baseClasses} bg-green-500 animate-glow-activity`;
       default:
         return "bg-slate-500/20 border-slate-500/50 text-slate-400";
     }
@@ -67,13 +64,13 @@ export default function ComplianceMatrixPage() {
       { id: "fa3", accountType: "Non-Managed", tradesLast30Days: 5, daysSinceLastTrade: 3, complianceFlag: "Trade Frequency Anomaly", aiSuggestion: "Verify trades align with recent market news or client instructions." },
       { id: "fa4", accountType: "Managed", tradesLast30Days: 0, daysSinceLastTrade: 62, complianceFlag: "No Activity", aiSuggestion: "Schedule portfolio review; ensure strategy alignment." },
       { id: "fa5", accountType: "Non-Managed", tradesLast30Days: 98, daysSinceLastTrade: 2, complianceFlag: "Excessive Trading", aiSuggestion: "Assess if self-directed trading aligns with stated goals." },
-      { id: "fa6", accountType: "Managed", tradesLast30Days: 10, daysSinceLastTrade: 5, complianceFlag: "Unsuitable Product", aiSuggestion: "Review account holdings (e.g., Leveraged ETFs) against the client's stated conservative risk tolerance. Document suitability or reposition." },
+      { id: "fa6", accountType: "Managed", tradesLast30Days: 10, daysSinceLastTrade: 5, complianceFlag: "Trade Frequency Anomaly", aiSuggestion: "Review account holdings (e.g., Leveraged ETFs) against the client's stated conservative risk tolerance. Document suitability or reposition." },
       { id: "fa7", accountType: "Managed", tradesLast30Days: 2, daysSinceLastTrade: 80, complianceFlag: "No Activity", aiSuggestion: "Client nearing RMD age. Verify account activity expectations and confirm objectives." },
       { id: "fa8", accountType: "Non-Managed", tradesLast30Days: 200, daysSinceLastTrade: 1, complianceFlag: "Excessive Trading", aiSuggestion: "High trading volume. Cross-reference with documented strategy and risk profile." },
-      { id: "fa9", accountType: "Managed", tradesLast30Days: 1, daysSinceLastTrade: 15, complianceFlag: "Unsuitable Product", aiSuggestion: "Account holds highly speculative assets inconsistent with 'Education Fund' goal. Review IPS and realign strategy." },
+      { id: "fa9", accountType: "Managed", tradesLast30Days: 1, daysSinceLastTrade: 15, complianceFlag: "Trade Frequency Anomaly", aiSuggestion: "Account holds highly speculative assets inconsistent with 'Education Fund' goal. Review IPS and realign strategy." },
       { id: "fa10", accountType: "Managed", tradesLast30Days: 15, daysSinceLastTrade: 2, complianceFlag: "Trade Frequency Anomaly", aiSuggestion: "Recent shift to high-frequency, small-cap trades. Verify if this aligns with a recent change in client strategy or IPS." },
       { id: "fa11", accountType: "Managed", tradesLast30Days: 0, daysSinceLastTrade: 95, complianceFlag: "No Activity", aiSuggestion: "Extended period of no activity in a balanced portfolio. Initiate client contact for review." },
-      { id: "fa12", accountType: "Managed", tradesLast30Days: 7, daysSinceLastTrade: 8, complianceFlag: "Unsuitable Product", aiSuggestion: "Portfolio includes non-income generating, high-volatility crypto assets. Re-evaluate suitability for income objective." }
+      { id: "fa12", accountType: "Managed", tradesLast30Days: 7, daysSinceLastTrade: 8, complianceFlag: "Trade Frequency Anomaly", aiSuggestion: "Portfolio includes non-income generating, high-volatility crypto assets. Re-evaluate suitability for income objective." }
     ];
     
     const dataWithAccountNumbers = initialData.map(item => ({
@@ -91,7 +88,7 @@ export default function ComplianceMatrixPage() {
     <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Compliance Matrix</h1>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {summaryCardsData.map((card, index) => (
           <PlaceholderCard
             key={index}
@@ -114,7 +111,6 @@ export default function ComplianceMatrixPage() {
                 <SelectItem value="excessive_trading">Excessive Trading</SelectItem>
                 <SelectItem value="no_activity">No Activity</SelectItem>
                 <SelectItem value="trade_frequency">Trade Frequency Anomaly</SelectItem>
-                <SelectItem value="unsuitable_product">Unsuitable Product</SelectItem>
                 </SelectContent>
             </Select>
              <Select defaultValue="all_accounts">

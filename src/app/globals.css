@@ -340,33 +340,25 @@
 
 /* Compliance Badge Glow Animations */
 @keyframes pulse-glow-trading {
-  0%, 100% { box-shadow: 0 0 3px rgba(162, 89, 247, 0.4); }
-  50% { box-shadow: 0 0 10px rgba(162, 89, 247, 0.8); }
+  0%, 100% { box-shadow: 0 0 4px rgba(220, 38, 38, 0.5); } /* red-600 */
+  50% { box-shadow: 0 0 12px rgba(220, 38, 38, 0.9); }
 }
 .animate-glow-trading {
-  animation: pulse-glow-trading 2s infinite ease-in-out;
+  animation: pulse-glow-trading 1.8s infinite ease-in-out;
 }
 
 @keyframes pulse-glow-anomaly {
-  0%, 100% { box-shadow: 0 0 3px rgba(108, 63, 197, 0.4); }
-  50% { box-shadow: 0 0 10px rgba(108, 63, 197, 0.8); }
+  0%, 100% { box-shadow: 0 0 4px rgba(162, 89, 247, 0.5); } /* #A259F7 */
+  50% { box-shadow: 0 0 12px rgba(162, 89, 247, 0.9); }
 }
 .animate-glow-anomaly {
-  animation: pulse-glow-anomaly 2s infinite ease-in-out;
+  animation: pulse-glow-anomaly 1.8s infinite ease-in-out;
 }
 
 @keyframes pulse-glow-activity {
-  0%, 100% { box-shadow: 0 0 3px rgba(160, 132, 232, 0.4); }
-  50% { box-shadow: 0 0 10px rgba(160, 132, 232, 0.8); }
+  0%, 100% { box-shadow: 0 0 4px rgba(16, 185, 129, 0.5); } /* green-500 */
+  50% { box-shadow: 0 0 12px rgba(16, 185, 129, 0.9); }
 }
 .animate-glow-activity {
-  animation: pulse-glow-activity 2s infinite ease-in-out;
-}
-
-@keyframes pulse-glow-unsuitable {
-  0%, 100% { box-shadow: 0 0 3px rgba(115, 0, 230, 0.4); }
-  50% { box-shadow: 0 0 10px rgba(115, 0, 230, 0.8); }
-}
-.animate-glow-unsuitable {
-  animation: pulse-glow-unsuitable 2s infinite ease-in-out;
+  animation: pulse-glow-activity 1.8s infinite ease-in-out;
 }
