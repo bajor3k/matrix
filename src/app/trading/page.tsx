@@ -74,7 +74,7 @@ export default function TradingPage() {
             {/* Left Column */}
             <div className="lg:col-span-1 flex flex-col gap-6">
                 {/* Account Overview Card */}
-                <Card className="shadow-card-custom border-transparent">
+                <Card id="account-overview" className="shadow-card-custom border-transparent">
                     <CardHeader>
                         <CardTitle>Account Overview</CardTitle>
                     </CardHeader>
@@ -103,7 +103,7 @@ export default function TradingPage() {
                 </Card>
 
                 {/* Order History Card */}
-                <Card className="shadow-card-custom border-transparent">
+                <Card id="order-history" className="shadow-card-custom border-transparent">
                     <CardHeader>
                         <CardTitle>Order History</CardTitle>
                         <CardDescription>Recent account orders</CardDescription>
@@ -130,7 +130,7 @@ export default function TradingPage() {
             {/* Center Column */}
             <div className="lg:col-span-1 flex flex-col gap-6">
                  {/* Trade Ticket Card */}
-                <Card className="shadow-card-custom border-transparent h-full">
+                <Card id="trade-ticket" className="shadow-card-custom border-transparent h-full">
                     <CardHeader>
                         <CardTitle>Trade Ticket</CardTitle>
                     </CardHeader>
@@ -186,7 +186,7 @@ export default function TradingPage() {
              {/* Right Column */}
             <div className="lg:col-span-1 flex flex-col gap-6">
                  {/* Watchlist Card */}
-                <Card className="shadow-card-custom border-transparent">
+                <Card id="watchlist" className="shadow-card-custom border-transparent">
                     <CardHeader className="flex-row items-center justify-between">
                         <CardTitle>Watchlist</CardTitle>
                         <Button variant="ghost" size="icon" className="h-7 w-7"><Plus className="h-4 w-4"/></Button>
@@ -211,7 +211,7 @@ export default function TradingPage() {
                     </CardContent>
                 </Card>
                  {/* Trading Chart Card */}
-                <Card className="shadow-card-custom border-transparent h-[400px] flex flex-col">
+                <Card id="chart" className="shadow-card-custom border-transparent h-[400px] flex flex-col">
                     <CardHeader>
                         <CardTitle>Chart</CardTitle>
                         <CardDescription>Real-time market data for selected symbol</CardDescription>

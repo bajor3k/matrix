@@ -37,6 +37,8 @@ import {
   Calculator,
   GraduationCap,
   Link as LinkIcon,
+  Eye,
+  Clock,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -99,7 +101,11 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Settings', icon: Settings, href: '/portal/settings' },
   ],
   'Trading': [
-    { name: 'Trading Center', icon: CandlestickChart, href: '/trading' }
+    { name: 'Account', icon: Package, href: '/trading#account-overview' },
+    { name: 'Watchlist', icon: Eye, href: '/trading#watchlist' },
+    { name: 'Trade Ticket', icon: ArrowRightLeft, href: '/trading#trade-ticket' },
+    { name: 'Order History', icon: Clock, href: '/trading#order-history' },
+    { name: 'Chart', icon: CandlestickChart, href: '/trading#chart' }
   ],
   'Resources': [
     { name: 'Quick Links', icon: LinkIcon, href: '/resource-matrix?tab=quick_links' },
