@@ -37,12 +37,12 @@ export default function LandingPage() {
       <main className="flex-1 px-6 md:px-8 pt-24 md:pt-32">
         <div className="w-full max-w-7xl mx-auto text-center">
           
-          <h1 className="font-extrabold text-[20vw] leading-none text-black dark:text-white tracking-tighter mb-8 [text-shadow:48px_64px_24px_rgba(0,0,0,0.21)]">
+          <h1 className="font-extrabold text-[20vw] leading-none text-black dark:text-white tracking-tighter mb-4 [text-shadow:48px_64px_24px_rgba(0,0,0,0.21)]">
             matrix
           </h1>
 
           <div className="flex items-center justify-center gap-4">
-            <p className="text-4xl md:text-5xl font-bold tracking-wide text-black dark:text-white">
+            <p className="text-4xl md:text-5xl font-bold tracking-wide text-muted-foreground">
                 see how deep the rabbit hole goes…
             </p>
             <motion.div
@@ -79,9 +79,6 @@ export default function LandingPage() {
               className="rounded-lg border border-white/10 mx-auto neon-glow"
               priority
             />
-          </div>
-
-          <div className="py-24 md:py-32 space-y-8 md:space-y-12">
             <div className="my-16 px-4">
               <Image
                 src="/compliance-analytics.png"
@@ -92,6 +89,9 @@ export default function LandingPage() {
                 data-ai-hint="compliance dashboard"
               />
             </div>
+          </div>
+
+          <div className="py-24 md:py-32 space-y-8 md:space-y-12">
             <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
               Analytics that power your business.
             </h2>
