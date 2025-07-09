@@ -346,7 +346,7 @@ export default function ClientPortalOpportunitiesPage() {
                         draggable="true"
                         onDragStart={(e) => handleDragStart(e, opp.id, column.id)}
                         onDragEnd={handleDragEnd}
-                        className="bg-black/50 p-3 rounded-md shadow-md border border-border/30 cursor-grab active:cursor-grabbing flex items-start gap-1.5"
+                        className="bg-muted/50 p-3 rounded-md shadow-[0_2px_12px_0_rgba(0,0,0,0.16)] border border-border/30 cursor-grab active:cursor-grabbing flex items-start gap-1.5"
                       >
                         <GripVertical className="h-5 w-5 text-muted-foreground/50 mt-0.5 shrink-0 cursor-grab" />
                         <div className="flex-grow">
