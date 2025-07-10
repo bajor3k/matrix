@@ -45,9 +45,9 @@ export default function TradingChartPage() {
   return (
     <TooltipProvider>
       <main className="h-full flex flex-col p-4 md:p-6 bg-background text-foreground gap-4">
-        <div className="flex-1 flex gap-4">
+        <div className="flex flex-col md:flex-row h-full gap-4">
           {/* Main Chart Card (Left Side) */}
-          <div className="w-2/3 flex flex-col bg-card rounded-2xl shadow-lg p-4 gap-4">
+          <div className="w-full md:w-2/3 flex flex-col bg-card rounded-2xl shadow-lg p-4 gap-4">
             {/* Header Section */}
             <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-baseline gap-3 flex-wrap">
@@ -69,16 +69,13 @@ export default function TradingChartPage() {
 
             {/* Chart Area */}
             <div 
-                className="flex-1 w-full relative rounded-lg overflow-hidden"
-                style={{
-                  background: "radial-gradient(ellipse at bottom, #9634c8 0%, #18141f 70%, #000 100%)"
-                }}
+                className="flex-1 w-full relative rounded-lg overflow-hidden bg-background"
             >
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={mockChartData} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#9634c8" stopOpacity={0.4}/>
+                      <stop offset="5%" stopColor="#9634c8" stopOpacity={0.12}/>
                       <stop offset="95%" stopColor="#9634c8" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
@@ -98,11 +95,14 @@ export default function TradingChartPage() {
                     type="monotone"
                     dataKey="price"
                     stroke="#9634c8"
-                    strokeWidth={2}
+                    strokeWidth={3}
                     fillOpacity={1}
                     fill="url(#chartFill)"
                     dot={false}
                     activeDot={{ r: 6, strokeWidth: 2, fill: 'hsl(var(--background))', stroke: '#9634c8' }}
+                    style={{
+                       filter: 'drop-shadow(0 0 8px #9634c8aa)'
+                    }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -152,32 +152,18 @@ export default function TradingChartPage() {
           </div>
 
           {/* Right Side Placeholder Cards */}
-          <div className="w-1/3 flex flex-col gap-4">
-            <PlaceholderCard title="Placeholder 1" className="h-[150px]">
+          <div className="w-full md:w-1/3 flex flex-col gap-4">
+            <PlaceholderCard title="Order Book" className="flex-1">
                 <div className="flex items-center justify-center h-full text-muted-foreground">
                     Blank Card
                 </div>
             </PlaceholderCard>
-            <PlaceholderCard title="Placeholder 2" className="flex-1">
+            <PlaceholderCard title="Trade Ticket" className="flex-1">
                 <div className="flex items-center justify-center h-full text-muted-foreground">
                     Blank Card
                 </div>
             </PlaceholderCard>
           </div>
-        </div>
-        
-        {/* Bottom Placeholder Cards */}
-        <div className="h-1/4 flex gap-4">
-            <PlaceholderCard title="Placeholder 3" className="flex-1">
-                <div className="flex items-center justify-center h-full text-muted-foreground">
-                    Blank Card
-                </div>
-            </PlaceholderCard>
-            <PlaceholderCard title="Placeholder 4" className="flex-1">
-                <div className="flex items-center justify-center h-full text-muted-foreground">
-                    Blank Card
-                </div>
-            </PlaceholderCard>
         </div>
       </main>
     </TooltipProvider>
