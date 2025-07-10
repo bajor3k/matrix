@@ -78,8 +78,8 @@ export default function TradingChartPage() {
                 <AreaChart data={mockChartData} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4}/>
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#9634c8" stopOpacity={0.4}/>
+                      <stop offset="95%" stopColor="#9634c8" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.3)" vertical={false} />
@@ -97,12 +97,12 @@ export default function TradingChartPage() {
                   <Area
                     type="monotone"
                     dataKey="price"
-                    stroke="hsl(var(--primary))"
+                    stroke="#9634c8"
                     strokeWidth={2}
                     fillOpacity={1}
                     fill="url(#chartFill)"
                     dot={false}
-                    activeDot={{ r: 6, strokeWidth: 2, fill: 'hsl(var(--background))', stroke: 'hsl(var(--primary))' }}
+                    activeDot={{ r: 6, strokeWidth: 2, fill: 'hsl(var(--background))', stroke: '#9634c8' }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
