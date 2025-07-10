@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -69,6 +70,10 @@ export default function LandingPage() {
               </div>
             </motion.div>
           </div>
+
+          <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-black dark:text-white mt-12">
+            One Login. One Matrix.
+          </h2>
           
           <div className="my-24 md:my-32 px-4">
             <Image
@@ -95,9 +100,6 @@ export default function LandingPage() {
             <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
               Analytics that power your business.
             </h2>
-            <h3 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white mt-8">
-              One Login. One Matrix.
-            </h3>
           </div>
 
         </div>
