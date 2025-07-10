@@ -71,7 +71,7 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
-          <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-black dark:text-white mt-12">
+          <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-black dark:text-white mt-36">
             One Login. One Matrix.
           </h2>
           
