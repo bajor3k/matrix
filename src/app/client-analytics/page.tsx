@@ -105,7 +105,7 @@ export default function ClientAnalyticsPage() {
     <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Client Analytics</h1>
       
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
         {metricCardsData.map((card, index) => (
           <PlaceholderCard
             key={index}
@@ -117,7 +117,7 @@ export default function ClientAnalyticsPage() {
         ))}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 mb-8">
         <PlaceholderCard title="Top 10 Clients by AUM">
           <div className="space-y-3 mt-1">
             {topClientsByAumData.map((client) => {
@@ -131,7 +131,7 @@ export default function ClientAnalyticsPage() {
                   <div className="flex items-center gap-3 w-2/5 sm:w-1/2">
                     <div className="w-full h-2 bg-[hsl(var(--chart-1))]/20 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-[hsl(var(--chart-1))] rounded-full"
+                        className="h-full bg-[hsl(var(--chart-1))]"
                         style={{
                           width: `${barWidthPercentage}%`,
                           filter: "drop-shadow(0 0 5px hsl(var(--chart-1)))",
@@ -186,7 +186,7 @@ export default function ClientAnalyticsPage() {
         </PlaceholderCard>
       </div>
 
-      <PlaceholderCard title="Top Clients Age 65+ with Children as Beneficiaries" icon={Users}>
+      <PlaceholderCard title="Top Clients Age 65+ with Children as Beneficiaries" icon={Users} className="mt-8">
         <div className="space-y-4 mt-2">
           {topClients65PlusWithChildBeneficiariesData.map((client) => (
             <div key={client.id} className="p-3 rounded-md border border-border/20 hover:bg-muted/10 transition-colors duration-150 ease-out">
