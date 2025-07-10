@@ -68,7 +68,12 @@ export default function TradingChartPage() {
             </header>
 
             {/* Chart Area */}
-            <div className="flex-1 w-full relative">
+            <div 
+                className="flex-1 w-full relative rounded-lg overflow-hidden"
+                style={{
+                  background: "radial-gradient(ellipse at bottom, #9634c8 0%, #18141f 70%, #000 100%)"
+                }}
+            >
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={mockChartData} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                   <defs>
