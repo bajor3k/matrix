@@ -43,7 +43,7 @@ export default function LandingPage() {
           </h1>
 
           <div className="flex items-center justify-center gap-4">
-            <p className="text-4xl md:text-5xl font-bold tracking-wide text-muted-foreground">
+            <p className="text-3xl md:text-4xl font-bold tracking-wide text-muted-foreground">
                 see how deep the rabbit hole goes…
             </p>
             <motion.div
