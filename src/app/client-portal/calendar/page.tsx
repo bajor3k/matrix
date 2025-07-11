@@ -415,62 +415,64 @@ export default function ClientPortalCalendarPage() {
               )}
               {activeView === 'week' && (
                  <div className="overflow-x-auto relative">
-                    <table className="w-full border-collapse bg-card">
-                        <thead>
-                            <tr>
-                                <th className="w-16 p-2 border-r border-b border-border/30 text-xs text-muted-foreground font-normal sticky left-0 bg-card z-10"></th>
-                                {weekDates.map(day => (
-                                    <th key={day.dateNumber} className="p-2 border-r border-b border-border/30 text-center">
-                                        <div className={cn("text-xs font-medium", isToday(day.fullDate) ? "text-primary" : "text-muted-foreground")}>{day.dayName}</div>
-                                        <div className={cn("text-2xl font-semibold mt-1", isToday(day.fullDate) ? "text-primary bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center mx-auto" : "text-foreground")}>{day.dateNumber}</div>
-                                    </th>
-                                ))}
-                            </tr>
-                            <tr>
-                                <td className="w-16 p-2 border-r border-b border-border/30 text-xs text-muted-foreground sticky left-0 bg-card z-10 text-center">all-day</td>
-                                {weekDates.map((day, i) => {
-                                  const allDayEvents = getEventsForAllDaySlot(day.fullDate);
-                                  return (
-                                    <td key={`all-day-${i}`} className="h-10 border-r border-b border-border/30 hover:bg-muted/20 cursor-pointer p-1 align-top" onClick={() => openQuickAddDialogForDate(weekDates[i].fullDate)}>
-                                      <div className="space-y-0.5">
-                                        {allDayEvents.map(event => (
-                                          <div key={event.id} className="text-[10px] bg-blue-500/70 text-white p-0.5 rounded truncate">{event.title}</div>
-                                        ))}
-                                      </div>
-                                    </td>
-                                  );
-                                })}
-                            </tr>
-                        </thead>
-                        <tbody className="relative">
-                            {hoursToDisplay.map((hourLabel, hourIndex) => (
-                                <tr key={hourLabel}>
-                                    <td className="w-16 p-2 border-r border-b border-border/30 text-xs text-muted-foreground align-top text-right sticky left-0 bg-card z-10">
-                                        {hourIndex > 0 && hourLabel}
-                                    </td>
-                                    {weekDates.map((day, dayIndex) => {
-                                      const slotStart = setMinutes(setHours(new Date(day.fullDate), hourIndex), 0);
-                                      const slotEnd = addHours(slotStart, 1);
-                                      const slotEvents = getEventsForSlot(slotStart, slotEnd);
-                                      return (
-                                        <td key={`${hourLabel}-${dayIndex}`} className="h-16 border-r border-b border-border/30 hover:bg-muted/20 cursor-pointer p-1 align-top" onClick={() => openQuickAddDialogForDate(weekDates[dayIndex].fullDate, hourIndex)}>
-                                          <div className="space-y-0.5">
-                                            {slotEvents.map(event => (
-                                              <div key={event.id} className="text-[10px] bg-green-500/70 text-white p-0.5 rounded truncate">{event.title}</div>
-                                            ))}
-                                          </div>
-                                        </td>
-                                      );
-                                    })}
-                                </tr>
-                            ))}
-                             {currentTimePosition !== null && isSameDay(startOfWeek(currentDateForCalendar, { weekStartsOn: 0 }), startOfWeek(new Date(), { weekStartsOn: 0 })) && (
-                              <div className="absolute w-[calc(100%-4rem)] h-0.5 bg-red-500 z-10 right-0" style={{ top: `${currentTimePosition}%` }}>
-                                <div className="absolute -left-1.5 -top-1.5 w-3.5 h-3.5 bg-red-500 rounded-full"></div>
-                              </div>
-                            )}
-                        </tbody>
-                    </table>
+                    <div className="relative">
+                      <table className="w-full border-collapse bg-card">
+                          <thead>
+                              <tr>
+                                  <th className="w-16 p-2 border-r border-b border-border/30 text-xs text-muted-foreground font-normal sticky left-0 bg-card z-10"></th>
+                                  {weekDates.map(day => (
+                                      <th key={day.dateNumber} className="p-2 border-r border-b border-border/30 text-center">
+                                          <div className={cn("text-xs font-medium", isToday(day.fullDate) ? "text-primary" : "text-muted-foreground")}>{day.dayName}</div>
+                                          <div className={cn("text-2xl font-semibold mt-1", isToday(day.fullDate) ? "text-primary bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center mx-auto" : "text-foreground")}>{day.dateNumber}</div>
+                                      </th>
+                                  ))}
+                              </tr>
+                              <tr>
+                                  <td className="w-16 p-2 border-r border-b border-border/30 text-xs text-muted-foreground sticky left-0 bg-card z-10 text-center">all-day</td>
+                                  {weekDates.map((day, i) => {
+                                    const allDayEvents = getEventsForAllDaySlot(day.fullDate);
+                                    return (
+                                      <td key={`all-day-${i}`} className="h-10 border-r border-b border-border/30 hover:bg-muted/20 cursor-pointer p-1 align-top" onClick={() => openQuickAddDialogForDate(weekDates[i].fullDate)}>
+                                        <div className="space-y-0.5">
+                                          {allDayEvents.map(event => (
+                                            <div key={event.id} className="text-[10px] bg-blue-500/70 text-white p-0.5 rounded truncate">{event.title}</div>
+                                          ))}
+                                        </div>
+                                      </td>
+                                    );
+                                  })}
+                              </tr>
+                          </thead>
+                          <tbody className="relative">
+                              {hoursToDisplay.map((hourLabel, hourIndex) => (
+                                  <tr key={hourLabel}>
+                                      <td className="w-16 p-2 border-r border-b border-border/30 text-xs text-muted-foreground align-top text-right sticky left-0 bg-card z-10">
+                                          {hourIndex > 0 && hourLabel}
+                                      </td>
+                                      {weekDates.map((day, dayIndex) => {
+                                        const slotStart = setMinutes(setHours(new Date(day.fullDate), hourIndex), 0);
+                                        const slotEnd = addHours(slotStart, 1);
+                                        const slotEvents = getEventsForSlot(slotStart, slotEnd);
+                                        return (
+                                          <td key={`${hourLabel}-${dayIndex}`} className="h-16 border-r border-b border-border/30 hover:bg-muted/20 cursor-pointer p-1 align-top" onClick={() => openQuickAddDialogForDate(weekDates[dayIndex].fullDate, hourIndex)}>
+                                            <div className="space-y-0.5">
+                                              {slotEvents.map(event => (
+                                                <div key={event.id} className="text-[10px] bg-green-500/70 text-white p-0.5 rounded truncate">{event.title}</div>
+                                              ))}
+                                            </div>
+                                          </td>
+                                        );
+                                      })}
+                                  </tr>
+                              ))}
+                          </tbody>
+                      </table>
+                      {currentTimePosition !== null && isSameDay(startOfWeek(currentDateForCalendar, { weekStartsOn: 0 }), startOfWeek(new Date(), { weekStartsOn: 0 })) && (
+                        <div className="absolute w-[calc(100%-4rem)] h-0.5 bg-red-500 z-10 right-0" style={{ top: `calc(7rem + ${((24 * 4 * (currentTimePosition / 100)) - (4* (currentTimePosition/100)))}rem)`}}>
+                          <div className="absolute -left-1.5 -top-1.5 w-3.5 h-3.5 bg-red-500 rounded-full"></div>
+                        </div>
+                      )}
+                    </div>
                 </div>
               )}
               {activeView === 'day' && (
