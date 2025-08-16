@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
+    { id: 'Reports', title: 'Reports' },
     { id: 'CRM', title: 'CRM' },
     { id: 'Analytics', title: 'Analytics' },
     { id: 'Resources', title: 'Resources' },
@@ -34,6 +35,7 @@ export const toolbarSections: ToolbarSection[] = [
 ];
 
 export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
+  'Reports': [],
   'CRM': [
     { name: 'Home', icon: HomeIcon, href: '/client-portal/home' },
     { name: 'Email', icon: Mail, href: '/client-portal/email' },
@@ -44,7 +46,6 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Opportunities', icon: Briefcase, href: '/client-portal/opportunities' },
     { name: 'Projects', icon: KanbanSquare, href: '/client-portal/projects'},
     { name: 'Files', icon: FileText, href: '/client-portal/files'},
-    { name: 'Reports', icon: BarChart2, href: '/client-portal/reports' },
   ],
   'Analytics': [
     { name: 'Asset Analytics', icon: BarChart3, href: '/asset-analytics' },
@@ -57,7 +58,6 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Contribution Matrix', icon: TrendingUp, href: '/contribution-matrix' },
     { name: 'Project X', icon: FlaskConical, href: '/project-x' },
   ],
-  'Portal': [],
   'Resources': [
     { name: 'Quick Links', icon: LinkIcon, href: '/resource-matrix?tab=quick_links' },
     { name: 'Documents', icon: FileText, href: '/resource-matrix?tab=documents' },

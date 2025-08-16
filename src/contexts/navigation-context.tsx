@@ -12,7 +12,7 @@ export interface NavItem {
   hasNewAlerts?: boolean;
 }
 
-export type ToolbarSectionKey = 'CRM' | 'Analytics' | 'Outreach' | 'Portal' | 'Trading' | 'Resources' | 'Jira' | 'Matrix Pro';
+export type ToolbarSectionKey = 'Reports' | 'CRM' | 'Analytics' | 'Resources' | 'Jira';
 
 export interface ToolbarSection {
   id: ToolbarSectionKey;
@@ -27,7 +27,7 @@ interface NavigationContextType {
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
 
 export function NavigationProvider({ children }: { children: ReactNode }) {
-  const [activeSection, setActiveSection] = useState<ToolbarSectionKey>('CRM');
+  const [activeSection, setActiveSection] = useState<ToolbarSectionKey>('Reports');
 
   return (
     <NavigationContext.Provider value={{ activeSection, setActiveSection }}>
