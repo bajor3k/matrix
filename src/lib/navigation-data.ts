@@ -49,7 +49,6 @@ export const toolbarSections: ToolbarSection[] = [
     { id: 'Trading', title: 'Trading' },
     { id: 'Resources', title: 'Resources' },
     { id: 'Jira', title: 'Jira' },
-    { id: 'Matrix Pro', title: 'Matrix Pro' },
 ];
 
 export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
@@ -105,7 +104,7 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Watchlist', icon: Eye, href: '/trading#watchlist' },
     { name: 'Trade Ticket', icon: ArrowRightLeft, href: '/trading#trade-ticket' },
     { name: 'Order History', icon: Clock, href: '/trading#order-history' },
-    { name: 'Chart', icon: CandlestickChart, href: '/trading#chart' }
+    { name: 'Chart', icon: CandlestickChart, href: '/trading' }
   ],
   'Resources': [
     { name: 'Quick Links', icon: LinkIcon, href: '/resource-matrix?tab=quick_links' },
