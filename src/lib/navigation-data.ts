@@ -44,7 +44,6 @@ import {
 export const toolbarSections: ToolbarSection[] = [
     { id: 'CRM', title: 'CRM' },
     { id: 'Analytics', title: 'Analytics' },
-    { id: 'Outreach', title: 'Outreach' },
     { id: 'Portal', title: 'Portal' },
     { id: 'Trading', title: 'Trading' },
     { id: 'Resources', title: 'Resources' },
@@ -75,15 +74,7 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Contribution Matrix', icon: TrendingUp, href: '/contribution-matrix' },
     { name: 'Project X', icon: FlaskConical, href: '/project-x' },
   ],
-  'Outreach': [
-    { name: 'Inbox', icon: Mail, href: '/outreach/inbox' },
-    { name: 'Compose', icon: Edit3, href: '/outreach/compose' },
-    { name: 'Campaigns', icon: Send, href: '/outreach/campaigns' },
-    { name: 'Templates', icon: FileText, href: '/outreach/templates' },
-    { name: 'Engagement', icon: BarChart2, href: '/outreach/engagement' },
-    { name: 'Compliance', icon: Shield, href: '/outreach/compliance' },
-    { name: 'Settings', icon: Settings, href: '/outreach/settings' },
-  ],
+  'Outreach': [],
   'Portal': [
     { name: 'Overview', icon: LayoutGrid, href: '/portal/overview' },
     { name: 'Profile', icon: UserCircle2, href: '/portal/profile' },
