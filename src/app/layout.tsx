@@ -97,6 +97,7 @@ export default function RootLayout({
         {isReportPage && (
           <>
             <Script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" strategy="beforeInteractive" />
+            <Script src="https://cdn.jsdelivr.net/npm/luckysheet/dist/plugins/js/plugin.js" strategy="lazyOnload" />
             <Script src="https://cdn.jsdelivr.net/npm/luckysheet/dist/luckysheet.umd.js" strategy="lazyOnload" />
           </>
         )}
