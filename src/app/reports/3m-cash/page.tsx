@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -66,9 +67,9 @@ export default function ReportsExcelPage() {
   useEffect(() => {
     let cancelled = false;
 
-    async function load() {
-      if (typeof window === "undefined" || !window.luckysheet) {
-        // Wait for luckysheet to be loaded by the script tag
+    function load() {
+      // Check for both the object and its create method. Retry if not ready.
+      if (typeof window === "undefined" || !window.luckysheet?.create) {
         setTimeout(load, 100);
         return;
       }
@@ -76,8 +77,12 @@ export default function ReportsExcelPage() {
       if (cancelled) return;
 
       // Create a clean, blank workbook
-      window.luckysheet?.destroy?.();
-
+      try {
+        window.luckysheet.destroy();
+      } catch (e) {
+        console.warn("Luckysheet destroy failed (might be first load):", e);
+      }
+      
       window.luckysheet.create({
         container: containerRef.current?.id ?? "luckysheet",
         lang: "en",
