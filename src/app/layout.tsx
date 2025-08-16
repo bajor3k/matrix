@@ -2,6 +2,7 @@
 
 import { Inter, Roboto_Mono } from 'next/font/google';
 import * as React from 'react';
+import Script from 'next/script';
 import './globals.css';
 import Sidebar from '@/components/Sidebar';
 import { Toaster } from "@/components/ui/toaster";
@@ -93,6 +94,12 @@ export default function RootLayout({
             </NavigationProvider>
           </AuthProvider>
         </ThemeProvider>
+        {isReportPage && (
+          <>
+            <Script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" strategy="beforeInteractive" />
+            <Script src="https://cdn.jsdelivr.net/npm/luckysheet/dist/luckysheet.umd.js" strategy="lazyOnload" />
+          </>
+        )}
       </body>
     </html>
   );

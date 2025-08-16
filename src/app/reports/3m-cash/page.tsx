@@ -67,9 +67,12 @@ export default function ReportsExcelPage() {
     let cancelled = false;
 
     async function load() {
-      if (typeof window === "undefined") return;
-      // Dynamic import via ESM build
-      await import("luckysheet"); // exposes window.luckysheet
+      if (typeof window === "undefined" || !window.luckysheet) {
+        // Wait for luckysheet to be loaded by the script tag
+        setTimeout(load, 100);
+        return;
+      }
+      
       if (cancelled) return;
 
       // Create a clean, blank workbook
