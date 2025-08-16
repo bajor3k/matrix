@@ -10,7 +10,6 @@ import {
   Workflow,
   KanbanSquare,
   FileText,
-  BarChart2,
   BarChart3,
   Users,
   TrendingUp,
@@ -35,7 +34,14 @@ export const toolbarSections: ToolbarSection[] = [
 ];
 
 export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
-  'Reports': [],
+  'Reports': [
+    { name: '3M Cash', icon: FileText, href: '/reports/3m-cash' },
+    { name: 'Cash Alerts', icon: FileText, href: '/reports/cash-alerts' },
+    { name: 'Margin Notify', icon: FileText, href: '/reports/margin-notify' },
+    { name: 'Advisor Summary', icon: FileText, href: '/reports/advisor-summary' },
+    { name: 'Billing Coverage', icon: FileText, href: '/reports/billing-coverage' },
+    { name: 'KYC', icon: FileText, href: '/reports/kyc' },
+  ],
   'CRM': [
     { name: 'Home', icon: HomeIcon, href: '/client-portal/home' },
     { name: 'Email', icon: Mail, href: '/client-portal/email' },
