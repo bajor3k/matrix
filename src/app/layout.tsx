@@ -32,6 +32,7 @@ export default function RootLayout({
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const isLandingPage = pathname === '/';
+  const isReportPage = pathname.startsWith('/reports');
 
   React.useEffect(() => {
     if (isMobile) {
@@ -54,6 +55,16 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+          {isReportPage && (
+            <>
+              <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/plugins/css/pluginsCss.css' />
+              <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/plugins/plugins.css' />
+              <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/css/luckysheet.css' />
+              <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/assets/iconfont/iconfont.css' />
+            </>
+          )}
+      </head>
       <body className={`${inter.variable} ${robotoMono.variable} antialiased flex flex-col h-screen`}>
         <ThemeProvider
           attribute="class"
