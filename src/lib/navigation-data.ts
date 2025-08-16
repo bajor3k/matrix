@@ -45,7 +45,6 @@ export const toolbarSections: ToolbarSection[] = [
     { id: 'CRM', title: 'CRM' },
     { id: 'Analytics', title: 'Analytics' },
     { id: 'Portal', title: 'Portal' },
-    { id: 'Trading', title: 'Trading' },
     { id: 'Resources', title: 'Resources' },
     { id: 'Jira', title: 'Jira' },
 ];
@@ -74,7 +73,6 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Contribution Matrix', icon: TrendingUp, href: '/contribution-matrix' },
     { name: 'Project X', icon: FlaskConical, href: '/project-x' },
   ],
-  'Outreach': [],
   'Portal': [
     { name: 'Overview', icon: LayoutGrid, href: '/portal/overview' },
     { name: 'Profile', icon: UserCircle2, href: '/portal/profile' },
@@ -90,13 +88,6 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Tasks', icon: ListChecks, href: '/portal/tasks' },
     { name: 'Settings', icon: Settings, href: '/portal/settings' },
   ],
-  'Trading': [
-    { name: 'Account', icon: Package, href: '/trading#account-overview' },
-    { name: 'Watchlist', icon: Eye, href: '/trading#watchlist' },
-    { name: 'Trade Ticket', icon: ArrowRightLeft, href: '/trading#trade-ticket' },
-    { name: 'Order History', icon: Clock, href: '/trading#order-history' },
-    { name: 'Chart', icon: CandlestickChart, href: '/trading' }
-  ],
   'Resources': [
     { name: 'Quick Links', icon: LinkIcon, href: '/resource-matrix?tab=quick_links' },
     { name: 'Documents', icon: FileText, href: '/resource-matrix?tab=documents' },
@@ -105,5 +96,5 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Training', icon: GraduationCap, href: '/resource-matrix?tab=training' },
   ],
   'Jira': [],
-  'Matrix Pro': [],
+  'Trading': [], // Keep empty array to prevent type errors, though it won't be displayed
 };
