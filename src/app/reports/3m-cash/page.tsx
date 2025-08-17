@@ -200,38 +200,18 @@ export default function ReportsExcelPage() {
 
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen p-4"
       style={{ background: styles.bg, color: styles.text }}
     >
       <main className="main fullbleed">
         {isReadmeOnly ? (
-          // ===== README-ONLY LAYOUT FOR 3M CASH =====
-            <section
-              aria-labelledby="readme-heading"
-              className="rounded-2xl border shadow"
-              style={{
-                background: "var(--card)",
-                borderColor: "var(--border)",
-                boxShadow: "var(--shadow)",
-                marginTop: "0",          // flush under the app header
-                marginBottom: "1rem",
-              }}
-            >
-              {/* Card header */}
-              <div
-                className="px-4 py-3 border-b"
-                style={{ borderColor: "var(--border)" }}
-              >
-                <h3 id="readme-heading" className="text-sm font-semibold" style={{ color: "var(--text-strong)" }}>
-                  README
-                </h3>
-              </div>
-
-              {/* Card body (blank for now; we’ll fill with instructions later) */}
-              <div className="px-4 py-4" style={{ color: "var(--text)" }}>
-                {/* intentionally empty */}
-              </div>
-            </section>
+            <div className="bg-[#1c1c1c] text-white rounded-2xl shadow-md p-6 mb-6 w-full">
+              <h2 className="text-lg font-semibold mb-3">README</h2>
+              <p className="text-sm text-gray-300">
+                Add your instructions here. This card will hold all README content and
+                always display at the top of the 3M Cash report page.
+              </p>
+            </div>
         ) : (
           // ===== NORMAL LAYOUT FOR OTHER REPORTS (EXCEL + README) =====
           <>
