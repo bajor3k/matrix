@@ -46,9 +46,6 @@ export default function ReportsExcelPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [lsLoaded, setLsLoaded] = useState(false);
   const [activeReport, setActiveReport] = useState("3M Cash"); // whatever you select on the left
-  const [readme, setReadme] = useState(
-    "### README\n\nDescribe the Python scripts you’ll run on this dataset. Include parameter notes, expected outputs, and data constraints here."
-  );
 
   // Dark palette (jet/graphite/steel).
   const styles = {
@@ -61,6 +58,7 @@ export default function ReportsExcelPage() {
     white: "#ffffff",
     border: "rgba(199,204,212,0.10)",
     ring: "rgba(199,204,212,0.18)",
+    textStrong: "#ffffff"
   };
 
   // Init Luckysheet once on mount
@@ -267,37 +265,28 @@ export default function ReportsExcelPage() {
             </div>
           </section>
 
-          {/* README pane (fixed height) */}
+          {/* README pane — flat, blank */}
           <section
-            className="rounded-xl border overflow-auto p-4"
+            aria-labelledby="readme-heading"
+            className="rounded-xl border overflow-hidden"
             style={{
               height: "18vh",
               background: styles.card,
               borderColor: styles.border,
             }}
           >
-            <div className="flex items-center gap-2 mb-2">
-              <div
-                style={{ background: "#acb3bd" }}
-                className="h-2 w-2 rounded-full"
-              />
-              <h3 className="text-sm font-semibold" style={{ color: styles.white }}>
+            {/* Title row only */}
+            <div
+              className="px-4 py-3 border-b"
+              style={{ borderColor: styles.border, background: styles.card }}
+            >
+              <h3 id="readme-heading" className="text-sm font-semibold" style={{ color: styles.textStrong }}>
                 README
               </h3>
-              <span className="text-xs" style={{ color: styles.textMuted }}>
-                (Describe scripts, inputs, and outputs)
-              </span>
             </div>
-            <textarea
-              value={readme}
-              onChange={(e) => setReadme(e.target.value)}
-              className="w-full h-[calc(18vh-3rem)] resize-none rounded-lg p-3 outline-none"
-              style={{
-                background: styles.cardRaised,
-                color: styles.text,
-                border: `1px solid ${styles.border}`,
-              }}
-            />
+
+            {/* Blank body — intentionally empty for now */}
+            <div className="w-full h-full" />
           </section>
         </div>
       </div>
