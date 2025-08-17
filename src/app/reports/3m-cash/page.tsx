@@ -13,6 +13,9 @@ declare global {
   }
 }
 
+// Any report in this set will render README-only
+const README_ONLY = new Set(["3M Cash", "3M Cache"]);
+
 type SheetMeta = { name: string; index: string };
 
 const NAV_W = "14rem"; // adjust if your left nav width changes
@@ -58,11 +61,24 @@ export default function ReportsExcelPage() {
     white: "#ffffff",
     border: "rgba(199,204,212,0.10)",
     ring: "rgba(199,204,212,0.18)",
-    textStrong: "#ffffff"
+    textStrong: "#ffffff",
   };
+
+  const isReadmeOnly = README_ONLY.has(activeReport);
+
+  // Tear down Luckysheet if we're on a README-only report
+  useEffect(() => {
+    if (!isReadmeOnly) return;
+    try {
+      (window as any).luckysheet?.destroy?.();
+    } catch {}
+  }, [isReadmeOnly]);
+
 
   // Init Luckysheet once on mount
   useEffect(() => {
+    if (isReadmeOnly) return; // don't init on 3M Cash
+
     let cancelled = false;
 
     function load() {
@@ -116,7 +132,7 @@ export default function ReportsExcelPage() {
       } catch {}
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isReadmeOnly]);
 
   // ---- Import Excel/CSV into current workbook (replaces all sheets) ----
   async function onImport(file: File) {
@@ -176,120 +192,97 @@ export default function ReportsExcelPage() {
   // ---- File input helper ----
   const fileRef = useRef<HTMLInputElement | null>(null);
 
+  const handleImportChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f) await onImport(f);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
   return (
     <div
       className="min-h-screen"
       style={{ background: styles.bg, color: styles.text }}
     >
-      {/* Top bar (your product nav lives above this page area) */}
-
-      {/* Main content grid: left scripts, right editor */}
-      <div className="pt-4" style={{ paddingLeft: "1rem" }}>
-        <div className="mx-auto max-w-[1400px] px-4 space-y-6">
-
-          {/* Excel Pane (header + canvas + bottom tabs live in luckysheet) */}
-          <section
-            className="rounded-xl border overflow-hidden flex flex-col"
-            style={{
-              height: "72vh",                 // feel free to use a CSS var
-              background: styles.card,
-              borderColor: styles.border,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
-            }}
-          >
-            {/* Header row */}
-            <div
-              className="flex items-center justify-between px-3 py-2.5 border-b"
-              style={{ borderColor: styles.border, background: styles.cardHeader }}
-            >
-              <div className="flex items-center gap-3">
-                <h2 style={{ color: styles.white }} className="text-sm font-semibold">
-                  {activeReport}
-                </h2>
-                <span className="text-xs" style={{ color: styles.textMuted }}>
-                  Excel-style canvas
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept=".xlsx,.xls,.csv"
-                  className="hidden"
-                  onChange={async (e) => {
-                    const f = e.target.files?.[0];
-                    if (f) await onImport(f);
-                    if (fileRef.current) fileRef.current.value = "";
-                  }}
-                />
-                <button
-                  onClick={() => fileRef.current?.click()}
-                  className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                  style={{
-                    background: styles.cardRaised,
-                    color: styles.text,
-                    border: `1px solid ${styles.border}`,
-                  }}
-                >
-                  <Upload size={16} /> Import Excel/CSV
-                </button>
-                <button
-                  onClick={() => exportActive("csv")}
-                  className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                  style={{
-                    background: styles.cardRaised,
-                    color: styles.text,
-                    border: `1px solid ${styles.border}`,
-                  }}
-                >
-                  <Download size={16} /> Export CSV
-                </button>
-                <button
-                  onClick={() => exportActive("xlsx")}
-                  className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                  style={{
-                    background: styles.cardRaised,
-                    color: styles.text,
-                    border: `1px solid ${styles.border}`,
-                  }}
-                >
-                  <Download size={16} /> Export XLSX
-                </button>
-              </div>
-            </div>
-
-            {/* Luckysheet canvas */}
-            <div className="flex-1 overflow-hidden">
-              <div id="luckysheet" ref={containerRef} className="h-full w-full" />
-            </div>
-          </section>
-
-          {/* README pane — flat, blank */}
+      <main className="main fullbleed">
+        {isReadmeOnly ? (
+          // ===== README-ONLY LAYOUT FOR 3M CASH =====
           <section
             aria-labelledby="readme-heading"
-            className="rounded-xl border overflow-hidden"
+            className="rounded-none border-b"
             style={{
-              height: "18vh",
-              background: styles.card,
-              borderColor: styles.border,
+              // take most of the viewport; adjust if you want shorter
+              minHeight: "calc(100vh - 3.5rem)", // below header
+              background: "var(--card)",
+              borderColor: "var(--border)",
             }}
           >
             {/* Title row only */}
-            <div
-              className="px-4 py-3 border-b"
-              style={{ borderColor: styles.border, background: styles.card }}
-            >
-              <h3 id="readme-heading" className="text-sm font-semibold" style={{ color: styles.textStrong }}>
+            <div className="px-3 py-3 border-b" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
+              <h3 id="readme-heading" className="text-sm font-semibold" style={{ color: "var(--text-strong)" }}>
                 README
               </h3>
             </div>
-
-            {/* Blank body — intentionally empty for now */}
+            {/* Blank body for now */}
             <div className="w-full h-full" />
           </section>
-        </div>
-      </div>
+        ) : (
+          // ===== NORMAL LAYOUT FOR OTHER REPORTS (EXCEL + README) =====
+          <>
+            {/* Excel pane */}
+            <section
+              className="rounded-none border-b"
+              style={{
+                height: "72vh",
+                background: "var(--card)",
+                borderColor: "var(--border)",
+              }}
+            >
+              {/* Header row with Import/Export */}
+              <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-sm font-semibold" style={{ color: "var(--text-strong)" }}>
+                    {activeReport}
+                  </h2>
+                  <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                    Excel-style canvas
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {/* Import/Export buttons */}
+                  <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleImportChange} />
+                  <button onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
+                    style={{ background: "var(--card-raised)", color: "var(--text)", border: `1px solid var(--border)` }}>
+                    <Upload size={16} /> Import Excel/CSV
+                  </button>
+                  <button onClick={() => exportActive("csv")} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
+                    style={{ background: "var(--card-raised)", color: "var(--text)", border: `1px solid var(--border)` }}>
+                    <Download size={16} /> Export CSV
+                  </button>
+                  <button onClick={() => exportActive("xlsx")} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
+                    style={{ background: "var(--card-raised)", color: "var(--text)", border: `1px solid var(--border)` }}>
+                    <Download size={16} /> Export XLSX
+                  </button>
+                </div>
+              </div>
+
+              {/* Luckysheet canvas */}
+              <div className="h-[calc(72vh-44px)] overflow-hidden">
+                <div id="luckysheet" ref={containerRef} className="h-full w-full" />
+              </div>
+            </section>
+
+            {/* README (flat, as previously implemented) */}
+            <section aria-labelledby="readme-heading" className="rounded-none" style={{ height: "18vh", background: "var(--card)" }}>
+              <div className="px-3 py-3 border-b" style={{ borderColor: "var(--border)" }}>
+                <h3 id="readme-heading" className="text-sm font-semibold" style={{ color: "var(--text-strong)" }}>
+                  README
+                </h3>
+              </div>
+              <div className="w-full h-full" />
+            </section>
+          </>
+        )}
+      </main>
     </div>
   );
 }
