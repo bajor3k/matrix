@@ -359,3 +359,9 @@
 .animate-glow-activity {
   animation: pulse-glow-activity 1.8s infinite ease-in-out;
 }
+
+#luckysheet,
+.luckysheet {
+  width: 100% !important;
+  height: 100% !important;
+}

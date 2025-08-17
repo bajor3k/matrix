@@ -61,7 +61,7 @@ export default function ReportsExcelPage() {
     white: "#ffffff",
     border: "rgba(199,204,212,0.10)",
     ring: "rgba(199,204,212,0.18)",
-    textStrong: "#ffffff",
+    shadow: "0 10px 30px rgba(0,0,0,0.35)",
   };
 
   const isReadmeOnly = README_ONLY.has(activeReport);
@@ -206,25 +206,32 @@ export default function ReportsExcelPage() {
       <main className="main fullbleed">
         {isReadmeOnly ? (
           // ===== README-ONLY LAYOUT FOR 3M CASH =====
-          <section
-            aria-labelledby="readme-heading"
-            className="rounded-none border-b"
-            style={{
-              // take most of the viewport; adjust if you want shorter
-              minHeight: "calc(100vh - 3.5rem)", // below header
-              background: "var(--card)",
-              borderColor: "var(--border)",
-            }}
-          >
-            {/* Title row only */}
-            <div className="px-3 py-3 border-b" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
-              <h3 id="readme-heading" className="text-sm font-semibold" style={{ color: "var(--text-strong)" }}>
-                README
-              </h3>
-            </div>
-            {/* Blank body for now */}
-            <div className="w-full h-full" />
-          </section>
+            <section
+              aria-labelledby="readme-heading"
+              className="rounded-2xl border shadow"
+              style={{
+                background: "var(--card)",
+                borderColor: "var(--border)",
+                boxShadow: "var(--shadow)",
+                marginTop: "0",          // flush under the app header
+                marginBottom: "1rem",
+              }}
+            >
+              {/* Card header */}
+              <div
+                className="px-4 py-3 border-b"
+                style={{ borderColor: "var(--border)" }}
+              >
+                <h3 id="readme-heading" className="text-sm font-semibold" style={{ color: "var(--text-strong)" }}>
+                  README
+                </h3>
+              </div>
+
+              {/* Card body (blank for now; we’ll fill with instructions later) */}
+              <div className="px-4 py-4" style={{ color: "var(--text)" }}>
+                {/* intentionally empty */}
+              </div>
+            </section>
         ) : (
           // ===== NORMAL LAYOUT FOR OTHER REPORTS (EXCEL + README) =====
           <>
