@@ -397,22 +397,34 @@
   padding-right: 0 !important;
 }
 
-/* Grid holding the three cards */
-.cash-upload-grid{
-  display:grid;                          /* use CSS grid for three columns */
-  grid-template-columns: repeat(3, minmax(280px, 1fr)); /* 3 responsive columns */
-  gap:20px;                               /* space between cards */
-  margin-top:16px;                        /* spacing under README card */
+/* --- Centering wrapper: makes the whole group sit in the middle of the page --- */
+.cash-upload-wrap{
+  display:flex;                  /* flex container to center children */
+  justify-content:center;        /* center horizontally */
+  width:100%;                    /* fill available width */
+  padding-inline: 16px;          /* small side padding so it never touches edges */
 }
 
-/* Card container */
+/* --- Grid: shrink to content & center precisely --- */
+.cash-upload-grid{
+  display:grid;                  /* grid for cards */
+  grid-template-columns: repeat(3, 360px); /* fixed card widths for clean rhythm */
+  gap:24px;                      /* space between cards */
+  width: fit-content;            /* <— critical: grid shrinks to its content */
+  margin-inline: auto;           /* center the grid block itself */
+}
+
+/* Ensure each card renders at intended width (works with fit-content) */
 .upload-card{
+  width:360px;                   /* match grid column width */
+  max-width:360px;
   background:#141418;                     /* dark panel background */
   border:1px solid #26263a;               /* subtle border */
   border-radius:16px;                     /* rounded corners */
   box-shadow:0 10px 30px rgba(0,0,0,.35); /* soft shadow */
   padding:16px;                           /* inner padding */
 }
+
 
 /* Inner layout */
 .upload-inner{ display:flex; flex-direction:column; gap:12px; }
@@ -477,7 +489,23 @@
 }
 .preview-table tbody tr:hover{ background:#13131d; }
 
-/* Responsive: stack to 1 column on narrow screens */
-@media (max-width: 1100px){
-  .cash-upload-grid{ grid-template-columns: 1fr; }
+/* --------- Responsive breakpoints (still centered) --------- */
+/* 2 columns when space is tighter */
+@media (max-width: 1199px){
+  .cash-upload-grid{
+    grid-template-columns: repeat(2, 360px);
+  }
+}
+
+/* 1 column on phones / narrow windows */
+@media (max-width: 767px){
+  .cash-upload-grid{
+    grid-template-columns: 360px;
+  }
+}
+
+/* If you want the single column to be fluid below 360px: */
+@media (max-width: 380px){
+  .cash-upload-grid{ grid-template-columns: min(360px, 100%); }
+  .upload-card{ width: min(360px, 100%); max-width: 100%; }
 }

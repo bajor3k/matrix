@@ -199,6 +199,7 @@ export default function ReportsExcelPage() {
   
   // This effect runs once on component mount to wire up the upload cards.
   useEffect(() => {
+    if(!isReadmeOnly) return;
     /* ------------------ CONFIG ------------------ */
     const UPLOAD_SLOTS = [
       { id: 'cash-upload-a', title: 'Report A (e.g., Households)' },
@@ -407,7 +408,7 @@ export default function ReportsExcelPage() {
         templateEl.remove();
       }
     };
-  }, [isReadmeOnly]); // Rerun if we switch between readme and excel views
+  }, [isReadmeOnly]);
 
   return (
     <div
@@ -426,12 +427,14 @@ export default function ReportsExcelPage() {
               </div>
 
               {/* ====== 3M CASH — UPLOAD CARDS ====== */}
-              <section id="cash-upload-section" className="cash-upload-grid">
-                {/* Card instances (A/B/C). Change titles as you like. */}
-                <div id="cash-upload-a" className="upload-card"></div>
-                <div id="cash-upload-b" className="upload-card"></div>
-                <div id="cash-upload-c" className="upload-card"></div>
-              </section>
+              <div className="cash-upload-wrap">
+                <section id="cash-upload-section" className="cash-upload-grid">
+                  {/* Card instances (A/B/C). Change titles as you like. */}
+                  <div id="cash-upload-a" className="upload-card"></div>
+                  <div id="cash-upload-b" className="upload-card"></div>
+                  <div id="cash-upload-c" className="upload-card"></div>
+                </section>
+              </div>
 
             </div>
         ) : (
@@ -447,7 +450,7 @@ export default function ReportsExcelPage() {
               }}
             >
               {/* Header row with Import/Export */}
-              <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
+              <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: "var(--border)", background: "var(--cardHeader)" }}>
                 <div className="flex items-center gap-3">
                   <h2 className="text-sm font-semibold" style={{ color: styles.white }}>
                     {activeReport}
