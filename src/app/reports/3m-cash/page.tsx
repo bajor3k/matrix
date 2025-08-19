@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -17,18 +18,7 @@ const README_ONLY = new Set(["3M Cash", "3M Cache"]);
 
 type SheetMeta = { name: string; index: string };
 
-const NAV_W = "14rem"; // adjust if your left nav width changes
-
 // ---- Excel helpers ----
-function colLabel(n: number): string {
-  let s = "";
-  let x = n;
-  while (x >= 0) {
-    s = String.fromCharCode((x % 26) + 65) + s;
-    x = Math.floor(x / 26) - 1;
-  }
-  return s;
-}
 function aoaFromLuckysheetData(lsData: any[][]): (string | number)[][] {
   // Luckysheet's "data" is rows of cells (may be null/undefined).
   return (lsData || []).map((row: any[]) =>
@@ -254,6 +244,7 @@ export default function ReportsExcelPage() {
 
     /* ------------------ UTILITIES ------------------ */
     function formatBytes(bytes) {
+      if (!bytes) return "0 Bytes";
       const mb = bytes / (1024 * 1024);
       return mb >= 1 ? `${mb.toFixed(2)} MB` : `${(bytes / 1024).toFixed(0)} KB`;
     }
@@ -411,11 +402,7 @@ export default function ReportsExcelPage() {
   }, [isReadmeOnly]);
 
   return (
-    <div
-      className="min-h-screen p-4"
-      style={{ background: styles.bg, color: styles.text }}
-    >
-      <main className="main fullbleed">
+    <div className="p-4">
         {isReadmeOnly ? (
            <div className="p-4">
               <div className="bg-[#1c1c1c] text-white rounded-2xl shadow-md p-6 mb-6 w-full">
@@ -442,15 +429,15 @@ export default function ReportsExcelPage() {
           <>
             {/* Excel pane */}
             <section
-              className="rounded-none border-b"
+              className="rounded-xl border overflow-hidden flex flex-col"
               style={{
                 height: "72vh",
-                background: "var(--card)",
-                borderColor: "var(--border)",
+                background: "var(--card, #0d0d10)",
+                borderColor: "var(--border, rgba(199,204,212,0.10))",
               }}
             >
               {/* Header row with Import/Export */}
-              <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: "var(--border)", background: "var(--cardHeader)" }}>
+              <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: "var(--border, rgba(199,204,212,0.10))", background: "var(--card-header, #1b1c21)" }}>
                 <div className="flex items-center gap-3">
                   <h2 className="text-sm font-semibold" style={{ color: styles.white }}>
                     {activeReport}
@@ -463,15 +450,15 @@ export default function ReportsExcelPage() {
                   {/* Import/Export buttons */}
                   <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleImportChange} />
                   <button onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid var(--border)` }}>
+                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid var(--border, rgba(199,204,212,0.10))` }}>
                     <Upload size={16} /> Import Excel/CSV
                   </button>
                   <button onClick={() => exportActive("csv")} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid var(--border)` }}>
+                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid var(--border, rgba(199,204,212,0.10))` }}>
                     <Download size={16} /> Export CSV
                   </button>
                   <button onClick={() => exportActive("xlsx")} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid var(--border)` }}>
+                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid var(--border, rgba(199,204,212,0.10))` }}>
                     <Download size={16} /> Export XLSX
                   </button>
                 </div>
@@ -484,17 +471,30 @@ export default function ReportsExcelPage() {
             </section>
 
             {/* README (flat, as previously implemented) */}
-            <section aria-labelledby="readme-heading" className="rounded-none" style={{ height: "18vh", background: "var(--card)" }}>
-              <div className="px-3 py-3 border-b" style={{ borderColor: "var(--border)" }}>
-                <h3 id="readme-heading" className="text-sm font-semibold" style={{ color: styles.white }}>
+            <section
+              aria-labelledby="readme-heading"
+              className="rounded-xl border overflow-hidden mt-4"
+              style={{
+                height: "18vh",
+                background: "var(--card, #0d0d10)",
+                borderColor: "var(--border, rgba(199,204,212,0.10))",
+              }}
+            >
+              {/* Title row only */}
+              <div
+                className="px-4 py-3 border-b"
+                style={{ borderColor: "var(--border, rgba(199,204,212,0.10))", background: "var(--card, #0d0d10)" }}
+              >
+                <h3 id="readme-heading" className="text-sm font-semibold" style={{ color: 'var(--foreground, #ffffff)' }}>
                   README
                 </h3>
               </div>
+
+              {/* Blank body — intentionally empty for now */}
               <div className="w-full h-full" />
             </section>
           </>
         )}
-      </main>
     </div>
   );
 }

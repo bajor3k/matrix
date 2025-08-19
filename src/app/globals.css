@@ -58,6 +58,12 @@
     /* Shadows (Light) */
     --shadow-card-custom: 0 2px 8px 0 rgba(60,60,60,0.08);
     --shadow-card-custom-hover: 0 4px 12px 0 rgba(60,60,60,0.1);
+    
+    /* Layout vars */
+    --header-h: 3.5rem; /* 56px */
+    --nav-w-expanded: 14rem;
+    --nav-w-collapsed: 4rem;
+    --nav-w: var(--nav-w-expanded);
   }
  
   .dark {
@@ -364,6 +370,26 @@
 .luckysheet {
   width: 100% !important;
   height: 100% !important;
+}
+
+/* Main Layout */
+.app-main {
+  position: relative;
+  margin-left: var(--nav-w);
+  padding-top: var(--header-h); /* push below header */
+  width: calc(100vw - var(--nav-w));
+  min-height: 100vh;
+}
+
+.fullbleed {
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.content-pad {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 /* Sidebar widths */
