@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -209,6 +208,49 @@ export default function ReportsExcelPage() {
     const FILE_LIMIT_MB = 10;
     const ALLOWED = ['xlsx', 'xls', 'csv'];
 
+    // Create and inject the template HTML imperatively
+    const templateId = 'upload-card-template';
+    if (!document.getElementById(templateId)) {
+        const templateEl = document.createElement('template');
+        templateEl.id = templateId;
+        templateEl.innerHTML = `
+            <div class="upload-inner">
+                <div class="upload-header">
+                    <div class="upload-title">Upload</div>
+                    <div class="upload-sub">Drop an Excel/CSV file or click to browse.</div>
+                </div>
+                <label class="dropzone">
+                    <input type="file" class="file-input" accept=".xlsx,.xls,.csv" hidden />
+                    <div class="dropzone-body">
+                    <div class="drop-icon">⬆️</div>
+                    <div class="drop-title">Drag & drop here</div>
+                    <div class="drop-sub">or <span class="browse">browse</span> from your computer</div>
+                    <div class="drop-note">Max 10MB • .xlsx / .xls / .csv</div>
+                    </div>
+                </label>
+                <div class="file-info" hidden>
+                    <div class="file-row">
+                    <span class="file-name">—</span>
+                    <span class="file-size">—</span>
+                    </div>
+                    <div class="file-status ok" hidden>Parsed successfully.</div>
+                    <div class="file-status err" hidden></div>
+                </div>
+                <div class="preview" hidden>
+                    <div class="preview-title">Preview (first 10 rows)</div>
+                    <div class="preview-table-wrap">
+                    <table class="preview-table">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(templateEl);
+    }
+
+
     /* ------------------ UTILITIES ------------------ */
     function formatBytes(bytes) {
       const mb = bytes / (1024 * 1024);
@@ -267,7 +309,7 @@ export default function ReportsExcelPage() {
       const host = document.getElementById(slot.id);
       if (!host) return; // Don't run if the host element isn't on the page
       
-      const tpl = document.getElementById('upload-card-template') as HTMLTemplateElement;
+      const tpl = document.getElementById(templateId) as HTMLTemplateElement;
       if (!tpl) return;
       
       // Clear host to prevent duplicates on re-renders in strict mode
@@ -347,7 +389,9 @@ export default function ReportsExcelPage() {
     }
 
     /* ------------------ INIT: create the three cards ------------------ */
-    UPLOAD_SLOTS.forEach(makeUploader);
+    if (isReadmeOnly) {
+        UPLOAD_SLOTS.forEach(makeUploader);
+    }
 
     const onUploadParsed = (e) => {
       console.log('Parsed upload:', e.detail);
@@ -358,8 +402,12 @@ export default function ReportsExcelPage() {
     // Cleanup listeners when the component unmounts
     return () => {
       window.removeEventListener('upload:parsed', onUploadParsed);
+      const templateEl = document.getElementById(templateId);
+      if (templateEl) {
+        templateEl.remove();
+      }
     };
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, [isReadmeOnly]); // Rerun if we switch between readme and excel views
 
   return (
     <div
@@ -385,48 +433,6 @@ export default function ReportsExcelPage() {
                 <div id="cash-upload-c" className="upload-card"></div>
               </section>
 
-              {/* Template used to stamp each card UI */}
-              <template id="upload-card-template">
-                <div className="upload-inner">
-                  <div className="upload-header">
-                    <div className="upload-title">Upload</div> {/* replaced per instance */}
-                    <div className="upload-sub">Drop an Excel/CSV file or click to browse.</div>
-                  </div>
-
-                  {/* Drop zone area */}
-                  <label className="dropzone">
-                    <input type="file" className="file-input" accept=".xlsx,.xls,.csv" hidden />
-                    <div className="dropzone-body">
-                      <div className="drop-icon">⬆️</div>
-                      <div className="drop-title">Drag & drop here</div>
-                      <div className="drop-sub">or <span className="browse">browse</span> from your computer</div>
-                      <div className="drop-note">Max 10MB • .xlsx / .xls / .csv</div>
-                    </div>
-                  </label>
-
-                  {/* File info / errors */}
-                  <div className="file-info" hidden>
-                    <div className="file-row">
-                      <span className="file-name">—</span>
-                      <span className="file-size">—</span>
-                    </div>
-                    <div className="file-status ok" hidden>Parsed successfully.</div>
-                    <div className="file-status err" hidden></div>
-                  </div>
-
-                  {/* Preview table */}
-                  <div className="preview" hidden>
-                    <div className="preview-title">Preview (first 10 rows)</div>
-                    <div className="preview-table-wrap">
-                      <table className="preview-table">
-                        <thead></thead>
-                        <tbody></tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </template>
-
             </div>
         ) : (
           // ===== NORMAL LAYOUT FOR OTHER REPORTS (EXCEL + README) =====
@@ -443,10 +449,10 @@ export default function ReportsExcelPage() {
               {/* Header row with Import/Export */}
               <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
                 <div className="flex items-center gap-3">
-                  <h2 className="text-sm font-semibold" style={{ color: "var(--text)" }}>
+                  <h2 className="text-sm font-semibold" style={{ color: styles.white }}>
                     {activeReport}
                   </h2>
-                  <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                  <span className="text-xs" style={{ color: styles.textMuted }}>
                     Excel-style canvas
                   </span>
                 </div>
@@ -454,15 +460,15 @@ export default function ReportsExcelPage() {
                   {/* Import/Export buttons */}
                   <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleImportChange} />
                   <button onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                    style={{ background: "var(--card-raised)", color: "var(--text)", border: `1px solid var(--border)` }}>
+                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid var(--border)` }}>
                     <Upload size={16} /> Import Excel/CSV
                   </button>
                   <button onClick={() => exportActive("csv")} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                    style={{ background: "var(--card-raised)", color: "var(--text)", border: `1px solid var(--border)` }}>
+                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid var(--border)` }}>
                     <Download size={16} /> Export CSV
                   </button>
                   <button onClick={() => exportActive("xlsx")} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                    style={{ background: "var(--card-raised)", color: "var(--text)", border: `1px solid var(--border)` }}>
+                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid var(--border)` }}>
                     <Download size={16} /> Export XLSX
                   </button>
                 </div>
