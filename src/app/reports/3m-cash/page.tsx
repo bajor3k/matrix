@@ -192,7 +192,7 @@ export default function ReportsExcelPage() {
     if(!isReadmeOnly) return;
     /* ------------------ CONFIG ------------------ */
     const UPLOAD_SLOTS = [
-      { id: 'cash-upload-a', title: 'Report A (e.g., Households)' },
+      { id: 'cash-upload-a', title: 'Report ID: PYCASH' },
       { id: 'cash-upload-b', title: 'Report B (e.g., Accounts)' },
       { id: 'cash-upload-c', title: 'Report C (e.g., Fees)' },
     ];
@@ -243,15 +243,17 @@ export default function ReportsExcelPage() {
 
 
     /* ------------------ UTILITIES ------------------ */
-    function formatBytes(bytes) {
+    function formatBytes(bytes: number) {
       if (!bytes) return "0 Bytes";
       const mb = bytes / (1024 * 1024);
       return mb >= 1 ? `${mb.toFixed(2)} MB` : `${(bytes / 1024).toFixed(0)} KB`;
     }
 
-    function renderPreview(container, columns, rows) {
+    function renderPreview(container: HTMLElement, columns: string[], rows: any[]) {
       const thead = container.querySelector('thead');
       const tbody = container.querySelector('tbody');
+      if (!thead || !tbody) return;
+
       thead.innerHTML = '';
       tbody.innerHTML = '';
 
@@ -274,7 +276,7 @@ export default function ReportsExcelPage() {
       });
     }
 
-    function parseFile(file, onDone, onError) {
+    function parseFile(file: File, onDone: (data: { rows: any[]; columns: string[] }) => void, onError: (message: string) => void) {
       if (typeof XLSX === 'undefined') {
         onError('File parsing library (SheetJS) is not loaded.');
         return;
@@ -297,7 +299,7 @@ export default function ReportsExcelPage() {
     }
 
     /* ------------------ CARD FACTORY ------------------ */
-    function makeUploader(slot) {
+    function makeUploader(slot: {id: string, title: string}) {
       const host = document.getElementById(slot.id);
       if (!host) return; // Don't run if the host element isn't on the page
       
@@ -321,7 +323,7 @@ export default function ReportsExcelPage() {
       const previewWrap = node.querySelector('.preview') as HTMLDivElement;
       const table = node.querySelector('.preview-table') as HTMLTableElement;
 
-      const showError = (msg) => {
+      const showError = (msg: string) => {
         info.hidden = false;
         okEl.hidden = true;
         errEl.hidden = false;
@@ -329,7 +331,7 @@ export default function ReportsExcelPage() {
         previewWrap.hidden = true;
       };
 
-      const handleFile = (file) => {
+      const handleFile = (file: File) => {
         const ext = (file.name.split('.').pop() || '').toLowerCase();
         if (!ALLOWED.includes(ext)) {
           showError('Unsupported file type. Please upload .xlsx, .xls, or .csv');
@@ -367,10 +369,10 @@ export default function ReportsExcelPage() {
       });
 
       ['dragenter', 'dragover'].forEach(evt =>
-        dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add('is-drag'); })
+        dropzone.addEventListener(evt, (e) => { e.preventDefault(); (e.currentTarget as HTMLElement).classList.add('is-drag'); })
       );
       ['dragleave', 'drop'].forEach(evt =>
-        dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove('is-drag'); })
+        dropzone.addEventListener(evt, (e) => { e.preventDefault(); (e.currentTarget as HTMLElement).classList.remove('is-drag'); })
       );
       dropzone.addEventListener('drop', (e) => {
         const file = e.dataTransfer?.files?.[0];
@@ -385,8 +387,8 @@ export default function ReportsExcelPage() {
         UPLOAD_SLOTS.forEach(makeUploader);
     }
 
-    const onUploadParsed = (e) => {
-      console.log('Parsed upload:', e.detail);
+    const onUploadParsed = (e: Event) => {
+      console.log('Parsed upload:', (e as CustomEvent).detail);
     };
     
     window.addEventListener('upload:parsed', onUploadParsed);
@@ -396,7 +398,7 @@ export default function ReportsExcelPage() {
       window.removeEventListener('upload:parsed', onUploadParsed);
       const templateEl = document.getElementById(templateId);
       if (templateEl) {
-        templateEl.remove();
+        // templateEl.remove(); // Let's not remove it, in case of fast re-renders
       }
     };
   }, [isReadmeOnly]);
@@ -404,7 +406,7 @@ export default function ReportsExcelPage() {
   return (
     <div className="p-4">
         {isReadmeOnly ? (
-           <div className="p-4">
+            <div className="p-4">
               <div className="bg-[#1c1c1c] text-white rounded-2xl shadow-md p-6 mb-6 w-full">
                 <h2 className="text-lg font-semibold mb-3">README</h2>
                 <p className="text-sm text-gray-300">
@@ -432,12 +434,12 @@ export default function ReportsExcelPage() {
               className="rounded-xl border overflow-hidden flex flex-col"
               style={{
                 height: "72vh",
-                background: "var(--card, #0d0d10)",
-                borderColor: "var(--border, rgba(199,204,212,0.10))",
+                background: styles.card,
+                borderColor: styles.border,
               }}
             >
               {/* Header row with Import/Export */}
-              <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: "var(--border, rgba(199,204,212,0.10))", background: "var(--card-header, #1b1c21)" }}>
+              <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: styles.border, background: styles.cardHeader }}>
                 <div className="flex items-center gap-3">
                   <h2 className="text-sm font-semibold" style={{ color: styles.white }}>
                     {activeReport}
@@ -450,15 +452,15 @@ export default function ReportsExcelPage() {
                   {/* Import/Export buttons */}
                   <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleImportChange} />
                   <button onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid var(--border, rgba(199,204,212,0.10))` }}>
+                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid ${styles.border}` }}>
                     <Upload size={16} /> Import Excel/CSV
                   </button>
                   <button onClick={() => exportActive("csv")} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid var(--border, rgba(199,204,212,0.10))` }}>
+                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid ${styles.border}` }}>
                     <Download size={16} /> Export CSV
                   </button>
                   <button onClick={() => exportActive("xlsx")} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid var(--border, rgba(199,204,212,0.10))` }}>
+                    style={{ background: styles.cardRaised, color: styles.text, border: `1px solid ${styles.border}` }}>
                     <Download size={16} /> Export XLSX
                   </button>
                 </div>
@@ -476,14 +478,14 @@ export default function ReportsExcelPage() {
               className="rounded-xl border overflow-hidden mt-4"
               style={{
                 height: "18vh",
-                background: "var(--card, #0d0d10)",
-                borderColor: "var(--border, rgba(199,204,212,0.10))",
+                background: styles.card,
+                borderColor: styles.border,
               }}
             >
               {/* Title row only */}
               <div
                 className="px-4 py-3 border-b"
-                style={{ borderColor: "var(--border, rgba(199,204,212,0.10))", background: "var(--card, #0d0d10)" }}
+                style={{ borderColor: styles.border, background: styles.card }}
               >
                 <h3 id="readme-heading" className="text-sm font-semibold" style={{ color: 'var(--foreground, #ffffff)' }}>
                   README
