@@ -365,3 +365,119 @@
   width: 100% !important;
   height: 100% !important;
 }
+
+/* Sidebar widths */
+:root {
+  --nav-w-expanded: 14rem; /* your expanded width */
+  --nav-w-collapsed: 4rem; /* icon rail width */
+  --nav-w: var(--nav-w-expanded); /* current width; we flip this in JS */
+}
+
+/* The fixed sidebar stays put on the left */
+.sidebar {
+  position: fixed;
+  inset: 3.5rem auto 0 0; /* top = header height (56px = 3.5rem), bottom = 0, left = 0 */
+  width: var(--nav-w);
+  height: calc(100vh - 3.5rem);
+}
+
+/* The main area always fills the remaining width — no buffers */
+.main {
+  position: relative;
+  margin-left: var(--nav-w);
+  width: calc(100vw - var(--nav-w));
+  min-height: calc(100vh - 3.5rem);
+  transition: margin-left 200ms ease, width 200ms ease; /* smooth when toggling sidebar */
+}
+
+/* Optional: remove any default max-width wrappers or page padding */
+.fullbleed {
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Grid holding the three cards */
+.cash-upload-grid{
+  display:grid;                          /* use CSS grid for three columns */
+  grid-template-columns: repeat(3, minmax(280px, 1fr)); /* 3 responsive columns */
+  gap:20px;                               /* space between cards */
+  margin-top:16px;                        /* spacing under README card */
+}
+
+/* Card container */
+.upload-card{
+  background:#141418;                     /* dark panel background */
+  border:1px solid #26263a;               /* subtle border */
+  border-radius:16px;                     /* rounded corners */
+  box-shadow:0 10px 30px rgba(0,0,0,.35); /* soft shadow */
+  padding:16px;                           /* inner padding */
+}
+
+/* Inner layout */
+.upload-inner{ display:flex; flex-direction:column; gap:12px; }
+
+/* Header */
+.upload-title{
+  font-weight:700;                        /* bold title */
+  color:#e8e8f5;                          /* bright text */
+  letter-spacing:.2px;                    /* tiny tracking */
+}
+.upload-sub{ color:#a0a3b5; font-size:12px; }
+
+/* Drop area */
+.dropzone{
+  display:block;                          /* make label behave like block */
+  border:1px dashed #393951;              /* dashed border for drop area */
+  border-radius:14px;                      /* rounded */
+  background:#0f0f17;                      /* darker interior */
+  padding:18px;                            /* spacing */
+  cursor:pointer;                          /* indicate action */
+}
+.dropzone:hover{ background:#101021; }     /* hover feedback */
+
+.dropzone-body{ text-align:center; }
+.drop-icon{ font-size:28px; margin-bottom:6px; }
+.drop-title{ font-weight:600; color:#e6e6f3; }
+.drop-sub{ color:#a0a3b5; }
+.browse{ color:#7c5cff; text-decoration:underline; cursor:pointer; }
+.drop-note{ color:#7b7f95; font-size:12px; margin-top:6px; }
+
+/* File bar */
+.file-info{
+  background:#0f0f17; border:1px solid #26263a; border-radius:12px;
+  padding:10px 12px;
+}
+.file-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.file-name{ color:#cfd2e8; font-weight:600; }
+.file-size{ color:#9aa0b4; font-size:12px; }
+
+/* Status lines */
+.file-status{ font-size:12px; margin-top:6px; }
+.file-status.ok{ color:#22c55e; }
+.file-status.err{ color:#ffb4b4; }
+
+/* Preview */
+.preview-title{ color:#cfd2e8; font-weight:600; }
+.preview-table-wrap{
+  overflow:auto;                          /* scroll if wide */
+  max-height:260px;                       /* cap height */
+  border:1px solid #26263a;               /* border like data tables */
+  border-radius:12px;
+}
+.preview-table{ border-collapse:collapse; width:100%; }
+.preview-table thead th{
+  position:sticky; top:0;                 /* sticky header */
+  background:#1b1b28; color:#cfd2e8;
+  text-align:left; padding:8px 10px; font-size:12px;
+  border-bottom:1px solid #2a2a3a;
+}
+.preview-table tbody td{
+  padding:8px 10px; border-bottom:1px solid #20202c; color:#e6e6f0;
+}
+.preview-table tbody tr:hover{ background:#13131d; }
+
+/* Responsive: stack to 1 column on narrow screens */
+@media (max-width: 1100px){
+  .cash-upload-grid{ grid-template-columns: 1fr; }
+}

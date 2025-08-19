@@ -197,6 +197,169 @@ export default function ReportsExcelPage() {
     if (f) await onImport(f);
     if (fileRef.current) fileRef.current.value = "";
   };
+  
+  // This effect runs once on component mount to wire up the upload cards.
+  useEffect(() => {
+    /* ------------------ CONFIG ------------------ */
+    const UPLOAD_SLOTS = [
+      { id: 'cash-upload-a', title: 'Report A (e.g., Households)' },
+      { id: 'cash-upload-b', title: 'Report B (e.g., Accounts)' },
+      { id: 'cash-upload-c', title: 'Report C (e.g., Fees)' },
+    ];
+    const FILE_LIMIT_MB = 10;
+    const ALLOWED = ['xlsx', 'xls', 'csv'];
+
+    /* ------------------ UTILITIES ------------------ */
+    function formatBytes(bytes) {
+      const mb = bytes / (1024 * 1024);
+      return mb >= 1 ? `${mb.toFixed(2)} MB` : `${(bytes / 1024).toFixed(0)} KB`;
+    }
+
+    function renderPreview(container, columns, rows) {
+      const thead = container.querySelector('thead');
+      const tbody = container.querySelector('tbody');
+      thead.innerHTML = '';
+      tbody.innerHTML = '';
+
+      const trh = document.createElement('tr');
+      columns.forEach(col => {
+        const th = document.createElement('th');
+        th.textContent = col;
+        trh.appendChild(th);
+      });
+      thead.appendChild(trh);
+
+      rows.slice(0, 10).forEach(r => {
+        const tr = document.createElement('tr');
+        columns.forEach(col => {
+          const td = document.createElement('td');
+          td.textContent = r[col] ?? '';
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function parseFile(file, onDone, onError) {
+      if (typeof XLSX === 'undefined') {
+        onError('File parsing library (SheetJS) is not loaded.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onerror = () => onError('Failed to read file.');
+      reader.onload = () => {
+        try {
+          const data = new Uint8Array(reader.result as ArrayBuffer);
+          const wb = XLSX.read(data, { type: 'array' });
+          const first = wb.Sheets[wb.SheetNames[0]];
+          const json = XLSX.utils.sheet_to_json(first, { defval: '' });
+          const columns = Object.keys(json[0] || {});
+          onDone({ rows: json, columns });
+        } catch (e) {
+          onError('Could not parse spreadsheet.');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    /* ------------------ CARD FACTORY ------------------ */
+    function makeUploader(slot) {
+      const host = document.getElementById(slot.id);
+      if (!host) return; // Don't run if the host element isn't on the page
+      
+      const tpl = document.getElementById('upload-card-template') as HTMLTemplateElement;
+      if (!tpl) return;
+      
+      // Clear host to prevent duplicates on re-renders in strict mode
+      host.innerHTML = '';
+      
+      const node = tpl.content.cloneNode(true) as DocumentFragment;
+
+      (node.querySelector('.upload-title') as HTMLElement).textContent = slot.title;
+
+      const dropzone = node.querySelector('.dropzone') as HTMLLabelElement;
+      const input = node.querySelector('.file-input') as HTMLInputElement;
+      const info = node.querySelector('.file-info') as HTMLDivElement;
+      const nameEl = node.querySelector('.file-name') as HTMLSpanElement;
+      const sizeEl = node.querySelector('.file-size') as HTMLSpanElement;
+      const okEl = node.querySelector('.file-status.ok') as HTMLDivElement;
+      const errEl = node.querySelector('.file-status.err') as HTMLDivElement;
+      const previewWrap = node.querySelector('.preview') as HTMLDivElement;
+      const table = node.querySelector('.preview-table') as HTMLTableElement;
+
+      const showError = (msg) => {
+        info.hidden = false;
+        okEl.hidden = true;
+        errEl.hidden = false;
+        errEl.textContent = msg;
+        previewWrap.hidden = true;
+      };
+
+      const handleFile = (file) => {
+        const ext = (file.name.split('.').pop() || '').toLowerCase();
+        if (!ALLOWED.includes(ext)) {
+          showError('Unsupported file type. Please upload .xlsx, .xls, or .csv');
+          return;
+        }
+        if (file.size > FILE_LIMIT_MB * 1024 * 1024) {
+          showError(`File too large. Max ${FILE_LIMIT_MB}MB`);
+          return;
+        }
+
+        info.hidden = false;
+        okEl.hidden = true;
+        errEl.hidden = true;
+        nameEl.textContent = file.name;
+        sizeEl.textContent = formatBytes(file.size);
+
+        parseFile(file, ({ rows, columns }) => {
+          renderPreview(table, columns, rows);
+          previewWrap.hidden = false;
+          okEl.hidden = false;
+
+          window.dispatchEvent(new CustomEvent('upload:parsed', {
+            detail: { slotId: slot.id, file, rows, columns }
+          }));
+        }, (msg) => {
+          showError(msg);
+        });
+      };
+
+      dropzone.addEventListener('click', () => input.click());
+      input.addEventListener('change', (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) handleFile(file);
+        (e.target as HTMLInputElement).value = '';
+      });
+
+      ['dragenter', 'dragover'].forEach(evt =>
+        dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add('is-drag'); })
+      );
+      ['dragleave', 'drop'].forEach(evt =>
+        dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove('is-drag'); })
+      );
+      dropzone.addEventListener('drop', (e) => {
+        const file = e.dataTransfer?.files?.[0];
+        if (file) handleFile(file);
+      });
+
+      host.appendChild(node);
+    }
+
+    /* ------------------ INIT: create the three cards ------------------ */
+    UPLOAD_SLOTS.forEach(makeUploader);
+
+    const onUploadParsed = (e) => {
+      console.log('Parsed upload:', e.detail);
+    };
+    
+    window.addEventListener('upload:parsed', onUploadParsed);
+
+    // Cleanup listeners when the component unmounts
+    return () => {
+      window.removeEventListener('upload:parsed', onUploadParsed);
+    };
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   return (
     <div
@@ -205,12 +368,65 @@ export default function ReportsExcelPage() {
     >
       <main className="main fullbleed">
         {isReadmeOnly ? (
-            <div className="bg-[#1c1c1c] text-white rounded-2xl shadow-md p-6 mb-6 w-full">
-              <h2 className="text-lg font-semibold mb-3">README</h2>
-              <p className="text-sm text-gray-300">
-                Add your instructions here. This card will hold all README content and
-                always display at the top of the 3M Cash report page.
-              </p>
+           <div className="p-4">
+              <div className="bg-[#1c1c1c] text-white rounded-2xl shadow-md p-6 mb-6 w-full">
+                <h2 className="text-lg font-semibold mb-3">README</h2>
+                <p className="text-sm text-gray-300">
+                  Add your instructions here. This card will hold all README content and
+                  always display at the top of the 3M Cash report page.
+                </p>
+              </div>
+
+              {/* ====== 3M CASH — UPLOAD CARDS ====== */}
+              <section id="cash-upload-section" className="cash-upload-grid">
+                {/* Card instances (A/B/C). Change titles as you like. */}
+                <div id="cash-upload-a" className="upload-card"></div>
+                <div id="cash-upload-b" className="upload-card"></div>
+                <div id="cash-upload-c" className="upload-card"></div>
+              </section>
+
+              {/* Template used to stamp each card UI */}
+              <template id="upload-card-template">
+                <div className="upload-inner">
+                  <div className="upload-header">
+                    <div className="upload-title">Upload</div> {/* replaced per instance */}
+                    <div className="upload-sub">Drop an Excel/CSV file or click to browse.</div>
+                  </div>
+
+                  {/* Drop zone area */}
+                  <label className="dropzone">
+                    <input type="file" className="file-input" accept=".xlsx,.xls,.csv" hidden />
+                    <div className="dropzone-body">
+                      <div className="drop-icon">⬆️</div>
+                      <div className="drop-title">Drag & drop here</div>
+                      <div className="drop-sub">or <span className="browse">browse</span> from your computer</div>
+                      <div className="drop-note">Max 10MB • .xlsx / .xls / .csv</div>
+                    </div>
+                  </label>
+
+                  {/* File info / errors */}
+                  <div className="file-info" hidden>
+                    <div className="file-row">
+                      <span className="file-name">—</span>
+                      <span className="file-size">—</span>
+                    </div>
+                    <div className="file-status ok" hidden>Parsed successfully.</div>
+                    <div className="file-status err" hidden></div>
+                  </div>
+
+                  {/* Preview table */}
+                  <div className="preview" hidden>
+                    <div className="preview-title">Preview (first 10 rows)</div>
+                    <div className="preview-table-wrap">
+                      <table className="preview-table">
+                        <thead></thead>
+                        <tbody></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
             </div>
         ) : (
           // ===== NORMAL LAYOUT FOR OTHER REPORTS (EXCEL + README) =====
@@ -227,7 +443,7 @@ export default function ReportsExcelPage() {
               {/* Header row with Import/Export */}
               <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
                 <div className="flex items-center gap-3">
-                  <h2 className="text-sm font-semibold" style={{ color: "var(--text-strong)" }}>
+                  <h2 className="text-sm font-semibold" style={{ color: "var(--text)" }}>
                     {activeReport}
                   </h2>
                   <span className="text-xs" style={{ color: "var(--text-muted)" }}>
@@ -261,7 +477,7 @@ export default function ReportsExcelPage() {
             {/* README (flat, as previously implemented) */}
             <section aria-labelledby="readme-heading" className="rounded-none" style={{ height: "18vh", background: "var(--card)" }}>
               <div className="px-3 py-3 border-b" style={{ borderColor: "var(--border)" }}>
-                <h3 id="readme-heading" className="text-sm font-semibold" style={{ color: "var(--text-strong)" }}>
+                <h3 id="readme-heading" className="text-sm font-semibold" style={{ color: styles.white }}>
                   README
                 </h3>
               </div>
