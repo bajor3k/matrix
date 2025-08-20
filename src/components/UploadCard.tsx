@@ -1,8 +1,7 @@
-
-// components/UploadCard.tsx
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { cn } from "@/lib/utils";
+import { Upload as UploadIcon } from "lucide-react"; // NEW: green SVG icon
 
 type UploadCardProps = {
   title: string;
@@ -41,34 +40,53 @@ export default function UploadCard({
   });
 
   return (
-    <div className={cn("upload-card", className)}>
-      <div className="upload-inner">
-        <div className="upload-title-wrap">
-          <div className="upload-title">{title}</div>
-        </div>
-        <div
-          {...getRootProps()}
-          className={cn(
-            "dropzone",
-            isDragActive && "dropzone-active"
-          )}
-        >
-          <input {...getInputProps()} />
-          <div className="dropzone-body">
-            <div className="drop-icon">⬆️</div>
-            <div className="drop-title">Drag &amp; drop here</div>
-            <div className="drop-sub">
-              or <span className="browse">browse</span> from your computer
-            </div>
-          </div>
-        </div>
-        {isBusy && <div className="file-status">Checking file…</div>}
-        {statusMsg && (
-          <div className="file-status ok" role="status" aria-live="polite">
-            {statusMsg}
-          </div>
-        )}
+    <div
+      className={cn(
+        // Card: dark bg, neutral border (no purple)
+        "rounded-2xl bg-[#0f0f13] p-4 shadow-sm border border-[#26272b]",
+        className
+      )}
+    >
+      <div className="mb-2 text-xs uppercase tracking-wide text-zinc-400">
+        {title}
       </div>
+
+      {/* Clean dropzone with dashed neutral border; subtle hover */}
+      <div
+        {...getRootProps()}
+        className={cn(
+          "relative grid place-items-center rounded-xl border border-dashed p-7 min-h-[150px] transition-colors",
+          "border-[#2a2b30] bg-transparent",
+          isDragActive ? "bg-[#15161c] border-[#3a3b42]" : "hover:bg-[#13141a]"
+        )}
+      >
+        <input {...getInputProps()} />
+        <div className="text-center select-none">
+          {/* GREEN upload icon */}
+          <UploadIcon className="mx-auto h-7 w-7 text-emerald-500" />
+
+          <div className="mt-2 text-sm font-semibold text-zinc-200">
+            Drag &amp; drop here
+          </div>
+          <div className="text-xs text-zinc-500">
+            or <span className="underline">browse</span> from your computer
+          </div>
+        </div>
+      </div>
+
+      {/* Status line — bigger, bolder, centered, emerald */}
+      {isBusy && (
+        <div className="mt-3 text-sm text-center text-zinc-400">Checking file…</div>
+      )}
+      {statusMsg && (
+        <div
+          className="mt-3 text-sm font-semibold text-emerald-500 text-center"
+          role="status"
+          aria-live="polite"
+        >
+          {statusMsg}
+        </div>
+      )}
     </div>
   );
 }
