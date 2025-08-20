@@ -10,9 +10,27 @@ export const dynamic = "force-dynamic";
 
 function runPython(args: string[]) {
   return new Promise<void>((resolve, reject) => {
-    const proc = spawn("python", args, { stdio: ["ignore", "inherit", "inherit"] });
-    proc.on("error", reject);
-    proc.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`Python exited ${code}`))));
+    // First, try to execute with `python3`
+    const proc3 = spawn("python3", args, { stdio: ["ignore", "inherit", "inherit"] });
+    proc3.on("error", (err) => {
+      // If `python3` is not found, try `python`
+      if ((err as any).code === 'ENOENT') {
+        console.warn("`python3` not found, falling back to `python`.");
+        const proc = spawn("python", args, { stdio: ["ignore", "inherit", "inherit"] });
+        proc.on("error", reject);
+        proc.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`Python exited ${code}`))));
+      } else {
+        reject(err);
+      }
+    });
+    proc3.on("close", (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        // If it fails for a reason other than not being found, reject
+        reject(new Error(`Python3 exited ${code}`));
+      }
+    });
   });
 }
 
