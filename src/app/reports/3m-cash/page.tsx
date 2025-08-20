@@ -5,6 +5,9 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Upload, Download } from "lucide-react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { README_CONTENT_3M_CASH } from "./readme-content";
+import ReadmeCard from "@/components/ReadmeCard";
+
 
 // Luckysheet is loaded dynamically; TS shim:
 declare global {
@@ -190,7 +193,7 @@ export default function ReportsExcelPage() {
   // This effect runs once on component mount to wire up the upload cards.
   useEffect(() => {
     if (!isReadmeOnly) return;
-    /* ------------------ CONFIG ------------------ */
+    
     const UPLOAD_SLOTS = [
       { id: 'cash-upload-a', title: 'Report ID: PYCASH' },
       { id: 'cash-upload-b', title: 'Report ID: PYCASH' },
@@ -199,7 +202,6 @@ export default function ReportsExcelPage() {
     const FILE_LIMIT_MB = 10;
     const ALLOWED = ['xlsx', 'xls', 'csv'];
 
-    // Create and inject the template HTML imperatively
     const templateId = 'upload-card-template';
     if (!document.getElementById(templateId)) {
         const templateEl = document.createElement('template');
@@ -242,7 +244,6 @@ export default function ReportsExcelPage() {
     }
 
 
-    /* ------------------ UTILITIES ------------------ */
     function formatBytes(bytes: number) {
       if (!bytes) return "0 Bytes";
       const mb = bytes / (1024 * 1024);
@@ -298,15 +299,13 @@ export default function ReportsExcelPage() {
       reader.readAsArrayBuffer(file);
     }
 
-    /* ------------------ CARD FACTORY ------------------ */
     function makeUploader(slot: {id: string, title: string}) {
       const host = document.getElementById(slot.id);
-      if (!host) return; // Don't run if the host element isn't on the page
+      if (!host) return; 
       
       const tpl = document.getElementById(templateId) as HTMLTemplateElement;
       if (!tpl) return;
       
-      // Clear host to prevent duplicates on re-renders in strict mode
       host.innerHTML = '';
       
       const node = tpl.content.cloneNode(true) as DocumentFragment;
@@ -368,7 +367,7 @@ export default function ReportsExcelPage() {
       ['dragenter', 'dragover'].forEach(evt =>
         dropzone.addEventListener(evt, (e) => { e.preventDefault(); (e.currentTarget as HTMLElement).classList.add('is-drag'); })
       );
-      ['dragleave', 'drop'].forEach(evt =>
+      ;['dragleave', 'drop'].forEach(evt =>
         dropzone.addEventListener(evt, (e) => { e.preventDefault(); (e.currentTarget as HTMLElement).classList.remove('is-drag'); })
       );
       dropzone.addEventListener('drop', (e) => {
@@ -379,7 +378,6 @@ export default function ReportsExcelPage() {
       host.appendChild(node);
     }
 
-    /* ------------------ INIT: create the three cards ------------------ */
     if (isReadmeOnly) {
         UPLOAD_SLOTS.forEach(makeUploader);
     }
@@ -390,13 +388,9 @@ export default function ReportsExcelPage() {
     
     window.addEventListener('upload:parsed', onUploadParsed);
 
-    // Cleanup listeners when the component unmounts
     return () => {
       window.removeEventListener('upload:parsed', onUploadParsed);
       const templateEl = document.getElementById(templateId);
-      if (templateEl) {
-        // templateEl.remove(); // Let's not remove it, in case of fast re-renders
-      }
     };
   }, [isReadmeOnly]);
 
@@ -405,26 +399,20 @@ export default function ReportsExcelPage() {
         {isReadmeOnly ? (
           <main className="app-main fullbleed">
             <div className="content-pad">
-            <div className="bg-[#1c1c1c] text-white rounded-2xl shadow-md p-6 mb-6 w-full">
-              <h2 className="text-lg font-semibold mb-3">README</h2>
-              <p className="text-sm text-gray-300">
-                Add your instructions here. This card will hold all README content and
-                always display at the top of the 3M Cash report page.
-              </p>
-            </div>
-               <div className="cash-upload-wrap">
-                  <section id="cash-upload-section" className="cash-upload-grid">
-                    <div id="cash-upload-a" className="upload-card"></div>
-                    <div id="cash-upload-b" className="upload-card"></div>
-                    <div id="cash-upload-c" className="upload-card"></div>
-                  </section>
+              <div className="space-y-6">
+                <ReadmeCard markdown={README_CONTENT_3M_CASH} />
+                <div className="cash-upload-wrap">
+                    <section id="cash-upload-section" className="cash-upload-grid">
+                      <div id="cash-upload-a" className="upload-card"></div>
+                      <div id="cash-upload-b" className="upload-card"></div>
+                      <div id="cash-upload-c" className="upload-card"></div>
+                    </section>
+                </div>
               </div>
             </div>
           </main>
         ) : (
-          // ===== NORMAL LAYOUT FOR OTHER REPORTS (EXCEL + README) =====
           <>
-            {/* Excel pane */}
             <section
               className="rounded-xl border overflow-hidden flex flex-col"
               style={{
@@ -433,7 +421,6 @@ export default function ReportsExcelPage() {
                 borderColor: styles.border,
               }}
             >
-              {/* Header row with Import/Export */}
               <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: styles.border, background: styles.cardHeader }}>
                 <div className="flex items-center gap-3">
                   <h2 className="text-sm font-semibold" style={{ color: styles.white }}>
@@ -444,7 +431,6 @@ export default function ReportsExcelPage() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  {/* Import/Export buttons */}
                   <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleImportChange} />
                   <button onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
                     style={{ background: styles.cardRaised, color: styles.text, border: `1px solid ${styles.border}` }}>
@@ -461,13 +447,11 @@ export default function ReportsExcelPage() {
                 </div>
               </div>
 
-              {/* Luckysheet canvas */}
               <div className="h-[calc(72vh-44px)] overflow-hidden">
                 <div id="luckysheet" ref={containerRef} className="h-full w-full" />
               </div>
             </section>
 
-            {/* README (flat, as previously implemented) */}
             <section
               aria-labelledby="readme-heading"
               className="rounded-xl border overflow-hidden mt-4"
@@ -477,7 +461,6 @@ export default function ReportsExcelPage() {
                 borderColor: styles.border,
               }}
             >
-              {/* Title row only */}
               <div
                 className="px-4 py-3 border-b"
                 style={{ borderColor: styles.border, background: styles.card }}
@@ -487,7 +470,6 @@ export default function ReportsExcelPage() {
                 </h3>
               </div>
 
-              {/* Blank body — intentionally empty for now */}
               <div className="w-full h-full" />
             </section>
           </>
@@ -496,7 +478,6 @@ export default function ReportsExcelPage() {
   );
 }
 
-/** Inject dark overrides to Luckysheet to match jet/graphite/steel */
 function injectLuckysheetDarkCSS(s: {
   bg: string; card: string; cardRaised: string; cardHeader: string;
   text: string; textMuted: string; white: string; border: string; ring: string;
@@ -504,12 +485,10 @@ function injectLuckysheetDarkCSS(s: {
   const id = "ls-dark-overrides";
   if (document.getElementById(id)) return;
   const css = `
-  /* Root canvas */
   #luckysheet, .luckysheet, .luckysheet-cell-main {
     background: ${s.card} !important;
     color: ${s.text} !important;
   }
-  /* Grid header rows/cols */
   .luckysheet-cols-h-c, .luckysheet-rows-h {
     background: ${s.cardHeader} !important;
     color: ${s.text} !important;
@@ -519,7 +498,6 @@ function injectLuckysheetDarkCSS(s: {
     background: ${s.cardHeader} !important;
     color: ${s.text} !important;
   }
-  /* Gridlines and borders */
   .luckysheet-cell-main .luckysheet-grid-window-1, 
   .luckysheet-cell-main .luckysheet-grid-window-2,
   .luckysheet-cell-main .luckysheet-grid-window-3 {
@@ -528,11 +506,9 @@ function injectLuckysheetDarkCSS(s: {
   .luckysheet-cell-main td, .luckysheet-cell-main th {
     border-color: ${s.border} !important;
   }
-  /* Active selection */
   .luckysheet-selection-copy, .luckysheet-selection {
     border-color: ${s.white} !important;
   }
-  /* Sheet tab bar (bottom) */
   .luckysheet-sheet-area, .luckysheet-sheets-item, .luckysheet-sheets-item:hover {
     background: ${s.cardHeader} !important;
     color: ${s.text} !important;
@@ -543,16 +519,13 @@ function injectLuckysheetDarkCSS(s: {
     color: ${s.white} !important;
     border-color: ${s.border} !important;
   }
-  /* Hide toolbar/formula bar */
   .luckysheet-toolbar, .luckysheet-wa-editor, .luckysheet-wa-calc-workbook {
     display: none !important;
   }
-  /* Context menus / popups */
   .luckysheet-env { background: ${s.cardRaised} !important; color: ${s.text} !important; }
   .luckysheet-cols-menu, .luckysheet-mousedown-cancel2 {
     background: ${s.cardRaised} !important; color: ${s.text} !important; border-color: ${s.border} !important;
   }
-  /* Scrollbars (webkit) */
   #luckysheet::-webkit-scrollbar, .luckysheet-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
   #luckysheet::-webkit-scrollbar-thumb, .luckysheet-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 9999px; }
   `;

@@ -551,3 +551,7 @@
   padding: 0 !important;
   overflow: hidden !important;
 }
+
+.prose h1 { font-size: 1.25rem; line-height: 1.6; margin-top: 0.25rem; }
+.prose strong { color: #e5e7eb; }
+.prose code { background: #0f1115; padding: 0.15rem 0.35rem; border-radius: 6px; }
