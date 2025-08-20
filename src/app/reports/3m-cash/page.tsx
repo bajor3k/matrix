@@ -193,7 +193,7 @@ export default function ReportsExcelPage() {
     /* ------------------ CONFIG ------------------ */
     const UPLOAD_SLOTS = [
       { id: 'cash-upload-a', title: 'Report ID: PYCASH' },
-      { id: 'cash-upload-b', title: 'Report B (e.g., Accounts)' },
+      { id: 'cash-upload-b', title: 'Report ID: PYCASH' },
       { id: 'cash-upload-c', title: 'Report C (e.g., Fees)' },
     ];
     const FILE_LIMIT_MB = 10;
@@ -406,7 +406,8 @@ export default function ReportsExcelPage() {
   return (
     <div className="p-4">
         {isReadmeOnly ? (
-            <div className="p-4">
+          <main className="app-main fullbleed">
+            <div className="content-pad">
               <div className="bg-[#1c1c1c] text-white rounded-2xl shadow-md p-6 mb-6 w-full">
                 <h2 className="text-lg font-semibold mb-3">README</h2>
                 <p className="text-sm text-gray-300">
@@ -424,8 +425,8 @@ export default function ReportsExcelPage() {
                   <div id="cash-upload-c" className="upload-card"></div>
                 </section>
               </div>
-
             </div>
+          </main>
         ) : (
           // ===== NORMAL LAYOUT FOR OTHER REPORTS (EXCEL + README) =====
           <>
