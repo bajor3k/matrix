@@ -194,7 +194,7 @@ export default function ReportsExcelPage() {
     const UPLOAD_SLOTS = [
       { id: 'cash-upload-a', title: 'Report ID: PYCASH' },
       { id: 'cash-upload-b', title: 'Report ID: PYCASH' },
-      { id: 'cash-upload-c', title: 'Report C (e.g., Fees)' },
+      { id: 'cash-upload-c', title: 'Report ID: PYPI' },
     ];
     const FILE_LIMIT_MB = 10;
     const ALLOWED = ['xlsx', 'xls', 'csv'];
@@ -415,16 +415,13 @@ export default function ReportsExcelPage() {
                   always display at the top of the 3M Cash report page.
                 </p>
               </div>
-
-              {/* ====== 3M CASH — UPLOAD CARDS ====== */}
-              <div className="cash-upload-wrap">
-                <section id="cash-upload-section" className="cash-upload-grid">
-                  {/* Card instances (A/B/C). Change titles as you like. */}
-                  <div id="cash-upload-a" className="upload-card"></div>
-                  <div id="cash-upload-b" className="upload-card"></div>
-                  <div id="cash-upload-c" className="upload-card"></div>
-                </section>
-              </div>
+                <div className="cash-upload-wrap">
+                    <section id="cash-upload-section" className="cash-upload-grid">
+                    <div id="cash-upload-a" className="upload-card"></div>
+                    <div id="cash-upload-b" className="upload-card"></div>
+                    <div id="cash-upload-c" className="upload-card"></div>
+                    </section>
+                </div>
             </div>
           </main>
         ) : (
