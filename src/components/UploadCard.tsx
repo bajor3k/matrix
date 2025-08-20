@@ -37,18 +37,13 @@ export default function UploadCard({
   });
 
   return (
-    <div
-      className={cn(
-        // Background set to #0a0a0a, border neutral dark
-        "rounded-2xl p-4 shadow-sm border border-[#26272b]",
-        "bg-[#0a0a0a]",
-        className
-      )}
-    >
-      <div className="text-base font-bold text-zinc-200 mb-2 tracking-wide">
-        {title}
+    <div className={cn("rounded-2xl p-4 border border-[#26272b] bg-[#0a0a0a]", className)}>
+      {/* Header */}
+      <div className="mb-2 text-base font-bold tracking-wide text-zinc-200">
+        REPORT ID: <span className="text-white">{reportId}</span>
       </div>
 
+      {/* Dropzone */}
       <div
         {...getRootProps()}
         className={cn(
@@ -59,27 +54,25 @@ export default function UploadCard({
       >
         <input {...getInputProps()} />
         <div className="text-center select-none">
-          {/* Green upload icon */}
           <UploadIcon className="mx-auto h-7 w-7 text-emerald-500" />
-
-          <div className="mt-2 text-sm font-semibold text-zinc-200">
-            Drag &amp; drop here
-          </div>
+          <div className="mt-2 text-sm font-semibold text-zinc-200">Drag &amp; drop here</div>
           <div className="text-xs text-zinc-500">
             or <span className="underline">browse</span> from your computer
           </div>
         </div>
       </div>
 
-      {statusMsg && (
-        <div
-          className="mt-3 text-sm font-semibold text-emerald-500 text-center"
-          role="status"
-          aria-live="polite"
-        >
-          {statusMsg}
-        </div>
-      )}
+      {/* PERSISTENT STATUS SLOT (prevents height jump) */}
+      <div className="mt-3 h-6 flex items-center justify-center">
+        {statusMsg ? (
+          <span className="text-sm font-semibold text-emerald-500" role="status" aria-live="polite">
+            {statusMsg}
+          </span>
+        ) : (
+          // Invisible placeholder keeps the same height before upload
+          <span className="invisible text-sm font-semibold">placeholder</span>
+        )}
+      </div>
     </div>
   );
 }
