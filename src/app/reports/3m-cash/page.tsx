@@ -8,16 +8,16 @@ import { ThreeMCashDashboard } from "@/components/dashboard/ThreeMCashDashboard"
 import { cn } from "@/lib/utils";
 import { saveAs } from "file-saver";
 
-type UploadKey = "pycash_1" | "pycash_2" | "pypi";
+type UploadKey = "pyfee" | "pycash_2" | "pypi";
 
 export default function ReportsExcelPage() {
   const [files, setFiles] = React.useState<Record<UploadKey, File | null>>({
-    pycash_1: null,
+    pyfee: null,
     pycash_2: null,
     pypi: null,
   });
   const [ok, setOk] = React.useState<Record<UploadKey, boolean>>({
-    pycash_1: false,
+    pyfee: false,
     pycash_2: false,
     pypi: false,
   });
@@ -27,7 +27,7 @@ export default function ReportsExcelPage() {
   const [data, setData] = React.useState<any[] | null>(null);
   const [showDash, setShowDash] = React.useState(false);
 
-  const allReady = ok.pycash_1 && ok.pycash_2 && ok.pypi;
+  const allReady = ok.pyfee && ok.pycash_2 && ok.pypi;
 
   function accept(key: UploadKey, f: File) {
     setFiles((s) => ({ ...s, [key]: f }));
@@ -41,7 +41,7 @@ export default function ReportsExcelPage() {
     setShowDash(false);
     try {
       const fd = new FormData();
-      fd.append("pycash_1", files.pycash_1!);
+      fd.append("pycash_1", files.pyfee!);
       fd.append("pycash_2", files.pycash_2!);
       fd.append("pypi", files.pypi!);
       const res = await fetch("/api/reports/3m-cash/merge?format=json", { method: "POST", body: fd });
@@ -59,7 +59,7 @@ export default function ReportsExcelPage() {
     if (!allReady) return;
     try {
       const fd = new FormData();
-      fd.append("pycash_1", files.pycash_1!);
+      fd.append("pycash_1", files.pyfee!);
       fd.append("pycash_2", files.pycash_2!);
       fd.append("pypi", files.pypi!);
       const res = await fetch("/api/reports/3m-cash/merge?format=xlsx", { method: "POST", body: fd });
@@ -77,7 +77,7 @@ export default function ReportsExcelPage() {
         <div className="content-pad">
           <div className="space-y-6">
             <PurposeCard>
-              <h2 className="text-xl font-bold mb-2">Purpose</h2>
+              <h2 className="text-xl font-bold mb-2">Report Summary</h2>
               <p>
                 This report analyzes all <strong>managed</strong> client accounts and isolates{" "}
                 <strong>advisor-directed</strong> accounts to determine how much{" "}
@@ -90,7 +90,7 @@ export default function ReportsExcelPage() {
             <PurposeCard>
               <h2 className="text-xl font-bold mb-2">Instructions</h2>
               <ul className="list-disc list-inside text-zinc-300 space-y-1">
-                <li>Within Report Center, run report ID <span className="font-bold">PYCASH</span> for a time frame of last month. Upload it to the first box.</li>
+                <li>Within Report Center, run report ID <span className="font-bold">PYFEE</span>. Upload it to the first box.</li>
                 <li>Within Report Center, run report ID <span className="font-bold">PYCASH</span> and upload it to the second box.</li>
                 <li>Run report ID <span className="font-bold">PYPI</span> and upload it to the third box.</li>
                 <li>Click the green <span className="font-bold">Run 3M Cash Report</span> button at the bottom.</li>
@@ -98,9 +98,9 @@ export default function ReportsExcelPage() {
             </PurposeCard>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <UploadCard title="Report ID: PYCASH" onFileAccepted={(f) => accept("pycash_1", f)} />
-              <UploadCard title="Report ID: PYCASH" onFileAccepted={(f) => accept("pycash_2", f)} />
-              <UploadCard title="Report ID: PYPI" onFileAccepted={(f) => accept("pypi", f)} />
+              <UploadCard title="REPORT ID: PYFEE" reportId="PYFEE" onFileAccepted={(f) => accept("pyfee", f)} />
+              <UploadCard title="REPORT ID: PYCASH" reportId="PYCASH" onFileAccepted={(f) => accept("pycash_2", f)} />
+              <UploadCard title="REPORT ID: PYPI" reportId="PYPI" onFileAccepted={(f) => accept("pypi", f)} />
             </div>
 
             <div className="flex flex-col items-center gap-3 pt-2">

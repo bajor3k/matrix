@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     const format = url.searchParams.get("format") || "xlsx";
 
     const form = await req.formData();
-    const pycash1 = form.get("pycash_1") as File | null;
+    const pycash1 = form.get("pycash_1") as File | null; // This now corresponds to PYFEE
     const pycash2 = form.get("pycash_2") as File | null;
     const pypi = form.get("pypi") as File | null;
     if (!pycash1 || !pycash2 || !pypi) {
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     }
 
     const tempDir = tmpdir();
-    const in1 = join(tempDir, `pycash1_${Date.now()}.xlsx`);
+    const in1 = join(tempDir, `pyfee_${Date.now()}.xlsx`); // Updated filename for clarity
     const in2 = join(tempDir, `pycash2_${Date.now()}.xlsx`);
     const in3 = join(tempDir, `pypi_${Date.now()}.xlsx`);
     const out = join(tempDir, `3m_cash_merged_${Date.now()}.xlsx`);
