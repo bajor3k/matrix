@@ -35,11 +35,11 @@ export const toolbarSections: ToolbarSection[] = [
 
 export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
   'Reports': [
-    { name: '3M Cash', icon: FileText, href: '/reports/3m-cash' },
-    { name: 'Cash Alerts', icon: FileText, href: '/reports/cash-alerts' },
-    { name: 'Margin Notify', icon: FileText, href: '/reports/margin-notify' },
-    { name: 'Advisor Summary', icon: FileText, href: '/reports/advisor-summary' },
-    { name: 'Billing Coverage', icon: FileText, href: '/reports/billing-coverage' },
+    { name: 'Advisory Fees Cash', icon: FileText, href: '/reports/3m-cash' },
+    { name: 'Cash Balance', icon: FileText, href: '/reports/cash-alerts' },
+    { name: 'Margin', icon: FileText, href: '/reports/margin-notify' },
+    { name: 'Advisory Fees', icon: FileText, href: '/reports/advisor-summary' },
+    { name: 'Test', icon: FileText, href: '/reports/billing-coverage' },
   ],
   'CRM': [
     { name: 'Home', icon: HomeIcon, href: '/client-portal/home' },
