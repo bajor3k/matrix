@@ -86,6 +86,14 @@ export default function ReportsExcelPage() {
                 <strong>3</strong> and <strong>6 months</strong>.
               </p>
             </PurposeCard>
+
+            <PurposeCard>
+              <h2 className="text-xl font-bold mb-2">Instructions</h2>
+              <div className="text-zinc-400 italic">
+                {/* Blank for now — instructions will go here later */}
+              </div>
+            </PurposeCard>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <UploadCard title="Report ID: PYCASH" onFileAccepted={(f) => accept("pycash_1", f)} />
               <UploadCard title="Report ID: PYCASH" onFileAccepted={(f) => accept("pycash_2", f)} />
