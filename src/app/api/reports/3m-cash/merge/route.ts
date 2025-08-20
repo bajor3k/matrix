@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 function runPython(args: string[]) {
   return new Promise<void>((resolve, reject) => {
-    const proc = spawn("python3", args, { stdio: ["ignore", "inherit", "inherit"] });
+    const proc = spawn("python", args, { stdio: ["ignore", "inherit", "inherit"] });
     proc.on("error", reject);
     proc.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`Python exited ${code}`))));
   });
