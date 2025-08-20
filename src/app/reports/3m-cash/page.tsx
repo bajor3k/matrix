@@ -18,15 +18,19 @@ interface UploadCardProps {
   isUploaded: boolean;
 }
 
-function UploadCard({ title, onFileAccepted, className, isUploaded }: UploadCardProps) {
-  const [file, setFile] = React.useState<File | null>(null);
+const SUCCESS_COPY = "File uploaded successfully.";
 
+function UploadCard({ title, onFileAccepted, className, isUploaded }: UploadCardProps) {
+  const [statusMsg, setStatusMsg] = React.useState<string | null>(null);
+  const [isBusy, setIsBusy] = React.useState(false);
+  
   const onDrop = React.useCallback((acceptedFiles: File[]) => {
-    const acceptedFile = acceptedFiles?.[0];
-    if (acceptedFile) {
-      setFile(acceptedFile);
-      onFileAccepted(acceptedFile);
-    }
+      const file = acceptedFiles?.[0];
+      if (!file) return;
+      setIsBusy(true);
+      onFileAccepted?.(file);
+      setStatusMsg(SUCCESS_COPY);
+      setIsBusy(false);
   }, [onFileAccepted]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -48,25 +52,27 @@ function UploadCard({ title, onFileAccepted, className, isUploaded }: UploadCard
       <div
         {...getRootProps()}
         className={cn(
-          "relative grid place-items-center rounded-xl border border-dashed border-[#26272b] p-6 min-h-[150px] bg-transparent transition-colors",
-          isDragActive ? "bg-[#15161c]" : "bg-transparent",
-          "cursor-pointer"
+          "relative grid place-items-center rounded-xl border border-dashed p-7 min-h-[150px] transition-colors",
+          "border-[#2a2b30] bg-transparent",
+          isDragActive ? "bg-[#15161c] border-[#3a3b42]" : "hover:bg-[#13141a]"
         )}
       >
         <input {...getInputProps()} />
         <div className="text-center select-none">
-          <div className="text-2xl leading-none">⬆️</div>
-          <div className="mt-2 text-sm font-medium text-zinc-200">Drag &amp; drop here</div>
-          <div className="text-xs text-zinc-500">
-            or <span className="underline">browse</span> from your computer
-          </div>
-          <div className="mt-1 text-[10px] text-zinc-600">
-            Max 10MB • .xlsx / .xls / .csv
-          </div>
+            <div className="text-3xl leading-none">⬆️</div>
+            <div className="mt-2 text-sm font-semibold text-zinc-200">
+                Drag &amp; drop here
+            </div>
+            <div className="text-xs text-zinc-500">
+                or <span className="underline">browse</span> from your computer
+            </div>
         </div>
       </div>
-       {isUploaded && (
-        <div className="mt-3 text-xs text-emerald-500" role="status" aria-live="polite">File uploaded successfully.</div>
+      {isBusy && <div className="mt-3 text-xs text-zinc-400">Checking file…</div>}
+      {statusMsg && !isBusy &&(
+        <div className="mt-3 text-xs text-emerald-500" role="status" aria-live="polite">
+          {statusMsg}
+        </div>
       )}
     </div>
   );
