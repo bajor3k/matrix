@@ -11,24 +11,39 @@ export const dynamic = "force-dynamic";
 function runPython(args: string[]) {
   return new Promise<void>((resolve, reject) => {
     // First, try to execute with `python3`
-    const proc3 = spawn("python3", args, { stdio: ["ignore", "inherit", "inherit"] });
+    const proc3 = spawn("python3", args, { stdio: ["ignore", "pipe", "pipe"] });
+    let stderr = "";
+    proc3.stderr.on('data', (data) => {
+      stderr += data.toString();
+    });
+    
     proc3.on("error", (err) => {
       // If `python3` is not found, try `python`
       if ((err as any).code === 'ENOENT') {
         console.warn("`python3` not found, falling back to `python`.");
-        const proc = spawn("python", args, { stdio: ["ignore", "inherit", "inherit"] });
+        const proc = spawn("python", args, { stdio: ["ignore", "pipe", "pipe"] });
+        let fallbackStderr = "";
+        proc.stderr.on('data', (data) => {
+            fallbackStderr += data.toString();
+        });
         proc.on("error", reject);
-        proc.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`Python script exited with code ${code}`))));
+        proc.on("close", (code) => {
+            if (code === 0) {
+                resolve();
+            } else {
+                reject(new Error(`Python script exited with code ${code}. Error: ${fallbackStderr}`));
+            }
+        });
       } else {
         reject(err);
       }
     });
+
     proc3.on("close", (code) => {
       if (code === 0) {
         resolve();
       } else {
-        // If it fails for a reason other than not being found, reject
-        reject(new Error(`Python3 script exited with code ${code}`));
+        reject(new Error(`Python3 script exited with code ${code}. Error: ${stderr}`));
       }
     });
   });
