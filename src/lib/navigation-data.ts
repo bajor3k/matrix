@@ -40,7 +40,6 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Margin Notify', icon: FileText, href: '/reports/margin-notify' },
     { name: 'Advisor Summary', icon: FileText, href: '/reports/advisor-summary' },
     { name: 'Billing Coverage', icon: FileText, href: '/reports/billing-coverage' },
-    { name: 'KYC', icon: FileText, href: '/reports/kyc' },
   ],
   'CRM': [
     { name: 'Home', icon: HomeIcon, href: '/client-portal/home' },
