@@ -1,3 +1,4 @@
+
 "use client";
 
 import ReportScaffold from "@/components/ReportScaffold";
@@ -9,6 +10,7 @@ export default function BillingCoveragePage() {
           summary=""
           instructions=""
           mergeApiPath="/api/reports/test/merge"
+          reportIds={["TEST_1", "TEST_2", "TEST_3"]}
         />
       );
 }
