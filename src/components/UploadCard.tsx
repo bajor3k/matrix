@@ -45,7 +45,7 @@ export default function UploadCard({
         className
       )}
     >
-      <div className="mb-2 text-xs uppercase tracking-wide text-zinc-400">
+      <div className="text-base font-bold text-zinc-200 mb-2 tracking-wide">
         {title}
       </div>
 
