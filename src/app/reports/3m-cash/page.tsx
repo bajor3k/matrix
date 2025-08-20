@@ -89,9 +89,12 @@ export default function ReportsExcelPage() {
 
             <PurposeCard>
               <h2 className="text-xl font-bold mb-2">Instructions</h2>
-              <div className="text-zinc-400 italic">
-                {/* Blank for now — instructions will go here later */}
-              </div>
+              <ul className="list-disc list-inside text-zinc-300 space-y-1">
+                <li>Within Report Center, run report ID <span className="font-bold">PYCASH</span> for a time frame of last month. Upload it to the first box.</li>
+                <li>Within Report Center, run report ID <span className="font-bold">PYCASH</span> and upload it to the second box.</li>
+                <li>Run report ID <span className="font-bold">PYPI</span> and upload it to the third box.</li>
+                <li>Click the green <span className="font-bold">Run 3M Cash Report</span> button at the bottom.</li>
+              </ul>
             </PurposeCard>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
