@@ -88,13 +88,27 @@ export default function ReportsExcelPage() {
             </PurposeCard>
 
             <PurposeCard>
-              <h2 className="text-xl font-bold mb-2">Instructions</h2>
-              <ul className="list-disc list-inside text-zinc-300 space-y-1">
-                <li>Within Report Center, run report ID <span className="font-bold">PYFEE</span>. Upload it to the first box.</li>
-                <li>Within Report Center, run report ID <span className="font-bold">PYCASH</span> and upload it to the second box.</li>
-                <li>Run report ID <span className="font-bold">PYPI</span> and upload it to the third box.</li>
-                <li>Click the green <span className="font-bold">Run 3M Cash Report</span> button at the bottom.</li>
-              </ul>
+                <h2 className="text-xl font-bold text-zinc-100 mb-3">Instructions</h2>
+                <ol className="list-decimal list-inside space-y-2 text-zinc-300">
+                    <li>
+                    In Report Center, run <span className="font-semibold text-zinc-100">report ID PYFEE</span>. 
+                    Download it and upload to the <span className="font-semibold">first</span> box.
+                    </li>
+                    <li>
+                    In Report Center, run <span className="font-semibold text-zinc-100">report ID PYCASH</span>. 
+                    Download it and upload to the <span className="font-semibold">second</span> box.
+                    </li>
+                    <li>
+                    Run <span className="font-semibold text-zinc-100">report ID PYPI</span>. 
+                    Download it and upload to the <span className="font-semibold">third</span> box.
+                    </li>
+                </ol>
+                <div className="mt-4 rounded-xl border border-[#26272b] bg-[#0b0b0b] p-3">
+                    <p className="text-sm text-zinc-400">
+                    <span className="font-semibold text-zinc-200">Excel tip:</span> After opening a downloaded file in Excel, 
+                    click <span className="font-semibold">Enable Editing</span>, then save before uploading.
+                    </p>
+                </div>
             </PurposeCard>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
