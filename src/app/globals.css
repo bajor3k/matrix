@@ -535,3 +535,19 @@
   .cash-upload-grid{ grid-template-columns: min(360px, 100%); }
   .upload-card{ width: min(360px, 100%); max-width: 100%; }
 }
+/* Hide any legacy preview blocks */
+[data-preview],
+[id*="preview"],
+[class*="preview"],
+[data-testid*="preview"],
+.preview,
+.file-preview,
+.csv-preview,
+.excel-preview {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}

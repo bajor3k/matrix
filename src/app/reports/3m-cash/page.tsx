@@ -189,7 +189,7 @@ export default function ReportsExcelPage() {
   
   // This effect runs once on component mount to wire up the upload cards.
   useEffect(() => {
-    if(!isReadmeOnly) return;
+    if (!isReadmeOnly) return;
     /* ------------------ CONFIG ------------------ */
     const UPLOAD_SLOTS = [
       { id: 'cash-upload-a', title: 'Report ID: PYCASH' },
@@ -349,10 +349,7 @@ export default function ReportsExcelPage() {
         sizeEl.textContent = formatBytes(file.size);
 
         parseFile(file, ({ rows, columns }) => {
-          renderPreview(table, columns, rows);
-          previewWrap.hidden = false;
           okEl.hidden = false;
-
           window.dispatchEvent(new CustomEvent('upload:parsed', {
             detail: { slotId: slot.id, file, rows, columns }
           }));
@@ -408,20 +405,20 @@ export default function ReportsExcelPage() {
         {isReadmeOnly ? (
           <main className="app-main fullbleed">
             <div className="content-pad">
-              <div className="bg-[#1c1c1c] text-white rounded-2xl shadow-md p-6 mb-6 w-full">
-                <h2 className="text-lg font-semibold mb-3">README</h2>
-                <p className="text-sm text-gray-300">
-                  Add your instructions here. This card will hold all README content and
-                  always display at the top of the 3M Cash report page.
-                </p>
-              </div>
-                <div className="cash-upload-wrap">
-                    <section id="cash-upload-section" className="cash-upload-grid">
+            <div className="bg-[#1c1c1c] text-white rounded-2xl shadow-md p-6 mb-6 w-full">
+              <h2 className="text-lg font-semibold mb-3">README</h2>
+              <p className="text-sm text-gray-300">
+                Add your instructions here. This card will hold all README content and
+                always display at the top of the 3M Cash report page.
+              </p>
+            </div>
+               <div className="cash-upload-wrap">
+                  <section id="cash-upload-section" className="cash-upload-grid">
                     <div id="cash-upload-a" className="upload-card"></div>
                     <div id="cash-upload-b" className="upload-card"></div>
                     <div id="cash-upload-c" className="upload-card"></div>
-                    </section>
-                </div>
+                  </section>
+              </div>
             </div>
           </main>
         ) : (
