@@ -8,7 +8,7 @@ type Props = { markdown: string; title?: string };
 export default function ReadmeCard({ markdown, title = "README" }: Props) {
   return (
     <div className="rounded-2xl bg-[#191a1f] p-6 shadow-lg border border-zinc-800/60">
-      <div className="text-xl font-semibold tracking-wide text-zinc-200">{title}</div>
+      
       <div className="mt-1 text-sm text-zinc-400">
         Add your instructions here. This card will hold all README content and always display at the top of the 3M Cash report page.
       </div>
