@@ -1,10 +1,11 @@
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { cn } from "@/lib/utils";
-import { Upload as UploadIcon } from "lucide-react"; // NEW: green SVG icon
+import { Upload as UploadIcon } from "lucide-react";
 
 type UploadCardProps = {
   title: string;
+  reportId: string;
   onFileAccepted?: (file: File) => void;
   className?: string;
 };
@@ -13,28 +14,24 @@ const SUCCESS_COPY = "File uploaded successfully.";
 
 export default function UploadCard({
   title,
+  reportId,
   onFileAccepted,
   className,
 }: UploadCardProps) {
   const [statusMsg, setStatusMsg] = React.useState<string | null>(null);
-  const [isBusy, setIsBusy] = React.useState(false);
 
-  const onDrop = React.useCallback((accepted: File[]) => {
-    const file = accepted?.[0];
-    if (!file) return;
-    setIsBusy(true);
-    onFileAccepted?.(file);
-    setStatusMsg(SUCCESS_COPY);
-    setIsBusy(false);
-  }, [onFileAccepted]);
+  const onDrop = React.useCallback(
+    (accepted: File[]) => {
+      const file = accepted?.[0];
+      if (!file) return;
+      onFileAccepted?.(file);
+      setStatusMsg(SUCCESS_COPY);
+    },
+    [onFileAccepted]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: {
-      "text/csv": [".csv"],
-      "application/vnd.ms-excel": [".xls"],
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
-    },
     multiple: false,
     maxSize: 10 * 1024 * 1024,
   });
@@ -42,8 +39,9 @@ export default function UploadCard({
   return (
     <div
       className={cn(
-        // Card: dark bg, neutral border (no purple)
-        "rounded-2xl bg-[#0f0f13] p-4 shadow-sm border border-[#26272b]",
+        // Background set to #0a0a0a, border neutral dark
+        "rounded-2xl p-4 shadow-sm border border-[#26272b]",
+        "bg-[#0a0a0a]",
         className
       )}
     >
@@ -51,7 +49,6 @@ export default function UploadCard({
         {title}
       </div>
 
-      {/* Clean dropzone with dashed neutral border; subtle hover */}
       <div
         {...getRootProps()}
         className={cn(
@@ -62,7 +59,7 @@ export default function UploadCard({
       >
         <input {...getInputProps()} />
         <div className="text-center select-none">
-          {/* GREEN upload icon */}
+          {/* Green upload icon */}
           <UploadIcon className="mx-auto h-7 w-7 text-emerald-500" />
 
           <div className="mt-2 text-sm font-semibold text-zinc-200">
@@ -74,10 +71,6 @@ export default function UploadCard({
         </div>
       </div>
 
-      {/* Status line — bigger, bolder, centered, emerald */}
-      {isBusy && (
-        <div className="mt-3 text-sm text-center text-zinc-400">Checking file…</div>
-      )}
       {statusMsg && (
         <div
           className="mt-3 text-sm font-semibold text-emerald-500 text-center"
