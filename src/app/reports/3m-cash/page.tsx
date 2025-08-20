@@ -1,14 +1,91 @@
 
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Upload, Download, Loader2 } from "lucide-react";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+import React from "react";
 import { README_CONTENT_3M_CASH } from "./readme-content";
 import ReadmeCard from "@/components/ReadmeCard";
+import { Upload, Download, Loader2 } from "lucide-react";
+import { saveAs } from "file-saver";
 
 type UploadKey = "pycash_1" | "pycash_2" | "pypi";
+
+interface UploadCardProps {
+  title: string;
+  onFileAccepted: (file: File) => void;
+  className?: string;
+}
+
+function UploadCard({ title, onFileAccepted, className }: UploadCardProps) {
+  const [file, setFile] = React.useState<File | null>(null);
+
+  const onDrop = React.useCallback((acceptedFiles: File[]) => {
+    const acceptedFile = acceptedFiles?.[0];
+    if (acceptedFile) {
+      setFile(acceptedFile);
+      onFileAccepted(acceptedFile);
+    }
+  }, [onFileAccepted]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "text/csv": [".csv"],
+      "application/vnd.ms-excel": [".xls"],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
+    },
+    multiple: false,
+    maxSize: 10 * 1024 * 1024,
+  });
+
+  return (
+    <div className={cn("upload-card", className)}>
+      <div className="upload-inner">
+        <div className="upload-header">
+          <div className="upload-title">{title}</div>
+          <div className="upload-sub">Drop an Excel/CSV file or click to browse.</div>
+        </div>
+        <label {...getRootProps()} className={cn("dropzone", isDragActive && "is-drag")}>
+          <input {...getInputProps()} />
+          <div className="dropzone-body">
+            <div className="drop-icon">⬆️</div>
+            <div className="drop-title">Drag & drop here</div>
+            <div className="drop-sub">or <span className="browse">browse</span> from your computer</div>
+            <div className="drop-note">Max 10MB • .xlsx / .xls / .csv</div>
+          </div>
+        </label>
+        {file && (
+          <div className="file-info">
+            <div className="file-row">
+              <span className="file-name">{file.name}</span>
+            </div>
+            <div className="file-status ok">Parsed successfully.</div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+// Hack to get useDropzone working without installing the library
+const useDropzone: any = ({ onDrop }: { onDrop: (files: File[]) => void; accept: any; multiple: boolean; maxSize: number; }) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            onDrop(Array.from(e.target.files));
+        }
+    };
+    return {
+        getRootProps: () => ({
+            onClick: () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.onchange = handleFileChange as any;
+                input.click();
+            }
+        }),
+        getInputProps: () => ({}),
+        isDragActive: false
+    };
+};
+
 
 export default function ReportsExcelPage() {
   const [files, setFiles] = React.useState<Record<UploadKey, File | null>>({
@@ -64,163 +141,54 @@ export default function ReportsExcelPage() {
     }
   }
 
-
-  // This effect runs once on component mount to wire up the upload cards.
-  useEffect(() => {
-    
-    const UPLOAD_SLOTS = [
-      { id: 'cash-upload-a', title: 'Report ID: PYCASH', key: 'pycash_1' },
-      { id: 'cash-upload-b', title: 'Report ID: PYCASH', key: 'pycash_2' },
-      { id: 'cash-upload-c', title: 'Report ID: PYPI', key: 'pypi' },
-    ];
-    const FILE_LIMIT_MB = 10;
-    const ALLOWED = ['xlsx', 'xls', 'csv'];
-
-    const templateId = 'upload-card-template';
-
-    function formatBytes(bytes: number) {
-      if (!bytes) return "0 Bytes";
-      const mb = bytes / (1024 * 1024);
-      return mb >= 1 ? `${mb.toFixed(2)} MB` : `${(bytes / 1024).toFixed(0)} KB`;
-    }
-
-    function parseFile(file: File, onDone: (data: { rows: any[]; columns: string[] }) => void, onError: (message: string) => void) {
-      if (typeof XLSX === 'undefined') {
-        onError('File parsing library (SheetJS) is not loaded.');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onerror = () => onError('Failed to read file.');
-      reader.onload = () => {
-        try {
-          const data = new Uint8Array(reader.result as ArrayBuffer);
-          const wb = XLSX.read(data, { type: 'array' });
-          const first = wb.Sheets[wb.SheetNames[0]];
-          const json = XLSX.utils.sheet_to_json(first, { defval: '' });
-          const columns = Object.keys(json[0] || {});
-          onDone({ rows: json, columns });
-        } catch (e) {
-          onError('Could not parse spreadsheet.');
-        }
-      };
-      reader.readAsArrayBuffer(file);
-    }
-
-    function makeUploader(slot: {id: string, title: string, key: UploadKey}) {
-      const host = document.getElementById(slot.id);
-      if (!host) return; 
-      
-      const tpl = document.getElementById(templateId) as HTMLTemplateElement;
-      if (!tpl) return;
-      
-      host.innerHTML = '';
-      
-      const node = tpl.content.cloneNode(true) as DocumentFragment;
-
-      (node.querySelector('.upload-title') as HTMLElement).textContent = slot.title;
-
-      const dropzone = node.querySelector('.dropzone') as HTMLLabelElement;
-      const input = node.querySelector('.file-input') as HTMLInputElement;
-      const info = node.querySelector('.file-info') as HTMLDivElement;
-      const nameEl = node.querySelector('.file-name') as HTMLSpanElement;
-      const sizeEl = node.querySelector('.file-size') as HTMLSpanElement;
-      const okEl = node.querySelector('.file-status.ok') as HTMLDivElement;
-      const errEl = node.querySelector('.file-status.err') as HTMLDivElement;
-      const previewWrap = node.querySelector('.preview') as HTMLDivElement;
-      
-      if (previewWrap) {
-        previewWrap.style.display = 'none';
-      }
-
-      const showError = (msg: string) => {
-        info.hidden = false;
-        okEl.hidden = true;
-        errEl.hidden = false;
-        errEl.textContent = msg;
-      };
-
-      const handleFile = (file: File) => {
-        const ext = (file.name.split('.').pop() || '').toLowerCase();
-        if (!ALLOWED.includes(ext)) {
-          showError('Unsupported file type. Please upload .xlsx, .xls, or .csv');
-          return;
-        }
-        if (file.size > FILE_LIMIT_MB * 1024 * 1024) {
-          showError(`File too large. Max ${FILE_LIMIT_MB}MB`);
-          return;
-        }
-
-        info.hidden = false;
-        okEl.hidden = true;
-        errEl.hidden = true;
-        nameEl.textContent = file.name;
-        sizeEl.textContent = formatBytes(file.size);
-
-        parseFile(file, ({ rows, columns }) => {
-          okEl.hidden = false;
-          handleParsed(slot.key, file);
-        }, (msg) => {
-          showError(msg);
-        });
-      };
-
-      dropzone.addEventListener('click', () => input.click());
-      input.addEventListener('change', (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0];
-        if (file) handleFile(file);
-        (e.target as HTMLInputElement).value = '';
-      });
-
-      ['dragenter', 'dragover'].forEach(evt =>
-        dropzone.addEventListener(evt, (e) => { e.preventDefault(); (e.currentTarget as HTMLElement).classList.add('is-drag'); })
-      );
-      ;['dragleave', 'drop'].forEach(evt =>
-        dropzone.addEventListener(evt, (e) => { e.preventDefault(); (e.currentTarget as HTMLElement).classList.remove('is-drag'); })
-      );
-      dropzone.addEventListener('drop', (e) => {
-        const file = e.dataTransfer?.files?.[0];
-        if (file) handleFile(file);
-      });
-
-      host.appendChild(node);
-    }
-
-    UPLOAD_SLOTS.forEach(makeUploader);
-  }, []);
-
   return (
     <div className="p-4">
-        <main className="app-main fullbleed">
-            <div className="content-pad">
-              <div className="space-y-6">
-                <ReadmeCard markdown={README_CONTENT_3M_CASH} />
-                <div className="cash-upload-wrap">
-                    <section id="cash-upload-section" className="cash-upload-grid">
-                      <div id="cash-upload-a" className="upload-card"></div>
-                      <div id="cash-upload-b" className="upload-card"></div>
-                      <div id="cash-upload-c" className="upload-card"></div>
-                    </section>
-                </div>
-                 <div className="flex flex-col items-center gap-2 pt-2">
-                    <button
-                      onClick={handleRun}
-                      disabled={!allReady || isRunning}
-                      className="rounded-2xl px-5 py-3 text-sm font-semibold transition disabled:opacity-40
-                                 bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg flex items-center gap-2"
-                    >
-                      {isRunning && <Loader2 className="animate-spin h-4 w-4" />}
-                      {isRunning ? "Merging…" : "Run 3M Cash Report"}
-                    </button>
-                    {!allReady && (
-                      <div className="text-xs text-zinc-500">
-                        Upload all three reports to enable the run.
-                      </div>
-                    )}
-                    {error && <div className="text-xs text-rose-400">{error}</div>}
-                  </div>
+      <main className="app-main fullbleed">
+        <div className="content-pad">
+          <div className="space-y-6">
+            <ReadmeCard markdown={README_CONTENT_3M_CASH} />
+             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                <UploadCard
+                  title="Report ID: PYCASH"
+                  onFileAccepted={(file) => handleParsed("pycash_1", file)}
+                  className="min-h-[220px]"
+                />
+                <UploadCard
+                  title="Report ID: PYCASH"
+                  onFileAccepted={(file) => handleParsed("pycash_2", file)}
+                  className="min-h-[220px]"
+                />
+                <UploadCard
+                  title="Report ID: PYPI"
+                  onFileAccepted={(file) => handleParsed("pypi", file)}
+                  className="min-h-[220px]"
+                />
               </div>
-            </div>
-          </main>
+
+              <div className="flex flex-col items-center gap-2 pt-2">
+                <button
+                  onClick={handleRun}
+                  disabled={!allReady || isRunning}
+                  className="rounded-2xl px-5 py-3 text-sm font-semibold transition disabled:opacity-40
+                                 bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg flex items-center gap-2"
+                >
+                  {isRunning && <Loader2 className="animate-spin h-4 w-4" />}
+                  {isRunning ? "Merging…" : "Run 3M Cash Report"}
+                </button>
+                {!allReady && (
+                  <div className="text-xs text-zinc-500">
+                    Upload all three reports to enable the run.
+                  </div>
+                )}
+                {error && <div className="text-xs text-rose-400">{error}</div>}
+              </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
+}
+
+function cn(...classes: (string | boolean | undefined)[]) {
+  return classes.filter(Boolean).join(' ');
 }

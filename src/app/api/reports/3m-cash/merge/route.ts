@@ -55,4 +55,3 @@ export async function POST(req: Request) {
     return new Response(e?.message || "Failed to merge files.", { status: 500 });
   }
 }
-
