@@ -18,7 +18,7 @@ function runPython(args: string[]) {
         console.warn("`python3` not found, falling back to `python`.");
         const proc = spawn("python", args, { stdio: ["ignore", "inherit", "inherit"] });
         proc.on("error", reject);
-        proc.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`Python exited ${code}`))));
+        proc.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`Python script exited with code ${code}`))));
       } else {
         reject(err);
       }
@@ -28,7 +28,7 @@ function runPython(args: string[]) {
         resolve();
       } else {
         // If it fails for a reason other than not being found, reject
-        reject(new Error(`Python3 exited ${code}`));
+        reject(new Error(`Python3 script exited with code ${code}`));
       }
     });
   });
