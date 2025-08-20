@@ -6,6 +6,8 @@ import { README_CONTENT_3M_CASH } from "./readme-content";
 import ReadmeCard from "@/components/ReadmeCard";
 import { Upload, Download, Loader2 } from "lucide-react";
 import { saveAs } from "file-saver";
+import { cn } from "@/lib/utils";
+import { useDropzone } from "react-dropzone";
 
 type UploadKey = "pycash_1" | "pycash_2" | "pypi";
 
@@ -13,9 +15,10 @@ interface UploadCardProps {
   title: string;
   onFileAccepted: (file: File) => void;
   className?: string;
+  isUploaded: boolean;
 }
 
-function UploadCard({ title, onFileAccepted, className }: UploadCardProps) {
+function UploadCard({ title, onFileAccepted, className, isUploaded }: UploadCardProps) {
   const [file, setFile] = React.useState<File | null>(null);
 
   const onDrop = React.useCallback((acceptedFiles: File[]) => {
@@ -38,53 +41,36 @@ function UploadCard({ title, onFileAccepted, className }: UploadCardProps) {
   });
 
   return (
-    <div className={cn("upload-card", className)}>
-      <div className="upload-inner">
-        <div className="upload-header">
-          <div className="upload-title">{title}</div>
-          <div className="upload-sub">Drop an Excel/CSV file or click to browse.</div>
-        </div>
-        <label {...getRootProps()} className={cn("dropzone", isDragActive && "is-drag")}>
-          <input {...getInputProps()} />
-          <div className="dropzone-body">
-            <div className="drop-icon">⬆️</div>
-            <div className="drop-title">Drag & drop here</div>
-            <div className="drop-sub">or <span className="browse">browse</span> from your computer</div>
-            <div className="drop-note">Max 10MB • .xlsx / .xls / .csv</div>
-          </div>
-        </label>
-        {file && (
-          <div className="file-info">
-            <div className="file-row">
-              <span className="file-name">{file.name}</span>
-            </div>
-            <div className="file-status ok">Parsed successfully.</div>
-          </div>
-        )}
+    <div className={cn("rounded-2xl bg-[#0f0f13] p-4 shadow-sm border border-[#26272b]", className)}>
+      <div className="mb-2 text-xs uppercase tracking-wide text-zinc-400">
+        {title}
       </div>
+      <div
+        {...getRootProps()}
+        className={cn(
+          "relative grid place-items-center rounded-xl border border-dashed border-[#26272b] p-6 min-h-[150px] bg-transparent transition-colors",
+          isDragActive ? "bg-[#15161c]" : "bg-transparent",
+          "cursor-pointer"
+        )}
+      >
+        <input {...getInputProps()} />
+        <div className="text-center select-none">
+          <div className="text-2xl leading-none">⬆️</div>
+          <div className="mt-2 text-sm font-medium text-zinc-200">Drag &amp; drop here</div>
+          <div className="text-xs text-zinc-500">
+            or <span className="underline">browse</span> from your computer
+          </div>
+          <div className="mt-1 text-[10px] text-zinc-600">
+            Max 10MB • .xlsx / .xls / .csv
+          </div>
+        </div>
+      </div>
+       {isUploaded && (
+        <div className="mt-3 text-xs text-emerald-500">Parsed successfully.</div>
+      )}
     </div>
   );
 }
-// Hack to get useDropzone working without installing the library
-const useDropzone: any = ({ onDrop }: { onDrop: (files: File[]) => void; accept: any; multiple: boolean; maxSize: number; }) => {
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            onDrop(Array.from(e.target.files));
-        }
-    };
-    return {
-        getRootProps: () => ({
-            onClick: () => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.onchange = handleFileChange as any;
-                input.click();
-            }
-        }),
-        getInputProps: () => ({}),
-        isDragActive: false
-    };
-};
 
 
 export default function ReportsExcelPage() {
@@ -126,14 +112,8 @@ export default function ReportsExcelPage() {
       if (!res.ok) throw new Error(await res.text());
 
       const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "3m_cash_merged.xlsx";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      saveAs(blob, "3m_cash_merged.xlsx");
+
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
     } finally {
@@ -151,16 +131,19 @@ export default function ReportsExcelPage() {
                 <UploadCard
                   title="Report ID: PYCASH"
                   onFileAccepted={(file) => handleParsed("pycash_1", file)}
+                  isUploaded={ok.pycash_1}
                   className="min-h-[220px]"
                 />
                 <UploadCard
                   title="Report ID: PYCASH"
                   onFileAccepted={(file) => handleParsed("pycash_2", file)}
+                  isUploaded={ok.pycash_2}
                   className="min-h-[220px]"
                 />
                 <UploadCard
                   title="Report ID: PYPI"
                   onFileAccepted={(file) => handleParsed("pypi", file)}
+                  isUploaded={ok.pypi}
                   className="min-h-[220px]"
                 />
               </div>
@@ -169,10 +152,14 @@ export default function ReportsExcelPage() {
                 <button
                   onClick={handleRun}
                   disabled={!allReady || isRunning}
-                  className="rounded-2xl px-5 py-3 text-sm font-semibold transition disabled:opacity-40
-                                 bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg flex items-center gap-2"
+                  className={cn(
+                    "rounded-2xl px-5 py-3 text-sm font-semibold transition shadow-sm",
+                    allReady && !isRunning
+                      ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md"
+                      : "bg-[#2f3136] text-zinc-400 cursor-not-allowed"
+                  )}
                 >
-                  {isRunning && <Loader2 className="animate-spin h-4 w-4" />}
+                  {isRunning ? <Loader2 className="animate-spin h-4 w-4 inline mr-2" /> : null}
                   {isRunning ? "Merging…" : "Run 3M Cash Report"}
                 </button>
                 {!allReady && (
@@ -187,8 +174,4 @@ export default function ReportsExcelPage() {
       </main>
     </div>
   );
-}
-
-function cn(...classes: (string | boolean | undefined)[]) {
-  return classes.filter(Boolean).join(' ');
 }
