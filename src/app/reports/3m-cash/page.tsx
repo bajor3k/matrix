@@ -66,7 +66,7 @@ function UploadCard({ title, onFileAccepted, className, isUploaded }: UploadCard
         </div>
       </div>
        {isUploaded && (
-        <div className="mt-3 text-xs text-emerald-500">Parsed successfully.</div>
+        <div className="mt-3 text-xs text-emerald-500" role="status" aria-live="polite">File uploaded successfully.</div>
       )}
     </div>
   );
