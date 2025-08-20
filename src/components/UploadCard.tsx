@@ -40,7 +40,7 @@ export default function UploadCard({
     <div className={cn("rounded-2xl p-4 border border-[#26272b] bg-[#0a0a0a]", className)}>
       {/* Header */}
       <div className="mb-2 text-base font-bold tracking-wide text-zinc-200">
-        REPORT ID: <span className="text-white">{reportId}</span>
+        {title} <span className="text-white">{reportId}</span>
       </div>
 
       {/* Dropzone */}
@@ -49,7 +49,7 @@ export default function UploadCard({
         className={cn(
           "relative grid place-items-center rounded-xl border border-dashed p-7 min-h-[150px] transition-colors",
           "border-[#2a2b30] bg-transparent",
-          isDragActive ? "bg-[#15161c] border-[#3a3b42]" : "hover:bg-[#13141a]"
+          isDragActive ? "bg-[#1516c] border-[#3a3b42]" : "hover:bg-[#13141a]"
         )}
       >
         <input {...getInputProps()} />
