@@ -1,7 +1,8 @@
+
 "use client";
 
 import React from "react";
-import { UploadCard } from "@/components/UploadCard";
+import UploadCard from "@/components/UploadCard";
 import { ThreeMCashDashboard } from "@/components/dashboard/ThreeMCashDashboard"; // reuse the inline dashboard
 import { cn } from "@/lib/utils";
 
