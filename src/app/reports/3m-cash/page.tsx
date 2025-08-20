@@ -2,8 +2,7 @@
 "use client";
 
 import React from "react";
-import { README_CONTENT_3M_CASH } from "./readme-content";
-import ReadmeCard from "@/components/ReadmeCard";
+import PurposeCard from "@/components/PurposeCard";
 import UploadCard from "@/components/UploadCard";
 import { ThreeMCashDashboard } from "@/components/dashboard/ThreeMCashDashboard";
 import { cn } from "@/lib/utils";
@@ -77,7 +76,16 @@ export default function ReportsExcelPage() {
       <main className="app-main fullbleed">
         <div className="content-pad">
           <div className="space-y-6">
-            <ReadmeCard markdown={README_CONTENT_3M_CASH} />
+            <PurposeCard>
+              <h2 className="text-xl font-bold mb-2">Purpose</h2>
+              <p>
+                This report analyzes all <strong>managed</strong> client accounts and isolates{" "}
+                <strong>advisor-directed</strong> accounts to determine how much{" "}
+                <strong>cash</strong> should be reserved to cover{" "}
+                <strong>advisory fees</strong> for the next{" "}
+                <strong>3</strong> and <strong>6 months</strong>.
+              </p>
+            </PurposeCard>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <UploadCard title="Report ID: PYCASH" onFileAccepted={(f) => accept("pycash_1", f)} />
               <UploadCard title="Report ID: PYCASH" onFileAccepted={(f) => accept("pycash_2", f)} />
