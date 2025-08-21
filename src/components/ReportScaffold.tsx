@@ -268,65 +268,52 @@ export default function ReportScaffold({
               host.appendChild(kpisEl);
 
               const grid = document.createElement('div');
-grid.className = 'test-grid';
-host.appendChild(grid);
+              grid.className = 'test-grid';
+              host.appendChild(grid);
+              
+              const chartDiv = document.createElement('div');
+              chartDiv.id = 'test-donut';
+              grid.appendChild(chartDiv);
 
-const chartDiv = document.createElement('div');
-chartDiv.id = 'test-donut';
-grid.appendChild(chartDiv);
+              const donutPalette = [
+                '#22c55e', '#16a34a', '#4ade80', 
+                '#86efac', '#14532d', '#34d399'
+              ];
 
-if (window.Plotly) {
-  const chartColors = ['#5B21B6', '#EA580C', '#38BDF8', '#10B981', '#F97316', '#6366F1'];
-  Plotly.newPlot(
-    chartDiv,
-    [{
-      type: 'pie',
-      labels: model.donut.labels,
-      values: model.donut.values,
-      hole: 0.55,
-      textinfo: 'percent',
-      hoverinfo: 'label+value',
-      insidetextorientation: 'radial',
-      marker: {
-        colors: chartColors,
-        line: {
-          color: 'rgba(91, 33, 182, 0.4)',
-          width: 2
-        }
-      },
-      textfont: {
-        color: '#ffffff',
-        size: 14,
-        family: 'Arial, sans-serif'
-      }
-    }],
-    {
-      title: {
-        text: 'Advisory Fees by IP',
-        font: {
-          color: '#e5e5e5',
-          size: 18,
-        },
-        x: 0.05,
-        y: 0.95,
-      },
-      paper_bgcolor: 'transparent',
-      plot_bgcolor: 'transparent',
-      font: { color: '#cccccc' },
-      margin: { l: 20, r: 20, t: 60, b: 20 },
-      showlegend: true,
-      legend: {
-        font: {
-          color: '#cccccc'
-        },
-        bgcolor: 'rgba(13, 13, 36, 0.5)',
-        bordercolor: 'rgba(91, 33, 182, 0.4)',
-        borderwidth: 1
-      }
-    },
-    { displayModeBar: false, responsive: true }
-  );
-}
+              const sumFees = (model.donut.values || []).reduce((a,b)=>a+(+b||0),0);
+              if(sumFees <= 0){
+                chartDiv.innerHTML = '<div style="color:#9aa0b4;padding:12px;">No fee data available for donut.</div>';
+              } else {
+                if (window.Plotly) {
+                    Plotly.newPlot(
+                        chartDiv,
+                        [{
+                        type: 'pie',
+                        labels: model.donut.labels,
+                        values: model.donut.values,
+                        hole: 0.55,
+                        textinfo: 'label+percent',
+                        sort: false,
+                        marker: {
+                            colors: donutPalette,
+                            line: { color: '#000000', width: 1 }
+                        },
+                        textfont: { color: '#e5e7eb' },
+                        hoverlabel: { bgcolor:'#0f0f0f', font:{ color:'#e5e7eb' } }
+                        }],
+                        {
+                        title: { text: 'Advisory Fees by IP', font:{ color:'#e5e7eb' }, x:0, xanchor:'left' },
+                        paper_bgcolor: '#000000',
+                        plot_bgcolor:  '#000000',
+                        font: { color: '#e5e7eb' },
+                        margin: { l: 10, r: 10, t: 30, b: 10 },
+                        legend: { bgcolor:'#000000' }
+                        },
+                        { displayModeBar: false, responsive: true }
+                    );
+                    setTimeout(() => { try { Plotly.Plots.resize(chartDiv); } catch(_){} }, 0);
+                }
+              }
 
               const tableWrap = document.createElement('div');
               tableWrap.className = 'test-table';
@@ -364,9 +351,12 @@ if (window.Plotly) {
 
             /* ---------- BUTTON HOOKS (Open / Hide dashboard) ---------- */
             window.openTestDashboard = function(){
-              renderTestDashboard();
               const host = document.getElementById('test-dashboard');
-              if (host) host.scrollIntoView({ behavior:'smooth', block:'start' });
+              if (host) {
+                host.hidden = false;
+                renderTestDashboard();
+                host.scrollIntoView({ behavior:'smooth', block:'start' });
+              }
             };
             window.hideTestDashboard = function(){
               const host = document.getElementById('test-dashboard');
@@ -389,3 +379,5 @@ declare global {
         Plotly: any;
     }
 }
+
+    
