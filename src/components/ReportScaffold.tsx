@@ -39,7 +39,7 @@ export default function ReportScaffold({
   const [data, setData] = React.useState<any[] | null>(null);
   const [showDash, setShowDash] = React.useState(false);
 
-  const allReady = ok.a && ok.b && ok.c;
+  const allReady = ok.a || ok.b || ok.c;
 
   function accept(key: Key, f: File) {
     setFiles((s) => ({ ...s, [key]: f }));
@@ -51,9 +51,10 @@ export default function ReportScaffold({
     setIsRunning(true); setError(null); setShowDash(false);
     try {
       const fd = new FormData();
-      fd.append("fileA", files.a!);
-      fd.append("fileB", files.b!);
-      fd.append("fileC", files.c!);
+      if (files.a) fd.append("fileA", files.a);
+      if (files.b) fd.append("fileB", files.b);
+      if (files.c) fd.append("fileC", files.c);
+      
       const res = await fetch(`${mergeApiPath}?format=json`, { method: "POST", body: fd });
       if (!res.ok) throw new Error(await res.text());
       const rows = await res.json();
@@ -71,9 +72,10 @@ export default function ReportScaffold({
   async function downloadExcel() {
     if (!allReady) return;
     const fd = new FormData();
-    fd.append("fileA", files.a!);
-    fd.append("fileB", files.b!);
-    fd.append("fileC", files.c!);
+    if (files.a) fd.append("fileA", files.a);
+    if (files.b) fd.append("fileB", files.b);
+    if (files.c) fd.append("fileC", files.c);
+
     const res = await fetch(`${mergeApiPath}?format=xlsx`, { method: "POST", body: fd });
     if (!res.ok) throw new Error(await res.text());
     const blob = await res.blob();
@@ -189,10 +191,10 @@ export default function ReportScaffold({
 
 
             /* ------------------------ HELPERS ----------------------------- */
-            function money(n){
+            function money(n, decimals = 2){
               const x = Number(n);
               if (!isFinite(x)) return '';
-              return x.toLocaleString(undefined, { style:'currency', currency:'USD', maximumFractionDigits: 2 });
+              return x.toLocaleString('en-US', { style:'currency', currency:'USD', minimumFractionDigits: decimals, maximumFractionDigits: decimals });
             }
             function num(v){
               if (v === null || v === undefined) return null;
@@ -266,22 +268,65 @@ export default function ReportScaffold({
               host.appendChild(kpisEl);
 
               const grid = document.createElement('div');
-              grid.className = 'test-grid';
-              host.appendChild(grid);
+grid.className = 'test-grid';
+host.appendChild(grid);
 
-              const chartDiv = document.createElement('div');
-              chartDiv.id = 'test-donut';
-              chartDiv.style.height = '420px';
-              grid.appendChild(chartDiv);
+const chartDiv = document.createElement('div');
+chartDiv.id = 'test-donut';
+grid.appendChild(chartDiv);
 
-              if (window.Plotly) {
-                Plotly.newPlot(
-                  chartDiv,
-                  [{ type:'pie', labels: model.donut.labels, values: model.donut.values, hole:0.55, textinfo:'label+percent', sort:false }],
-                  { title:'Advisory Fees by IP', paper_bgcolor:'#11111a', plot_bgcolor:'#11111a', font:{color:'#e6e6f0'}, margin:{l:20,r:20,t:40,b:20}, showlegend:true },
-                  { displayModeBar:false, responsive:true }
-                );
-              }
+if (window.Plotly) {
+  const chartColors = ['#5B21B6', '#EA580C', '#38BDF8', '#10B981', '#F97316', '#6366F1'];
+  Plotly.newPlot(
+    chartDiv,
+    [{
+      type: 'pie',
+      labels: model.donut.labels,
+      values: model.donut.values,
+      hole: 0.55,
+      textinfo: 'percent',
+      hoverinfo: 'label+value',
+      insidetextorientation: 'radial',
+      marker: {
+        colors: chartColors,
+        line: {
+          color: 'rgba(91, 33, 182, 0.4)',
+          width: 2
+        }
+      },
+      textfont: {
+        color: '#ffffff',
+        size: 14,
+        family: 'Arial, sans-serif'
+      }
+    }],
+    {
+      title: {
+        text: 'Advisory Fees by IP',
+        font: {
+          color: '#e5e5e5',
+          size: 18,
+        },
+        x: 0.05,
+        y: 0.95,
+      },
+      paper_bgcolor: 'transparent',
+      plot_bgcolor: 'transparent',
+      font: { color: '#cccccc' },
+      margin: { l: 20, r: 20, t: 60, b: 20 },
+      showlegend: true,
+      legend: {
+        font: {
+          color: '#cccccc'
+        },
+        bgcolor: 'rgba(13, 13, 36, 0.5)',
+        bordercolor: 'rgba(91, 33, 182, 0.4)',
+        borderwidth: 1
+      }
+    },
+    { displayModeBar: false, responsive: true }
+  );
+}
 
               const tableWrap = document.createElement('div');
               tableWrap.className = 'test-table';
