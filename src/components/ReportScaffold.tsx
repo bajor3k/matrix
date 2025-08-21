@@ -271,47 +271,64 @@ export default function ReportScaffold({
               grid.className = 'test-grid';
               host.appendChild(grid);
               
-              const chartDiv = document.createElement('div');
-              chartDiv.id = 'test-donut';
-              grid.appendChild(chartDiv);
+              // --- DONUT: Advisory Fees by IP (project colorway) ---
+              // 1) Create a container DIV (Plotly renders into this)
+              const chartDiv = document.createElement('div');      // make a div for the chart
+              chartDiv.id = 'test-donut';                          // give it a stable id
+              chartDiv.style.minHeight = '360px';                  // ensure vertical space
+              grid.appendChild(chartDiv);                          // add to the grid area
 
-              const donutPalette = [
-                '#22c55e', '#16a34a', '#4ade80', 
-                '#86efac', '#14532d', '#34d399'
+              // 2) Define the palette EXACTLY like the reference project
+              //    Order matters; we will cycle these colors for extra slices.
+              const PROJECT_PALETTE = [
+                '#7C3AED', // Purple
+                '#5B21B6', // Indigo
+                '#3B82F6', // Blue
+                '#22D3EE', // Aqua
+                '#06B6D4', // Cyan
+                '#10B981'  // Teal
               ];
 
-              const sumFees = (model.donut.values || []).reduce((a,b)=>a+(+b||0),0);
-              if(sumFees <= 0){
-                chartDiv.innerHTML = '<div style="color:#9aa0b4;padding:12px;">No fee data available for donut.</div>';
+              // 3) If there are no positive fee values, show a friendly message
+              const totalFees = (model.donut.values || []).reduce((s,v)=>s + (Number(v)||0), 0); // sum values
+              if (totalFees <= 0) {                                // nothing to show?
+                chartDiv.innerHTML = '<div style="color:#9aa0b4;padding:12px;">No fee data available for donut.</div>'; // message
               } else {
+                // 4) Build a color array the same length as slices, cycling the palette
+                const sliceColors = model.donut.values.map((_, idx) => PROJECT_PALETTE[idx % PROJECT_PALETTE.length]); // cycle colors
+
+                // 5) Build one pie trace with a hole to make it a donut
+                const trace = {                                     // Plotly trace config
+                  type: 'pie',                                      // pie chart
+                  labels: model.donut.labels,                       // slice labels (IPs)
+                  values: model.donut.values,                       // slice values (fees)
+                  hole: 0.55,                                       // donut size
+                  sort: false,                                      // keep given order
+                  textinfo: 'label+percent',                        // show label + %
+                  marker: {                                         // visual style for slices
+                    colors: sliceColors,                            // our palette
+                    line: { color: '#000000', width: 1 }            // crisp slice borders on jet black
+                  },
+                  textfont: { color: '#e5e7eb' },                   // light text on dark
+                  hoverlabel: { bgcolor:'#0f0f0f', font:{ color:'#e5e7eb' } } // readable hover
+                };
+
+                // 6) Layout: jet‑black canvas, light fonts
+                const layout = {                                     // overall layout
+                  title: { text: 'Advisory Fees by IP', font:{ color:'#e5e7eb' }, x: 0, xanchor: 'left' }, // chart title
+                  paper_bgcolor: '#000000',                          // outside of plotting area
+                  plot_bgcolor:  '#000000',                          // inside plotting area
+                  font: { color: '#e5e7eb' },                        // default font color
+                  margin: { l: 10, r: 10, t: 30, b: 10 },            // tight margins
+                  showlegend: true,                                   // show legend
+                  legend: { bgcolor:'#000000' }                       // legend on black
+                };
+
+                // 7) Render the chart
                 if (window.Plotly) {
-                    Plotly.newPlot(
-                        chartDiv,
-                        [{
-                        type: 'pie',
-                        labels: model.donut.labels,
-                        values: model.donut.values,
-                        hole: 0.55,
-                        textinfo: 'label+percent',
-                        sort: false,
-                        marker: {
-                            colors: donutPalette,
-                            line: { color: '#000000', width: 1 }
-                        },
-                        textfont: { color: '#e5e7eb' },
-                        hoverlabel: { bgcolor:'#0f0f0f', font:{ color:'#e5e7eb' } }
-                        }],
-                        {
-                        title: { text: 'Advisory Fees by IP', font:{ color:'#e5e7eb' }, x:0, xanchor:'left' },
-                        paper_bgcolor: '#000000',
-                        plot_bgcolor:  '#000000',
-                        font: { color: '#e5e7eb' },
-                        margin: { l: 10, r: 10, t: 30, b: 10 },
-                        legend: { bgcolor:'#000000' }
-                        },
-                        { displayModeBar: false, responsive: true }
-                    );
-                    setTimeout(() => { try { Plotly.Plots.resize(chartDiv); } catch(_){} }, 0);
+                  Plotly.newPlot(chartDiv, [trace], layout, { displayModeBar: false, responsive: true }); // draw donut
+                  // 8) If the panel was hidden before render, force a resize so sizing is correct
+                  setTimeout(() => { try { Plotly.Plots.resize(chartDiv); } catch(_){} }, 0); // fix hidden-render sizing
                 }
               }
 
@@ -379,5 +396,3 @@ declare global {
         Plotly: any;
     }
 }
-
-    
