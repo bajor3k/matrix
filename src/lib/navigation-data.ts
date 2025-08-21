@@ -61,7 +61,6 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Portfolio Matrix', icon: PieChart, href: '/portfolio-matrix' },
     { name: 'Model Matrix', icon: Shapes, href: '/model-matrix' },
     { name: 'Contribution Matrix', icon: TrendingUp, href: '/contribution-matrix' },
-    { name: 'Project X', icon: FlaskConical, href: '/project-x' },
   ],
   'Resources': [
     { name: 'Quick Links', icon: LinkIcon, href: '/resource-matrix?tab=quick_links' },
