@@ -570,3 +570,63 @@
 .panel-dark { background-color: #191a1f; border: 1px solid #26272b; }
 
 .upload-grid .upload-card { min-height: 220px; }
+
+/* Test dashboard container */
+.test-dashboard{
+  background:#11111a;
+  border:1px solid #26263a;
+  border-radius:16px;
+  padding:16px;
+  margin-top:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+/* KPIs */
+.test-kpis{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap:12px;
+  margin-bottom:16px;
+}
+.test-kpi{
+  background:#0f0f17;
+  border:1px solid #26263a;
+  border-radius:12px;
+  padding:12px;
+}
+.test-kpi .label{ color:#9aa0b4; font-size:12px; margin-bottom:4px; }
+.test-kpi .value{ color:#e6e6f0; font-weight:700; font-size:20px; }
+
+/* Chart + table layout */
+.test-grid{
+  display:grid;
+  grid-template-columns: 420px 1fr;
+  gap:16px;
+}
+@media (max-width: 1100px){
+  .test-grid{ grid-template-columns: 1fr; }
+}
+
+/* Table */
+.test-table{
+  overflow:auto;
+  border:1px solid #26263a;
+  border-radius:12px;
+  max-height: 480px;
+}
+.test-table table{ width:100%; border-collapse:collapse; }
+.test-table thead th{
+  position:sticky; top:0;
+  background:#1b1b28; color:#cfd2e8; text-align:left;
+  padding:10px; font-size:12px; border-bottom:1px solid #2a2a3a;
+}
+.test-table tbody td{
+  padding:10px; border-bottom:1px solid #20202c; color:#e6e6f0;
+}
+.test-table tbody tr:hover{ background:#13131d; }
+
+/* Status pill */
+.pill-short{
+  display:inline-block; padding:2px 8px; border-radius:9999px; font-size:12px;
+  background:#3b0d0d; color:#ffb4b4; border:1px solid #a12626;
+}

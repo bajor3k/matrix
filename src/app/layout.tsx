@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Inter, Roboto_Mono } from 'next/font/google';
@@ -63,6 +64,7 @@ export default function RootLayout({
               <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/plugins/plugins.css' />
               <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/css/luckysheet.css' />
               <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/assets/iconfont/iconfont.css' />
+              <Script src="https://cdn.plot.ly/plotly-2.32.0.min.js" strategy="lazyOnload" />
             </>
           )}
       </head>
