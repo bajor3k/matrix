@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { CircularProgressRing } from "@/components/ui/circular-progress-ring";
+import ProgressDonut from "@/components/ui/ProgressDonut";
 import { AccountTypeProgressRing } from "@/components/charts/account-type-progress-ring"; 
 import { useToast } from "@/hooks/use-toast";
 
@@ -206,7 +206,7 @@ export default function ContributionMatrixPage() {
               <TableHead className="font-bold text-right">Annual Limit</TableHead>
               <TableHead className="font-bold text-right w-40">Contributed</TableHead>
               <TableHead className="font-bold text-right">Remaining</TableHead>
-              <TableHead className="font-bold min-w-[180px] text-center">Progress (%)</TableHead>
+              <TableHead className="font-bold min-w-[96px] w-[96px] text-right">Progress (%)</TableHead>
               <TableHead className="font-bold text-right whitespace-nowrap">Monthly to Max-Out</TableHead>
               <TableHead className="font-bold text-center whitespace-nowrap">Due Date</TableHead>
             </TableRow>
@@ -240,8 +240,10 @@ export default function ContributionMatrixPage() {
                     <span>${account.amountContributed.toLocaleString()}</span>
                   </TableCell>
                   <TableCell className="text-right whitespace-nowrap">${remaining.toLocaleString()}</TableCell>
-                  <TableCell className="flex justify-center items-center">
-                     <CircularProgressRing progress={progressPercent} size={48} strokeWidth={5} />
+                  <TableCell className="w-[96px] align-middle">
+                     <div className="flex justify-end">
+                       <ProgressDonut percent={progressPercent} size={40} strokeWidth={6} />
+                     </div>
                   </TableCell>
                   <TableCell className="text-right whitespace-nowrap">
                     {monthlyToMax > 0 && progressPercent < 100 ? `$${monthlyToMax.toFixed(2)}/mo` : (progressPercent >= 100 ? "Maxed Out" : "N/A")}
