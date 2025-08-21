@@ -10,6 +10,15 @@ import { saveAs } from "file-saver";
 
 type UploadKey = "pyfee" | "pycash_2" | "pypi";
 
+const REPORT_SUMMARY =
+  "This report analyzes all managed client accounts and isolates advisor-directed accounts to determine how much cash should be reserved to cover advisory fees for the next 3 and 6 months. It takes into account periodic instructions for each account, and lets you know the available cash and MMF for each account.";
+
+const INSTRUCTIONS: string[] = [
+  "In Report Center, run Report ID: PYFEE. Download it and upload to the first box.",
+  "In Report Center, run Report ID PYCASH. Download it and upload to the second box.",
+  "In Report Center, run Report ID PYPI. Download it and upload to the third box.",
+];
+
 export default function ReportsExcelPage() {
   const [files, setFiles] = React.useState<Record<UploadKey, File | null>>({
     pyfee: null,
@@ -78,43 +87,22 @@ export default function ReportsExcelPage() {
           <div className="space-y-6">
             <PurposeCard>
               <h2 className="text-xl font-bold mb-2">Report Summary</h2>
-              <p>
-                This report analyzes all <strong>managed</strong> client accounts and isolates{" "}
-                <strong>advisor-directed</strong> accounts to determine how much{" "}
-                <strong>cash</strong> should be reserved to cover{" "}
-                <strong>advisory fees</strong> for the next{" "}
-                <strong>3</strong> and <strong>6 months</strong>.
-              </p>
+              <p className="text-white/80">{REPORT_SUMMARY}</p>
             </PurposeCard>
 
             <PurposeCard>
                 <h2 className="text-xl font-bold text-zinc-100 mb-3">Instructions</h2>
-                <ol className="list-decimal list-inside space-y-2 text-zinc-300">
-                    <li>
-                    In Report Center, run <span className="font-semibold text-zinc-100">report ID PYFEE</span>. 
-                    Download it and upload to the <span className="font-semibold">first</span> box.
-                    </li>
-                    <li>
-                    In Report Center, run <span className="font-semibold text-zinc-100">report ID PYCASH</span>. 
-                    Download it and upload to the <span className="font-semibold">second</span> box.
-                    </li>
-                    <li>
-                    Run <span className="font-semibold text-zinc-100">report ID PYPI</span>. 
-                    Download it and upload to the <span className="font-semibold">third</span> box.
-                    </li>
+                <ol className="list-decimal list-inside space-y-2 text-white/80">
+                  {INSTRUCTIONS.map((line, i) => (
+                    <li key={i}>{line}</li>
+                  ))}
                 </ol>
-                <div className="mt-4 rounded-xl border border-[#26272b] bg-[#0b0b0b] p-3">
-                    <p className="text-sm text-zinc-400">
-                    <span className="font-semibold text-zinc-200">Excel tip:</span> After opening a downloaded file in Excel, 
-                    click <span className="font-semibold">Enable Editing</span>, then save before uploading.
-                    </p>
-                </div>
             </PurposeCard>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <UploadCard title="REPORT ID: PYFEE" reportId="PYFEE" onFileAccepted={(f) => accept("pyfee", f)} />
-              <UploadCard title="REPORT ID: PYCASH" reportId="PYCASH" onFileAccepted={(f) => accept("pycash_2", f)} />
-              <UploadCard title="REPORT ID: PYPI" reportId="PYPI" onFileAccepted={(f) => accept("pypi", f)} />
+              <UploadCard title="" reportId="PYFEE" onFileAccepted={(f) => accept("pyfee", f)} />
+              <UploadCard title="" reportId="PYCASH" onFileAccepted={(f) => accept("pycash_2", f)} />
+              <UploadCard title="" reportId="PYPI" onFileAccepted={(f) => accept("pypi", f)} />
             </div>
 
             <div className="flex flex-col items-center gap-3 pt-2">

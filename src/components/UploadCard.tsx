@@ -8,6 +8,7 @@ type UploadCardProps = {
   reportId: string;
   onFileAccepted?: (file: File) => void;
   className?: string;
+  children?: React.ReactNode;
 };
 
 const SUCCESS_COPY = "File uploaded successfully.";
@@ -17,6 +18,7 @@ export default function UploadCard({
   reportId,
   onFileAccepted,
   className,
+  children,
 }: UploadCardProps) {
   const [statusMsg, setStatusMsg] = React.useState<string | null>(null);
 
@@ -35,13 +37,20 @@ export default function UploadCard({
     multiple: false,
     maxSize: 10 * 1024 * 1024,
   });
+  
+  const displayId = (reportId ?? "").toString().trim();
 
   return (
     <div className={cn("rounded-2xl p-4 border border-[#26272b] bg-[#0a0a0a]", className)}>
-      {/* Header */}
       <div className="mb-2 text-base font-bold tracking-wide text-zinc-200">
-        {title} <span className="text-white">{reportId}</span>
+        {title}
       </div>
+
+      {displayId && (
+        <div className="mb-3 text-[11px] md:text-xs font-semibold tracking-wide text-white/70">
+          REPORT ID: <span className="text-white">{displayId}</span>
+        </div>
+      )}
 
       {/* Dropzone */}
       <div
@@ -60,6 +69,7 @@ export default function UploadCard({
             or <span className="underline">browse</span> from your computer
           </div>
         </div>
+        {children}
       </div>
 
       {/* PERSISTENT STATUS SLOT (prevents height jump) */}
