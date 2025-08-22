@@ -99,7 +99,7 @@ export default function UploadCard({
             onClick={open}
             className={cn(
                 "flex flex-col items-center justify-center text-center",
-                "dropzone p-10 transition-colors duration-200 rounded-xl border-2 border-dashed",
+                "dropzone p-10 transition-colors duration-200 rounded-xl border-2 border-dashed bg-[#1f1f1f]",
                 isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-white/40 text-white/90"
               )}
           >
