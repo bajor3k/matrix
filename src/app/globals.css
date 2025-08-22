@@ -24,7 +24,7 @@
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%; /* #6f7178 */
     
-    --accent: 240 4.8% 95.9%;
+    --accent: 151 96% 46%; /* #08e28f */
     --accent-foreground: 240 5.9% 10%;
     
     --destructive: 0 84.2% 60.2%;
@@ -39,7 +39,7 @@
     /* Chart Colors - Monochromatic Purple (Light) */
     --chart-1: 258 84% 58%; /* #7c3aed */
     --chart-2: 256 90% 66%; /* #8b5cf6 */
-    --chart-3: 251 93% 76%; /* #a78bfa */
+    --chart-3: 151 96% 46%; /* #08e28f - Standardized Green */
     --chart-4: 250 95% 85%; /* #c4b5fd */
     --chart-5: 252 91% 95%; /* #ede9fe */
     --chart-orange: 260 50% 40%; /* #523399 - A deeper purple for contrast */
@@ -86,7 +86,7 @@
     --muted: 0 0% 10%;
     --muted-foreground: 240 5% 64.9%;
     
-    --accent: 0 0% 10%;
+    --accent: 151 96% 46%; /* #08e28f */
     --accent-foreground: 0 0% 98%;
     
     --destructive: 0 62.8% 30.6%;
@@ -99,7 +99,7 @@
     /* Chart Colors - Monochromatic Purple (Dark) */
     --chart-1: 258 84% 58%; /* #7c3aed */
     --chart-2: 256 90% 66%; /* #8b5cf6 */
-    --chart-3: 251 93% 76%; /* #a78bfa */
+    --chart-3: 151 96% 46%; /* #08e28f - Standardized Green */
     --chart-4: 250 95% 85%; /* #c4b5fd */
     --chart-5: 252 91% 95%; /* #ede9fe */
     --chart-orange: 260 50% 40%; /* #523399 - A deeper purple for contrast */
@@ -127,8 +127,8 @@
     --line: #1a1a1a;        /* subtle borders */
     --text: #e5e7eb;        /* main text */
     --muted:#9aa0b4;        /* secondary text */
-    --accent:#22c55e;       /* SAME green as "File uploaded successfully" */
-    --success-green: #22c55e; /* Explicit success color */
+    --accent:#08e28f;       /* Standardized project green */
+    --success-green: #08e28f; /* Standardized project green */
   }
 
   html {
@@ -498,7 +498,7 @@
 
 /* Status lines */
 .file-status{ font-size:12px; margin-top:6px; }
-.file-status.ok{ color:#22c55e; }
+.file-status.ok{ color:var(--success-green); }
 .file-status.err{ color:#ffb4b4; }
 
 /* Preview */

@@ -97,52 +97,45 @@ export default function UploadCard({
   const displayId = (reportId ?? "").toString().trim();
 
   return (
-    <div className={cn("upload-card bg-transparent border-0 shadow-none p-0", className)}>
-      <div className="flex flex-col gap-2">
+    <div data-upload-card="true" className={cn("upload-card", className)}>
+      <div className="upload-inner">
         {displayId && displayId !== "—" && (
-            <div className="text-[11px] md:text-xs font-semibold tracking-wide text-white/70">
-              REPORT ID: <span className="text-white">{displayId}</span>
+            <div className="upload-title">
+              {title} <span className="text-white">{displayId}</span>
             </div>
         )}
 
-        {file ? (
-           <div className="flex flex-col gap-1">
-             <div className="text-sm md:text-base font-medium text-white/90 leading-tight">
-               {file.name}
-             </div>
-             {!errorMsg && (
-                <div className="text-xs md:text-sm leading-tight text-[var(--success-green,#22c55e)]">
-                  {SUCCESS_COPY}
-                </div>
-             )}
-             {errorMsg && (
-                <div className="text-xs md:text-sm leading-tight text-red-500">
-                  {errorMsg}
-                </div>
-             )}
-             <div className="flex items-center gap-4">
-                <button type="button" onClick={open} className="mt-1 w-fit text-xs underline underline-offset-2 text-white/60 hover:text-white/80 focus:outline-none">
-                  Replace
-                </button>
-                <button type="button" onClick={resetUI} className="mt-1 w-fit text-xs underline underline-offset-2 text-red-400/80 hover:text-red-400 focus:outline-none">
-                  Remove
-                </button>
-             </div>
-           </div>
-        ) : (
+        {!file ? (
           <div
             {...getRootProps()}
             onClick={open}
-            className={cn(
-              "border border-dashed border-white/10 rounded-xl",
-              "p-6 cursor-pointer transition-colors",
-              isDragActive ? "bg-white/5" : "bg-transparent hover:bg-white/5"
-            )}
+            className={cn("dropzone", isDragActive && "bg-white/5")}
           >
             <input {...getInputProps()} />
-            <div className="text-sm text-center text-white/60">
-              {isDragActive ? "Drop the file here…" : "Drag & drop or click to upload"}
+            <div className="dropzone-body">
+                <UploadIcon className="drop-icon" strokeWidth={1.5}/>
+                <div className="drop-title">Drop file here</div>
+                <div className="drop-sub">or <span className="browse">browse</span> from your computer</div>
+                <div className="drop-note">XLS, XLSX, or CSV. Max 10MB.</div>
             </div>
+          </div>
+        ) : (
+          <div className="bg-transparent shadow-none ring-0 border-0 p-0 m-0">
+             <div className="uploaded-file-line">
+                <div className="text-sm md:text-base font-medium text-white/90 leading-tight">
+                    {file.name}
+                </div>
+                 <div className="text-xs md:text-sm leading-tight text-[var(--success-green)]">
+                    {SUCCESS_COPY}
+                </div>
+                 <button
+                    type="button"
+                    onClick={() => { setFile(null); resetUI(); }}
+                    className="mt-1 w-fit text-xs underline underline-offset-2 text-white/60 hover:text-white/80 focus:outline-none"
+                    >
+                    Replace
+                </button>
+             </div>
           </div>
         )}
       </div>
