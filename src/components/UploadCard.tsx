@@ -1,4 +1,3 @@
-
 "use client";
 import React from "react";
 import { useDropzone } from "react-dropzone";
@@ -90,6 +89,10 @@ export default function UploadCard({
     }
   });
 
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    resetUI();
+  };
 
   return (
     <div data-upload-card="true" className={cn("upload-card", className)}>
@@ -98,51 +101,44 @@ export default function UploadCard({
         onClick={!file ? open : undefined}
         className={cn(
             "flex flex-col items-center justify-center text-center",
-            "dropzone p-8 transition-colors duration-200 rounded-xl border-2 border-dashed bg-[#1f1f1f]",
+            "rounded-xl border-2 border-dashed bg-[#1f1f1f]",
             isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-white/40 text-white/90",
-            !file && "cursor-pointer"
+            "p-8 cursor-pointer transition-colors duration-200 h-40",
+            className
           )}
       >
         <input {...getInputProps()} />
         
-        <p className="text-base font-semibold">
-          {dropzoneText || 'Drop file here'}
-        </p>
-        <p className="text-sm text-white/70 mt-1">
-          or{" "}
-          <span onClick={open} className="text-[#08e28f] font-medium hover:underline cursor-pointer">
-            browse
-          </span>{" "}
-          from your computer
-        </p>
-
-        {file && (
-            <div className="mt-3 text-center">
-                <p className="text-sm text-white/90">{file.name}</p>
-                <p className={cn("text-xs mt-1", errorMsg ? "text-red-400" : "text-[var(--success-green)]")}>
-                    {errorMsg || "File uploaded successfully."}
-                </p>
-                 <div className="flex items-center justify-center gap-2 mt-2">
-                    <button
-                        className="text-xs underline underline-offset-2 text-white/60 hover:text-white/80"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          open();
-                        }}
-                    >
-                        Replace
-                    </button>
-                    <button
-                         className="text-xs underline underline-offset-2 text-red-400/80 hover:text-red-400"
-                        onClick={(e) => {
-                           e.stopPropagation();
-                           resetUI();
-                        }}
-                    >
-                        Remove
-                    </button>
-                </div>
-            </div>
+        {!file ? (
+          <>
+            <p className="text-base font-semibold">
+              {dropzoneText || 'Drop file here'}
+            </p>
+            <p className="text-sm text-white/70 mt-1">
+              or{" "}
+              <span onClick={(e) => { e.stopPropagation(); open(); }} className="text-[#08e28f] font-medium hover:underline cursor-pointer">
+                browse
+              </span>{" "}
+              from your computer
+            </p>
+          </>
+        ) : (
+          <>
+            {errorMsg ? (
+              <p className="text-sm text-red-400">{errorMsg}</p>
+            ) : (
+              <p className="text-sm text-white/90">{file.name}</p>
+            )}
+            <p className="text-sm text-[#08e28f] mt-1">
+              {errorMsg ? "Upload failed." : "Success 🙂"}
+            </p>
+            <button
+              onClick={handleRemove}
+              className="text-sm text-[#e31211] mt-2 hover:underline"
+            >
+              Remove
+            </button>
+          </>
         )}
       </div>
     </div>
