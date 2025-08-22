@@ -1,7 +1,7 @@
-// src/components/UploadedFileDisplay.tsx
+// This component is no longer used and can be deleted.
+// The functionality has been merged into UploadCard.tsx to keep the dropzone visible after upload.
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Trash2 } from "lucide-react";
 
 type UploadedFileDisplayProps = {
   name: string;
@@ -26,7 +26,7 @@ export function UploadedFileDisplay({
 
       <div className={cn(
         "text-xs md:text-sm leading-tight",
-        hasError ? "text-red-400" : "text-[var(--success-green)]"
+        hasError ? "text-red-400" : "text-[var(--success-green,#22c55e)]"
       )}>
         {successText}
       </div>
