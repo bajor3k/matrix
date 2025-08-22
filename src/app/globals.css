@@ -128,8 +128,8 @@
     --text: #e5e7eb;        /* main text */
     --muted:#9aa0b4;        /* secondary text */
     --accent: #08e28f;      /* standardized green */
-    --success-green: #08e28f;
     --destructive-red: #e31211;
+    --success-green: #08e28f;
   }
 
   html {
@@ -470,4 +470,13 @@ main > .mx-auto.max-w-7xl {
     padding-left: 2rem !important;   /* lg:px-8 */
     padding-right: 2rem !important;
   }
+}
+
+html.dark .recharts-default-tooltip {
+  --tooltip-bg: #0b0b0b;
+  --tooltip-fg: #ffffff;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+html.dark .recharts-legend-wrapper {
+  color: rgba(255,255,255,0.75) !important;
 }

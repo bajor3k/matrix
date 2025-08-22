@@ -1,6 +1,6 @@
 export default function ReportsPageShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-black text-white">
+    <div className="bg-background text-foreground">
       <div
         className={[
           "mx-auto max-w-7xl",

@@ -40,6 +40,8 @@ export default function UploadCard({
     if (onFileCleared) {
       onFileCleared();
     }
+     const event = new CustomEvent('upload:cleared', { detail: { slotId } });
+     window.dispatchEvent(event);
   };
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
@@ -55,7 +57,7 @@ export default function UploadCard({
         // layout: NO fixed height; compact spacing
         "flex flex-col items-center justify-center text-center gap-2",
         "rounded-xl border-2 border-dashed bg-transparent",
-        isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-white/40 text-white/90",
+        isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-foreground/30 text-foreground/90",
         "px-6 py-5 cursor-pointer transition-colors",
         className
       )}
@@ -79,7 +81,7 @@ export default function UploadCard({
           className="inline-flex items-center justify-center w-9 h-9 rounded-full"
           title="Upload"
         >
-          <Upload className="w-7 h-7 text-white/85 hover:text-[#08e28f]" />
+          <Upload className="w-7 h-7 text-foreground/85 hover:text-[#08e28f]" />
         </button>
       ) : (
         <button
@@ -97,15 +99,15 @@ export default function UploadCard({
       {!file ? (
         <>
           <p className="text-base font-semibold leading-tight">{dropzoneText || 'Drop file here'}</p>
-          <p className="text-sm text-white/70 leading-tight">
+          <p className="text-sm text-muted-foreground leading-tight">
             or <span onClick={(e) => { e.stopPropagation(); open(); }} className="text-[#08e28f] font-medium hover:underline">browse</span> from your
             computer
           </p>
         </>
       ) : (
         <>
-          <p className="text-sm text-white/90 leading-tight">{file.name}</p>
-          <p className="text-sm text-[#08e28f] leading-tight">Success 🙂</p>
+          <p className="text-sm text-foreground/90 leading-tight">{file.name}</p>
+          <p className="text-sm text-[var(--success-green)] leading-tight">Success 🙂</p>
         </>
       )}
     </div>
