@@ -1,11 +1,12 @@
-
+// src/app/reports/3m-cash/page.tsx
 "use client";
 
 import React from "react";
 import UploadCard from "@/components/UploadCard";
-import { ThreeMCashDashboard } from "@/components/dashboard/ThreeMCashDashboard";
+import ReportsDashboard from "@/components/reports/ReportsDashboard";
 import { cn } from "@/lib/utils";
 import { saveAs } from "file-saver";
+import type { DonutSlice, Kpi, TableRow } from "@/components/reports/ReportsDashboard.types";
 
 type UploadKey = "pyfee" | "pycash_2" | "pypi";
 
@@ -17,6 +18,20 @@ const INSTRUCTIONS: string[] = [
   "In Report Center, run Report ID PYCASH. Download it and upload to the second box.",
   "In Report Center, run Report ID PYPI. Download it and upload to the third box.",
 ];
+
+// Helper to safely format numbers as currency
+const money = (n: any, decimals = 2): string => {
+  const x = Number(n);
+  if (!isFinite(x)) return '';
+  return x.toLocaleString('en-US', { style:'currency', currency:'USD', minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+// Helper to safely parse string to number
+const num = (v: any): number | null => {
+  if (v === null || v === undefined) return null;
+  const n = Number(String(v).replace(/[, $]/g,'')); // More robust cleaning
+  return isFinite(n) ? n : null;
+}
 
 export default function ReportsExcelPage() {
   const [files, setFiles] = React.useState<Record<UploadKey, File | null>>({
@@ -32,7 +47,7 @@ export default function ReportsExcelPage() {
 
   const [isRunning, setIsRunning] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [data, setData] = React.useState<any[] | null>(null);
+  const [dashboardData, setDashboardData] = React.useState<any | null>(null);
   const [showDash, setShowDash] = React.useState(false);
 
   const allReady = ok.pyfee && ok.pycash_2 && ok.pypi;
@@ -42,11 +57,43 @@ export default function ReportsExcelPage() {
     setOk((s) => ({ ...s, [key]: !!f }));
   }
 
+  // New function to transform API data into dashboard props
+  function transformDataForDashboard(data: any[]): { kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null {
+    if (!data || data.length === 0) return null;
+
+    const tableRows: TableRow[] = data.map(r => ({
+      ip: r['IP'] ?? '',
+      acct: r['Account'] ?? '',
+      value: money(r['Value']),
+      fee: money(r['Advisory Fee']),
+      cash: money(r['Cash']),
+      short: (num(r['Cash']) ?? 0) < (num(r['Advisory Fee']) ?? 0),
+    }));
+
+    const kpis: Kpi[] = [
+      { label: "Total Advisory Fees", value: money(tableRows.reduce((sum, row) => sum + (num(row.fee) || 0), 0)) },
+      { label: "Total Accounts", value: tableRows.length.toLocaleString() },
+      { label: "Flagged Short", value: tableRows.filter(r => r.short).length.toLocaleString() }
+    ];
+
+    const feesByIp: Record<string, number> = tableRows.reduce((acc, row) => {
+        const ip = row.ip || '(Unspecified)';
+        acc[ip] = (acc[ip] || 0) + (num(row.fee) || 0);
+        return acc;
+    }, {} as Record<string, number>);
+
+    const donutData: DonutSlice[] = Object.entries(feesByIp).map(([name, value]) => ({ name, value }));
+
+    return { kpis, donutData, tableRows };
+  }
+
+
   async function runMergeJSON() {
     if (!allReady) return;
     setIsRunning(true);
     setError(null);
     setShowDash(false);
+    setDashboardData(null);
     try {
       const fd = new FormData();
       fd.append("pycash_1", files.pyfee!);
@@ -55,7 +102,7 @@ export default function ReportsExcelPage() {
       const res = await fetch("/api/reports/3m-cash/merge?format=json", { method: "POST", body: fd });
       if (!res.ok) throw new Error(await res.text());
       const rows = await res.json();
-      setData(rows);
+      setDashboardData(transformDataForDashboard(rows));
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
     } finally {
@@ -77,6 +124,10 @@ export default function ReportsExcelPage() {
     } catch (e: any) {
        setError(e?.message || "Failed to download Excel file.");
     }
+  }
+
+  const handleOpenDashboard = () => {
+    if(dashboardData) setShowDash(true);
   }
 
   return (
@@ -119,20 +170,20 @@ export default function ReportsExcelPage() {
               <div className="flex gap-3">
                 <button
                   onClick={downloadExcel}
-                  disabled={!data || isRunning}
+                  disabled={!dashboardData || isRunning}
                   className={cn(
                     "rounded-xl px-4 py-2 text-sm transition border border-[#26272b]",
-                    !data ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed" : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
+                    !dashboardData ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed" : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
                   )}
                 >
                   Download Excel
                 </button>
                 <button
-                  onClick={() => setShowDash((v) => !v)}
-                  disabled={!data || isRunning}
+                  onClick={() => setShowDash(v => !v)}
+                  disabled={!dashboardData || isRunning}
                   className={cn(
                     "rounded-xl px-4 py-2 text-sm transition border border-[#26272b]",
-                    !data ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed" : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
+                    !dashboardData ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed" : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
                   )}
                 >
                   {showDash ? "Hide Dashboard" : "Open Dashboard"}
@@ -142,12 +193,14 @@ export default function ReportsExcelPage() {
               {error && <div className="text-xs text-rose-400">{error}</div>}
             </div>
 
-            {showDash && data && <ThreeMCashDashboard data={data} />}
+            {showDash && dashboardData && (
+              <div className="mt-6">
+                <ReportsDashboard {...dashboardData} />
+              </div>
+            )}
           </div>
         </div>
       </main>
     </div>
   );
 }
-
-    

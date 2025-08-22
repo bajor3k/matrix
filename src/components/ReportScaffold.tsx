@@ -5,19 +5,31 @@ import React from "react";
 import UploadCard from "@/components/UploadCard";
 import { cn } from "@/lib/utils";
 import Script from "next/script";
+import ReportsDashboard from "./reports/ReportsDashboard";
+import type { DonutSlice, Kpi, TableRow } from "./reports/ReportsDashboard.types";
 
 type Key = "a" | "b" | "c";
 
 type Props = {
-  /** Page title shown in the browser tab if you want, but mainly for clarity */
   reportName: string;
-  /** Summary markdown/text – pass "" to keep blank body */
   summary?: string;
-  /** Instructions markdown/text – pass "" to keep blank body */
   instructions?: string;
-  /** API path to call when running (we’ll wire later), e.g. /api/reports/cash-balance/merge */
   mergeApiPath?: string;
 };
+
+// Helper to safely format numbers as currency
+const money = (n: any, decimals = 2): string => {
+  const x = Number(n);
+  if (!isFinite(x)) return '';
+  return x.toLocaleString('en-US', { style:'currency', currency:'USD', minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+// Helper to safely parse string to number
+const num = (v: any): number | null => {
+  if (v === null || v === undefined) return null;
+  const n = Number(String(v).replace(/[, $]/g,''));
+  return isFinite(n) ? n : null;
+}
 
 export default function ReportScaffold({
   reportName,
@@ -33,7 +45,7 @@ export default function ReportScaffold({
   });
   const [isRunning, setIsRunning] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [data, setData] = React.useState<any[] | null>(null);
+  const [dashboardData, setDashboardData] = React.useState<any | null>(null);
   const [showDash, setShowDash] = React.useState(false);
 
   const allReady = ok.a || ok.b || ok.c;
@@ -42,19 +54,9 @@ export default function ReportScaffold({
     const handleCleared = (e: Event) => {
       const customEvent = e as CustomEvent;
       const { slotId } = customEvent.detail;
-      if (slotId === 'test-upload-a') {
-        setFiles(s => ({...s, a: null}));
-        setOk(s => ({...s, a: false}));
-      }
-      if (slotId === 'test-upload-b') {
-        setFiles(s => ({...s, b: null}));
-        setOk(s => ({...s, b: false}));
-      }
-      if (slotId === 'test-upload-c') {
-        setFiles(s => ({...s, c: null}));
-        setOk(s => ({...s, c: false}));
-      }
-       if (window.TEST_APP){ window.TEST_APP.rows = null; }
+      if (slotId.includes('test-upload-a')) setFiles(s => ({...s, a: null})), setOk(s => ({...s, a: false}));
+      if (slotId.includes('test-upload-b')) setFiles(s => ({...s, b: null})), setOk(s => ({...s, b: false}));
+      if (slotId.includes('test-upload-c')) setFiles(s => ({...s, c: null})), setOk(s => ({...s, c: false}));
     }
     window.addEventListener('upload:cleared', handleCleared);
     return () => window.removeEventListener('upload:cleared', handleCleared);
@@ -65,9 +67,38 @@ export default function ReportScaffold({
     setOk((s) => ({ ...s, [key]: true }));
   }
 
+  function transformDataForDashboard(data: any[]): { kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null {
+    if (!data || data.length === 0) return null;
+
+    const tableRows: TableRow[] = data.map(r => ({
+      ip: r['IP'] ?? '',
+      acct: r['Account Number'] ?? '',
+      value: money(r['Value']),
+      fee: money(r['Advisory Fees']),
+      cash: money(r['Cash']),
+      short: (num(r['Cash']) ?? 0) < (num(r['Advisory Fees']) ?? 0),
+    }));
+
+    const kpis: Kpi[] = [
+      { label: "Total Advisory Fees", value: money(tableRows.reduce((sum, row) => sum + (num(row.fee) || 0), 0)) },
+      { label: "Total Accounts", value: tableRows.length.toLocaleString() },
+      { label: "Flagged Short", value: tableRows.filter(r => r.short).length.toLocaleString() }
+    ];
+
+    const feesByIp: Record<string, number> = tableRows.reduce((acc, row) => {
+        const ip = row.ip || '(Unspecified)';
+        acc[ip] = (acc[ip] || 0) + (num(row.fee) || 0);
+        return acc;
+    }, {} as Record<string, number>);
+
+    const donutData: DonutSlice[] = Object.entries(feesByIp).map(([name, value]) => ({ name, value }));
+
+    return { kpis, donutData, tableRows };
+  }
+
   async function runMergeJSON() {
     if (!allReady) return;
-    setIsRunning(true); setError(null); setShowDash(false);
+    setIsRunning(true); setError(null); setShowDash(false); setDashboardData(null);
     try {
       const fd = new FormData();
       if (files.a) fd.append("fileA", files.a);
@@ -77,10 +108,7 @@ export default function ReportScaffold({
       const res = await fetch(`${mergeApiPath}?format=json`, { method: "POST", body: fd });
       if (!res.ok) throw new Error(await res.text());
       const rows = await res.json();
-      setData(rows);
-      if (window.TEST_APP) {
-        window.TEST_APP.rows = rows;
-      }
+      setDashboardData(transformDataForDashboard(rows));
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
     } finally {
@@ -106,16 +134,10 @@ export default function ReportScaffold({
   }
   
   const handleOpenDashboard = () => {
-    if (window.openTestDashboard) {
-        window.openTestDashboard();
-    }
-    setShowDash(true);
+    if (dashboardData) setShowDash(true);
   }
 
   const handleHideDashboard = () => {
-      if (window.hideTestDashboard) {
-          window.hideTestDashboard();
-      }
       setShowDash(false);
   }
 
@@ -167,10 +189,10 @@ export default function ReportScaffold({
         <div className="flex gap-3">
           <button
             onClick={downloadExcel}
-            disabled={!data || isRunning}
+            disabled={!dashboardData || isRunning}
             className={cn(
               "rounded-xl px-4 py-2 text-sm transition border border-[#26272b]",
-              !data ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed"
+              !dashboardData ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed"
                     : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
             )}
           >
@@ -178,10 +200,10 @@ export default function ReportScaffold({
           </button>
           <button
             onClick={showDash ? handleHideDashboard : handleOpenDashboard}
-            disabled={!data || isRunning}
+            disabled={!dashboardData || isRunning}
             className={cn(
               "rounded-xl px-4 py-2 text-sm transition border border-[#26272b]",
-              !data ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed"
+              !dashboardData ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed"
                     : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
             )}
           >
@@ -192,204 +214,18 @@ export default function ReportScaffold({
         {error && <div className="text-xs text-rose-400">{error}</div>}
       </div>
 
-      <div id="test-dashboard" className="test-dashboard" hidden></div>
+      {showDash && dashboardData && (
+        <div className="mt-6">
+          <ReportsDashboard {...dashboardData} />
+        </div>
+      )}
     </div>
     <Script id="test-dashboard-script">
         {`
-            /* ----------------- GLOBAL STATE FOR TEST PAGE ----------------- */
-            window.TEST_APP = window.TEST_APP || { rows: null };
-
-            /* ------------- CAPTURE UPLOADS FROM YOUR THREE CARDS ---------- */
-            const handleUpload = (e) => {
-                window.TEST_APP.rows = e.detail.rows;
-                console.log('[TEST] captured rows:', window.TEST_APP.rows?.length ?? 0);
-            };
-
-            window.removeEventListener('upload:parsed', handleUpload);
-            window.addEventListener('upload:parsed', handleUpload);
-
-            /* ------------------------ HELPERS ----------------------------- */
-            function money(n, decimals = 2){
-              const x = Number(n);
-              if (!isFinite(x)) return '';
-              return x.toLocaleString('en-US', { style:'currency', currency:'USD', minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-            }
-            function num(v){
-              if (v === null || v === undefined) return null;
-              const n = Number(String(v).replace(/[, ]/g,''));
-              return isFinite(n) ? n : null;
-            }
-
-            /* --------- MODEL BUILDER (maps your exact columns) ------------ */
-            function buildTestModel(){
-              const rows = window.TEST_APP.rows;
-              if (!rows || rows.length === 0) return null;
-
-              const COL_IP   = 'IP';
-              const COL_ACCT = 'Account Number';
-              const COL_VAL  = 'Value';
-              const COL_FEE  = 'Advisory Fees';
-              const COL_CASH = 'Cash';
-
-              const view = rows.map(r => {
-                const ip   = r[COL_IP] ?? '';
-                const acct = r[COL_ACCT] ?? '';
-                const val  = num(r[COL_VAL]);
-                const fee  = num(r[COL_FEE]);
-                const cash = num(r[COL_CASH]);
-                const short = (fee != null && cash != null) ? (cash < fee) : false;
-                return { ip, acct, val, fee, cash, short };
-              });
-
-              const kpis = {
-                totalFee: view.reduce((s, r) => s + (r.fee || 0), 0),
-                accounts: view.filter(r => String(r.acct || '').trim().length > 0).length,
-                shortCount: view.filter(r => r.short).length
-              };
-
-              const byIP = {};
-              view.forEach(r => { byIP[r.ip || '(Unspecified)'] = (byIP[r.ip || '(Unspecified)'] || 0) + (r.fee || 0); });
-              const donut = { labels: Object.keys(byIP), values: Object.values(byIP) };
-
-              return { rows: view, kpis, donut };
-            }
-
-            /* ----------------------- RENDERER ----------------------------- */
-            function renderTestDashboard(){
-                const host = document.getElementById('test-dashboard');
-                if (!host) return;
-                host.innerHTML = '';
-
-                const model = buildTestModel();
-                if (!model){
-                    host.innerHTML = '<div style="color:#9aa0b4;">No data found. Upload a spreadsheet with columns <b>IP</b>, <b>Account Number</b>, <b>Value</b>, <b>Advisory Fees</b>, <b>Cash</b>.</div>';
-                    return;
-                }
-
-                const kpisEl = document.createElement('div');
-                kpisEl.className = 'test-kpis';
-                kpisEl.innerHTML = \`
-                    <div class="test-kpi">
-                    <div class="label">Total Advisory Fees</div>
-                    <div class="value">\${money(model.kpis.totalFee)}</div>
-                    </div>
-                    <div class="test-kpi">
-                    <div class="label">Total Accounts</div>
-                    <div class="value">\${model.kpis.accounts.toLocaleString()}</div>
-                    </div>
-                    <div class="test-kpi">
-                    <div class="label">Flagged Short</div>
-                    <div class="value">\${model.kpis.shortCount.toLocaleString()}</div>
-                    </div>
-                \`;
-                host.appendChild(kpisEl);
-
-                const grid = document.createElement('div');
-                grid.className = 'test-grid';
-                host.appendChild(grid);
-
-                const chartDiv = document.createElement('div');
-                chartDiv.id = 'test-donut';
-                chartDiv.style.minHeight = '360px';
-                grid.appendChild(chartDiv);
-
-                const PROJECT_PALETTE = ['#7C3AED', '#5B21B6', '#3B82F6', '#22D3EE', '#06B6D4', '#10B981'];
-
-                const totalFees = (model.donut.values || []).reduce((s, v) => s + (Number(v) || 0), 0);
-                if (totalFees <= 0) {
-                    chartDiv.innerHTML = '<div style="color:#9aa0b4;padding:12px;">No fee data available for donut.</div>';
-                } else {
-                    const sliceColors = model.donut.values.map((_, idx) => PROJECT_PALETTE[idx % PROJECT_PALETTE.length]);
-                    const trace = {
-                        type: 'pie',
-                        labels: model.donut.labels,
-                        values: model.donut.values,
-                        hole: 0.55,
-                        sort: false,
-                        textinfo: 'label+percent',
-                        marker: {
-                            colors: sliceColors,
-                            line: { color: '#000000', width: 1 }
-                        },
-                        textfont: { color: '#e5e7eb' },
-                        hoverlabel: { bgcolor: '#0f0f0f', font: { color: '#e5e7eb' } }
-                    };
-                    const layout = {
-                        title: { text: 'Advisory Fees by IP', font: { color: '#e5e7eb' }, x: 0, xanchor: 'left' },
-                        paper_bgcolor: 'transparent',
-                        plot_bgcolor: 'transparent',
-                        font: { color: '#e5e7eb' },
-                        margin: { l: 10, r: 10, t: 30, b: 10 },
-                        showlegend: true,
-                        legend: { bgcolor: 'transparent' }
-                    };
-                    if (window.Plotly) {
-                        Plotly.newPlot(chartDiv, [trace], layout, { displayModeBar: false, responsive: true });
-                        setTimeout(() => { try { Plotly.Plots.resize(chartDiv); } catch (_) { } }, 0);
-                    }
-                }
-
-                const tableWrap = document.createElement('div');
-                tableWrap.className = 'test-table';
-                tableWrap.innerHTML = \`
-                    <table>
-                    <thead>
-                        <tr>
-                        <th>IP</th>
-                        <th>Account Number</th>
-                        <th>Value</th>
-                        <th>Advisory Fees</th>
-                        <th>Cash</th>
-                        <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                    </table>
-                \`;
-                grid.appendChild(tableWrap);
-
-                const tbody = tableWrap.querySelector('tbody');
-                model.rows.forEach(r => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = \`
-                    <td>\${r.ip || ''}</td>
-                    <td>\${r.acct || ''}</td>
-                    <td>\${r.val != null ? money(r.val) : ''}</td>
-                    <td>\${r.fee != null ? money(r.fee) : ''}</td>
-                    <td>\${r.cash != null ? money(r.cash) : ''}</td>
-                    <td>\${r.short ? '<span class="pill-short">Short</span>' : ''}</td>
-                    \`;
-                    tbody.appendChild(tr);
-                });
-            }
-
-            window.openTestDashboard = function(){
-              const host = document.getElementById('test-dashboard');
-              if (host) {
-                host.hidden = false;
-                renderTestDashboard();
-                host.scrollIntoView({ behavior:'smooth', block:'start' });
-              }
-            };
-            window.hideTestDashboard = function(){
-              const host = document.getElementById('test-dashboard');
-              if (host) host.hidden = true;
-            };
+            // This script block is for external integrations if needed,
+            // but the primary dashboard logic is now handled within React.
         `}
     </Script>
     </>
   );
 }
-
-declare global {
-    interface Window {
-        TEST_APP: {
-            rows: any[] | null;
-        };
-        openTestDashboard: () => void;
-        hideTestDashboard: () => void;
-        Plotly: any;
-    }
-}
-
-    
