@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -26,7 +25,6 @@ export function TopToolbar({ onToggleSidebar }: TopToolbarProps) {
         >
           <Brain className="w-5 h-5 text-white/70" />
         </button>
-        <span className="h-6 w-px bg-white/10" />
         <nav className="flex items-center space-x-1">
           {toolbarSections.map((section) => (
             <Button
