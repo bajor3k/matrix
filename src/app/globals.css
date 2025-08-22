@@ -128,6 +128,7 @@
     --text: #e5e7eb;        /* main text */
     --muted:#9aa0b4;        /* secondary text */
     --accent:#22c55e;       /* SAME green as "File uploaded successfully" */
+    --success-green: #22c55e; /* Explicit success color */
   }
 
   html {
@@ -454,11 +455,6 @@
 .upload-card{
   width:360px;                   /* match grid column width */
   max-width:360px;
-  background:#141418;                     /* dark panel background */
-  border:1px solid #26263a;               /* subtle border */
-  border-radius:16px;                     /* rounded corners */
-  box-shadow:0 10px 30px rgba(0,0,0,.35); /* soft shadow */
-  padding:16px;                           /* inner padding */
 }
 
 
@@ -590,14 +586,7 @@
   margin-top: 12px;
   box-shadow: 0 12px 30px rgba(0,0,0,.45);
 }
-
 /* KPIs */
-.test-kpis{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(220px, 1fr));
-  gap:12px;
-  margin-bottom:16px;
-}
 .test-kpi{
   background:#0a0a0a;
   border:1px solid var(--line);
@@ -606,7 +595,6 @@
 }
 .test-kpi .label{ color:var(--muted); font-size:12px; margin-bottom:4px; }
 .test-kpi .value{ color: var(--accent); font-weight:700; font-size:20px; }
-
 /* Chart + table layout */
 .test-grid{
   display:grid;
@@ -614,7 +602,6 @@
   gap:16px;
 }
 @media (max-width:1100px){ .test-grid{ grid-template-columns:1fr; } }
-
 /* Table */
 .test-table{
   overflow:auto;
@@ -632,15 +619,12 @@
   padding:10px; border-bottom:1px solid var(--line); color:var(--text);
 }
 .test-table tbody tr:hover{ background:#0e0e0e; }
-
 /* Status pill */
 .pill-short{
   display:inline-block; padding:2px 8px; border-radius:9999px; font-size:12px;
   background:#3b0d0d; color:#ffb4b4; border:1px solid #7f1d1d;
 }
-
 #test-donut{ width:100%; min-height:360px; }
-
 /* Actions row under file info */
 .file-actions{
   display:flex;
@@ -648,7 +632,6 @@
   gap:8px;
   margin-top:8px;
 }
-
 /* Icon button (trash) */
 .icon-btn{
   display:inline-flex;
@@ -662,10 +645,28 @@
 .icon-btn:hover{ border-color:#2a2a2a; }
 .icon-btn:focus{ outline:2px solid var(--accent); outline-offset:2px; }
 .icon-btn.danger:hover svg path{ stroke:#ffb4b4; }
-
 /* Replace link, visually minimal */
 .link-btn{
   background:transparent; border:0; padding:0;
   color:#9aa0b4; cursor:pointer; text-decoration:underline;
 }
 .link-btn:hover{ color:#e5e7eb; }
+
+/* Nuke backgrounds/rings on uploaded file wrappers */
+.upload-card,
+.upload-chip,
+[data-upload-card="true"],
+[class*="UploadPreview"],
+[class*="upload-preview"] {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+/* Ensure text stays left-aligned & tight */
+.uploaded-file-line {
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+}

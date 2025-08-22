@@ -2,7 +2,6 @@
 "use client";
 
 import React from "react";
-import PurposeCard from "@/components/PurposeCard";
 import UploadCard from "@/components/UploadCard";
 import { ThreeMCashDashboard } from "@/components/dashboard/ThreeMCashDashboard";
 import { cn } from "@/lib/utils";
@@ -38,9 +37,9 @@ export default function ReportsExcelPage() {
 
   const allReady = ok.pyfee && ok.pycash_2 && ok.pypi;
 
-  function accept(key: UploadKey, f: File) {
+  function accept(key: UploadKey, f: File | null) {
     setFiles((s) => ({ ...s, [key]: f }));
-    setOk((s) => ({ ...s, [key]: true }));
+    setOk((s) => ({ ...s, [key]: !!f }));
   }
 
   async function runMergeJSON() {
@@ -85,24 +84,24 @@ export default function ReportsExcelPage() {
       <main className="app-main fullbleed">
         <div className="content-pad">
           <div className="space-y-6">
-            <PurposeCard>
+            <div className="rounded-2xl p-6 shadow-sm border border-[#26272b] bg-[#0a0a0a]">
               <h2 className="text-xl font-bold mb-2">Report Summary</h2>
               <p className="text-white/80">{REPORT_SUMMARY}</p>
-            </PurposeCard>
+            </div>
 
-            <PurposeCard>
+            <div className="rounded-2xl p-6 shadow-sm border border-[#26272b] bg-[#0a0a0a]">
                 <h2 className="text-xl font-bold text-zinc-100 mb-3">Instructions</h2>
                 <ol className="list-decimal list-inside space-y-2 text-white/80">
                   {INSTRUCTIONS.map((line, i) => (
                     <li key={i}>{line}</li>
                   ))}
                 </ol>
-            </PurposeCard>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <UploadCard title="" reportId="PYFEE" onFileAccepted={(f) => accept("pyfee", f)} />
-              <UploadCard title="" reportId="PYCASH" onFileAccepted={(f) => accept("pycash_2", f)} />
-              <UploadCard title="" reportId="PYPI" onFileAccepted={(f) => accept("pypi", f)} />
+              <UploadCard reportId="PYFEE" onFileAccepted={(f) => accept("pyfee", f)} onFileCleared={() => accept("pyfee", null)} slotId="3m-cash-a" />
+              <UploadCard reportId="PYCASH" onFileAccepted={(f) => accept("pycash_2", f)} onFileCleared={() => accept("pycash_2", null)} slotId="3m-cash-b" />
+              <UploadCard reportId="PYPI" onFileAccepted={(f) => accept("pypi", f)} onFileCleared={() => accept("pypi", null)} slotId="3m-cash-c" />
             </div>
 
             <div className="flex flex-col items-center gap-3 pt-2">
