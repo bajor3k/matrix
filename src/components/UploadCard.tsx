@@ -1,10 +1,10 @@
 
 "use client";
-import React from "react";
-import { useDropzone } from "react-dropzone";
+
+import { useDropzone, type FileRejection } from "react-dropzone";
+import React, { useCallback, useState } from "react";
+import { Upload, Trash2 } from "lucide-react"; // using lucide icons
 import { cn } from "@/lib/utils";
-import * as xlsx from "xlsx";
-import { Upload, Trash2 } from 'lucide-react';
 
 type UploadCardProps = {
   onFileAccepted?: (file: File) => void;
@@ -21,135 +21,92 @@ export default function UploadCard({
   slotId,
   dropzoneText,
 }: UploadCardProps) {
-  const [file, setFile] = React.useState<File | null>(null);
-  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
-  const resetUI = React.useCallback(() => {
-    setFile(null);
-    setErrorMsg(null);
-    if (onFileCleared) onFileCleared();
-    if (slotId) {
-      window.dispatchEvent(new CustomEvent('upload:cleared', { detail: { slotId } }));
+  const onDrop = useCallback((acceptedFiles: File[], fileRejections: FileRejection[]) => {
+    if (acceptedFiles.length > 0) {
+      const acceptedFile = acceptedFiles[0];
+      setFile(acceptedFile);
+      if (onFileAccepted) {
+        onFileAccepted(acceptedFile);
+      }
     }
-  }, [onFileCleared, slotId]);
+  }, [onFileAccepted]);
 
-  const onDrop = React.useCallback(
-    (acceptedFiles: File[], fileRejections: any[]) => {
-      setErrorMsg(null);
-
-      if (fileRejections.length > 0) {
-        setErrorMsg(`File rejected: ${fileRejections[0].errors[0].message}`);
-        setFile(null); 
-        if (onFileCleared) onFileCleared();
-        return;
-      }
-      
-      const droppedFile = acceptedFiles?.[0];
-      if (!droppedFile) return;
-
-      setFile(droppedFile);
-      if (onFileAccepted) onFileAccepted(droppedFile);
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const data = event.target?.result;
-          const workbook = xlsx.read(data, { type: "array" });
-          const sheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[sheetName];
-          const rows = xlsx.utils.sheet_to_json(worksheet);
-          
-          if (slotId) {
-            window.dispatchEvent(new CustomEvent('upload:parsed', {
-              detail: { slotId, file: droppedFile, rows, columns: Object.keys(rows[0] || {}) }
-            }));
-          }
-
-        } catch (e: any) {
-           setErrorMsg(`Error parsing file: ${e.message}`);
-        }
-      };
-      reader.onerror = () => {
-         setErrorMsg("Could not read the uploaded file.");
-      }
-      reader.readAsArrayBuffer(droppedFile);
-    },
-    [onFileAccepted, onFileCleared, slotId]
-  );
-
-  const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
-    onDrop,
-    multiple: false,
-    noClick: true, // We trigger click via the icon button
-  });
 
   const handleRemove = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    resetUI();
+    e.stopPropagation(); // don't trigger dropzone click
+    setFile(null);
+    if (onFileCleared) {
+      onFileCleared();
+    }
   };
+
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+    onDrop,
+    multiple: false,
+    noClick: true, // we will open via the icon (and still allow keyboard)
+  });
 
   return (
     <div
       {...getRootProps()}
       className={cn(
-        "flex flex-col items-center justify-center text-center relative",
-        "rounded-xl border-2 border-dashed",
-        "p-8 cursor-pointer transition-colors duration-200 w-full h-44", // Adjusted width to full
-        "bg-transparent", // No background fill
-        isDragActive
-          ? "border-[#08e28f] text-[#08e28f]"
-          : "border-white/40 text-white/90",
+        // layout: NO fixed height; compact spacing
+        "flex flex-col items-center justify-center text-center gap-2",
+        "rounded-xl border-2 border-dashed bg-transparent",
+        isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-white/40 text-white/90",
+        "px-6 py-5 cursor-pointer transition-colors",
         className
       )}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (!file && (e.key === "Enter" || e.key === " ")) open();
+      }}
     >
       <input {...getInputProps()} />
 
-      {/* Top-center icon for upload or remove */}
+      {/* ICON: centered INSIDE the box */}
       {!file ? (
         <button
           type="button"
-          onClick={open}
-          className="absolute -top-3 bg-black px-2 rounded-full"
+          onClick={(e) => {
+            e.stopPropagation();
+            open();
+          }}
           aria-label="Upload file"
+          className="inline-flex items-center justify-center w-9 h-9 rounded-full"
+          title="Upload"
         >
-          <Upload className="w-6 h-6 text-white/80 hover:text-[#08e28f]" />
+          <Upload className="w-7 h-7 text-white/85 hover:text-[#08e28f]" />
         </button>
       ) : (
         <button
           type="button"
           onClick={handleRemove}
-          className="absolute -top-3 bg-black px-2 rounded-full"
           aria-label="Remove file"
+          className="inline-flex items-center justify-center w-9 h-9 rounded-full"
+          title="Remove"
         >
-          <Trash2 className="w-6 h-6 text-[#e31211] hover:text-red-600" />
+          <Trash2 className="w-7 h-7 text-[#e31211] hover:opacity-90" />
         </button>
       )}
 
-      {/* Center content */}
+      {/* CONTENT */}
       {!file ? (
         <>
-          <p className="text-base font-semibold mt-4">
-            {dropzoneText || 'Drop file here'}
-          </p>
-          <p className="text-sm text-white/70 mt-1">
-            or{" "}
-            <span onClick={(e) => { e.stopPropagation(); open(); }} className="text-[#08e28f] font-medium hover:underline cursor-pointer">
-              browse
-            </span>{" "}
-            from your computer
+          <p className="text-base font-semibold leading-tight">{dropzoneText || 'Drop file here'}</p>
+          <p className="text-sm text-white/70 leading-tight">
+            or <span onClick={(e) => { e.stopPropagation(); open(); }} className="text-[#08e28f] font-medium hover:underline">browse</span> from your
+            computer
           </p>
         </>
       ) : (
-        <div className="mt-4 text-center">
-          {errorMsg ? (
-              <p className="text-sm text-red-400">{errorMsg}</p>
-          ) : (
-            <>
-              <p className="text-sm text-white/90">{file.name}</p>
-              <p className="text-sm text-[#08e28f] mt-1">Success 🙂</p>
-            </>
-          )}
-        </div>
+        <>
+          <p className="text-sm text-white/90 leading-tight">{file.name}</p>
+          <p className="text-sm text-[#08e28f] leading-tight">Success 🙂</p>
+        </>
       )}
     </div>
   );
