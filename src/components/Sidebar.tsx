@@ -7,16 +7,12 @@ import React, { useCallback } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import {
   BellRing,
-  Brain,
   Construction,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import type { NavItem } from "@/contexts/navigation-context";
 import { useNavigation } from "@/contexts/navigation-context";
 import { navigationData } from "@/lib/navigation-data";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 const alertsNavItem: NavItem = {
   name: 'Alerts',
@@ -27,10 +23,9 @@ const alertsNavItem: NavItem = {
 
 interface SidebarProps {
     collapsed: boolean;
-    onToggle: () => void;
 }
 
-export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export default function Sidebar({ collapsed }: SidebarProps) {
   const currentPathname = usePathname();
   const { activeSection } = useNavigation();
 
@@ -94,35 +89,10 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "h-full bg-background border-r text-sidebar-foreground transition-all duration-300 flex flex-col",
-        collapsed ? "w-16" : "w-64" 
+        "h-full bg-background text-sidebar-foreground flex flex-col"
       )}
     >
-      <div className={cn("flex flex-col items-center pt-4 pb-3 px-2")}>
-        <Tooltip>
-            <TooltipTrigger asChild>
-                <Link href="/dashboard" className="mb-3">
-                    <Brain className="w-8 h-8 text-muted-foreground hover:text-foreground transition-colors brain-glow" />
-                </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="bg-popover text-popover-foreground">
-                <p>Dashboard</p>
-            </TooltipContent>
-        </Tooltip>
-      </div>
-      
-      <nav className={cn("flex-1 space-y-2 px-2 py-4 overflow-y-auto no-visual-scrollbar border-t border-sidebar-border/30")}>
-        <div className={cn("flex mb-2", collapsed ? "justify-center" : "justify-end pr-2")}>
-            <Button
-                variant="ghost"
-                size="icon"
-                onClick={onToggle}
-                className="h-7 w-7 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-            >
-                {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
-                <span className="sr-only">Toggle Sidebar</span>
-            </Button>
-        </div>
+      <nav className={cn("flex-1 space-y-2 px-2 py-4 overflow-y-auto no-visual-scrollbar")}>
         {currentNavItems.length > 0 ? (
            currentNavItems.map((item, itemIndex) => renderNavItem(item, itemIndex))
         ) : (

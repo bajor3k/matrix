@@ -14,6 +14,7 @@ import { TopToolbar } from '@/components/TopToolbar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ThemeProvider } from '@/components/theme-provider';
 import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -68,7 +69,7 @@ export default function RootLayout({
             </>
           )}
       </head>
-      <body className={`${inter.variable} ${robotoMono.variable} antialiased flex flex-col h-screen`}>
+      <body className={`${inter.variable} ${robotoMono.variable} antialiased h-screen`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -81,14 +82,19 @@ export default function RootLayout({
                 {isLandingPage ? (
                   <>{children}</>
                 ) : (
-                  <div className="flex flex-1">
-                    <Sidebar collapsed={sidebarCollapsed} onToggle={handleToggleSidebar} />
-                    <div className="flex flex-col flex-1 min-h-0">
-                      <TopToolbar collapsed={sidebarCollapsed} />
-                      <main className="flex-1 bg-transparent overflow-y-auto no-visual-scrollbar pt-16">
+                  <div className="grid min-h-screen grid-rows-[56px,1fr] grid-cols-[auto,1fr] bg-background text-foreground">
+                    <header className="row-[1] col-[1/3] z-50 sticky top-0 bg-background/95 border-b border-white/10 backdrop-blur">
+                        <TopToolbar onToggleSidebar={handleToggleSidebar} />
+                    </header>
+                    <aside className={cn(
+                        "row-[2] col-[1] border-r border-white/10 transition-all duration-300",
+                        sidebarCollapsed ? "w-16" : "w-64"
+                    )}>
+                        <Sidebar collapsed={sidebarCollapsed} />
+                    </aside>
+                    <main className="row-[2] col-[2] overflow-y-auto no-visual-scrollbar">
                         {children}
-                      </main>
-                    </div>
+                    </main>
                   </div>
                 )}
                 <Toaster />
