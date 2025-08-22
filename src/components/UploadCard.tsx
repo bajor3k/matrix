@@ -56,9 +56,10 @@ export default function UploadCard({
       className={cn(
         // layout: NO fixed height; compact spacing
         "flex flex-col items-center justify-center text-center gap-2",
-        "rounded-xl border-2 border-dashed bg-transparent",
-        isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-foreground/30 text-foreground/90",
+        "rounded-xl border-2 border-dashed",
+        isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-black/30 text-black/90 dark:border-white/40 dark:text-white/90",
         "px-6 py-5 cursor-pointer transition-colors",
+        "bg-[#fcfbfb] dark:bg-transparent",
         className
       )}
       role="button"
@@ -99,15 +100,15 @@ export default function UploadCard({
       {!file ? (
         <>
           <p className="text-base font-semibold leading-tight">{dropzoneText || 'Drop file here'}</p>
-          <p className="text-sm text-muted-foreground leading-tight">
+          <p className="text-sm text-black/60 dark:text-white/70 leading-tight">
             or <span onClick={(e) => { e.stopPropagation(); open(); }} className="text-[#08e28f] font-medium hover:underline">browse</span> from your
             computer
           </p>
         </>
       ) : (
         <>
-          <p className="text-sm text-foreground/90 leading-tight">{file.name}</p>
-          <p className="text-sm text-[var(--success-green)] leading-tight">Success 🙂</p>
+          <p className="text-sm text-black/90 dark:text-white/90 leading-tight">{file.name}</p>
+          <p className="text-sm text-[#08e28f] leading-tight">Success 🙂</p>
         </>
       )}
     </div>
