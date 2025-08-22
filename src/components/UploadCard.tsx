@@ -98,14 +98,21 @@ export default function UploadCard({
             {...getRootProps()}
             onClick={open}
             className={cn(
-                "flex flex-col items-center justify-center",
-                "dropzone p-10 transition-colors duration-200",
-                isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-white/40 text-white/80"
+                "flex flex-col items-center justify-center text-center",
+                "dropzone p-10 transition-colors duration-200 rounded-xl border-2 border-dashed",
+                isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-white/40 text-white/90"
               )}
           >
             <input {...getInputProps()} />
-            <p className="text-base font-medium">
+            <p className="text-base font-semibold">
               {dropzoneText || 'Drop file here'}
+            </p>
+            <p className="text-sm text-white/70 mt-1">
+              or{" "}
+              <span className="text-[#08e28f] font-medium hover:underline">
+                browse
+              </span>{" "}
+              from your computer
             </p>
           </div>
         ) : (
@@ -121,5 +128,3 @@ export default function UploadCard({
     </div>
   );
 }
-
-    

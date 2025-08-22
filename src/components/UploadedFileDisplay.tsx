@@ -1,4 +1,3 @@
-
 // src/components/UploadedFileDisplay.tsx
 import React from "react";
 import { cn } from "@/lib/utils";
@@ -59,5 +58,3 @@ export function UploadedFileDisplay({
     </div>
   );
 }
-
-    
