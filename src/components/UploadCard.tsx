@@ -3,16 +3,18 @@
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { cn } from "@/lib/utils";
-import { Upload as UploadIcon } from "lucide-react";
+import { Upload as UploadIcon, Trash2 } from "lucide-react";
 import * as xlsx from "xlsx";
+import { Button } from "./ui/button";
 
 type UploadCardProps = {
   title: string;
   reportId: string;
   onFileAccepted?: (file: File) => void;
+  onFileCleared?: () => void;
   className?: string;
   children?: React.ReactNode;
-  slotId?: string; // Add a slotId to identify which uploader was used
+  slotId?: string;
 };
 
 const SUCCESS_COPY = "File uploaded successfully.";
@@ -21,12 +23,23 @@ export default function UploadCard({
   title,
   reportId,
   onFileAccepted,
+  onFileCleared,
   className,
   children,
   slotId,
 }: UploadCardProps) {
+  const [file, setFile] = React.useState<File | null>(null);
   const [statusMsg, setStatusMsg] = React.useState<string | null>(null);
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+  const dropzoneRef = React.useRef<HTMLDivElement>(null);
+
+  const resetUI = React.useCallback(() => {
+    setFile(null);
+    setStatusMsg(null);
+    setErrorMsg(null);
+    if (onFileCleared) onFileCleared();
+    window.dispatchEvent(new CustomEvent('upload:cleared', { detail: { slotId } }));
+  }, [onFileCleared, slotId]);
 
   const onDrop = React.useCallback(
     (acceptedFiles: File[], fileRejections: any[]) => {
@@ -38,10 +51,11 @@ export default function UploadCard({
         return;
       }
       
-      const file = acceptedFiles?.[0];
-      if (!file) return;
+      const droppedFile = acceptedFiles?.[0];
+      if (!droppedFile) return;
 
-      onFileAccepted?.(file);
+      setFile(droppedFile);
+      if (onFileAccepted) onFileAccepted(droppedFile);
       setStatusMsg(SUCCESS_COPY);
 
       const reader = new FileReader();
@@ -54,7 +68,7 @@ export default function UploadCard({
           const rows = xlsx.utils.sheet_to_json(worksheet);
           
           window.dispatchEvent(new CustomEvent('upload:parsed', {
-            detail: { slotId, file, rows, columns: Object.keys(rows[0] || {}) }
+            detail: { slotId, file: droppedFile, rows, columns: Object.keys(rows[0] || {}) }
           }));
 
         } catch (e: any) {
@@ -66,22 +80,31 @@ export default function UploadCard({
          setErrorMsg("Could not read the uploaded file.");
          setStatusMsg(null);
       }
-      reader.readAsArrayBuffer(file);
+      reader.readAsArrayBuffer(droppedFile);
     },
     [onFileAccepted, slotId]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     multiple: false,
-    maxSize: 10 * 1024 * 1024, // 10 MB
+    noClick: true,
+    noKeyboard: true,
+    maxSize: 10 * 1024 * 1024,
     accept: {
       'application/vnd.ms-excel': ['.xls'],
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
       'text/csv': ['.csv'],
     }
   });
-  
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (file && (e.key === 'Delete' || e.key === 'Backspace')) {
+      e.preventDefault();
+      resetUI();
+    }
+  };
+
   const displayId = (reportId ?? "").toString().trim();
 
   return (
@@ -94,32 +117,52 @@ export default function UploadCard({
         )}
         {displayId && displayId !== "—" && (
             <div className="mb-3 text-[11px] md:text-xs font-semibold tracking-wide text-white/70">
-                <span className="text-white">{displayId}</span>
+              REPORT ID: <span className="text-white">{displayId}</span>
             </div>
         )}
       </div>
 
-      {/* Dropzone */}
       <div
         {...getRootProps()}
+        ref={dropzoneRef}
+        tabIndex={0}
+        onKeyDown={handleKeyDown}
         className={cn(
-          "relative grid place-items-center rounded-xl border border-dashed p-7 min-h-[150px] transition-colors",
+          "relative grid place-items-center rounded-xl border border-dashed p-7 min-h-[150px] transition-colors outline-none focus:ring-2 focus:ring-accent",
           "border-[#2a2b30] bg-transparent",
-          isDragActive ? "bg-[#1516c] border-[#3a3b42]" : "hover:bg-[#13141a]"
+          isDragActive ? "bg-[#1516c] border-[#3a3b42]" : "hover:bg-[#13141a]",
+          !file && "cursor-pointer"
         )}
+        onClick={() => !file && open()}
       >
         <input {...getInputProps()} />
-        <div className="text-center select-none">
-          <UploadIcon className="mx-auto h-7 w-7 text-emerald-500" />
-          <div className="mt-2 text-sm font-semibold text-zinc-200">Drag &amp; drop here</div>
-          <div className="text-xs text-zinc-500">
-            or <span className="underline">browse</span> from your computer
+        {!file ? (
+          <div className="text-center select-none">
+            <UploadIcon className="mx-auto h-7 w-7 text-emerald-500" />
+            <div className="mt-2 text-sm font-semibold text-zinc-200">Drag & drop here</div>
+            <div className="text-xs text-zinc-500">
+              or <span className="underline">browse</span> from your computer
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="w-full">
+            <div className="file-info">
+              <div className="file-row">
+                <span className="file-name truncate">{file.name}</span>
+                <span className="file-size">{(file.size / 1024).toFixed(1)} KB</span>
+              </div>
+              <div className="file-actions">
+                  <button className="icon-btn danger remove-btn" title="Remove file" aria-label="Remove file" onClick={(e) => { e.stopPropagation(); resetUI(); }}>
+                    <Trash2 width="16" height="16" stroke="currentColor" strokeWidth="1.6" />
+                  </button>
+                  <button className="link-btn replace-btn" type="button" onClick={(e) => {e.stopPropagation(); open(); }}>Replace</button>
+              </div>
+            </div>
+          </div>
+        )}
         {children}
       </div>
 
-      {/* PERSISTENT STATUS SLOT (prevents height jump) */}
       <div className="mt-3 h-6 flex items-center justify-center">
         {statusMsg && !errorMsg && (
           <span className="text-sm font-semibold text-emerald-500" role="status" aria-live="polite">
@@ -132,7 +175,6 @@ export default function UploadCard({
             </span>
         )}
         {!statusMsg && !errorMsg && (
-          // Invisible placeholder keeps the same height before upload
           <span className="invisible text-sm font-semibold">placeholder</span>
         )}
       </div>

@@ -433,7 +433,7 @@
   padding-right: 0 !important;
 }
 
-/* --- Centering wrapper: makes the whole group sit in the middle of the page --- */
+/* --------- Centering wrapper: makes the whole group sit in the middle of the page --- */
 .cash-upload-wrap{
   display:flex;                  /* flex container to center children */
   justify-content:center;        /* center horizontally */
@@ -641,4 +641,31 @@
 
 #test-donut{ width:100%; min-height:360px; }
 
-    
+/* Actions row under file info */
+.file-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:8px;
+}
+
+/* Icon button (trash) */
+.icon-btn{
+  display:inline-flex;
+  align-items:center; justify-content:center;
+  width:30px; height:30px;
+  border-radius:8px;
+  background:#0f0f0f;
+  border:1px solid var(--line);
+  cursor:pointer;
+}
+.icon-btn:hover{ border-color:#2a2a2a; }
+.icon-btn:focus{ outline:2px solid var(--accent); outline-offset:2px; }
+.icon-btn.danger:hover svg path{ stroke:#ffb4b4; }
+
+/* Replace link, visually minimal */
+.link-btn{
+  background:transparent; border:0; padding:0;
+  color:#9aa0b4; cursor:pointer; text-decoration:underline;
+}
+.link-btn:hover{ color:#e5e7eb; }

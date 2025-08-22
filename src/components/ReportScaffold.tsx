@@ -41,6 +41,28 @@ export default function ReportScaffold({
 
   const allReady = ok.a || ok.b || ok.c;
 
+  React.useEffect(() => {
+    const handleCleared = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const { slotId } = customEvent.detail;
+      if (slotId === 'test-upload-a') {
+        setFiles(s => ({...s, a: null}));
+        setOk(s => ({...s, a: false}));
+      }
+      if (slotId === 'test-upload-b') {
+        setFiles(s => ({...s, b: null}));
+        setOk(s => ({...s, b: false}));
+      }
+      if (slotId === 'test-upload-c') {
+        setFiles(s => ({...s, c: null}));
+        setOk(s => ({...s, c: false}));
+      }
+       if (window.TEST_APP){ window.TEST_APP.rows = null; }
+    }
+    window.addEventListener('upload:cleared', handleCleared);
+    return () => window.removeEventListener('upload:cleared', handleCleared);
+  }, []);
+
   function accept(key: Key, f: File) {
     setFiles((s) => ({ ...s, [key]: f }));
     setOk((s) => ({ ...s, [key]: true }));
@@ -126,9 +148,9 @@ export default function ReportScaffold({
 
       {/* Upload cards with blank IDs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <UploadCard title="REPORT ID:" reportId={reportIds[0]} onFileAccepted={(f)=>accept("a",f)} />
-        <UploadCard title="REPORT ID:" reportId={reportIds[1]} onFileAccepted={(f)=>accept("b",f)} />
-        <UploadCard title="REPORT ID:" reportId={reportIds[2]} onFileAccepted={(f)=>accept("c",f)} />
+        <UploadCard title="REPORT ID:" reportId={reportIds[0]} onFileAccepted={(f)=>accept("a",f)} onFileCleared={() => accept("a", null)} slotId="test-upload-a"/>
+        <UploadCard title="REPORT ID:" reportId={reportIds[1]} onFileAccepted={(f)=>accept("b",f)} onFileCleared={() => accept("b", null)} slotId="test-upload-b"/>
+        <UploadCard title="REPORT ID:" reportId={reportIds[2]} onFileAccepted={(f)=>accept("c",f)} onFileCleared={() => accept("c", null)} slotId="test-upload-c"/>
       </div>
 
       {/* Actions */}
@@ -188,7 +210,6 @@ export default function ReportScaffold({
 
             window.removeEventListener('upload:parsed', handleUpload);
             window.addEventListener('upload:parsed', handleUpload);
-
 
             /* ------------------------ HELPERS ----------------------------- */
             function money(n, decimals = 2){
@@ -271,64 +292,34 @@ export default function ReportScaffold({
               grid.className = 'test-grid';
               host.appendChild(grid);
               
-              // --- DONUT: Advisory Fees by IP (project colorway) ---
-              // 1) Create a container DIV (Plotly renders into this)
-              const chartDiv = document.createElement('div');      // make a div for the chart
-              chartDiv.id = 'test-donut';                          // give it a stable id
-              chartDiv.style.minHeight = '360px';                  // ensure vertical space
-              grid.appendChild(chartDiv);                          // add to the grid area
+              const chartDiv = document.createElement('div');
+              chartDiv.id = 'test-donut';
+              grid.appendChild(chartDiv);
 
-              // 2) Define the palette EXACTLY like the reference project
-              //    Order matters; we will cycle these colors for extra slices.
               const PROJECT_PALETTE = [
-                '#7C3AED', // Purple
-                '#5B21B6', // Indigo
-                '#3B82F6', // Blue
-                '#22D3EE', // Aqua
-                '#06B6D4', // Cyan
-                '#10B981'  // Teal
+                '#7C3AED', '#5B21B6', '#3B82F6', '#22D3EE', '#06B6D4', '#10B981'
               ];
 
-              // 3) If there are no positive fee values, show a friendly message
-              const totalFees = (model.donut.values || []).reduce((s,v)=>s + (Number(v)||0), 0); // sum values
-              if (totalFees <= 0) {                                // nothing to show?
-                chartDiv.innerHTML = '<div style="color:#9aa0b4;padding:12px;">No fee data available for donut.</div>'; // message
+              const totalFees = (model.donut.values || []).reduce((s,v)=>s + (Number(v)||0), 0);
+              if (totalFees <= 0) {
+                chartDiv.innerHTML = '<div style="color:#9aa0b4;padding:12px;">No fee data available for donut.</div>';
               } else {
-                // 4) Build a color array the same length as slices, cycling the palette
-                const sliceColors = model.donut.values.map((_, idx) => PROJECT_PALETTE[idx % PROJECT_PALETTE.length]); // cycle colors
-
-                // 5) Build one pie trace with a hole to make it a donut
-                const trace = {                                     // Plotly trace config
-                  type: 'pie',                                      // pie chart
-                  labels: model.donut.labels,                       // slice labels (IPs)
-                  values: model.donut.values,                       // slice values (fees)
-                  hole: 0.55,                                       // donut size
-                  sort: false,                                      // keep given order
-                  textinfo: 'label+percent',                        // show label + %
-                  marker: {                                         // visual style for slices
-                    colors: sliceColors,                            // our palette
-                    line: { color: '#000000', width: 1 }            // crisp slice borders on jet black
-                  },
-                  textfont: { color: '#e5e7eb' },                   // light text on dark
-                  hoverlabel: { bgcolor:'#0f0f0f', font:{ color:'#e5e7eb' } } // readable hover
+                const sliceColors = model.donut.values.map((_, idx) => PROJECT_PALETTE[idx % PROJECT_PALETTE.length]);
+                const trace = {
+                  type: 'pie', labels: model.donut.labels, values: model.donut.values,
+                  hole: 0.55, sort: false, textinfo: 'label+percent',
+                  marker: { colors: sliceColors, line: { color: '#000000', width: 1 } },
+                  textfont: { color: '#e5e7eb' }, hoverlabel: { bgcolor:'#0f0f0f', font:{ color:'#e5e7eb' } }
                 };
-
-                // 6) Layout: jet‑black canvas, light fonts
-                const layout = {                                     // overall layout
-                  title: { text: 'Advisory Fees by IP', font:{ color:'#e5e7eb' }, x: 0, xanchor: 'left' }, // chart title
-                  paper_bgcolor: '#000000',                          // outside of plotting area
-                  plot_bgcolor:  '#000000',                          // inside plotting area
-                  font: { color: '#e5e7eb' },                        // default font color
-                  margin: { l: 10, r: 10, t: 30, b: 10 },            // tight margins
-                  showlegend: true,                                   // show legend
-                  legend: { bgcolor:'#000000' }                       // legend on black
+                const layout = {
+                  title: { text: 'Advisory Fees by IP', font:{ color:'#e5e7eb' }, x: 0, xanchor: 'left' },
+                  paper_bgcolor: '#000000', plot_bgcolor:  '#000000',
+                  font: { color: '#e5e7eb' }, margin: { l: 10, r: 10, t: 30, b: 10 },
+                  showlegend: true, legend: { bgcolor:'#000000' }
                 };
-
-                // 7) Render the chart
                 if (window.Plotly) {
-                  Plotly.newPlot(chartDiv, [trace], layout, { displayModeBar: false, responsive: true }); // draw donut
-                  // 8) If the panel was hidden before render, force a resize so sizing is correct
-                  setTimeout(() => { try { Plotly.Plots.resize(chartDiv); } catch(_){} }, 0); // fix hidden-render sizing
+                  Plotly.newPlot(chartDiv, [trace], layout, { displayModeBar: false, responsive: true });
+                  setTimeout(() => { try { Plotly.Plots.resize(chartDiv); } catch(_){} }, 0);
                 }
               }
 
@@ -366,7 +357,6 @@ export default function ReportScaffold({
               });
             }
 
-            /* ---------- BUTTON HOOKS (Open / Hide dashboard) ---------- */
             window.openTestDashboard = function(){
               const host = document.getElementById('test-dashboard');
               if (host) {
@@ -385,7 +375,6 @@ export default function ReportScaffold({
   );
 }
 
-// Extend the Window interface for TypeScript
 declare global {
     interface Window {
         TEST_APP: {
