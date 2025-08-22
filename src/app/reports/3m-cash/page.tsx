@@ -4,6 +4,9 @@
 import React from "react";
 import UploadCard from "@/components/UploadCard";
 import ReportsDashboard from "@/components/reports/ReportsDashboard";
+import ReportsPageShell from "@/components/reports/ReportsPageShell";
+import { ReportSection } from "@/components/reports/ReportSection";
+import { UploadRow } from "@/components/reports/UploadRow";
 import { cn } from "@/lib/utils";
 import { saveAs } from "file-saver";
 import type { DonutSlice, Kpi, TableRow } from "@/components/reports/ReportsDashboard.types";
@@ -131,76 +134,66 @@ export default function ReportsExcelPage() {
   }
 
   return (
-    <div className="p-4">
-      <main className="app-main fullbleed">
-        <div className="content-pad">
-          <div className="space-y-6">
-            <div className="rounded-2xl p-6 shadow-sm border border-[#26272b] bg-[#0a0a0a]">
-              <h2 className="text-xl font-bold mb-2">Report Summary</h2>
-              <p className="text-white/80">{REPORT_SUMMARY}</p>
-            </div>
+    <ReportsPageShell>
+        <ReportSection title="Report Summary">
+            <p>{REPORT_SUMMARY}</p>
+        </ReportSection>
 
-            <div className="rounded-2xl p-6 shadow-sm border border-[#26272b] bg-[#0a0a0a]">
-                <h2 className="text-xl font-bold text-zinc-100 mb-3">Instructions</h2>
-                <ol className="list-decimal list-inside space-y-2 text-white/80">
-                  {INSTRUCTIONS.map((line, i) => (
-                    <li key={i}>{line}</li>
-                  ))}
-                </ol>
-            </div>
+        <ReportSection title="Instructions">
+            <ol className="list-decimal list-inside space-y-1">
+            {INSTRUCTIONS.map((line, i) => (
+                <li key={i}>{line}</li>
+            ))}
+            </ol>
+        </ReportSection>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <UploadCard onFileAccepted={(f) => accept("pyfee", f)} onFileCleared={() => accept("pyfee", null)} slotId="3m-cash-a" dropzoneText="Drop PYFEE here" />
-              <UploadCard onFileAccepted={(f) => accept("pycash_2", f)} onFileCleared={() => accept("pycash_2", null)} slotId="3m-cash-b" dropzoneText="Drop PYCASH here" />
-              <UploadCard onFileAccepted={(f) => accept("pypi", f)} onFileCleared={() => accept("pypi", null)} slotId="3m-cash-c" dropzoneText="Drop PYPI here" />
-            </div>
-
-            <div className="flex flex-col items-center gap-3 pt-2">
-              <button
-                onClick={runMergeJSON}
-                disabled={!allReady || isRunning}
-                className={cn(
-                  "rounded-2xl px-5 py-3 text-sm font-semibold transition shadow-sm",
-                  allReady && !isRunning ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md" : "bg-[#2f3136] text-zinc-400 cursor-not-allowed"
-                )}
-              >
-                {isRunning ? "Running…" : "Run 3M Cash Report"}
-              </button>
-
-              <div className="flex gap-3">
-                <button
-                  onClick={downloadExcel}
-                  disabled={!dashboardData || isRunning}
-                  className={cn(
-                    "rounded-xl px-4 py-2 text-sm transition border border-[#26272b]",
-                    !dashboardData ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed" : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
-                  )}
-                >
-                  Download Excel
-                </button>
-                <button
-                  onClick={() => setShowDash(v => !v)}
-                  disabled={!dashboardData || isRunning}
-                  className={cn(
-                    "rounded-xl px-4 py-2 text-sm transition border border-[#26272b]",
-                    !dashboardData ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed" : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
-                  )}
-                >
-                  {showDash ? "Hide Dashboard" : "Open Dashboard"}
-                </button>
-              </div>
-
-              {error && <div className="text-xs text-rose-400">{error}</div>}
-            </div>
-
-            {showDash && dashboardData && (
-              <div className="mt-6">
-                <ReportsDashboard {...dashboardData} />
-              </div>
+        <UploadRow>
+            <UploadCard onFileAccepted={(f) => accept("pyfee", f)} onFileCleared={() => accept("pyfee", null)} dropzoneText="Drop PYFEE here" />
+            <UploadCard onFileAccepted={(f) => accept("pycash_2", f)} onFileCleared={() => accept("pycash_2", null)} dropzoneText="Drop PYCASH here" />
+            <UploadCard onFileAccepted={(f) => accept("pypi", f)} onFileCleared={() => accept("pypi", null)} dropzoneText="Drop PYPI here" />
+        </UploadRow>
+        
+        <div className="flex flex-col items-center gap-3 pt-2">
+            <button
+            onClick={runMergeJSON}
+            disabled={!allReady || isRunning}
+            className={cn(
+                "rounded-2xl px-5 py-3 text-sm font-semibold transition shadow-sm",
+                allReady && !isRunning ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md" : "bg-[#2f3136] text-zinc-400 cursor-not-allowed"
             )}
-          </div>
+            >
+            {isRunning ? "Running…" : "Run 3M Cash Report"}
+            </button>
+
+            <div className="flex gap-3">
+            <button
+                onClick={downloadExcel}
+                disabled={!dashboardData || isRunning}
+                className={cn(
+                "rounded-xl px-4 py-2 text-sm transition border border-[#26272b]",
+                !dashboardData ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed" : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
+                )}
+            >
+                Download Excel
+            </button>
+            <button
+                onClick={() => setShowDash(v => !v)}
+                disabled={!dashboardData || isRunning}
+                className={cn(
+                "rounded-xl px-4 py-2 text-sm transition border border-[#26272b]",
+                !dashboardData ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed" : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
+                )}
+            >
+                {showDash ? "Hide Dashboard" : "Open Dashboard"}
+            </button>
+            </div>
+
+            {error && <div className="text-xs text-rose-400">{error}</div>}
         </div>
-      </main>
-    </div>
+
+        {showDash && dashboardData && (
+            <ReportsDashboard {...dashboardData} />
+        )}
+    </ReportsPageShell>
   );
 }

@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils";
 import Script from "next/script";
 import ReportsDashboard from "./reports/ReportsDashboard";
 import type { DonutSlice, Kpi, TableRow } from "./reports/ReportsDashboard.types";
+import ReportsPageShell from "./reports/ReportsPageShell";
+import { ReportSection } from "./reports/ReportSection";
+import { UploadRow } from "./reports/UploadRow";
 
 type Key = "a" | "b" | "c";
 
@@ -143,36 +146,25 @@ export default function ReportScaffold({
 
 
   return (
-    <>
-    <div className="space-y-6 p-4">
-      {/* Report Summary */}
-      <div className="rounded-2xl p-6 shadow-sm border border-[#26272b] bg-[#0a0a0a]">
-        <h2 className="text-xl font-bold text-zinc-100 mb-2">Report Summary</h2>
-        {summary ? (
-          <div className="text-zinc-300">{summary}</div>
-        ) : (
-          <div className="text-zinc-500 italic">—</div>
-        )}
-      </div>
+    <ReportsPageShell>
+      {summary && (
+        <ReportSection title="Report Summary">
+            <p>{summary}</p>
+        </ReportSection>
+      )}
 
-      {/* Instructions */}
-      <div className="rounded-2xl p-6 shadow-sm border border-[#26272b] bg-[#0a0a0a]">
-        <h2 className="text-xl font-bold text-zinc-100 mb-2">Instructions</h2>
-        {instructions ? (
-          <div className="text-zinc-300">{instructions}</div>
-        ) : (
-          <div className="text-zinc-500 italic">—</div>
-        )}
-      </div>
+      {instructions && (
+        <ReportSection title="Instructions">
+          <p>{instructions}</p>
+        </ReportSection>
+      )}
 
-      {/* Upload cards with blank IDs */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <UploadCard onFileAccepted={(f)=>accept("a",f)} onFileCleared={() => accept("a", null)} slotId="test-upload-a" dropzoneText="Drop TEST_1 here"/>
-        <UploadCard onFileAccepted={(f)=>accept("b",f)} onFileCleared={() => accept("b", null)} slotId="test-upload-b" dropzoneText="Drop TEST_2 here"/>
-        <UploadCard onFileAccepted={(f)=>accept("c",f)} onFileCleared={() => accept("c", null)} slotId="test-upload-c" dropzoneText="Drop TEST_3 here"/>
-      </div>
+      <UploadRow>
+        <UploadCard onFileAccepted={(f)=>accept("a",f)} onFileCleared={() => accept("a", null)} dropzoneText="Drop TEST_1 here"/>
+        <UploadCard onFileAccepted={(f)=>accept("b",f)} onFileCleared={() => accept("b", null)} dropzoneText="Drop TEST_2 here"/>
+        <UploadCard onFileAccepted={(f)=>accept("c",f)} onFileCleared={() => accept("c", null)} dropzoneText="Drop TEST_3 here"/>
+      </UploadRow>
 
-      {/* Actions */}
       <div className="flex flex-col items-center gap-3 pt-2">
         <button
           onClick={runMergeJSON}
@@ -215,17 +207,8 @@ export default function ReportScaffold({
       </div>
 
       {showDash && dashboardData && (
-        <div className="mt-6">
           <ReportsDashboard {...dashboardData} />
-        </div>
       )}
-    </div>
-    <Script id="test-dashboard-script">
-        {`
-            // This script block is for external integrations if needed,
-            // but the primary dashboard logic is now handled within React.
-        `}
-    </Script>
-    </>
+    </ReportsPageShell>
   );
 }

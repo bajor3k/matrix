@@ -129,6 +129,7 @@
     --muted:#9aa0b4;        /* secondary text */
     --accent: #08e28f;      /* standardized green */
     --success-green: #08e28f;
+    --destructive-red: #e31211;
   }
 
   html {
@@ -341,7 +342,7 @@
     filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.2));
   }
   50% {
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    filter: drop-shadow(0 0 10px rgba(255, 255, 0.5));
   }
   100% {
     filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.2));
@@ -427,156 +428,6 @@
   transition: margin-left 200ms ease, width 200ms ease; /* smooth when toggling sidebar */
 }
 
-/* Optional: remove any default max-width wrappers or page padding */
-.fullbleed {
-  max-width: none !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
-/* --------- Centering wrapper: makes the whole group sit in the middle of the page --- */
-.cash-upload-wrap{
-  display:flex;                  /* flex container to center children */
-  justify-content:center;        /* center horizontally */
-  width:100%;                    /* fill available width */
-  padding-inline: 16px;          /* small side padding so it never touches edges */
-}
-
-/* --- Grid: shrink to content & center precisely --- */
-.cash-upload-grid{
-  display:grid;                  /* grid for cards */
-  grid-template-columns: repeat(3, 360px); /* fixed card widths for clean rhythm */
-  gap:24px;                      /* space between cards */
-  width: fit-content;            /* &lt;— critical: grid shrinks to its content */
-  margin-inline: auto;           /* center the grid block itself */
-}
-
-/* Ensure each card renders at intended width (works with fit-content) */
-.upload-card{
-  width:360px;                   /* match grid column width */
-  max-width:360px;
-}
-
-
-/* Inner layout */
-.upload-inner{ display:flex; flex-direction:column; gap:12px; }
-
-/* Header */
-.upload-title{
-  font-weight:700;                        /* bold title */
-  color:#e8e8f5;                          /* bright text */
-  letter-spacing:.2px;                    /* tiny tracking */
-}
-.upload-sub{ color:#a0a3b5; font-size:12px; }
-
-/* Drop area */
-.dropzone{
-  display:block;                          /* make label behave like block */
-  border:1px dashed #393951;              /* dashed border for drop area */
-  border-radius:14px;                      /* rounded */
-  background:transparent !important;
-  padding:18px;                            /* spacing */
-  cursor:pointer;                          /* indicate action */
-}
-.dropzone:hover{ background:#101021; }     /* hover feedback */
-
-.dropzone-body{ text-align:center; }
-.drop-icon{ font-size:28px; margin-bottom:6px; }
-.drop-title{ font-weight:600; color:#e6e6f3; }
-.drop-sub{ color:#a0a3b5; }
-.browse{ color:#7c5cff; text-decoration:underline; cursor:pointer; }
-.drop-note{ color:#7b7f95; font-size:12px; margin-top:6px; }
-
-/* File bar */
-.file-info{
-  background:#0f0f17; border:1px solid #26263a; border-radius:12px;
-  padding:10px 12px;
-}
-.file-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
-.file-name{ color:#cfd2e8; font-weight:600; }
-.file-size{ color:#9aa0b4; font-size:12px; }
-
-/* Status lines */
-.file-status{ font-size:12px; margin-top:6px; }
-.file-status.ok{ color:var(--success-green); }
-.file-status.err{ color:#ffb4b4; }
-
-/* Preview */
-.preview-title{ color:#cfd2e8; font-weight:600; }
-.preview-table-wrap{
-  overflow:auto;                          /* scroll if wide */
-  max-height:260px;                       /* cap height */
-  border:1px solid #26263a;               /* border like data tables */
-  border-radius:12px;
-}
-.preview-table{ border-collapse:collapse; width:100%; }
-.preview-table thead th{
-  position:sticky; top:0;                 /* sticky header */
-  background:#1b1b28; color:#cfd2e8;
-  text-align:left; padding:8px 10px; font-size:12px;
-  border-bottom:1px solid #2a2a3a;
-}
-.preview-table tbody td{
-  padding:8px 10px; border-bottom:1px solid #20202c; color:#e6e6f0;
-}
-.preview-table tbody tr:hover{ background:#13131d; }
-
-/* --------- Responsive breakpoints (still centered) --------- */
-/* 2 columns when space is tighter */
-@media (max-width: 1199px){
-  .cash-upload-grid{
-    grid-template-columns: repeat(2, 360px);
-  }
-}
-
-/* 1 column on phones / narrow windows */
-@media (max-width: 767px){
-  .cash-upload-grid{
-    grid-template-columns: 360px;
-  }
-}
-
-/* If you want the single column to be fluid below 360px: */
-@media (max-width: 380px){
-  .cash-upload-grid{ grid-template-columns: min(360px, 100%); }
-  .upload-card{ width: min(360px, 100%); max-width: 100%; }
-}
-/* Hide any legacy preview blocks */
-[data-preview],
-[id*="preview"],
-[class*="preview"],
-[data-testid*="preview"],
-.preview,
-.file-preview,
-.csv-preview,
-.excel-preview {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-}
-
-.prose h1 { font-size: 1.25rem; line-height: 1.6; margin-top: 0.25rem; }
-.prose strong { color: #e5e7eb; }
-.prose code { background: #0f1115; padding: 0.15rem 0.35rem; border-radius: 6px; }
-
-/* Kill any accidental purple/indigo usage coming from old classes */
-[class*="indigo-"], [class*="purple-"] { color: inherit; }
-.bg-indigo-50, .bg-indigo-100, .bg-indigo-200, .bg-indigo-300,
-.bg-indigo-400, .bg-indigo-500, .bg-indigo-600, .bg-indigo-700, .bg-indigo-800, .bg-indigo-900,
-.bg-purple-50, .bg-purple-100, .bg-purple-200, .bg-purple-300,
-.bg-purple-400, .bg-purple-500, .bg-purple-600, .bg-purple-700, .bg-purple-800, .bg-purple-900 {
-  background-color: #0f0f13 !important;
-}
-
-/* Neutral borders/panels across the page */
-.card-dark { background-color: #0f0f13; border: 1px solid #26272b; }
-.panel-dark { background-color: #191a1f; border: 1px solid #26272b; }
-
-.upload-grid .upload-card { min-height: 220px; }
-
 .pill-short {
   display: inline-block;
   padding: 2px 8px;
@@ -584,72 +435,39 @@
   font-size: 12px;
   font-weight: bold;
   background: transparent !important;
-  color: #e31211 !important;
-  border: 1px solid #e31211 !important;
+  color: var(--destructive-red) !important;
+  border: 1px solid var(--destructive-red) !important;
 }
 
-#test-donut{ width:100%; min-height:360px; }
-/* Actions row under file info */
-.file-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-top:8px;
-}
-/* Icon button (trash) */
-.icon-btn{
-  display:inline-flex;
-  align-items:center; justify-content:center;
-  width:30px; height:30px;
-  border-radius:8px;
-  background:#0f0f0f;
-  border:1px solid var(--line);
-  cursor:pointer;
-}
-.icon-btn:hover{ border-color:#2a2a2a; }
-.icon-btn:focus{ outline:2px solid var(--accent); outline-offset:2px; }
-.icon-btn.danger:hover svg path{ stroke:#ffb4b4; }
-/* Replace link, visually minimal */
-.link-btn{
-  background:transparent; border:0; padding:0;
-  color:#9aa0b4; cursor:pointer; text-decoration:underline;
-}
-.link-btn:hover{ color:#e5e7eb; }
-
-/* Nuke backgrounds/rings on uploaded file wrappers */
-.upload-card,
-.upload-chip,
-[data-upload-card="true"],
-[class*="UploadPreview"],
-[class*="upload-preview"] {
-  background: transparent !important;
-  box-shadow: none !important;
-  border: 0 !important;
-  outline: 0 !important;
+/* Remove unexpected top margins on first child blocks inside the reports shell */
+[class*="ReportsPageShell"] > *:first-child {
+  margin-top: 0 !important;
 }
 
-/* Ensure text stays left-aligned & tight */
-.uploaded-file-line {
-  margin: 0 !important;
-  padding: 0 !important;
-  text-align: left !important;
+/* Normalize section spacing if markdown/typography components add extra margins */
+[class*="ReportSection"] h1,
+[class*="ReportSection"] h2,
+[class*="ReportSection"] p,
+[class*="ReportSection"] ol,
+[class*="ReportSection"] ul {
+  margin-top: 0.25rem !important;  /* tight */
+  margin-bottom: 0.25rem !important;
 }
 
-.dropzone {
-  border: 2px dashed rgba(255,255,255,0.4) !important;
-  border-radius: 0.75rem;
+/* Ensure page content doesn’t inherit odd outer padding from ancestors */
+main > .mx-auto.max-w-7xl {
+  padding-left: 1rem !important;    /*  px-4  */
+  padding-right: 1rem !important;
 }
-
-.dropzone:hover {
-  border-color: #08e28f !important;
+@media (min-width: 768px) {
+  main > .mx-auto.max-w-7xl {
+    padding-left: 1.5rem !important; /* md:px-6 */
+    padding-right: 1.5rem !important;
+  }
 }
-
-/* Upload box global styles */
-.upload-box,
-[class*="upload"],
-[class*="dropzone"] {
-  background: transparent !important;
-  box-shadow: none !important;
+@media (min-width: 1024px) {
+  main > .mx-auto.max-w-7xl {
+    padding-left: 2rem !important;   /* lg:px-8 */
+    padding-right: 2rem !important;
+  }
 }
-
-    
