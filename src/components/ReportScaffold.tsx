@@ -145,9 +145,9 @@ export default function ReportScaffold({
 
       {/* Upload cards with blank IDs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <UploadCard onFileAccepted={(f)=>accept("a",f)} onFileCleared={() => accept("a", null)} slotId="test-upload-a"/>
-        <UploadCard onFileAccepted={(f)=>accept("b",f)} onFileCleared={() => accept("b", null)} slotId="test-upload-b"/>
-        <UploadCard onFileAccepted={(f)=>accept("c",f)} onFileCleared={() => accept("c", null)} slotId="test-upload-c"/>
+        <UploadCard onFileAccepted={(f)=>accept("a",f)} onFileCleared={() => accept("a", null)} slotId="test-upload-a" dropzoneText="Drop TEST_1 here"/>
+        <UploadCard onFileAccepted={(f)=>accept("b",f)} onFileCleared={() => accept("b", null)} slotId="test-upload-b" dropzoneText="Drop TEST_2 here"/>
+        <UploadCard onFileAccepted={(f)=>accept("c",f)} onFileCleared={() => accept("c", null)} slotId="test-upload-c" dropzoneText="Drop TEST_3 here"/>
       </div>
 
       {/* Actions */}
@@ -256,103 +256,111 @@ export default function ReportScaffold({
 
             /* ----------------------- RENDERER ----------------------------- */
             function renderTestDashboard(){
-              const host = document.getElementById('test-dashboard');
-              if (!host) return;
-              host.hidden = false;
-              host.innerHTML = '';
+                const host = document.getElementById('test-dashboard');
+                if (!host) return;
+                host.innerHTML = '';
 
-              const model = buildTestModel();
-              if (!model){
-                host.innerHTML = '<div style="color:#9aa0b4;">No data found. Upload a spreadsheet with columns <b>IP</b>, <b>Account Number</b>, <b>Value</b>, <b>Advisory Fees</b>, <b>Cash</b>.</div>';
-                return;
-              }
-
-              const kpisEl = document.createElement('div');
-              kpisEl.className = 'test-kpis';
-              kpisEl.innerHTML = \`
-                <div class="test-kpi">
-                  <div class="label">Total Advisory Fees</div>
-                  <div class="value">\${money(model.kpis.totalFee)}</div>
-                </div>
-                <div class="test-kpi">
-                  <div class="label">Total Accounts</div>
-                  <div class="value">\${model.kpis.accounts.toLocaleString()}</div>
-                </div>
-                <div class="test-kpi">
-                  <div class="label">Flagged Short</div>
-                  <div class="value">\${model.kpis.shortCount.toLocaleString()}</div>
-                </div>
-              \`;
-              host.appendChild(kpisEl);
-
-              const grid = document.createElement('div');
-              grid.className = 'test-grid';
-              host.appendChild(grid);
-              
-              const chartDiv = document.createElement('div');
-              chartDiv.id = 'test-donut';
-              chartDiv.style.minHeight = '360px';
-              grid.appendChild(chartDiv);
-
-              const PROJECT_PALETTE = [
-                '#7C3AED', '#5B21B6', '#3B82F6', '#22D3EE', '#06B6D4', '#10B981'
-              ];
-
-              const totalFees = (model.donut.values || []).reduce((s,v)=>s + (Number(v)||0), 0);
-              if (totalFees <= 0) {
-                chartDiv.innerHTML = '<div style="color:#9aa0b4;padding:12px;">No fee data available for donut.</div>';
-              } else {
-                const sliceColors = model.donut.values.map((_, idx) => PROJECT_PALETTE[idx % PROJECT_PALETTE.length]);
-                const trace = {
-                  type: 'pie', labels: model.donut.labels, values: model.donut.values,
-                  hole: 0.55, sort: false, textinfo: 'label+percent',
-                  marker: { colors: sliceColors, line: { color: '#000000', width: 1 } },
-                  textfont: { color: '#e5e7eb' }, hoverlabel: { bgcolor:'#0f0f0f', font:{ color:'#e5e7eb' } }
-                };
-                const layout = {
-                  title: { text: 'Advisory Fees by IP', font:{ color:'#e5e7eb' }, x: 0, xanchor: 'left' },
-                  paper_bgcolor: '#000000', plot_bgcolor:  '#000000',
-                  font: { color: '#e5e7eb' }, margin: { l: 10, r: 10, t: 30, b: 10 },
-                  showlegend: true, legend: { bgcolor:'#000000' }
-                };
-                if (window.Plotly) {
-                  Plotly.newPlot(chartDiv, [trace], layout, { displayModeBar: false, responsive: true });
-                  setTimeout(() => { try { Plotly.Plots.resize(chartDiv); } catch(_){} }, 0);
+                const model = buildTestModel();
+                if (!model){
+                    host.innerHTML = '<div style="color:#9aa0b4;">No data found. Upload a spreadsheet with columns <b>IP</b>, <b>Account Number</b>, <b>Value</b>, <b>Advisory Fees</b>, <b>Cash</b>.</div>';
+                    return;
                 }
-              }
 
-              const tableWrap = document.createElement('div');
-              tableWrap.className = 'test-table';
-              tableWrap.innerHTML = \`
-                <table>
-                  <thead>
-                    <tr>
-                      <th>IP</th>
-                      <th>Account Number</th>
-                      <th>Value</th>
-                      <th>Advisory Fees</th>
-                      <th>Cash</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-              \`;
-              grid.appendChild(tableWrap);
-
-              const tbody = tableWrap.querySelector('tbody');
-              model.rows.forEach(r => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = \`
-                  <td>\${r.ip || ''}</td>
-                  <td>\${r.acct || ''}</td>
-                  <td>\${r.val != null ? money(r.val) : ''}</td>
-                  <td>\${r.fee != null ? money(r.fee) : ''}</td>
-                  <td>\${r.cash != null ? money(r.cash) : ''}</td>
-                  <td>\${r.short ? '<span class="pill-short">Short</span>' : ''}</td>
+                const kpisEl = document.createElement('div');
+                kpisEl.className = 'test-kpis';
+                kpisEl.innerHTML = \`
+                    <div class="test-kpi">
+                    <div class="label">Total Advisory Fees</div>
+                    <div class="value">\${money(model.kpis.totalFee)}</div>
+                    </div>
+                    <div class="test-kpi">
+                    <div class="label">Total Accounts</div>
+                    <div class="value">\${model.kpis.accounts.toLocaleString()}</div>
+                    </div>
+                    <div class="test-kpi">
+                    <div class="label">Flagged Short</div>
+                    <div class="value">\${model.kpis.shortCount.toLocaleString()}</div>
+                    </div>
                 \`;
-                tbody.appendChild(tr);
-              });
+                host.appendChild(kpisEl);
+
+                const grid = document.createElement('div');
+                grid.className = 'test-grid';
+                host.appendChild(grid);
+
+                const chartDiv = document.createElement('div');
+                chartDiv.id = 'test-donut';
+                chartDiv.style.minHeight = '360px';
+                grid.appendChild(chartDiv);
+
+                const PROJECT_PALETTE = ['#7C3AED', '#5B21B6', '#3B82F6', '#22D3EE', '#06B6D4', '#10B981'];
+
+                const totalFees = (model.donut.values || []).reduce((s, v) => s + (Number(v) || 0), 0);
+                if (totalFees <= 0) {
+                    chartDiv.innerHTML = '<div style="color:#9aa0b4;padding:12px;">No fee data available for donut.</div>';
+                } else {
+                    const sliceColors = model.donut.values.map((_, idx) => PROJECT_PALETTE[idx % PROJECT_PALETTE.length]);
+                    const trace = {
+                        type: 'pie',
+                        labels: model.donut.labels,
+                        values: model.donut.values,
+                        hole: 0.55,
+                        sort: false,
+                        textinfo: 'label+percent',
+                        marker: {
+                            colors: sliceColors,
+                            line: { color: '#000000', width: 1 }
+                        },
+                        textfont: { color: '#e5e7eb' },
+                        hoverlabel: { bgcolor: '#0f0f0f', font: { color: '#e5e7eb' } }
+                    };
+                    const layout = {
+                        title: { text: 'Advisory Fees by IP', font: { color: '#e5e7eb' }, x: 0, xanchor: 'left' },
+                        paper_bgcolor: 'transparent',
+                        plot_bgcolor: 'transparent',
+                        font: { color: '#e5e7eb' },
+                        margin: { l: 10, r: 10, t: 30, b: 10 },
+                        showlegend: true,
+                        legend: { bgcolor: 'transparent' }
+                    };
+                    if (window.Plotly) {
+                        Plotly.newPlot(chartDiv, [trace], layout, { displayModeBar: false, responsive: true });
+                        setTimeout(() => { try { Plotly.Plots.resize(chartDiv); } catch (_) { } }, 0);
+                    }
+                }
+
+                const tableWrap = document.createElement('div');
+                tableWrap.className = 'test-table';
+                tableWrap.innerHTML = \`
+                    <table>
+                    <thead>
+                        <tr>
+                        <th>IP</th>
+                        <th>Account Number</th>
+                        <th>Value</th>
+                        <th>Advisory Fees</th>
+                        <th>Cash</th>
+                        <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    </table>
+                \`;
+                grid.appendChild(tableWrap);
+
+                const tbody = tableWrap.querySelector('tbody');
+                model.rows.forEach(r => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = \`
+                    <td>\${r.ip || ''}</td>
+                    <td>\${r.acct || ''}</td>
+                    <td>\${r.val != null ? money(r.val) : ''}</td>
+                    <td>\${r.fee != null ? money(r.fee) : ''}</td>
+                    <td>\${r.cash != null ? money(r.cash) : ''}</td>
+                    <td>\${r.short ? '<span class="pill-short">Short</span>' : ''}</td>
+                    \`;
+                    tbody.appendChild(tr);
+                });
             }
 
             window.openTestDashboard = function(){
@@ -383,3 +391,5 @@ declare global {
         Plotly: any;
     }
 }
+
+    

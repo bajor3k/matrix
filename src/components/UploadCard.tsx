@@ -3,8 +3,8 @@
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { cn } from "@/lib/utils";
-import { Upload as UploadIcon } from "lucide-react";
 import * as xlsx from "xlsx";
+import { UploadedFileDisplay } from "./UploadedFileDisplay";
 
 type UploadCardProps = {
   onFileAccepted?: (file: File) => void;
@@ -12,16 +12,15 @@ type UploadCardProps = {
   className?: string;
   children?: React.ReactNode;
   slotId?: string;
+  dropzoneText?: string;
 };
-
-const SUCCESS_COPY = "File uploaded successfully.";
 
 export default function UploadCard({
   onFileAccepted,
   onFileCleared,
   className,
-  children,
   slotId,
+  dropzoneText,
 }: UploadCardProps) {
   const [file, setFile] = React.useState<File | null>(null);
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
@@ -98,36 +97,29 @@ export default function UploadCard({
           <div
             {...getRootProps()}
             onClick={open}
-            className={cn("dropzone", isDragActive && "bg-white/5")}
+            className={cn(
+                "flex flex-col items-center justify-center",
+                "dropzone p-10 transition-colors duration-200",
+                isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-white/40 text-white/80"
+              )}
           >
             <input {...getInputProps()} />
-            <div className="dropzone-body">
-                <UploadIcon className="drop-icon" strokeWidth={1.5}/>
-                <div className="drop-title">Drop file here</div>
-                <div className="drop-sub">or <span className="browse">browse</span> from your computer</div>
-                <div className="drop-note">XLS, XLSX, or CSV. Max 10MB.</div>
-            </div>
+            <p className="text-base font-medium">
+              {dropzoneText || 'Drop file here'}
+            </p>
           </div>
         ) : (
-          <div className="bg-transparent shadow-none ring-0 border-0 p-0 m-0">
-             <div className="uploaded-file-line">
-                <div className="text-sm md:text-base font-medium text-white/90 leading-tight">
-                    {file.name}
-                </div>
-                 <div className="text-xs md:text-sm leading-tight text-[var(--success-green)]">
-                    {SUCCESS_COPY}
-                </div>
-                 <button
-                    type="button"
-                    onClick={() => { open(); }}
-                    className="mt-1 w-fit text-xs underline underline-offset-2 text-white/60 hover:text-white/80 focus:outline-none"
-                    >
-                    Replace
-                </button>
-             </div>
-          </div>
+          <UploadedFileDisplay
+            name={file.name}
+            onReplace={() => open()}
+            onRemove={resetUI}
+            successText={errorMsg || "File uploaded successfully."}
+            hasError={!!errorMsg}
+          />
         )}
       </div>
     </div>
   );
 }
+
+    
