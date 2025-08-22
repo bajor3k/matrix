@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -21,9 +22,9 @@ export function TopToolbar({ onToggleSidebar }: TopToolbarProps) {
         <button
           aria-label="Toggle sidebar"
           onClick={onToggleSidebar}
-          className="inline-flex items-center justify-center w-9 h-9 rounded-lg hover:bg-white/5"
+          className="inline-flex items-center justify-center w-9 h-9 rounded-lg hover:bg-black/5 dark:hover:bg-white/5"
         >
-          <Brain className="w-5 h-5 text-white/70" />
+          <Brain className="w-5 h-5 text-gray-600 dark:text-white/70" />
         </button>
         <nav className="flex items-center space-x-1">
           {toolbarSections.map((section) => (
@@ -32,9 +33,12 @@ export function TopToolbar({ onToggleSidebar }: TopToolbarProps) {
               variant="ghost"
               onClick={() => setActiveSection(section.id)}
               className={cn(
-                "px-3 py-1.5 h-auto rounded-md text-sm font-medium text-foreground/80 transition-colors duration-150 ease-out",
+                "px-3 py-1.5 h-auto rounded-md text-sm font-medium transition-colors duration-150 ease-out",
+                "text-gray-700 dark:text-foreground/80",
                 "hover:bg-accent hover:text-accent-foreground",
-                activeSection === section.id ? "bg-accent text-accent-foreground" : "bg-transparent"
+                activeSection === section.id 
+                  ? "bg-accent text-accent-foreground" 
+                  : "bg-transparent"
               )}
             >
               {section.title}
