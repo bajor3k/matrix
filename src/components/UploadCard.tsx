@@ -1,14 +1,15 @@
+
 "use client";
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { cn } from "@/lib/utils";
 import * as xlsx from "xlsx";
+import { Upload, Trash2 } from 'lucide-react';
 
 type UploadCardProps = {
   onFileAccepted?: (file: File) => void;
   onFileCleared?: () => void;
   className?: string;
-  children?: React.ReactNode;
   slotId?: string;
   dropzoneText?: string;
 };
@@ -38,7 +39,7 @@ export default function UploadCard({
 
       if (fileRejections.length > 0) {
         setErrorMsg(`File rejected: ${fileRejections[0].errors[0].message}`);
-        setFile(null); // Ensure no file is set on rejection
+        setFile(null); 
         if (onFileCleared) onFileCleared();
         return;
       }
@@ -76,17 +77,10 @@ export default function UploadCard({
     [onFileAccepted, onFileCleared, slotId]
   );
 
-  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+  const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
     onDrop,
     multiple: false,
-    noClick: true,
-    noKeyboard: true,
-    maxSize: 10 * 1024 * 1024,
-    accept: {
-      'application/vnd.ms-excel': ['.xls'],
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-      'text/csv': ['.csv'],
-    }
+    noClick: true, // We trigger click via the icon button
   });
 
   const handleRemove = (e: React.MouseEvent) => {
@@ -95,52 +89,68 @@ export default function UploadCard({
   };
 
   return (
-    <div data-upload-card="true" className={cn("upload-card", className)}>
-       <div
-        {...getRootProps()}
-        onClick={!file ? open : undefined}
-        className={cn(
-            "flex flex-col items-center justify-center text-center",
-            "rounded-xl border-2 border-dashed bg-[#1f1f1f]",
-            isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-white/40 text-white/90",
-            "p-8 cursor-pointer transition-colors duration-200 h-40",
-            className
-          )}
-      >
-        <input {...getInputProps()} />
-        
-        {!file ? (
-          <>
-            <p className="text-base font-semibold">
-              {dropzoneText || 'Drop file here'}
-            </p>
-            <p className="text-sm text-white/70 mt-1">
-              or{" "}
-              <span onClick={(e) => { e.stopPropagation(); open(); }} className="text-[#08e28f] font-medium hover:underline cursor-pointer">
-                browse
-              </span>{" "}
-              from your computer
-            </p>
-          </>
-        ) : (
-          <>
-            {errorMsg ? (
+    <div
+      {...getRootProps()}
+      className={cn(
+        "flex flex-col items-center justify-center text-center relative",
+        "rounded-xl border-2 border-dashed",
+        "p-8 cursor-pointer transition-colors duration-200 w-full h-44", // Adjusted width to full
+        "bg-transparent", // No background fill
+        isDragActive
+          ? "border-[#08e28f] text-[#08e28f]"
+          : "border-white/40 text-white/90",
+        className
+      )}
+    >
+      <input {...getInputProps()} />
+
+      {/* Top-center icon for upload or remove */}
+      {!file ? (
+        <button
+          type="button"
+          onClick={open}
+          className="absolute -top-3 bg-black px-2 rounded-full"
+          aria-label="Upload file"
+        >
+          <Upload className="w-6 h-6 text-white/80 hover:text-[#08e28f]" />
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={handleRemove}
+          className="absolute -top-3 bg-black px-2 rounded-full"
+          aria-label="Remove file"
+        >
+          <Trash2 className="w-6 h-6 text-[#e31211] hover:text-red-600" />
+        </button>
+      )}
+
+      {/* Center content */}
+      {!file ? (
+        <>
+          <p className="text-base font-semibold mt-4">
+            {dropzoneText || 'Drop file here'}
+          </p>
+          <p className="text-sm text-white/70 mt-1">
+            or{" "}
+            <span onClick={(e) => { e.stopPropagation(); open(); }} className="text-[#08e28f] font-medium hover:underline cursor-pointer">
+              browse
+            </span>{" "}
+            from your computer
+          </p>
+        </>
+      ) : (
+        <div className="mt-4 text-center">
+          {errorMsg ? (
               <p className="text-sm text-red-400">{errorMsg}</p>
-            ) : (
+          ) : (
+            <>
               <p className="text-sm text-white/90">{file.name}</p>
-            )}
-            <p className="text-sm text-[#08e28f] mt-1">
-              {errorMsg ? "Upload failed." : "Success 🙂"}
-            </p>
-            <button
-              onClick={handleRemove}
-              className="text-sm text-[#e31211] mt-2 hover:underline"
-            >
-              Remove
-            </button>
-          </>
-        )}
-      </div>
+              <p className="text-sm text-[#08e28f] mt-1">Success 🙂</p>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
