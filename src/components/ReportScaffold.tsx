@@ -17,8 +17,6 @@ type Props = {
   instructions?: string;
   /** API path to call when running (we’ll wire later), e.g. /api/reports/cash-balance/merge */
   mergeApiPath?: string;
-  /** Optional array of three report IDs for the upload cards */
-  reportIds?: [string, string, string];
 };
 
 export default function ReportScaffold({
@@ -26,7 +24,6 @@ export default function ReportScaffold({
   summary = "",
   instructions = "",
   mergeApiPath = "/api/reports/TBD/merge",
-  reportIds = ["—", "—", "—"],
 }: Props) {
   const [files, setFiles] = React.useState<Record<Key, File | null>>({
     a: null, b: null, c: null,
@@ -148,9 +145,9 @@ export default function ReportScaffold({
 
       {/* Upload cards with blank IDs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <UploadCard title="REPORT ID:" reportId={reportIds[0]} onFileAccepted={(f)=>accept("a",f)} onFileCleared={() => accept("a", null)} slotId="test-upload-a"/>
-        <UploadCard title="REPORT ID:" reportId={reportIds[1]} onFileAccepted={(f)=>accept("b",f)} onFileCleared={() => accept("b", null)} slotId="test-upload-b"/>
-        <UploadCard title="REPORT ID:" reportId={reportIds[2]} onFileAccepted={(f)=>accept("c",f)} onFileCleared={() => accept("c", null)} slotId="test-upload-c"/>
+        <UploadCard onFileAccepted={(f)=>accept("a",f)} onFileCleared={() => accept("a", null)} slotId="test-upload-a"/>
+        <UploadCard onFileAccepted={(f)=>accept("b",f)} onFileCleared={() => accept("b", null)} slotId="test-upload-b"/>
+        <UploadCard onFileAccepted={(f)=>accept("c",f)} onFileCleared={() => accept("c", null)} slotId="test-upload-c"/>
       </div>
 
       {/* Actions */}
@@ -294,6 +291,7 @@ export default function ReportScaffold({
               
               const chartDiv = document.createElement('div');
               chartDiv.id = 'test-donut';
+              chartDiv.style.minHeight = '360px';
               grid.appendChild(chartDiv);
 
               const PROJECT_PALETTE = [

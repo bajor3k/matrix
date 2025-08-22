@@ -99,9 +99,9 @@ export default function ReportsExcelPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <UploadCard reportId="PYFEE" onFileAccepted={(f) => accept("pyfee", f)} onFileCleared={() => accept("pyfee", null)} slotId="3m-cash-a" />
-              <UploadCard reportId="PYCASH" onFileAccepted={(f) => accept("pycash_2", f)} onFileCleared={() => accept("pycash_2", null)} slotId="3m-cash-b" />
-              <UploadCard reportId="PYPI" onFileAccepted={(f) => accept("pypi", f)} onFileCleared={() => accept("pypi", null)} slotId="3m-cash-c" />
+              <UploadCard onFileAccepted={(f) => accept("pyfee", f)} onFileCleared={() => accept("pyfee", null)} slotId="3m-cash-a" />
+              <UploadCard onFileAccepted={(f) => accept("pycash_2", f)} onFileCleared={() => accept("pycash_2", null)} slotId="3m-cash-b" />
+              <UploadCard onFileAccepted={(f) => accept("pypi", f)} onFileCleared={() => accept("pypi", null)} slotId="3m-cash-c" />
             </div>
 
             <div className="flex flex-col items-center gap-3 pt-2">

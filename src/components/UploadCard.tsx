@@ -3,12 +3,10 @@
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { cn } from "@/lib/utils";
-import { Upload as UploadIcon, Trash2 } from "lucide-react";
+import { Upload as UploadIcon } from "lucide-react";
 import * as xlsx from "xlsx";
 
 type UploadCardProps = {
-  title?: string;
-  reportId: string;
   onFileAccepted?: (file: File) => void;
   onFileCleared?: () => void;
   className?: string;
@@ -19,8 +17,6 @@ type UploadCardProps = {
 const SUCCESS_COPY = "File uploaded successfully.";
 
 export default function UploadCard({
-  title,
-  reportId,
   onFileAccepted,
   onFileCleared,
   className,
@@ -94,17 +90,10 @@ export default function UploadCard({
     }
   });
 
-  const displayId = (reportId ?? "").toString().trim();
 
   return (
     <div data-upload-card="true" className={cn("upload-card", className)}>
       <div className="upload-inner">
-        {displayId && displayId !== "—" && (
-            <div className="upload-title">
-              {title} <span className="text-white">{displayId}</span>
-            </div>
-        )}
-
         {!file ? (
           <div
             {...getRootProps()}
@@ -130,7 +119,7 @@ export default function UploadCard({
                 </div>
                  <button
                     type="button"
-                    onClick={() => { setFile(null); resetUI(); }}
+                    onClick={() => { open(); }}
                     className="mt-1 w-fit text-xs underline underline-offset-2 text-white/60 hover:text-white/80 focus:outline-none"
                     >
                     Replace
