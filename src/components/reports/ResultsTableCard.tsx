@@ -1,26 +1,19 @@
 // components/reports/ResultsTableCard.tsx
 import React from "react";
-
-export type TableRow = {
-  ip: string;
-  acct: string;     // account number
-  value: string;    // formatted currency
-  fee: string;      // formatted currency
-  cash: string;     // formatted currency
-  short: boolean;   // status -> red chip if true
-};
+import type { TableRow } from "@/utils/csv";
 
 export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
   return (
     <section
       className="
+        w-full max-w-none               /* ← stretch */
         rounded-2xl border border-white/10
         bg-white dark:bg-[#101010]
-        p-3 md:p-4 mt-6
+        p-3 md:p-4
       "
       aria-label="Report rows"
     >
-      <div className="overflow-auto max-h-[60vh] min-h-[220px]">
+      <div className="overflow-auto max-h-[70vh] min-h-[220px]">
         <table className="w-full text-sm">
           <thead className="text-left border-b border-white/10 sticky top-0 bg-[#101010]">
             <tr className="text-white/70">

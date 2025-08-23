@@ -1,6 +1,4 @@
 // src/components/reports/ReportsDashboard.tsx
-"use client";
-
 import KPIStackCard from "@/components/reports/KPIStackCard";
 import InsightsChatCard from "@/components/reports/InsightsChatCard";
 
@@ -18,9 +16,15 @@ export default function ReportsDashboard({
   onAsk,
 }: Props) {
   return (
-    <div className="grid gap-4 md:gap-6 grid-cols-1 lg:grid-cols-4 items-stretch">
-      <KPIStackCard metrics={metrics} className="lg:col-span-1" />
-      <InsightsChatCard onAsk={onAsk} className="lg:col-span-3 h-full" />
+    <div
+      className="
+        w-full max-w-none               /* ← stretch */
+        grid gap-4 md:gap-6 items-stretch
+        grid-cols-1 lg:grid-cols-12
+      "
+    >
+      <KPIStackCard metrics={metrics} className="lg:col-span-3 h-full" />
+      <InsightsChatCard onAsk={onAsk} className="lg:col-span-9 h-full" />
     </div>
   );
 }

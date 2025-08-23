@@ -583,3 +583,15 @@ html.dark .btn-primary {
   background: #08e28f;
   color: #0b0b0b;
 }
+
+/* tiny icon helper */
+.btn-icon { width: 1rem; height: 1rem; flex-shrink: 0; }
+
+/* Full-bleed for Reports page only */
+#reports-root,
+.reports-container {
+  max-width: none !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
