@@ -21,18 +21,18 @@ export default function ActionsRow({
   onDownloadCsv,
   onToggleDashboard,
 }: Props) {
-  // BEFORE uploads:
-  //   - All neutral pills; labels "normal" (muted)
+  // BEFORE uploads: all neutral + muted
   // AFTER uploads:
-  //   - Run Report => primary (green) + enabled
-  //   - Excel/CSV/Dashboard/Maven => neutral but label "bright" + enabled
+  //   - Run Report => green + enabled
+  //   - Excel/CSV/Dashboard/Maven => neutral, brighter label + enabled
 
   const runVariant        = filesReady ? "primary" : "neutral";
+  const runLabelEmphasis  = filesReady ? "bright" : "normal";  // <— FIX: no bright before uploads
   const runDisabled       = !filesReady;
 
-  const postPillDisabled  = !filesReady;              // enabled after uploads
-  const postPillVariant   = "neutral" as const;       // stays neutral even after uploads
-  const postPillEmphasis  = filesReady ? "bright" : "normal";
+  const postVariant       = "neutral" as const;
+  const postLabelEmphasis = filesReady ? "bright" : "normal";
+  const postDisabled      = !filesReady;
 
 
   return (
@@ -43,50 +43,50 @@ export default function ActionsRow({
         label="Run Report"
         srLabel="Run report"
         variant={runVariant}
-        labelEmphasis="bright"
+        labelEmphasis={runLabelEmphasis}
       />
 
       <ActionPill
         onClick={onDownloadExcel}
-        disabled={postPillDisabled}
+        disabled={postDisabled}
         label="Excel"
         srLabel="Download Excel"
         title="Download Excel"
         icon={<DownloadIcon className="w-4 h-4" />}
-        variant={postPillVariant}
-        labelEmphasis={postPillEmphasis}
+        variant={postVariant}
+        labelEmphasis={postLabelEmphasis}
       />
 
       <ActionPill
         onClick={onDownloadCsv}
-        disabled={postPillDisabled}
+        disabled={postDisabled}
         label="CSV"
         srLabel="Download CSV"
         title="Download CSV"
         icon={<DownloadIcon className="w-4 h-4" />}
-        variant={postPillVariant}
-        labelEmphasis={postPillEmphasis}
+        variant={postVariant}
+        labelEmphasis={postLabelEmphasis}
       />
 
       <ActionPill
         onClick={onToggleDashboard}
-        disabled={postPillDisabled}
+        disabled={postDisabled}
         label={dashboardVisible ? "Hide Dashboard" : "Open Dashboard"}
         srLabel={dashboardVisible ? "Hide dashboard" : "Open dashboard"}
-        variant={postPillVariant}
-        labelEmphasis={postPillEmphasis}
+        variant={postVariant}
+        labelEmphasis={postLabelEmphasis}
       />
 
-      {/* NEW: AskMaven (non-functional for now) */}
+      {/* AskMaven — not functional yet, but lights up exactly like the others */}
       <ActionPill
-        // onClick={...}  // wire later
-        disabled={postPillDisabled}
+        // onClick={() => {}} // hook up later
+        disabled={postDisabled}
         label="Maven"
         srLabel="Maven"
         title="Maven"
         icon={<Brain className="w-4 h-4" />}
-        variant={postPillVariant}
-        labelEmphasis={postPillEmphasis}
+        variant={postVariant}
+        labelEmphasis={postLabelEmphasis}
       />
     </div>
   );
