@@ -1,5 +1,6 @@
+
 // src/components/reports/ReportsDashboard.tsx
-import { KpiRow } from "@/components/reports/KpiRow";
+import KeyMetrics from "@/components/reports/KeyMetrics";
 
 type Props = {
   metrics: {
@@ -9,6 +10,14 @@ type Props = {
     totalRows: number;
   };
 };
+
+function formatCurrency(n: number) {
+    return n.toLocaleString('en-US', { style: "currency", currency: "USD" });
+}
+  
+function formatInt(n: number) {
+    return n.toLocaleString();
+}
 
 export default function ReportsDashboard({
   metrics,
@@ -21,8 +30,8 @@ export default function ReportsDashboard({
         grid-cols-1
       "
     >
-      <KpiRow
-        totalAdvisoryFees={metrics.totalAdvisoryFees}
+      <KeyMetrics
+        totalFees={formatCurrency(metrics.totalAdvisoryFees)}
         totalAccounts={metrics.totalAccounts}
         flaggedShort={metrics.flaggedShort}
         totalRows={metrics.totalRows}
