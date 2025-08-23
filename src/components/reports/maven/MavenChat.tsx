@@ -1,36 +1,8 @@
 // components/reports/maven/MavenChat.tsx
 import * as React from "react";
-import { Brain } from "lucide-react";
+import { Brain, Send } from "lucide-react";
 
 type Msg = { id: string; who: "user" | "bot"; text: string };
-
-function BrainIcon(props: React.SVGProps<SVGSVGElement>) {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" {...props}>
-        <path
-          d="M8.5 4.5a2.5 2.5 0 0 0-2.5 2.5v1a2.5 2.5 0 0 0-2 2.45V12a3 3 0 0 0 3 3h1M15.5 4.5A2.5 2.5 0 0 1 18 7v1a2.5 2.5 0 0 1 2 2.45V12a3 3 0 0 1-3 3h-1"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M8 9.5c0-1.1.9-2 2-2h1v8h-1a2 2 0 0 1-2-2v-4Z"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M16 9.5c0-1.1-.9-2-2-2h-1v8h1a2 2 0 0 0 2-2v-4Z"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
 
 export function MavenChat({ onClose }: { onClose: () => void }) {
   const [msgs, setMsgs] = React.useState<Msg[]>([]);
@@ -58,7 +30,7 @@ export function MavenChat({ onClose }: { onClose: () => void }) {
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 light:border-black/10">
         <div className="flex items-center gap-2">
-          <BrainIcon className="h-5 w-5 text-[#08e28f]" />
+          <Brain className="h-5 w-5 text-[#08e28f]" />
           <span className="font-medium text-white light:text-black">Ask Maven</span>
         </div>
         <button

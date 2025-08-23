@@ -27,23 +27,19 @@ export default function ActionsRow({
   onToggleDashboard,
   onAskMaven,
 }: Props) {
-  // STATE 1: < required uploads -> everything neutral/muted/disabled
-  // STATE 2: all uploads, not run -> Run=green enabled; others neutral/muted/disabled
-  // STATE 3: run success -> Run=green; others enabled + bright label (pill stays neutral)
+  const runVariant = filesReady ? "primary" : "neutral";
+  const runLabelEmphasis = filesReady ? "bright" : "normal";
+  const runDisabled = !filesReady || runState === "running";
 
-  const runVariant        = filesReady ? "primary" : "neutral";
-  const runLabelEmphasis  = filesReady ? "bright" : "normal";
-  const runDisabled       = !filesReady || runState === "running";
+  const afterRunSuccess = runState === "success";
 
-  const afterRunSuccess   = runState === "success";
-
-  const postVariant       = "neutral" as const;
+  const postVariant = "neutral" as const;
   const postLabelEmphasis = afterRunSuccess ? "bright" : "normal";
-  const postDisabled      = !afterRunSuccess; // enable ONLY after a successful run
-  
+  const postDisabled = !afterRunSuccess;
+
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-       <ActionPill
+      <ActionPill
         onClick={onRun}
         disabled={runDisabled}
         label="Run Report"
