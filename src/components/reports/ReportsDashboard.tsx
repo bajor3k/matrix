@@ -23,9 +23,9 @@ export default function ReportsDashboard({
   return (
     <div className="min-h-[60vh] bg-background text-foreground">
       <div className="mx-auto max-w-7xl px-4 py-6 space-y-6">
-        <div className="grid gap-4 md:gap-6 grid-cols-1 lg:grid-cols-4">
+        <div className="grid gap-4 md:gap-6 grid-cols-1 lg:grid-cols-4 items-stretch">
             <KPIStackCard metrics={metrics} className="lg:col-span-1" />
-            <InsightsChatCard onAsk={onAsk} className="lg:col-span-3" />
+            <InsightsChatCard onAsk={onAsk} className="lg:col-span-3 h-full" />
         </div>
 
         {/* Table */}
