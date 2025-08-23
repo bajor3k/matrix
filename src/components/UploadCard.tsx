@@ -1,8 +1,8 @@
 "use client";
 
+import { useCallback } from "react";
 import { useDropzone, type FileRejection } from "react-dropzone";
-import React,
-{ useCallback } from "react";
+import React from "react";
 import { Upload, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +12,7 @@ type UploadCardProps = {
   dropzoneText?: string;
   className?: string;
   accept?: string;
+  slot?: number;
 };
 
 export default function UploadCard({
@@ -20,67 +21,69 @@ export default function UploadCard({
   dropzoneText = "Drop file here",
   className,
   accept,
+  slot,
 }: UploadCardProps) {
   const onDrop = useCallback(
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
       if (fileRejections.length > 0) {
         console.warn("File rejected:", fileRejections);
-        // Optionally, show a toast or error message to the user.
       }
       if (acceptedFiles.length > 0) {
-        const acceptedFile = acceptedFiles[0];
-        onFileChange(acceptedFile);
+        onFileChange(acceptedFiles[0]);
       }
     },
     [onFileChange]
   );
+  
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: false,
+    accept: accept ? { 'application/vnd.ms-excel': ['.xls', '.xlsx'], 'text/csv': ['.csv'] } : undefined,
+    noKeyboard: false,
+  });
 
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
     onFileChange(null);
   };
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    multiple: false,
-    accept: accept ? { 'application/vnd.ms-excel': ['.xls', '.xlsx'], 'text/csv': ['.csv'] } : undefined,
-  });
-
+  
   return (
     <div
       {...getRootProps()}
       className={cn(
-        "flex flex-col items-center justify-center text-center gap-2",
-        "rounded-xl border-2 border-dashed",
-        isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-black/30 text-black/90 dark:border-white/40 dark:text-white/90",
-        "px-6 py-5 cursor-pointer transition-colors",
+        "relative flex flex-col items-center justify-center text-center gap-2",
+        "rounded-xl border-2 border-dashed px-6 py-5 cursor-pointer transition-colors",
+        isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-white/40 text-white/90",
         "bg-[#fcfbfb] dark:bg-[#101010]",
         className
       )}
-      role="button"
-      tabIndex={0}
+      aria-label={`Upload file ${slot}`}
     >
       <input {...getInputProps()} />
 
-      {!file ? (
-        <>
-          <Upload className="w-7 h-7 text-[#08e28f] mb-1" />
-          <p className="text-base font-semibold leading-tight">{dropzoneText}</p>
-        </>
-      ) : (
-        <>
+      <div className="absolute top-2 left-0 right-0 flex items-center justify-center">
+        {file ? (
           <button
             type="button"
             onClick={handleRemove}
-            aria-label="Remove file"
-            className="inline-flex items-center justify-center w-9 h-9 rounded-full"
-            title="Remove"
+            aria-label={`Remove file from slot ${slot}`}
+            className="p-1 rounded hover:bg-white/5"
           >
-            <Trash2 className="w-7 h-7 text-[#e31211] hover:opacity-90" />
+            <Trash2 className="w-5 h-5 text-[#e31211]" />
           </button>
-          <p className="text-sm text-black/90 dark:text-white/90 leading-tight">{file.name}</p>
-          <p className="text-sm text-[#08e28f] leading-tight">Success 🙂</p>
-        </>
+        ) : (
+          <Upload className="w-6 h-6 text-[#08e28f]" />
+        )}
+      </div>
+
+      {!file ? (
+        <p className="mt-5 text-base font-semibold leading-tight">
+          {dropzoneText}
+        </p>
+      ) : (
+        <p className="mt-6 text-sm text-[#08e28f] leading-tight">
+          Success <span aria-hidden>🙂</span>
+        </p>
       )}
     </div>
   );
