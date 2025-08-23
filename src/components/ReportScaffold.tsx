@@ -3,7 +3,6 @@
 
 import React from "react";
 import UploadCard from "@/components/UploadCard";
-import { cn } from "@/lib/utils";
 import Script from "next/script";
 import ReportsDashboard from "./reports/ReportsDashboard";
 import type { DonutSlice, Kpi, TableRow } from "./reports/ReportsDashboard.types";
@@ -12,7 +11,7 @@ import { ReportSection } from "./reports/ReportSection";
 import { UploadRow } from "./reports/UploadRow";
 import FullBleed from "./layout/FullBleed";
 import { downloadCSV } from "@/utils/csv";
-import { Download } from "lucide-react";
+import ActionsRow from "./reports/ActionsRow";
 
 type Key = "a" | "b" | "c";
 
@@ -54,7 +53,9 @@ export default function ReportScaffold({
   const [dashboardData, setDashboardData] = React.useState<{ kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null>(null);
   const [showDash, setShowDash] = React.useState(false);
 
-  const allReady = ok.a || ok.b || ok.c;
+  const canRun = ok.a || ok.b || ok.c;
+  const uploadedCount = Object.values(ok).filter(Boolean).length;
+  const hasResults = dashboardData !== null;
 
   React.useEffect(() => {
     const handleCleared = (e: Event) => {
@@ -103,7 +104,7 @@ export default function ReportScaffold({
   }
 
   async function runMergeJSON() {
-    if (!allReady) return;
+    if (!canRun) return;
     setIsRunning(true); setError(null); setShowDash(false); setDashboardData(null);
     try {
       const fd = new FormData();
@@ -123,7 +124,7 @@ export default function ReportScaffold({
   }
 
   async function downloadExcel() {
-    if (!allReady) return;
+    if (!canRun) return;
     const fd = new FormData();
     if (files.a) fd.append("fileA", files.a);
     if (files.b) fd.append("fileB", files.b);
@@ -175,46 +176,15 @@ export default function ReportScaffold({
       </FullBleed>
       
       <FullBleed>
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-          <button
-            onClick={runMergeJSON}
-            disabled={!allReady || isRunning}
-            className={cn(
-              "rounded-full px-5 py-2.5 text-sm font-semibold text-black transition shadow-sm",
-              allReady && !isRunning ? "bg-[#08e28f] hover:opacity-90"
-                                     : "bg-gray-400 dark:bg-gray-700 text-gray-700 dark:text-gray-400 cursor-not-allowed"
-            )}
-          >
-            {isRunning ? "Running…" : "Run Report"}
-          </button>
-
-          <button
-            onClick={downloadExcel}
-            disabled={!dashboardData || isRunning}
-            className="btn-secondary"
-          >
-            <Download className="w-4 h-4" />
-            Download Excel
-          </button>
-
-          <button
-            onClick={() => dashboardData && downloadCSV(dashboardData.tableRows)}
-            disabled={!dashboardData || isRunning}
-            className="btn-secondary"
-            aria-label="Download CSV"
-          >
-            <Download className="w-4 h-4" />
-            Download CSV
-          </button>
-
-          <button
-            onClick={showDash ? handleHideDashboard : handleOpenDashboard}
-            disabled={!dashboardData || isRunning}
-            className="btn-secondary"
-          >
-            {showDash ? "Hide Dashboard" : "Open Dashboard"}
-          </button>
-        </div>
+        <ActionsRow
+          uploadedCount={uploadedCount}
+          canRun={canRun}
+          hasResults={hasResults}
+          tableRows={dashboardData?.tableRows || []}
+          onRun={runMergeJSON}
+          onDownloadExcel={downloadExcel}
+          onOpenDashboard={handleOpenDashboard}
+        />
         {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
       </FullBleed>
 

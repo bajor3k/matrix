@@ -7,12 +7,11 @@ import ReportsDashboard from "@/components/reports/ReportsDashboard";
 import ReportsPageShell from "@/components/reports/ReportsPageShell";
 import { ReportSection } from "@/components/reports/ReportSection";
 import { UploadRow } from "@/components/reports/UploadRow";
-import { cn } from "@/lib/utils";
-import { saveAs } from "file-saver";
 import type { DonutSlice, Kpi, TableRow } from "@/components/reports/ReportsDashboard.types";
 import FullBleed from "@/components/layout/FullBleed";
 import { downloadCSV } from "@/utils/csv";
-import { Download } from "lucide-react";
+import { saveAs } from "file-saver";
+import ActionsRow from "@/components/reports/ActionsRow";
 
 
 type UploadKey = "pyfee" | "pycash_2" | "pypi";
@@ -57,7 +56,9 @@ export default function ReportsExcelPage() {
   const [dashboardData, setDashboardData] = React.useState<{ kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null>(null);
   const [showDash, setShowDash] = React.useState(false);
 
-  const allReady = ok.pyfee && ok.pycash_2 && ok.pypi;
+  const canRun = ok.pyfee && ok.pycash_2 && ok.pypi;
+  const uploadedCount = Object.values(ok).filter(Boolean).length;
+  const hasResults = dashboardData !== null;
 
   function accept(key: UploadKey, f: File | null) {
     setFiles((s) => ({ ...s, [key]: f }));
@@ -96,7 +97,7 @@ export default function ReportsExcelPage() {
 
 
   async function runMergeJSON() {
-    if (!allReady) return;
+    if (!canRun) return;
     setIsRunning(true);
     setError(null);
     setShowDash(false);
@@ -118,7 +119,7 @@ export default function ReportsExcelPage() {
   }
 
   async function downloadExcel() {
-    if (!allReady) return;
+    if (!canRun) return;
     try {
       const fd = new FormData();
       fd.append("pycash_1", files.pyfee!);
@@ -164,42 +165,15 @@ export default function ReportsExcelPage() {
       </FullBleed>
         
       <FullBleed>
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <button
-              onClick={runMergeJSON}
-              disabled={!allReady || isRunning}
-              className={cn(
-                  "rounded-full px-5 py-2.5 text-sm font-semibold text-black transition shadow-sm",
-                  allReady && !isRunning ? "bg-[#08e28f] hover:opacity-90"
-                                         : "bg-gray-400 dark:bg-gray-700 text-gray-700 dark:text-gray-400 cursor-not-allowed"
-              )}
-            >
-              {isRunning ? "Running…" : "Run 3M Cash Report"}
-            </button>
-            <button
-                onClick={downloadExcel}
-                disabled={!dashboardData || isRunning}
-                className="btn-secondary"
-            >
-              <Download className="w-4 h-4" />
-              Download Excel
-            </button>
-            <button
-                onClick={() => dashboardData && downloadCSV(dashboardData.tableRows)}
-                disabled={!dashboardData || isRunning}
-                className="btn-secondary"
-            >
-              <Download className="w-4 h-4" />
-              Download CSV
-            </button>
-            <button
-                onClick={() => setShowDash(v => !v)}
-                disabled={!dashboardData || isRunning}
-                className="btn-secondary"
-            >
-                {showDash ? "Hide Dashboard" : "Open Dashboard"}
-            </button>
-        </div>
+        <ActionsRow
+            uploadedCount={uploadedCount}
+            canRun={canRun}
+            hasResults={hasResults}
+            tableRows={dashboardData?.tableRows || []}
+            onRun={runMergeJSON}
+            onDownloadExcel={downloadExcel}
+            onOpenDashboard={handleOpenDashboard}
+        />
         {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
       </FullBleed>
 
