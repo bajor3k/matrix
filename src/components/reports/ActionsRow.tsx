@@ -1,7 +1,7 @@
 // components/reports/ActionsRow.tsx
 "use client";
 
-import { Download as DownloadIcon } from "lucide-react";
+import { Download as DownloadIcon, Brain } from "lucide-react";
 import { downloadCSV } from "@/utils/csv";
 import type { TableRow } from "@/utils/csv";
 import { ActionPill } from "@/components/ui/ActionPill";
@@ -63,6 +63,15 @@ export default function ActionsRow({
         disabled={!canDownload}
         label={dashboardVisible ? "Hide Dashboard" : "Open Dashboard"}
         srLabel={dashboardVisible ? "Hide dashboard" : "Open dashboard"}
+      />
+
+      {/* NEW: Maven (non-functional for now) */}
+      <ActionPill
+        disabled
+        label="Maven"
+        srLabel="Maven (coming soon)"
+        title="Maven (coming soon)"
+        icon={<Brain className="w-4 h-4" />}
       />
     </div>
   );
