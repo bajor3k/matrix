@@ -10,6 +10,7 @@ import { UploadRow } from "@/components/reports/UploadRow";
 import { cn } from "@/lib/utils";
 import { saveAs } from "file-saver";
 import type { DonutSlice, Kpi, TableRow } from "@/components/reports/ReportsDashboard.types";
+import FullBleed from "@/components/layout/FullBleed";
 
 type UploadKey = "pyfee" | "pycash_2" | "pypi";
 
@@ -135,10 +136,13 @@ export default function ReportsExcelPage() {
 
   return (
     <ReportsPageShell>
+      <FullBleed>
         <ReportSection title="Report Summary">
             <p>{REPORT_SUMMARY}</p>
         </ReportSection>
+      </FullBleed>
 
+      <FullBleed>
         <ReportSection title="Instructions">
             <ol className="list-decimal list-inside space-y-1">
             {INSTRUCTIONS.map((line, i) => (
@@ -146,13 +150,17 @@ export default function ReportsExcelPage() {
             ))}
             </ol>
         </ReportSection>
-
+      </FullBleed>
+      
+      <FullBleed>
         <UploadRow>
             <UploadCard onFileAccepted={(f) => accept("pyfee", f)} onFileCleared={() => accept("pyfee", null)} dropzoneText="Drop PYFEE here" />
             <UploadCard onFileAccepted={(f) => accept("pycash_2", f)} onFileCleared={() => accept("pycash_2", null)} dropzoneText="Drop PYCASH here" />
             <UploadCard onFileAccepted={(f) => accept("pypi", f)} onFileCleared={() => accept("pypi", null)} dropzoneText="Drop PYPI here" />
         </UploadRow>
+      </FullBleed>
         
+      <FullBleed>
         <div className="flex flex-col items-center gap-3 pt-2">
             <button
             onClick={runMergeJSON}
@@ -170,8 +178,8 @@ export default function ReportsExcelPage() {
                 onClick={downloadExcel}
                 disabled={!dashboardData || isRunning}
                 className={cn(
-                "rounded-xl px-4 py-2 text-sm transition border border-[#26272b]",
-                !dashboardData ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed" : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
+                "rounded-xl px-4 py-2 text-sm transition border border-border",
+                !dashboardData ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-card hover:bg-muted"
                 )}
             >
                 Download Excel
@@ -180,8 +188,8 @@ export default function ReportsExcelPage() {
                 onClick={() => setShowDash(v => !v)}
                 disabled={!dashboardData || isRunning}
                 className={cn(
-                "rounded-xl px-4 py-2 text-sm transition border border-[#26272b]",
-                !dashboardData ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed" : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
+                "rounded-xl px-4 py-2 text-sm transition border border-border",
+                !dashboardData ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-card hover:bg-muted"
                 )}
             >
                 {showDash ? "Hide Dashboard" : "Open Dashboard"}
@@ -190,6 +198,7 @@ export default function ReportsExcelPage() {
 
             {error && <div className="text-xs text-rose-400">{error}</div>}
         </div>
+      </FullBleed>
 
         {showDash && dashboardData && (
             <ReportsDashboard {...dashboardData} />

@@ -10,6 +10,7 @@ import type { DonutSlice, Kpi, TableRow } from "./reports/ReportsDashboard.types
 import ReportsPageShell from "./reports/ReportsPageShell";
 import { ReportSection } from "./reports/ReportSection";
 import { UploadRow } from "./reports/UploadRow";
+import FullBleed from "./layout/FullBleed";
 
 type Key = "a" | "b" | "c";
 
@@ -148,63 +149,71 @@ export default function ReportScaffold({
   return (
     <ReportsPageShell>
       {summary && (
-        <ReportSection title="Report Summary">
-            <p>{summary}</p>
-        </ReportSection>
+        <FullBleed>
+          <ReportSection title="Report Summary">
+              <p>{summary}</p>
+          </ReportSection>
+        </FullBleed>
       )}
 
       {instructions && (
-        <ReportSection title="Instructions">
-          <p>{instructions}</p>
-        </ReportSection>
+        <FullBleed>
+          <ReportSection title="Instructions">
+            <p>{instructions}</p>
+          </ReportSection>
+        </FullBleed>
       )}
-
-      <UploadRow>
-        <UploadCard onFileAccepted={(f)=>accept("a",f)} onFileCleared={() => accept("a", null)} dropzoneText="Drop TEST_1 here"/>
-        <UploadCard onFileAccepted={(f)=>accept("b",f)} onFileCleared={() => accept("b", null)} dropzoneText="Drop TEST_2 here"/>
-        <UploadCard onFileAccepted={(f)=>accept("c",f)} onFileCleared={() => accept("c", null)} dropzoneText="Drop TEST_3 here"/>
-      </UploadRow>
-
-      <div className="flex flex-col items-center gap-3 pt-2">
-        <button
-          onClick={runMergeJSON}
-          disabled={!allReady || isRunning}
-          className={cn(
-            "rounded-2xl px-5 py-3 text-sm font-semibold transition shadow-sm",
-            allReady && !isRunning ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md"
-                                   : "bg-[#2f3136] text-zinc-400 cursor-not-allowed"
-          )}
-        >
-          {isRunning ? "Running…" : "Run Report"}
-        </button>
-
-        <div className="flex gap-3">
+      
+      <FullBleed>
+        <UploadRow>
+          <UploadCard onFileAccepted={(f)=>accept("a",f)} onFileCleared={() => accept("a", null)} dropzoneText="Drop TEST_1 here"/>
+          <UploadCard onFileAccepted={(f)=>accept("b",f)} onFileCleared={() => accept("b", null)} dropzoneText="Drop TEST_2 here"/>
+          <UploadCard onFileAccepted={(f)=>accept("c",f)} onFileCleared={() => accept("c", null)} dropzoneText="Drop TEST_3 here"/>
+        </UploadRow>
+      </FullBleed>
+      
+      <FullBleed>
+        <div className="flex flex-col items-center gap-3 pt-2">
           <button
-            onClick={downloadExcel}
-            disabled={!dashboardData || isRunning}
+            onClick={runMergeJSON}
+            disabled={!allReady || isRunning}
             className={cn(
-              "rounded-xl px-4 py-2 text-sm transition border border-[#26272b]",
-              !dashboardData ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed"
-                    : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
+              "rounded-2xl px-5 py-3 text-sm font-semibold transition shadow-sm",
+              allReady && !isRunning ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md"
+                                     : "bg-[#2f3136] text-zinc-400 cursor-not-allowed"
             )}
           >
-            Download Excel
+            {isRunning ? "Running…" : "Run Report"}
           </button>
-          <button
-            onClick={showDash ? handleHideDashboard : handleOpenDashboard}
-            disabled={!dashboardData || isRunning}
-            className={cn(
-              "rounded-xl px-4 py-2 text-sm transition border border-[#26272b]",
-              !dashboardData ? "bg-[#1a1b1f] text-zinc-500 cursor-not-allowed"
-                    : "bg-[#0f0f13] text-zinc-200 hover:bg-[#16171c]"
-            )}
-          >
-            {showDash ? "Hide Dashboard" : "Open Dashboard"}
-          </button>
+
+          <div className="flex gap-3">
+            <button
+              onClick={downloadExcel}
+              disabled={!dashboardData || isRunning}
+              className={cn(
+                "rounded-xl px-4 py-2 text-sm transition border border-border",
+                !dashboardData ? "bg-muted text-muted-foreground cursor-not-allowed"
+                      : "bg-card hover:bg-muted"
+              )}
+            >
+              Download Excel
+            </button>
+            <button
+              onClick={showDash ? handleHideDashboard : handleOpenDashboard}
+              disabled={!dashboardData || isRunning}
+              className={cn(
+                "rounded-xl px-4 py-2 text-sm transition border border-border",
+                !dashboardData ? "bg-muted text-muted-foreground cursor-not-allowed"
+                      : "bg-card hover:bg-muted"
+              )}
+            >
+              {showDash ? "Hide Dashboard" : "Open Dashboard"}
+            </button>
+          </div>
+
+          {error && <div className="text-xs text-rose-400">{error}</div>}
         </div>
-
-        {error && <div className="text-xs text-rose-400">{error}</div>}
-      </div>
+      </FullBleed>
 
       {showDash && dashboardData && (
           <ReportsDashboard {...dashboardData} />
