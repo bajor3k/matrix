@@ -27,7 +27,9 @@ export default function ReportsDashboard({
       "
     >
       <KPIStackCard metrics={metrics} className="lg:col-span-3 h-full" />
-      <InsightsChatCard messages={messages} onAsk={onAsk} className="lg:col-span-9 h-full" />
+      <div className="lg:col-span-9 min-h-0">
+          <InsightsChatCard messages={messages} onAsk={onAsk} />
+      </div>
     </div>
   );
 }

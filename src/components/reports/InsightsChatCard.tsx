@@ -1,4 +1,6 @@
 // components/reports/InsightsChatCard.tsx
+"use client";
+
 import React from "react";
 import { Send } from "lucide-react";
 
@@ -6,26 +8,44 @@ export default function InsightsChatCard({
   className,
   messages = [],
   onAsk,
+  fixedHeightClass = "h-[360px] md:h-[420px]", // ← fixed height, tweak if desired
 }: {
   className?: string;
   messages?: Array<{ role: "user" | "assistant"; content: string }>;
   onAsk?: (q: string) => void;
+  fixedHeightClass?: string;
 }) {
   const [q, setQ] = React.useState("");
+  const scrollRef = React.useRef<HTMLDivElement | null>(null);
+
+  // Auto-scroll to bottom on new messages
+  React.useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [messages.length]);
 
   return (
     <section
       className={[
-        "rounded-2xl border",
-        "bg-white dark:bg-[#101010]",
-        "border-[#e5e7eb] dark:border-white/10",
-        "p-3 md:p-4 flex flex-col",
+        // Fixed height + flex column + clip any excess
+        "rounded-2xl border bg-white dark:bg-[#101010] border-[#e5e7eb] dark:border-white/10",
+        "flex flex-col overflow-hidden",         // do not let the section grow
+        fixedHeightClass,                        // ← fixed height applied here
         className || "",
       ].join(" ")}
       aria-label="Ask about this report"
     >
-      {/* Scrollable message area */}
-      <div className="flex-1 overflow-auto space-y-3 md:space-y-4 pr-1">
+      {/* Scrollable messages */}
+      <div
+        ref={scrollRef}
+        className="
+          flex-1 min-h-0 overflow-y-auto pr-1
+          space-y-3 md:space-y-4
+          overscroll-contain
+          p-3 md:p-4
+        "
+      >
         {messages.length === 0 ? (
           <div className="text-sm md:text-base text-black/60 dark:text-white/60">
             Ask a question about the report (fees, accounts, flagged short, etc.).
@@ -48,13 +68,14 @@ export default function InsightsChatCard({
         )}
       </div>
 
-      {/* Composer */}
+      {/* Composer pinned to bottom */}
       <form
-        className="mt-3 md:mt-4 flex items-center gap-2"
+        className="mt-2 md:mt-3 flex items-center gap-2 p-2 pt-0"
         onSubmit={(e) => {
           e.preventDefault();
-          if (!q.trim()) return;
-          onAsk?.(q.trim());
+          const val = q.trim();
+          if (!val) return;
+          onAsk?.(val);
           setQ("");
         }}
       >
@@ -73,6 +94,7 @@ export default function InsightsChatCard({
         />
         <button
           type="submit"
+          disabled={!q.trim()}
           aria-label="Ask"
           className="
             inline-flex items-center gap-2 rounded-full h-11 md:h-12 px-4
@@ -81,7 +103,6 @@ export default function InsightsChatCard({
             border border-black/10 dark:border-white/10
             disabled:opacity-55 disabled:cursor-not-allowed
           "
-          disabled={!q.trim()}
         >
           <Send className="w-4 h-4" />
           <span className="hidden sm:inline">Ask</span>
