@@ -8,7 +8,7 @@ export default function InsightsChatCard({
   className,
   messages = [],
   onAsk,
-  fixedHeightClass = "h-[360px] md:h-[420px]", // ← fixed height, tweak if desired
+  fixedHeightClass = "h-[360px] md:h-[420px]", // fixed height—scroll inside
 }: {
   className?: string;
   messages?: Array<{ role: "user" | "assistant"; content: string }>;
@@ -18,7 +18,7 @@ export default function InsightsChatCard({
   const [q, setQ] = React.useState("");
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
 
-  // Auto-scroll to bottom on new messages
+  // Always scroll to latest message
   React.useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -28,49 +28,54 @@ export default function InsightsChatCard({
   return (
     <section
       className={[
-        // Fixed height + flex column + clip any excess
-        "rounded-2xl border bg-white dark:bg-[#101010] border-[#e5e7eb] dark:border-white/10",
-        "flex flex-col overflow-hidden",         // do not let the section grow
-        fixedHeightClass,                        // ← fixed height applied here
+        "rounded-2xl border bg-white dark:bg-[#101010]",
+        "border-[#e5e7eb] dark:border-white/10",
+        "flex flex-col overflow-hidden",
+        fixedHeightClass,
         className || "",
       ].join(" ")}
       aria-label="Ask about this report"
     >
-      {/* Scrollable messages */}
+      {/* Scrollable conversation */}
       <div
         ref={scrollRef}
-        className="
-          flex-1 min-h-0 overflow-y-auto pr-1
-          space-y-3 md:space-y-4
-          overscroll-contain
-          p-3 md:p-4
-        "
+        className="flex-1 min-h-0 overflow-y-auto space-y-3 md:space-y-4 px-2 pt-2 pr-3"
       >
         {messages.length === 0 ? (
-          <div className="text-sm md:text-base text-black/60 dark:text-white/60">
+          <div className="text-sm md:text-base text-black/60 dark:text-white/60 px-1">
             Ask a question about the report (fees, accounts, flagged short, etc.).
           </div>
         ) : (
           messages.map((m, i) => (
             <div
               key={i}
-              className={[
-                "max-w-[90%] md:max-w-[80%] rounded-xl px-3.5 py-2.5",
+              className={
+                // row spans full width; text aligns to its side
                 m.role === "user"
-                  ? "ml-auto bg-[#f2f3f5] text-[#111827] dark:bg-[#171717] dark:text-white"
-                  : "mr-auto bg-[#fcfbfb] text-[#111827] dark:bg-[#121212] dark:text-white",
-                "border border-[#e5e7eb] dark:border-white/10",
-              ].join(" ")}
+                  ? "w-full text-right"
+                  : "w-full text-left"
+              }
             >
-              <p className="whitespace-pre-wrap leading-relaxed">{m.content}</p>
+              <p
+                className={[
+                  "inline-block max-w-[95%] md:max-w-[80%]",
+                  "whitespace-pre-wrap break-words leading-relaxed",
+                  // theme-aware text colors, no bubble/background
+                  m.role === "user"
+                    ? "text-[15px] md:text-base font-medium text-black dark:text-white"
+                    : "text-[15px] md:text-base text-black/80 dark:text-white/80",
+                ].join(" ")}
+              >
+                {m.content}
+              </p>
             </div>
           ))
         )}
       </div>
 
-      {/* Composer pinned to bottom */}
+      {/* Composer pinned bottom */}
       <form
-        className="mt-2 md:mt-3 flex items-center gap-2 p-2 pt-0"
+        className="mt-2 md:mt-3 flex items-center gap-2 px-2 pb-2"
         onSubmit={(e) => {
           e.preventDefault();
           const val = q.trim();
