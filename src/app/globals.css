@@ -538,5 +538,7 @@ html.dark .report-copy {
   transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
 }
 .btn-secondary:hover { 
-  background: theme('colors.muted'); 
+  background: theme('colors.muted.DEFAULT'); 
 }
+
+    
