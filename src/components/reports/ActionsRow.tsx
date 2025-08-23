@@ -14,6 +14,7 @@ type Props = {
   onDownloadExcel: () => void;
   onDownloadCsv: () => void;
   onToggleDashboard: () => void;
+  onAskMaven: () => void;
 };
 
 export default function ActionsRow({
@@ -24,9 +25,10 @@ export default function ActionsRow({
   onDownloadExcel,
   onDownloadCsv,
   onToggleDashboard,
+  onAskMaven,
 }: Props) {
-  // STATE 1: < 3 uploads -> everything neutral/muted/disabled
-  // STATE 2: 3 uploads, not run -> Run=green enabled; others neutral/muted/disabled
+  // STATE 1: < required uploads -> everything neutral/muted/disabled
+  // STATE 2: all uploads, not run -> Run=green enabled; others neutral/muted/disabled
   // STATE 3: run success -> Run=green; others enabled + bright label (pill stays neutral)
 
   const runVariant        = filesReady ? "primary" : "neutral";
@@ -82,11 +84,11 @@ export default function ActionsRow({
       />
 
       <ActionPill
-        // onClick={() => {}} // wire later
+        onClick={onAskMaven}
         disabled={postDisabled}
         label="Maven"
-        srLabel="Maven"
-        title="Maven"
+        srLabel="Ask Maven"
+        title="Ask Maven"
         icon={<Brain className="w-4 h-4" />}
         variant={postVariant}
         labelEmphasis={postLabelEmphasis}

@@ -13,6 +13,7 @@ import ActionsRow from "./reports/ActionsRow";
 import { saveAs } from "file-saver";
 import ResultsTableCard from "./reports/ResultsTableCard";
 import { downloadCSV } from "@/utils/csv";
+import { MavenLayout } from "./reports/maven/MavenLayout";
 
 type Props = {
   reportName: string;
@@ -54,6 +55,7 @@ export default function ReportScaffold({
   const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
   const [error, setError] = React.useState<string | null>(null);
   const [dashboardVisible, setDashboardVisible] = React.useState(false);
+  const [isMavenOpen, setIsMavenOpen] = React.useState(false);
 
   const [metrics, setMetrics] = React.useState<DashboardMetrics>({
       totalAdvisoryFees: 0,
@@ -64,6 +66,15 @@ export default function ReportScaffold({
   const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
 
   const filesReady = files.slice(0, requiredFileCount).every(Boolean);
+  const canOpenMaven = runState === 'success';
+
+  React.useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMavenOpen(false);
+    };
+    window.addEventListener("keydown", onEsc);
+    return () => window.removeEventListener("keydown", onEsc);
+  }, []);
 
   const handleFileChange = (index: number) => (file: File | null) => {
     setFiles(prevFiles => {
@@ -155,47 +166,59 @@ export default function ReportScaffold({
         setError(e?.message || "Failed to download Excel file.");
     }
   }
+
+  const openMaven = () => {
+    if (!canOpenMaven) return;
+    setIsMavenOpen(true);
+  };
   
   return (
     <ReportsPageShell>
-      <FullBleed>
-        <HelpHeader summary={summary} instructions={instructions} />
-      </FullBleed>
-      
-      <FullBleed>
-        <UploadRow>
-          {Array.from({ length: requiredFileCount }).map((_, index) => (
-            <UploadCard
-              key={index}
-              file={files[index]}
-              onFileChange={handleFileChange(index)}
-              dropzoneText={`Drop File ${index + 1} here`}
-            />
-          ))}
-        </UploadRow>
-      </FullBleed>
-      
-      <FullBleed>
-        <ActionsRow
-          filesReady={filesReady}
-          runState={runState}
-          dashboardVisible={dashboardVisible}
-          onRun={runReport}
-          onDownloadExcel={downloadExcel}
-          onDownloadCsv={() => downloadCSV(tableRows)}
-          onToggleDashboard={() => setDashboardVisible(v => !v)}
-        />
-        {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
-        {runState === 'running' && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
-      </FullBleed>
-
-      {dashboardVisible && runState === 'success' && (
+      {!isMavenOpen ? (
         <>
-          <ReportsDashboard 
-              metrics={metrics}
-          />
-          <ResultsTableCard rows={tableRows} />
+          <FullBleed>
+            <HelpHeader summary={summary} instructions={instructions} />
+          </FullBleed>
+          
+          <FullBleed>
+            <UploadRow>
+              {Array.from({ length: requiredFileCount }).map((_, index) => (
+                <UploadCard
+                  key={index}
+                  file={files[index]}
+                  onFileChange={handleFileChange(index)}
+                  dropzoneText={`Drop File ${index + 1} here`}
+                />
+              ))}
+            </UploadRow>
+          </FullBleed>
+          
+          <FullBleed>
+            <ActionsRow
+              filesReady={filesReady}
+              runState={runState}
+              dashboardVisible={dashboardVisible}
+              onRun={runReport}
+              onDownloadExcel={downloadExcel}
+              onDownloadCsv={() => downloadCSV(tableRows)}
+              onToggleDashboard={() => setDashboardVisible(v => !v)}
+              onAskMaven={openMaven}
+            />
+            {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
+            {runState === 'running' && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
+          </FullBleed>
+
+          {dashboardVisible && runState === 'success' && (
+            <>
+              <ReportsDashboard 
+                  metrics={metrics}
+              />
+              <ResultsTableCard rows={tableRows} />
+            </>
+          )}
         </>
+      ) : (
+         <MavenLayout rows={tableRows} onClose={() => setIsMavenOpen(false)} />
       )}
     </ReportsPageShell>
   );

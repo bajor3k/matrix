@@ -13,6 +13,7 @@ import ActionsRow from "@/components/reports/ActionsRow";
 import UploadCard from "@/components/UploadCard";
 import ResultsTableCard from "@/components/reports/ResultsTableCard";
 import { downloadCSV } from "@/utils/csv";
+import { MavenLayout } from "@/components/reports/maven/MavenLayout";
 
 
 const REPORT_SUMMARY =
@@ -52,6 +53,7 @@ export default function ReportsExcelPage() {
   const [error, setError] = React.useState<string | null>(null);
   const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
   const [dashboardVisible, setDashboardVisible] = React.useState(false);
+  const [isMavenOpen, setIsMavenOpen] = React.useState(false);
 
   const [metrics, setMetrics] = React.useState<DashboardMetrics>({
       totalAdvisoryFees: 0,
@@ -62,6 +64,16 @@ export default function ReportsExcelPage() {
   const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
 
   const filesReady = files.filter(Boolean).length === 3;
+  const canOpenMaven = runState === "success";
+
+  React.useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMavenOpen(false);
+    };
+    window.addEventListener("keydown", onEsc);
+    return () => window.removeEventListener("keydown", onEsc);
+  }, []);
+
 
   const handleFileChange = (index: number) => (file: File | null) => {
     setFiles(prevFiles => {
@@ -82,9 +94,13 @@ export default function ReportsExcelPage() {
     }
 
     let totalFees = 0;
+    const accountNumbers = new Set<string>();
     const rows: TableRow[] = data.map(r => {
       const advisoryFee = num(r['Advisory Fee']) ?? 0;
       totalFees += advisoryFee;
+      if (r['Account']) {
+        accountNumbers.add(r['Account']);
+      }
       return {
           ip: r['IP'] ?? '',
           acct: r['Account'] ?? '',
@@ -97,7 +113,7 @@ export default function ReportsExcelPage() {
 
     const newMetrics = {
         totalAdvisoryFees: totalFees,
-        totalAccounts: rows.length,
+        totalAccounts: accountNumbers.size,
         flaggedShort: rows.filter(r => r.short).length,
         totalRows: rows.length,
     };
@@ -144,41 +160,53 @@ export default function ReportsExcelPage() {
     }
   }
 
+  const openMaven = () => {
+    if (!canOpenMaven) return;
+    setIsMavenOpen(true);
+  };
+
   return (
     <ReportsPageShell>
-      <FullBleed>
-        <HelpHeader summary={REPORT_SUMMARY} instructions={INSTRUCTIONS} />
-      </FullBleed>
-      
-      <FullBleed>
-        <UploadRow>
-          <UploadCard file={files[0]} onFileChange={handleFileChange(0)} dropzoneText="Drop PYFEE here" />
-          <UploadCard file={files[1]} onFileChange={handleFileChange(1)} dropzoneText="Drop PYCASH here" />
-          <UploadCard file={files[2]} onFileChange={handleFileChange(2)} dropzoneText="Drop PYPI here" />
-        </UploadRow>
-      </FullBleed>
-        
-      <FullBleed>
-        <ActionsRow
-            filesReady={filesReady}
-            runState={runState}
-            dashboardVisible={dashboardVisible}
-            onRun={runReport}
-            onDownloadExcel={downloadExcel}
-            onDownloadCsv={() => downloadCSV(tableRows)}
-            onToggleDashboard={() => setDashboardVisible(v => !v)}
-        />
-        {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
-         {runState === "running" && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
-      </FullBleed>
-
-      {dashboardVisible && runState === 'success' && (
+      {!isMavenOpen ? (
         <>
-          <ReportsDashboard 
-              metrics={metrics}
-          />
-          <ResultsTableCard rows={tableRows} />
+          <FullBleed>
+            <HelpHeader summary={REPORT_SUMMARY} instructions={INSTRUCTIONS} />
+          </FullBleed>
+          
+          <FullBleed>
+            <UploadRow>
+              <UploadCard file={files[0]} onFileChange={handleFileChange(0)} dropzoneText="Drop PYFEE here" />
+              <UploadCard file={files[1]} onFileChange={handleFileChange(1)} dropzoneText="Drop PYCASH here" />
+              <UploadCard file={files[2]} onFileChange={handleFileChange(2)} dropzoneText="Drop PYPI here" />
+            </UploadRow>
+          </FullBleed>
+            
+          <FullBleed>
+            <ActionsRow
+                filesReady={filesReady}
+                runState={runState}
+                dashboardVisible={dashboardVisible}
+                onRun={runReport}
+                onDownloadExcel={downloadExcel}
+                onDownloadCsv={() => downloadCSV(tableRows)}
+                onToggleDashboard={() => setDashboardVisible(v => !v)}
+                onAskMaven={openMaven}
+            />
+            {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
+             {runState === "running" && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
+          </FullBleed>
+
+          {dashboardVisible && runState === 'success' && (
+            <>
+              <ReportsDashboard 
+                  metrics={metrics}
+              />
+              <ResultsTableCard rows={tableRows} />
+            </>
+          )}
         </>
+      ) : (
+        <MavenLayout rows={tableRows} onClose={() => setIsMavenOpen(false)} />
       )}
     </ReportsPageShell>
   );
