@@ -98,12 +98,12 @@ export default function Sidebar() {
           onClick={toggleSidebar}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           className="inline-flex items-center justify-center w-8 h-8 rounded-md
-                     hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/20"
+                     hover:bg-black/5 dark:hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-black/15 dark:focus:ring-white/20"
         >
           {collapsed ? (
-            <ChevronRight className="w-4 h-4 text-white/70" />
+            <ChevronRight className="w-4 h-4 text-black/60 dark:text-white/70" strokeWidth={2.25} />
           ) : (
-            <ChevronLeft className="w-4 h-4 text-white/70" />
+            <ChevronLeft className="w-4 h-4 text-black/60 dark:text-white/70" strokeWidth={2.25} />
           )}
         </button>
       </div>
