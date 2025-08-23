@@ -5,11 +5,10 @@ import React from "react";
 import UploadCard from "@/components/UploadCard";
 import ReportsDashboard from "@/components/reports/ReportsDashboard";
 import ReportsPageShell from "@/components/reports/ReportsPageShell";
-import { ReportSection } from "@/components/reports/ReportSection";
+import HelpHeader, { helpHeaderAutoDismiss } from "@/components/reports/HelpHeader";
 import { UploadRow } from "@/components/reports/UploadRow";
 import type { DonutSlice, Kpi, TableRow } from "@/components/reports/ReportsDashboard.types";
 import FullBleed from "@/components/layout/FullBleed";
-import { downloadCSV } from "@/utils/csv";
 import { saveAs } from "file-saver";
 import ActionsRow from "@/components/reports/ActionsRow";
 
@@ -19,11 +18,13 @@ type UploadKey = "pyfee" | "pycash_2" | "pypi";
 const REPORT_SUMMARY =
   "This report analyzes all managed client accounts and isolates advisor-directed accounts to determine how much cash should be reserved to cover advisory fees for the next 3 and 6 months. It takes into account periodic instructions for each account, and lets you know the available cash and MMF for each account.";
 
-const INSTRUCTIONS: string[] = [
-  "In Report Center, run Report ID: PYFEE. Download it and upload to the first box.",
-  "In Report Center, run Report ID PYCASH. Download it and upload to the second box.",
-  "In Report Center, run Report ID PYPI. Download it and upload to the third box.",
-];
+const INSTRUCTIONS = (
+    <ol className="list-decimal pl-5 space-y-1">
+        <li>In Report Center, run Report ID: PYFEE. Download it and upload to the first box.</li>
+        <li>In Report Center, run Report ID PYCASH. Download it and upload to the second box.</li>
+        <li>In Report Center, run Report ID PYPI. Download it and upload to the third box.</li>
+    </ol>
+);
 
 // Helper to safely format numbers as currency
 const money = (n: any, decimals = 2): string => {
@@ -61,6 +62,9 @@ export default function ReportsExcelPage() {
   const hasResults = dashboardData !== null;
 
   function accept(key: UploadKey, f: File | null) {
+     if (Object.values(files).filter(Boolean).length === 0 && f) {
+       helpHeaderAutoDismiss();
+    }
     setFiles((s) => ({ ...s, [key]: f }));
     setOk((s) => ({ ...s, [key]: !!f }));
   }
@@ -141,19 +145,7 @@ export default function ReportsExcelPage() {
   return (
     <ReportsPageShell>
       <FullBleed>
-        <ReportSection title="Report Summary">
-            <p>{REPORT_SUMMARY}</p>
-        </ReportSection>
-      </FullBleed>
-
-      <FullBleed>
-        <ReportSection title="Instructions">
-            <ol className="list-decimal list-inside space-y-1">
-            {INSTRUCTIONS.map((line, i) => (
-                <li key={i}>{line}</li>
-            ))}
-            </ol>
-        </ReportSection>
+        <HelpHeader summary={REPORT_SUMMARY} instructions={INSTRUCTIONS} />
       </FullBleed>
       
       <FullBleed>

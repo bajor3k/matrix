@@ -3,11 +3,10 @@
 
 import React from "react";
 import UploadCard from "@/components/UploadCard";
-import Script from "next/script";
 import ReportsDashboard from "./reports/ReportsDashboard";
 import type { DonutSlice, Kpi, TableRow } from "./reports/ReportsDashboard.types";
 import ReportsPageShell from "./reports/ReportsPageShell";
-import { ReportSection } from "./reports/ReportSection";
+import HelpHeader, { helpHeaderAutoDismiss } from "./reports/HelpHeader";
 import { UploadRow } from "./reports/UploadRow";
 import FullBleed from "./layout/FullBleed";
 import { downloadCSV } from "@/utils/csv";
@@ -17,8 +16,8 @@ type Key = "a" | "b" | "c";
 
 type Props = {
   reportName: string;
-  summary?: string;
-  instructions?: string;
+  summary?: string | React.ReactNode;
+  instructions?: React.ReactNode;
   mergeApiPath?: string;
 };
 
@@ -70,6 +69,9 @@ export default function ReportScaffold({
   }, []);
 
   function accept(key: Key, f: File) {
+    if (Object.values(files).filter(Boolean).length === 0) {
+       helpHeaderAutoDismiss();
+    }
     setFiles((s) => ({ ...s, [key]: f }));
     setOk((s) => ({ ...s, [key]: true }));
   }
@@ -151,27 +153,15 @@ export default function ReportScaffold({
 
   return (
     <ReportsPageShell>
-      {summary && (
-        <FullBleed>
-          <ReportSection title="Report Summary">
-              <p>{summary}</p>
-          </ReportSection>
-        </FullBleed>
-      )}
-
-      {instructions && (
-        <FullBleed>
-          <ReportSection title="Instructions">
-            <p>{instructions}</p>
-          </ReportSection>
-        </FullBleed>
-      )}
+      <FullBleed>
+        <HelpHeader summary={summary} instructions={instructions} />
+      </FullBleed>
       
       <FullBleed>
         <UploadRow>
-          <UploadCard slotId="upload-a" onFileAccepted={(f)=>accept("a",f)} onFileCleared={() => accept("a", null)} dropzoneText="Drop File 1 here"/>
-          <UploadCard slotId="upload-b" onFileAccepted={(f)=>accept("b",f)} onFileCleared={() => accept("b", null)} dropzoneText="Drop File 2 here"/>
-          <UploadCard slotId="upload-c" onFileAccepted={(f)=>accept("c",f)} onFileCleared={() => accept("c", null)} dropzoneText="Drop File 3 here"/>
+          <UploadCard slotId="upload-a" onFileAccepted={(f)=>accept("a",f)} dropzoneText="Drop File 1 here"/>
+          <UploadCard slotId="upload-b" onFileAccepted={(f)=>accept("b",f)} dropzoneText="Drop File 2 here"/>
+          <UploadCard slotId="upload-c" onFileAccepted={(f)=>accept("c",f)} dropzoneText="Drop File 3 here"/>
         </UploadRow>
       </FullBleed>
       

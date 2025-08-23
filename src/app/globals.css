@@ -131,6 +131,8 @@
     --accent: #08e28f;      /* standardized green */
     --destructive-red: #e31211;
     --success-green: #08e28f;
+    --surface-light: #fcfbfb; /* light surface for cards like help */
+    --surface-dark:  #101010; /* dark surface for cards like help */
   }
 
   html {
@@ -445,13 +447,8 @@
 }
 
 /* Normalize section spacing if markdown/typography components add extra margins */
-[class*="ReportSection"] h1,
-[class*="ReportSection"] h2,
-[class*="ReportSection"] p,
-[class*="ReportSection"] ol,
-[class*="ReportSection"] ul {
-  margin-top: 0.25rem !important;
-  margin-bottom: 0.25rem !important;
+.report-heading + .report-copy {
+  margin-top: 0.375rem;
 }
 
 /* Ensure page content doesn’t inherit odd outer padding from ancestors */
@@ -488,10 +485,6 @@ html.dark .recharts-legend-wrapper {
   line-height: 1.25rem;     /* 20px */
   font-weight: 600;         /* semibold */
   letter-spacing: 0.01em;   /* slight tracking like nav */
-  color: #111827;           /* gray-900 */
-}
-html.dark .report-heading {
-  color: rgba(255, 255, 255, 0.9);
 }
 @media (min-width: 768px) {
   .report-heading {
@@ -505,10 +498,7 @@ html.dark .report-heading {
   /* just under the heading; body tone matches nav dropdown text */
   font-size: 0.8125rem;     /* ~13px on mobile */
   line-height: 1.375rem;    /* ~22px for readability */
-  color: #374151;           /* gray-700 */
-}
-html.dark .report-copy {
-  color: rgba(255, 255, 255, 0.75);
+  opacity: 0.9;
 }
 @media (min-width: 768px) {
   .report-copy {
@@ -517,12 +507,6 @@ html.dark .report-copy {
   }
 }
 
-/* Tighten spacing below headings for compact look */
-.report-heading + .report-copy {
-  margin-top: 0.375rem;     /* ~6px */
-}
-
-/* Base pill button style (secondary colorway used by all four buttons) */
 .btn-secondary {
   position: relative; /* needed for strike overlay */
   display: inline-flex;
@@ -537,23 +521,24 @@ html.dark .report-copy {
   font-weight: 600;
   transition: background 120ms ease, color 120ms ease, border-color 120ms ease, opacity 120ms ease;
 }
-.btn-secondary:hover { background: rgba(0,0,0,0.14); }
-
+.btn-secondary:hover {
+  background: rgba(0,0,0,0.14);
+}
 html.dark .btn-secondary {
   border-color: rgba(255,255,255,0.12);
   background: rgba(255,255,255,0.06);
   color: rgba(255,255,255,0.92);
 }
-html.dark .btn-secondary:hover { background: rgba(255,255,255,0.10); }
+html.dark .btn-secondary:hover {
+  background: rgba(255,255,255,0.1);
+}
 
-/* Disabled look (shared) */
 .btn-disabled,
 .btn-secondary[disabled] {
   opacity: 0.55;
   cursor: not-allowed;
 }
 
-/* Red strike on hover (only when disabled) */
 .btn-disabled:hover::after,
 .btn-secondary[disabled]:hover::after {
   content: "";
@@ -562,16 +547,19 @@ html.dark .btn-secondary:hover { background: rgba(255,255,255,0.10); }
   right: 10%;
   top: 50%;
   height: 2px;
-  background: #e31211;         /* brand red */
+  background: #e31211;
   transform: rotate(-12deg);
   border-radius: 9999px;
   box-shadow: 0 0 0 0.25px #e31211;
 }
 
-/* Optional: small download icon alignment */
 .btn-icon {
   width: 1rem;
   height: 1rem;
   flex-shrink: 0;
 }
+
+/* Remove native triangle for <summary> */
+.details-no-marker summary { list-style: none; }
+.details-no-marker summary::-webkit-details-marker { display: none; }
     
