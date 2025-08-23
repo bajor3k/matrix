@@ -8,12 +8,14 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 import {
   BellRing,
   Construction,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import type { NavItem } from "@/contexts/navigation-context";
 import { useNavigation } from "@/contexts/navigation-context";
 import { navigationData } from "@/lib/navigation-data";
 import { cn } from "@/lib/utils";
-import { useSidebar } from "@/hooks/use-sidebar";
+import { useSidebar } from "@/hooks/use-sidebar.tsx";
 
 const alertsNavItem: NavItem = {
   name: 'Alerts',
@@ -22,13 +24,10 @@ const alertsNavItem: NavItem = {
   hasNewAlerts: true,
 };
 
-interface SidebarProps {
-    collapsed: boolean;
-}
-
-export default function Sidebar({ collapsed }: SidebarProps) {
+export default function Sidebar() {
   const currentPathname = usePathname();
   const { activeSection } = useNavigation();
+  const { collapsed, toggleSidebar } = useSidebar();
 
   const currentNavItems = navigationData[activeSection] || [];
 
@@ -93,6 +92,22 @@ export default function Sidebar({ collapsed }: SidebarProps) {
         "h-full bg-background text-sidebar-foreground flex flex-col"
       )}
     >
+      <div className="p-2 flex items-center" style={{ justifyContent: collapsed ? 'center' : 'flex-end' }}>
+        <button
+          type="button"
+          onClick={toggleSidebar}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className="inline-flex items-center justify-center w-8 h-8 rounded-md
+                     hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/20"
+        >
+          {collapsed ? (
+            <ChevronRight className="w-4 h-4 text-white/70" />
+          ) : (
+            <ChevronLeft className="w-4 h-4 text-white/70" />
+          )}
+        </button>
+      </div>
+
       <nav className={cn("flex-1 space-y-2 px-2 py-4 overflow-y-auto no-visual-scrollbar")}>
         {currentNavItems.length > 0 ? (
            currentNavItems.map((item, itemIndex) => renderNavItem(item, itemIndex))

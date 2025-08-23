@@ -8,17 +8,11 @@ import { toolbarSections } from '@/lib/navigation-data';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 import { ThemeToggle } from './theme-toggle';
-import { Brain, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Brain } from 'lucide-react';
 import FullscreenToggle from './chrome/FullscreenToggle';
-import { useSidebar } from '@/hooks/use-sidebar';
 
-interface TopToolbarProps {
-  onToggleSidebar: () => void;
-}
-
-export function TopToolbar({ onToggleSidebar }: TopToolbarProps) {
+export function TopToolbar() {
   const { activeSection, setActiveSection } = useNavigation();
-  const { collapsed } = useSidebar();
 
   return (
     <header className="h-[56px] flex items-center justify-between px-3">
@@ -30,18 +24,6 @@ export function TopToolbar({ onToggleSidebar }: TopToolbarProps) {
         >
             <Brain className="w-5 h-5 text-gray-600 dark:text-white/70" />
         </Link>
-        <button
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          onClick={onToggleSidebar}
-          className="inline-flex items-center justify-center w-8 h-8 rounded-md
-                     hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/20"
-        >
-          {collapsed ? (
-            <ChevronRight className="w-4 h-4 text-white/70" />
-          ) : (
-            <ChevronLeft className="w-4 h-4 text-white/70" />
-          )}
-        </button>
         <nav className="flex items-center space-x-1">
           {toolbarSections.map((section) => (
             <Button

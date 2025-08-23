@@ -1,10 +1,9 @@
 
 "use client";
-import React, { useEffect, useState, useCallback, createContext, useContext } from "react";
+import { useEffect, useState, useCallback, createContext, useContext } from "react";
 import { useIsMobile } from "./use-mobile";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:collapsed";
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
 type SidebarContextType = {
@@ -21,23 +20,19 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    if (isMobile) {
-        setCollapsed(true);
-        return;
-    }
     const savedState = localStorage.getItem(SIDEBAR_COOKIE_NAME);
-    setCollapsed(savedState === '1');
+    // On mobile, always start collapsed. On desktop, respect saved state or default to not collapsed.
+    const initialCollapsed = isMobile ? true : savedState === '1';
+    setCollapsed(initialCollapsed);
   }, [isMobile]);
 
   const toggleSidebar = useCallback(() => {
-    if (isMobile) {
-        // Mobile sidebar behavior might be different, e.g., an overlay
-        // For now, let's assume we don't change the main collapsed state on mobile
-        return;
-    }
     setCollapsed(prev => {
       const newState = !prev;
-      localStorage.setItem(SIDEBAR_COOKIE_NAME, newState ? '1' : '0');
+      // Only persist state for desktop view
+      if (!isMobile) {
+        localStorage.setItem(SIDEBAR_COOKIE_NAME, newState ? '1' : '0');
+      }
       return newState;
     });
   }, [isMobile]);

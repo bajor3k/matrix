@@ -28,17 +28,10 @@ const robotoMono = Roboto_Mono({
 });
 
 function AppLayout({ children }: { children: React.ReactNode }) {
-  const { collapsed, toggleSidebar } = useSidebar();
-  const isMobile = useIsMobile();
+  const { collapsed } = useSidebar();
   const pathname = usePathname();
   const isLandingPage = pathname === '/';
   const isReportPage = pathname.startsWith('/reports');
-
-  React.useEffect(() => {
-    if (isMobile) {
-      // Logic to handle mobile state if needed, though useSidebar might handle it
-    }
-  }, [isMobile]);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -68,13 +61,13 @@ function AppLayout({ children }: { children: React.ReactNode }) {
                 ) : (
                   <div className="grid min-h-screen grid-rows-[56px,1fr] grid-cols-[auto,1fr] bg-background text-foreground">
                     <header className="row-[1] col-[1/3] z-50 sticky top-0 bg-background/95 border-b border-white/10 backdrop-blur">
-                        <TopToolbar onToggleSidebar={toggleSidebar} />
+                        <TopToolbar />
                     </header>
                     <aside className={cn(
-                        "row-[2] col-[1] border-r border-white/10 transition-all duration-300",
+                        "row-[2] col-[1] border-r border-white/10 transition-all duration-200",
                         collapsed ? "w-16" : "w-64"
                     )}>
-                        <Sidebar collapsed={collapsed} />
+                        <Sidebar />
                     </aside>
                     <main className="row-[2] col-[2] overflow-y-auto no-visual-scrollbar">
                         {children}
