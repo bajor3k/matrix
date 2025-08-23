@@ -51,7 +51,7 @@ export default function ReportScaffold({
   requiredFileCount = 1,
 }: Props) {
   const [files, setFiles] = React.useState<(File | null)[]>([null, null, null]);
-  const [reportStatus, setReportStatus] = React.useState<"idle" | "running" | "success" | "error">("idle");
+  const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
   const [error, setError] = React.useState<string | null>(null);
   const [dashboardVisible, setDashboardVisible] = React.useState(false);
   const [chatMessages, setChatMessages] = React.useState<Array<{ role: 'user' | 'assistant'; content: string }>>([
@@ -119,7 +119,7 @@ export default function ReportScaffold({
 
   async function runReport() {
     if (!filesReady) return;
-    setReportStatus("running"); 
+    setRunState("running"); 
     setError(null); 
 
     try {
@@ -129,19 +129,22 @@ export default function ReportScaffold({
       if (files[2]) fd.append("fileC", files[2]);
       
       const res = await fetch(`${mergeApiPath}?format=json`, { method: "POST", body: fd });
-      if (!res.ok) throw new Error(await res.text());
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "An unknown error occurred.");
+      }
       const rows = await res.json();
       
       processApiData(rows);
-      setReportStatus("success");
+      setRunState("success");
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
-      setReportStatus("error");
+      setRunState("error");
     }
   }
 
   async function downloadExcel() {
-    if (reportStatus !== "success") return;
+    if (runState !== "success") return;
     const fd = new FormData();
     if (files[0]) fd.append("fileA", files[0]);
     if (files[1]) fd.append("fileB", files[1]);
@@ -179,6 +182,7 @@ export default function ReportScaffold({
       <FullBleed>
         <ActionsRow
           filesReady={filesReady}
+          runState={runState}
           dashboardVisible={dashboardVisible}
           onRun={runReport}
           onDownloadExcel={downloadExcel}
@@ -186,10 +190,10 @@ export default function ReportScaffold({
           onToggleDashboard={() => setDashboardVisible(v => !v)}
         />
         {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
-        {reportStatus === 'running' && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
+        {runState === 'running' && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
       </FullBleed>
 
-      {dashboardVisible && (
+      {dashboardVisible && runState === 'success' && (
         <>
           <ReportsDashboard 
               metrics={metrics}

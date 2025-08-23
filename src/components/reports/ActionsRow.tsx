@@ -4,8 +4,11 @@
 import { Download as DownloadIcon, Brain } from "lucide-react";
 import { ActionPill } from "@/components/ui/ActionPill";
 
+type RunState = "idle" | "running" | "success" | "error";
+
 type Props = {
   filesReady: boolean;
+  runState: RunState;
   dashboardVisible: boolean;
   onRun: () => void;
   onDownloadExcel: () => void;
@@ -15,29 +18,30 @@ type Props = {
 
 export default function ActionsRow({
   filesReady,
+  runState,
   dashboardVisible,
   onRun,
   onDownloadExcel,
   onDownloadCsv,
   onToggleDashboard,
 }: Props) {
-  // BEFORE uploads: all neutral + muted
-  // AFTER uploads:
-  //   - Run Report => green + enabled
-  //   - Excel/CSV/Dashboard/Maven => neutral, brighter label + enabled
+  // STATE 1: < 3 uploads -> everything neutral/muted/disabled
+  // STATE 2: 3 uploads, not run -> Run=green enabled; others neutral/muted/disabled
+  // STATE 3: run success -> Run=green; others enabled + bright label (pill stays neutral)
 
   const runVariant        = filesReady ? "primary" : "neutral";
-  const runLabelEmphasis  = filesReady ? "bright" : "normal";  // <— FIX: no bright before uploads
-  const runDisabled       = !filesReady;
+  const runLabelEmphasis  = filesReady ? "bright" : "normal";
+  const runDisabled       = !filesReady || runState === "running";
+
+  const afterRunSuccess   = runState === "success";
 
   const postVariant       = "neutral" as const;
-  const postLabelEmphasis = filesReady ? "bright" : "normal";
-  const postDisabled      = !filesReady;
-
-
+  const postLabelEmphasis = afterRunSuccess ? "bright" : "normal";
+  const postDisabled      = !afterRunSuccess; // enable ONLY after a successful run
+  
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-      <ActionPill
+       <ActionPill
         onClick={onRun}
         disabled={runDisabled}
         label="Run Report"
@@ -77,9 +81,8 @@ export default function ActionsRow({
         labelEmphasis={postLabelEmphasis}
       />
 
-      {/* AskMaven — not functional yet, but lights up exactly like the others */}
       <ActionPill
-        // onClick={() => {}} // hook up later
+        // onClick={() => {}} // wire later
         disabled={postDisabled}
         label="Maven"
         srLabel="Maven"

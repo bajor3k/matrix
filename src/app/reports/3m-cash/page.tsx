@@ -50,7 +50,7 @@ interface DashboardMetrics {
 export default function ReportsExcelPage() {
   const [files, setFiles] = React.useState<(File | null)[]>([null, null, null]);
   const [error, setError] = React.useState<string | null>(null);
-  const [reportStatus, setReportStatus] = React.useState<"idle" | "running" | "success" | "error">("idle");
+  const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
   const [dashboardVisible, setDashboardVisible] = React.useState(false);
   const [chatMessages, setChatMessages] = React.useState<Array<{ role: 'user' | 'assistant'; content: string }>>([
     { role: 'assistant', content: 'Ask a question about this report (fees, accounts, flagged short, etc.).' },
@@ -117,7 +117,7 @@ export default function ReportsExcelPage() {
 
   async function runReport() {
     if (!filesReady) return;
-    setReportStatus("running");
+    setRunState("running");
     setError(null);
 
     try {
@@ -130,15 +130,15 @@ export default function ReportsExcelPage() {
       const rows = await res.json();
       
       processApiData(rows);
-      setReportStatus("success");
+      setRunState("success");
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
-      setReportStatus("error");
+      setRunState("error");
     }
   }
 
   async function downloadExcel() {
-    if (reportStatus !== "success") return;
+    if (runState !== "success") return;
     try {
       const fd = new FormData();
       fd.append("pycash_1", files[0]!);
@@ -170,6 +170,7 @@ export default function ReportsExcelPage() {
       <FullBleed>
         <ActionsRow
             filesReady={filesReady}
+            runState={runState}
             dashboardVisible={dashboardVisible}
             onRun={runReport}
             onDownloadExcel={downloadExcel}
@@ -177,10 +178,10 @@ export default function ReportsExcelPage() {
             onToggleDashboard={() => setDashboardVisible(v => !v)}
         />
         {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
-         {reportStatus === "running" && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
+         {runState === "running" && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
       </FullBleed>
 
-      {dashboardVisible && (
+      {dashboardVisible && runState === 'success' && (
         <>
           <ReportsDashboard 
               metrics={metrics}

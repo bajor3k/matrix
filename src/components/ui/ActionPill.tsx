@@ -1,4 +1,3 @@
-// components/ui/ActionPill.tsx
 import * as React from "react";
 
 type Variant = "neutral" | "primary";
@@ -19,10 +18,10 @@ export function ActionPill({
   disabled?: boolean;
   icon?: React.ReactNode;
   label: string;
-  srLabel?: string;     // screen-reader label
-  title?: string;       // tooltip
-  variant?: Variant;    // neutral = dark pill, primary = brand green
-  labelEmphasis?: Emphasis; // normal (muted) or bright (clickable)
+  srLabel?: string;
+  title?: string;
+  variant?: Variant;
+  labelEmphasis?: Emphasis;
   className?: string;
 }) {
   const base =
@@ -31,12 +30,9 @@ export function ActionPill({
 
   const variantClasses =
     variant === "primary"
-      ? // Brand green #08e28f
-        "bg-[#08e28f] text-black border-transparent hover:brightness-95"
-      : // Neutral pill (dark), works in both themes
-        "bg-[#121212] border-black/10 dark:border-white/10 hover:bg-black";
+      ? "bg-[#08e28f] text-black border-transparent hover:brightness-95"
+      : "bg-[#121212] border-black/10 dark:border-white/10 hover:bg-black";
 
-  // Label emphasis: brighter text after uploads (clickable)
   const labelClasses =
     variant === "primary"
       ? "text-black"
@@ -44,7 +40,6 @@ export function ActionPill({
       ? "text-white"
       : "text-white/70";
 
-  // Icon follows same emphasis (use currentColor)
   const iconClasses =
     variant === "primary"
       ? "text-black"
