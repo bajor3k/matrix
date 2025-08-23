@@ -1,60 +1,56 @@
-
 "use client";
 
 import { useDropzone, type FileRejection } from "react-dropzone";
-import React, { useCallback, useState } from "react";
-import { Upload, Trash2 } from "lucide-react"; // using lucide icons
+import React,
+{ useCallback } from "react";
+import { Upload, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type UploadCardProps = {
-  onFileAccepted?: (file: File) => void;
-  onFileCleared?: () => void;
-  className?: string;
-  slotId?: string;
+  file: File | null;
+  onFileChange: (file: File | null) => void;
   dropzoneText?: string;
+  className?: string;
+  accept?: string;
 };
 
 export default function UploadCard({
-  onFileAccepted,
-  onFileCleared,
+  file,
+  onFileChange,
+  dropzoneText = "Drop file here",
   className,
-  slotId,
-  dropzoneText,
+  accept,
 }: UploadCardProps) {
-  const [file, setFile] = useState<File | null>(null);
-
-  const onDrop = useCallback((acceptedFiles: File[], fileRejections: FileRejection[]) => {
-    if (acceptedFiles.length > 0) {
-      const acceptedFile = acceptedFiles[0];
-      setFile(acceptedFile);
-      if (onFileAccepted) {
-        onFileAccepted(acceptedFile);
+  const onDrop = useCallback(
+    (acceptedFiles: File[], fileRejections: FileRejection[]) => {
+      if (fileRejections.length > 0) {
+        console.warn("File rejected:", fileRejections);
+        // Optionally, show a toast or error message to the user.
       }
-    }
-  }, [onFileAccepted]);
-
+      if (acceptedFiles.length > 0) {
+        const acceptedFile = acceptedFiles[0];
+        onFileChange(acceptedFile);
+      }
+    },
+    [onFileChange]
+  );
 
   const handleRemove = (e: React.MouseEvent) => {
-    e.stopPropagation(); // don't trigger dropzone click
-    setFile(null);
-    if (onFileCleared) {
-      onFileCleared();
-    }
-     const event = new CustomEvent('upload:cleared', { detail: { slotId } });
-     window.dispatchEvent(event);
+    e.stopPropagation();
+    onFileChange(null);
   };
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     multiple: false,
-    noClick: true, // we will open via the icon (and still allow keyboard)
+    noClick: true,
+    accept: accept ? { 'application/vnd.ms-excel': ['.xls', '.xlsx'], 'text/csv': ['.csv'] } : undefined, // Basic example
   });
 
   return (
     <div
       {...getRootProps()}
       className={cn(
-        // layout: NO fixed height; compact spacing
         "flex flex-col items-center justify-center text-center gap-2",
         "rounded-xl border-2 border-dashed",
         isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-black/30 text-black/90 dark:border-white/40 dark:text-white/90",
@@ -70,7 +66,6 @@ export default function UploadCard({
     >
       <input {...getInputProps()} />
 
-      {/* ICON: centered INSIDE the box */}
       {!file ? (
         <button
           type="button"
@@ -96,10 +91,9 @@ export default function UploadCard({
         </button>
       )}
 
-      {/* CONTENT */}
       {!file ? (
         <>
-          <p className="text-base font-semibold leading-tight">{dropzoneText || 'Drop file here'}</p>
+          <p className="text-base font-semibold leading-tight">{dropzoneText}</p>
           <p className="text-sm text-black/60 dark:text-white/70 leading-tight">
             or <span onClick={(e) => { e.stopPropagation(); open(); }} className="text-[#08e28f] font-medium hover:underline">browse</span> from your
             computer

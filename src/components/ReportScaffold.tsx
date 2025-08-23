@@ -9,12 +9,8 @@ import ReportsPageShell from "./reports/ReportsPageShell";
 import HelpHeader, { helpHeaderAutoDismiss } from "./reports/HelpHeader";
 import { UploadRow } from "./reports/UploadRow";
 import FullBleed from "./layout/FullBleed";
-import { downloadCSV } from "@/utils/csv";
 import ActionsRow from "./reports/ActionsRow";
 import { saveAs } from "file-saver";
-
-
-type Key = "a" | "b" | "c";
 
 type Props = {
   reportName: string;
@@ -45,39 +41,25 @@ export default function ReportScaffold({
   mergeApiPath = "/api/reports/TBD/merge",
   requiredFileCount = 1,
 }: Props) {
-  const [files, setFiles] = React.useState<Record<Key, File | null>>({
-    a: null, b: null, c: null,
-  });
-  const [ok, setOk] = React.useState<Record<Key, boolean>>({
-    a: false, b: false, c: false,
-  });
+  const [files, setFiles] = React.useState<(File | null)[]>([null, null, null]);
   const [reportStatus, setReportStatus] = React.useState<"idle" | "running" | "success" | "error">("idle");
   const [error, setError] = React.useState<string | null>(null);
   const [dashboardData, setDashboardData] = React.useState<{ kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null>(null);
   const [showDash, setShowDash] = React.useState(false);
 
   const hasResults = reportStatus === "success" && dashboardData !== null;
+  const uploadedFlags = files.map(f => !!f);
 
-
-  React.useEffect(() => {
-    const handleCleared = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      const { slotId } = customEvent.detail;
-      if (slotId && slotId.includes('upload-a')) setFiles(s => ({...s, a: null})), setOk(s => ({...s, a: false}));
-      if (slotId && slotId.includes('upload-b')) setFiles(s => ({...s, b: null})), setOk(s => ({...s, b: false}));
-      if (slotId && slotId.includes('upload-c')) setFiles(s => ({...s, c: null})), setOk(s => ({...s, c: false}));
-    }
-    window.addEventListener('upload:cleared', handleCleared);
-    return () => window.removeEventListener('upload:cleared', handleCleared);
-  }, []);
-
-  function accept(key: Key, f: File) {
-    if (Object.values(files).filter(Boolean).length === 0) {
-       helpHeaderAutoDismiss();
-    }
-    setFiles((s) => ({ ...s, [key]: f }));
-    setOk((s) => ({ ...s, [key]: true }));
-  }
+  const handleFileChange = (index: number) => (file: File | null) => {
+    setFiles(prevFiles => {
+      const newFiles = [...prevFiles];
+      newFiles[index] = file;
+      if (newFiles.filter(Boolean).length === 1 && file !== null) {
+        helpHeaderAutoDismiss();
+      }
+      return newFiles;
+    });
+  };
 
   function transformDataForDashboard(data: any[]): { kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null {
     if (!data || data.length === 0) return null;
@@ -109,16 +91,16 @@ export default function ReportScaffold({
   }
 
   async function runMergeJSON() {
-    if (Object.values(ok).filter(Boolean).length < requiredFileCount) return;
+    if (uploadedFlags.filter(Boolean).length < requiredFileCount) return;
     setReportStatus("running"); 
     setError(null); 
     setShowDash(false); 
     setDashboardData(null);
     try {
       const fd = new FormData();
-      if (files.a) fd.append("fileA", files.a);
-      if (files.b) fd.append("fileB", files.b);
-      if (files.c) fd.append("fileC", files.c);
+      if (files[0]) fd.append("fileA", files[0]);
+      if (files[1]) fd.append("fileB", files[1]);
+      if (files[2]) fd.append("fileC", files[2]);
       
       const res = await fetch(`${mergeApiPath}?format=json`, { method: "POST", body: fd });
       if (!res.ok) throw new Error(await res.text());
@@ -134,9 +116,9 @@ export default function ReportScaffold({
   async function downloadExcel() {
     if (!hasResults) return;
     const fd = new FormData();
-    if (files.a) fd.append("fileA", files.a);
-    if (files.b) fd.append("fileB", files.b);
-    if (files.c) fd.append("fileC", files.c);
+    if (files[0]) fd.append("fileA", files[0]);
+    if (files[1]) fd.append("fileB", files[1]);
+    if (files[2]) fd.append("fileC", files[2]);
 
     try {
         const res = await fetch(`${mergeApiPath}?format=xlsx`, { method: "POST", body: fd });
@@ -161,15 +143,20 @@ export default function ReportScaffold({
       
       <FullBleed>
         <UploadRow>
-          <UploadCard slotId="upload-a" onFileAccepted={(f)=>accept("a",f)} dropzoneText="Drop File 1 here"/>
-          {requiredFileCount > 1 && <UploadCard slotId="upload-b" onFileAccepted={(f)=>accept("b",f)} dropzoneText="Drop File 2 here"/>}
-          {requiredFileCount > 2 && <UploadCard slotId="upload-c" onFileAccepted={(f)=>accept("c",f)} dropzoneText="Drop File 3 here"/>}
+          {Array.from({ length: requiredFileCount }).map((_, index) => (
+            <UploadCard
+              key={index}
+              file={files[index]}
+              onFileChange={handleFileChange(index)}
+              dropzoneText={`Drop File ${index + 1} here`}
+            />
+          ))}
         </UploadRow>
       </FullBleed>
       
       <FullBleed>
         <ActionsRow
-          uploadedFlags={[ok.a, ok.b, ok.c]}
+          uploadedFlags={uploadedFlags}
           requiredCount={requiredFileCount}
           hasResults={hasResults}
           tableRows={dashboardData?.tableRows || []}

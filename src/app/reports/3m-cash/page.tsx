@@ -13,8 +13,6 @@ import { saveAs } from "file-saver";
 import ActionsRow from "@/components/reports/ActionsRow";
 
 
-type UploadKey = "pyfee" | "pycash_2" | "pypi";
-
 const REPORT_SUMMARY =
   "This report analyzes all managed client accounts and isolates advisor-directed accounts to determine how much cash should be reserved to cover advisory fees for the next 3 and 6 months. It takes into account periodic instructions for each account, and lets you know the available cash and MMF for each account.";
 
@@ -41,18 +39,8 @@ const num = (v: any): number | null => {
 }
 
 export default function ReportsExcelPage() {
-  const [files, setFiles] = React.useState<Record<UploadKey, File | null>>({
-    pyfee: null,
-    pycash_2: null,
-    pypi: null,
-  });
-  const [ok, setOk] = React.useState<Record<UploadKey, boolean>>({
-    pyfee: false,
-    pycash_2: false,
-    pypi: false,
-  });
-
-  const [isRunning, setIsRunning] = React.useState(false);
+  const [files, setFiles] = React.useState<(File | null)[]>([null, null, null]);
+  
   const [error, setError] = React.useState<string | null>(null);
   const [dashboardData, setDashboardData] = React.useState<{ kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null>(null);
   const [showDash, setShowDash] = React.useState(false);
@@ -60,14 +48,18 @@ export default function ReportsExcelPage() {
 
   const requiredCount = 3;
   const hasResults = reportStatus === "success";
+  const uploadedFlags = files.map(f => !!f);
 
-  function accept(key: UploadKey, f: File | null) {
-     if (Object.values(files).filter(Boolean).length === 0 && f) {
-       helpHeaderAutoDismiss();
-    }
-    setFiles((s) => ({ ...s, [key]: f }));
-    setOk((s) => ({ ...s, [key]: !!f }));
-  }
+  const handleFileChange = (index: number) => (file: File | null) => {
+    setFiles(prevFiles => {
+      const newFiles = [...prevFiles];
+      newFiles[index] = file;
+       if (newFiles.filter(Boolean).length === 1 && file !== null) {
+        helpHeaderAutoDismiss();
+      }
+      return newFiles;
+    });
+  };
 
   // New function to transform API data into dashboard props
   function transformDataForDashboard(data: any[]): { kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null {
@@ -101,16 +93,16 @@ export default function ReportsExcelPage() {
 
 
   async function runMergeJSON() {
-    if (Object.values(ok).filter(Boolean).length < requiredCount) return;
+    if (uploadedFlags.filter(Boolean).length < requiredCount) return;
     setReportStatus("running");
     setError(null);
     setShowDash(false);
     setDashboardData(null);
     try {
       const fd = new FormData();
-      fd.append("pycash_1", files.pyfee!);
-      fd.append("pycash_2", files.pycash_2!);
-      fd.append("pypi", files.pypi!);
+      fd.append("pycash_1", files[0]!);
+      fd.append("pycash_2", files[1]!);
+      fd.append("pypi", files[2]!);
       const res = await fetch("/api/reports/3m-cash/merge?format=json", { method: "POST", body: fd });
       if (!res.ok) throw new Error(await res.text());
       const rows = await res.json();
@@ -126,9 +118,9 @@ export default function ReportsExcelPage() {
     if (!hasResults) return;
     try {
       const fd = new FormData();
-      fd.append("pycash_1", files.pyfee!);
-      fd.append("pycash_2", files.pycash_2!);
-      fd.append("pypi", files.pypi!);
+      fd.append("pycash_1", files[0]!);
+      fd.append("pycash_2", files[1]!);
+      fd.append("pypi", files[2]!);
       const res = await fetch("/api/reports/3m-cash/merge?format=xlsx", { method: "POST", body: fd });
       if (!res.ok) throw new Error(await res.text());
       const blob = await res.blob();
@@ -150,15 +142,15 @@ export default function ReportsExcelPage() {
       
       <FullBleed>
         <UploadRow>
-            <UploadCard onFileAccepted={(f) => accept("pyfee", f)} onFileCleared={() => accept("pyfee", null)} dropzoneText="Drop PYFEE here" />
-            <UploadCard onFileAccepted={(f) => accept("pycash_2", f)} onFileCleared={() => accept("pycash_2", null)} dropzoneText="Drop PYCASH here" />
-            <UploadCard onFileAccepted={(f) => accept("pypi", f)} onFileCleared={() => accept("pypi", null)} dropzoneText="Drop PYPI here" />
+          <UploadCard file={files[0]} onFileChange={handleFileChange(0)} dropzoneText="Drop PYFEE here" />
+          <UploadCard file={files[1]} onFileChange={handleFileChange(1)} dropzoneText="Drop PYCASH here" />
+          <UploadCard file={files[2]} onFileChange={handleFileChange(2)} dropzoneText="Drop PYPI here" />
         </UploadRow>
       </FullBleed>
         
       <FullBleed>
         <ActionsRow
-            uploadedFlags={[ok.pyfee, ok.pycash_2, ok.pypi]}
+            uploadedFlags={uploadedFlags}
             requiredCount={3}
             hasResults={hasResults}
             tableRows={dashboardData?.tableRows || []}
