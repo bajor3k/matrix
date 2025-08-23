@@ -40,11 +40,10 @@ export default function UploadCard({
     onFileChange(null);
   };
 
-  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: false,
-    noClick: true,
-    accept: accept ? { 'application/vnd.ms-excel': ['.xls', '.xlsx'], 'text/csv': ['.csv'] } : undefined, // Basic example
+    accept: accept ? { 'application/vnd.ms-excel': ['.xls', '.xlsx'], 'text/csv': ['.csv'] } : undefined,
   });
 
   return (
@@ -60,47 +59,25 @@ export default function UploadCard({
       )}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => {
-        if (!file && (e.key === "Enter" || e.key === " ")) open();
-      }}
     >
       <input {...getInputProps()} />
 
       {!file ? (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            open();
-          }}
-          aria-label="Upload file"
-          className="inline-flex items-center justify-center w-9 h-9 rounded-full"
-          title="Upload"
-        >
-          <Upload className="w-7 h-7 text-foreground/85 hover:text-[#08e28f]" />
-        </button>
-      ) : (
-        <button
-          type="button"
-          onClick={handleRemove}
-          aria-label="Remove file"
-          className="inline-flex items-center justify-center w-9 h-9 rounded-full"
-          title="Remove"
-        >
-          <Trash2 className="w-7 h-7 text-[#e31211] hover:opacity-90" />
-        </button>
-      )}
-
-      {!file ? (
         <>
+          <Upload className="w-7 h-7 text-[#08e28f] mb-1" />
           <p className="text-base font-semibold leading-tight">{dropzoneText}</p>
-          <p className="text-sm text-black/60 dark:text-white/70 leading-tight">
-            or <span onClick={(e) => { e.stopPropagation(); open(); }} className="text-[#08e28f] font-medium hover:underline">browse</span> from your
-            computer
-          </p>
         </>
       ) : (
         <>
+          <button
+            type="button"
+            onClick={handleRemove}
+            aria-label="Remove file"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full"
+            title="Remove"
+          >
+            <Trash2 className="w-7 h-7 text-[#e31211] hover:opacity-90" />
+          </button>
           <p className="text-sm text-black/90 dark:text-white/90 leading-tight">{file.name}</p>
           <p className="text-sm text-[#08e28f] leading-tight">Success 🙂</p>
         </>
