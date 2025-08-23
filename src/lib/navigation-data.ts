@@ -23,6 +23,10 @@ import {
   Calculator,
   GraduationCap,
   Link as LinkIcon,
+  Wallet,
+  Banknote,
+  Percent,
+  BadgeDollarSign,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -34,11 +38,11 @@ export const toolbarSections: ToolbarSection[] = [
 
 export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
   'Reports': [
-    { name: 'Advisory Fees Cash', icon: FileText, href: '/reports/3m-cash' },
-    { name: 'Cash Balance', icon: FileText, href: '/reports/cash-alerts' },
-    { name: 'Margin', icon: FileText, href: '/reports/margin-notify' },
-    { name: 'Advisory Fees', icon: FileText, href: '/reports/advisor-summary' },
-    { name: 'Test', icon: FileText, href: '/reports/billing-coverage' },
+    { name: 'Advisory Fees Cash', icon: Wallet, href: '/reports/3m-cash' },
+    { name: 'Cash Balance', icon: Banknote, href: '/reports/cash-alerts' },
+    { name: 'Margin', icon: Percent, href: '/reports/margin-notify' },
+    { name: 'Advisory Fees', icon: BadgeDollarSign, href: '/reports/advisor-summary' },
+    { name: 'Test', icon: FlaskConical, href: '/reports/billing-coverage' },
   ],
   'CRM': [
     { name: 'Home', icon: HomeIcon, href: '/client-portal/home' },
