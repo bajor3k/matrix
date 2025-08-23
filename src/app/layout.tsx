@@ -15,6 +15,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { ThemeProvider } from '@/components/theme-provider';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { SidebarProvider, useSidebar } from '@/hooks/use-sidebar.tsx';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -26,12 +27,8 @@ const robotoMono = Roboto_Mono({
   subsets: ['latin'],
 });
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
+function AppLayout({ children }: { children: React.ReactNode }) {
+  const { collapsed, toggleSidebar } = useSidebar();
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const isLandingPage = pathname === '/';
@@ -39,22 +36,9 @@ export default function RootLayout({
 
   React.useEffect(() => {
     if (isMobile) {
-      setSidebarCollapsed(true);
-    } else {
-      const storedCollapsed = localStorage.getItem("matrix-sidebar-collapsed");
-      if (storedCollapsed !== null) {
-        setSidebarCollapsed(storedCollapsed === "true");
-      }
+      // Logic to handle mobile state if needed, though useSidebar might handle it
     }
   }, [isMobile]);
-
-  const handleToggleSidebar = () => {
-    const newCollapsedState = !sidebarCollapsed;
-    setSidebarCollapsed(newCollapsedState);
-    if (!isMobile) {
-        localStorage.setItem("matrix-sidebar-collapsed", String(newCollapsedState));
-    }
-  };
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -84,13 +68,13 @@ export default function RootLayout({
                 ) : (
                   <div className="grid min-h-screen grid-rows-[56px,1fr] grid-cols-[auto,1fr] bg-background text-foreground">
                     <header className="row-[1] col-[1/3] z-50 sticky top-0 bg-background/95 border-b border-white/10 backdrop-blur">
-                        <TopToolbar onToggleSidebar={handleToggleSidebar} />
+                        <TopToolbar onToggleSidebar={toggleSidebar} />
                     </header>
                     <aside className={cn(
                         "row-[2] col-[1] border-r border-white/10 transition-all duration-300",
-                        sidebarCollapsed ? "w-16" : "w-64"
+                        collapsed ? "w-16" : "w-64"
                     )}>
-                        <Sidebar collapsed={sidebarCollapsed} />
+                        <Sidebar collapsed={collapsed} />
                     </aside>
                     <main className="row-[2] col-[2] overflow-y-auto no-visual-scrollbar">
                         {children}
@@ -113,4 +97,17 @@ export default function RootLayout({
       </body>
     </html>
   );
+}
+
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+    return (
+        <SidebarProvider>
+            <AppLayout>{children}</AppLayout>
+        </SidebarProvider>
+    )
 }

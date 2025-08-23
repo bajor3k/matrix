@@ -13,6 +13,7 @@ import type { NavItem } from "@/contexts/navigation-context";
 import { useNavigation } from "@/contexts/navigation-context";
 import { navigationData } from "@/lib/navigation-data";
 import { cn } from "@/lib/utils";
+import { useSidebar } from "@/hooks/use-sidebar";
 
 const alertsNavItem: NavItem = {
   name: 'Alerts',
