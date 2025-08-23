@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 import { ThemeToggle } from './theme-toggle';
 import { Brain } from 'lucide-react';
+import FullscreenToggle from './chrome/FullscreenToggle';
 
 interface TopToolbarProps {
   onToggleSidebar: () => void;
@@ -46,7 +47,10 @@ export function TopToolbar({ onToggleSidebar }: TopToolbarProps) {
           ))}
         </nav>
       </div>
-      <ThemeToggle />
+      <div className="flex items-center gap-2">
+        <FullscreenToggle />
+        <ThemeToggle />
+      </div>
     </header>
   );
 }

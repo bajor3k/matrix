@@ -151,6 +151,19 @@
   }
 }
 
+/* Fullscreen fallback (when API not available): make app feel full-bleed */
+.presentation-mode, .presentation-mode body {
+  height: 100%;
+  overflow: hidden;
+  background: #000; /* dark */
+}
+
+/* Optional: when truly fullscreen, ensure background is solid */
+:fullscreen {
+  background: #000;
+}
+
+
 @layer utilities {
   .neon-glow {
     box-shadow: 0 0 60px 20px rgba(157, 78, 221, 0.65), 0 0 120px 40px rgba(80, 0, 255, 0.15);
@@ -477,40 +490,6 @@ html.dark .btn-secondary:hover {
   background: rgba(255,255,255,0.1);
 }
 
-.btn-icon {
-  width: 1rem;
-  height: 1rem;
-  flex-shrink: 0;
-}
-
-/* Remove native triangle for <summary> */
-.details-no-marker summary { list-style: none; }
-.details-no-marker summary::-webkit-details-marker { display: none; }
-    
-/* Green primary (brand) */
-.btn-primary {
-  position: relative;                           /* for future overlays */
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.55rem 0.95rem;
-  border-radius: 9999px;
-  border: 1px solid #08e28f;
-  background: #08e28f;                          /* brand green */
-  color: #0b0b0b;                               /* readable on green */
-  font-size: 0.9375rem;                         /* ~15px */
-  font-weight: 700;                             /* same heft you’re using */
-  transition: filter 120ms ease, opacity 120ms ease, background 120ms ease;
-}
-.btn-primary:hover { filter: brightness(0.96); }
-.btn-primary:active { filter: brightness(0.92); }
-
-html.dark .btn-primary {
-  border-color: #08e28f;
-  background: #08e28f;
-  color: #0b0b0b;
-}
-
 .btn-secondary--ready {
   font-weight: 700;
   color: #0b0b0b;
@@ -576,4 +555,31 @@ html.dark .recharts-legend-wrapper {
     font-size: 0.9375rem;   /* ~15px on md+ (Tailwind text-sm equivalent) */
     line-height: 1.5rem;
   }
+}
+/* Remove native triangle for <summary> */
+.details-no-marker summary { list-style: none; }
+.details-no-marker summary::-webkit-details-marker { display: none; }
+    
+/* Green primary (brand) */
+.btn-primary {
+  position: relative;                           /* for future overlays */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 9999px;
+  border: 1px solid #08e28f;
+  background: #08e28f;                          /* brand green */
+  color: #0b0b0b;                               /* readable on green */
+  font-size: 0.9375rem;                         /* ~15px */
+  font-weight: 700;                             /* same heft you’re using */
+  transition: filter 120ms ease, opacity 120ms ease, background 120ms ease;
+}
+.btn-primary:hover { filter: brightness(0.96); }
+.btn-primary:active { filter: brightness(0.92); }
+
+html.dark .btn-primary {
+  border-color: #08e28f;
+  background: #08e28f;
+  color: #0b0b0b;
 }
