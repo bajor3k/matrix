@@ -1,6 +1,7 @@
 // components/reports/maven/MavenChat.tsx
 import * as React from "react";
-import { Brain, Send } from "lucide-react";
+import { Send } from "lucide-react";
+import { BrainIcon } from "@/components/icons/BrainIcon";
 
 type Msg = { id: string; who: "user" | "bot"; text: string };
 
@@ -8,7 +9,7 @@ export function MavenChat({ onClose }: { onClose: () => void }) {
   const [msgs, setMsgs] = React.useState<Msg[]>([]);
   const [input, setInput] = React.useState("");
 
-  const send = () => {
+  const handleSend = () => {
     const text = input.trim();
     if (!text) return;
     const newUser: Msg = { id: crypto.randomUUID(), who: "user", text };
@@ -29,15 +30,14 @@ export function MavenChat({ onClose }: { onClose: () => void }) {
     <aside className="rounded-2xl border bg-[#101010] border-white/10 light:bg-[#fcfbfb] light:border-black/10 flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 light:border-black/10">
-        <div className="flex items-center gap-2">
-          <Brain className="h-5 w-5 text-[#08e28f]" />
-          <span className="font-medium text-white light:text-black">Ask Maven</span>
+        <div className="flex items-center gap-2 text-white/70 light:text-black/70">
+          <BrainIcon className="h-4 w-4" />
+          <span className="text-sm font-medium">Ask Maven</span>
         </div>
         <button
           onClick={onClose}
-          className="rounded-md px-2 py-1 text-white/70 hover:text-white light:text-black/70 light:hover:text-black"
-          aria-label="Close Maven"
-          title="Close (Esc)"
+          className="text-white/60 hover:text-white light:text-black/60 light:hover:text-black"
+          aria-label="Close Ask Maven"
         >
           ✕
         </button>
@@ -63,24 +63,32 @@ export function MavenChat({ onClose }: { onClose: () => void }) {
       </div>
 
       {/* Composer */}
-      <form
+       <form
         onSubmit={(e) => {
           e.preventDefault();
-          send();
+          handleSend();
         }}
-        className="flex items-center gap-2 p-3 border-t border-white/10 light:border-black/10"
+        className="flex items-center gap-2 border-t border-white/10 light:border-black/10 px-4 py-3"
       >
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask about fees, accounts, and short flags…"
-          className="flex-1 rounded-full bg-white/5 light:bg-black/5 px-4 py-2 text-white placeholder-white/40 focus:outline-none light:text-black light:placeholder-black/40"
+          placeholder="Ask about fees, accounts, and status…"
+          className="flex-1 rounded-xl border border-white/10 bg-[#101010] px-3 py-2 text-sm placeholder:text-white/40 text-white light:bg-[#fcfbfb] light:border-black/10 light:text-black light:placeholder:text-black/40"
         />
         <button
           type="submit"
-          className="rounded-full bg-[#08e28f] text-black font-medium px-4 py-2 disabled:opacity-40"
           disabled={!input.trim()}
+          className={[
+            "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium",
+            "bg-[#101010] border-white/10 text-white/70 hover:text-white",
+            "light:bg-[#fcfbfb] light:border-black/10 light:text-black/70 light:hover:text-black",
+            !input.trim() ? "opacity-50 cursor-not-allowed hover:text-inherit light:hover:text-inherit" : "",
+          ].join(" ")}
         >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <path d="M22 2 11 13" /><path d="M22 2 15 22 11 13 2 9 22 2Z" />
+          </svg>
           Ask
         </button>
       </form>
