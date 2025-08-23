@@ -39,10 +39,14 @@ export default function InsightsChatCard({
       {/* Scrollable conversation */}
       <div
         ref={scrollRef}
-        className="flex-1 min-h-0 overflow-y-auto space-y-3 md:space-y-4 px-2 pt-2 pr-3"
+        className="
+          flex-1 min-h-0 overflow-y-auto
+          px-3 md:px-4 pt-3 pb-2
+          space-y-3 md:space-y-4
+        "
       >
         {messages.length === 0 ? (
-          <div className="text-sm md:text-base text-black/60 dark:text-white/60 px-1">
+          <div className="text-sm md:text-base text-black/60 dark:text-white/60">
             Ask a question about the report (fees, accounts, flagged short, etc.).
           </div>
         ) : (
@@ -50,20 +54,23 @@ export default function InsightsChatCard({
             <div
               key={i}
               className={
-                // row spans full width; text aligns to its side
+                // Keep bubbles away from edges via container padding; align by role
                 m.role === "user"
-                  ? "w-full text-right"
-                  : "w-full text-left"
+                  ? "w-full flex justify-end"
+                  : "w-full flex justify-start"
               }
             >
               <p
                 className={[
-                  "inline-block max-w-[95%] md:max-w-[80%]",
-                  "whitespace-pre-wrap break-words leading-relaxed",
-                  // theme-aware text colors, no bubble/background
+                  // Minimal bubble (theme-aware)
+                  "inline-block max-w-[92%] md:max-w-[80%] px-3.5 py-2.5 rounded-xl",
+                  "border border-[#e5e7eb] dark:border-white/10",
                   m.role === "user"
-                    ? "text-[15px] md:text-base font-medium text-black dark:text-white"
-                    : "text-[15px] md:text-base text-black/80 dark:text-white/80",
+                    ? "bg-[#f2f3f5] text-[#111827] dark:bg-[#171717] dark:text-white"
+                    : "bg-[#fcfbfb] text-[#111827] dark:bg-[#121212] dark:text-white/90",
+                  "whitespace-pre-wrap break-words leading-relaxed",
+                  // Small breathing room so the bubble never kisses the card edge
+                  m.role === "user" ? "mr-0.5" : "ml-0.5",
                 ].join(" ")}
               >
                 {m.content}
@@ -75,7 +82,7 @@ export default function InsightsChatCard({
 
       {/* Composer pinned bottom */}
       <form
-        className="mt-2 md:mt-3 flex items-center gap-2 px-2 pb-2"
+        className="mt-1 md:mt-2 flex items-center gap-2 px-2 pb-2"
         onSubmit={(e) => {
           e.preventDefault();
           const val = q.trim();
