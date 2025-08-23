@@ -11,6 +11,8 @@ import { UploadRow } from "./reports/UploadRow";
 import FullBleed from "./layout/FullBleed";
 import { downloadCSV } from "@/utils/csv";
 import ActionsRow from "./reports/ActionsRow";
+import { saveAs } from "file-saver";
+
 
 type Key = "a" | "b" | "c";
 
@@ -19,6 +21,7 @@ type Props = {
   summary?: string | React.ReactNode;
   instructions?: React.ReactNode;
   mergeApiPath?: string;
+  requiredFileCount?: 1 | 2 | 3;
 };
 
 // Helper to safely format numbers as currency
@@ -40,6 +43,7 @@ export default function ReportScaffold({
   summary = "",
   instructions = "",
   mergeApiPath = "/api/reports/TBD/merge",
+  requiredFileCount = 1,
 }: Props) {
   const [files, setFiles] = React.useState<Record<Key, File | null>>({
     a: null, b: null, c: null,
@@ -47,14 +51,14 @@ export default function ReportScaffold({
   const [ok, setOk] = React.useState<Record<Key, boolean>>({
     a: false, b: false, c: false,
   });
-  const [isRunning, setIsRunning] = React.useState(false);
+  const [reportStatus, setReportStatus] = React.useState<"idle" | "running" | "success" | "error">("idle");
   const [error, setError] = React.useState<string | null>(null);
   const [dashboardData, setDashboardData] = React.useState<{ kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null>(null);
   const [showDash, setShowDash] = React.useState(false);
 
-  const canRun = ok.a || ok.b || ok.c;
   const uploadedCount = Object.values(ok).filter(Boolean).length;
-  const hasResults = dashboardData !== null;
+  const hasResults = reportStatus === "success" && dashboardData !== null;
+
 
   React.useEffect(() => {
     const handleCleared = (e: Event) => {
@@ -106,8 +110,11 @@ export default function ReportScaffold({
   }
 
   async function runMergeJSON() {
-    if (!canRun) return;
-    setIsRunning(true); setError(null); setShowDash(false); setDashboardData(null);
+    if (uploadedCount < requiredFileCount) return;
+    setReportStatus("running"); 
+    setError(null); 
+    setShowDash(false); 
+    setDashboardData(null);
     try {
       const fd = new FormData();
       if (files.a) fd.append("fileA", files.a);
@@ -118,38 +125,34 @@ export default function ReportScaffold({
       if (!res.ok) throw new Error(await res.text());
       const rows = await res.json();
       setDashboardData(transformDataForDashboard(rows));
+      setReportStatus("success");
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
-    } finally {
-      setIsRunning(false);
+      setReportStatus("error");
     }
   }
 
   async function downloadExcel() {
-    if (!canRun) return;
+    if (!hasResults) return;
     const fd = new FormData();
     if (files.a) fd.append("fileA", files.a);
     if (files.b) fd.append("fileB", files.b);
     if (files.c) fd.append("fileC", files.c);
 
-    const res = await fetch(`${mergeApiPath}?format=xlsx`, { method: "POST", body: fd });
-    if (!res.ok) throw new Error(await res.text());
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = `${reportName.replace(/\s+/g, "_").toLowerCase()}_merged.xlsx`;
-    document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(url);
+    try {
+        const res = await fetch(`${mergeApiPath}?format=xlsx`, { method: "POST", body: fd });
+        if (!res.ok) throw new Error(await res.text());
+        const blob = await res.blob();
+        saveAs(blob, `${reportName.replace(/\s+/g, "_").toLowerCase()}_merged.xlsx`);
+    } catch (e: any) {
+        setError(e?.message || "Failed to download Excel file.");
+        setReportStatus("error");
+    }
   }
   
   const handleOpenDashboard = () => {
     if (dashboardData) setShowDash(true);
   }
-
-  const handleHideDashboard = () => {
-      setShowDash(false);
-  }
-
 
   return (
     <ReportsPageShell>
@@ -168,7 +171,7 @@ export default function ReportScaffold({
       <FullBleed>
         <ActionsRow
           uploadedCount={uploadedCount}
-          canRun={canRun}
+          requiredCount={requiredFileCount}
           hasResults={hasResults}
           tableRows={dashboardData?.tableRows || []}
           onRun={runMergeJSON}
@@ -176,6 +179,7 @@ export default function ReportScaffold({
           onOpenDashboard={handleOpenDashboard}
         />
         {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
+        {reportStatus === 'running' && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
       </FullBleed>
 
       {showDash && dashboardData && (

@@ -56,10 +56,11 @@ export default function ReportsExcelPage() {
   const [error, setError] = React.useState<string | null>(null);
   const [dashboardData, setDashboardData] = React.useState<{ kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null>(null);
   const [showDash, setShowDash] = React.useState(false);
+  const [reportStatus, setReportStatus] = React.useState<"idle" | "running" | "success" | "error">("idle");
 
-  const canRun = ok.pyfee && ok.pycash_2 && ok.pypi;
+  const requiredCount = 3;
   const uploadedCount = Object.values(ok).filter(Boolean).length;
-  const hasResults = dashboardData !== null;
+  const hasResults = reportStatus === "success";
 
   function accept(key: UploadKey, f: File | null) {
      if (Object.values(files).filter(Boolean).length === 0 && f) {
@@ -101,8 +102,8 @@ export default function ReportsExcelPage() {
 
 
   async function runMergeJSON() {
-    if (!canRun) return;
-    setIsRunning(true);
+    if (uploadedCount < requiredCount) return;
+    setReportStatus("running");
     setError(null);
     setShowDash(false);
     setDashboardData(null);
@@ -115,15 +116,15 @@ export default function ReportsExcelPage() {
       if (!res.ok) throw new Error(await res.text());
       const rows = await res.json();
       setDashboardData(transformDataForDashboard(rows));
+      setReportStatus("success");
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
-    } finally {
-      setIsRunning(false);
+      setReportStatus("error");
     }
   }
 
   async function downloadExcel() {
-    if (!canRun) return;
+    if (!hasResults) return;
     try {
       const fd = new FormData();
       fd.append("pycash_1", files.pyfee!);
@@ -159,7 +160,7 @@ export default function ReportsExcelPage() {
       <FullBleed>
         <ActionsRow
             uploadedCount={uploadedCount}
-            canRun={canRun}
+            requiredCount={requiredCount}
             hasResults={hasResults}
             tableRows={dashboardData?.tableRows || []}
             onRun={runMergeJSON}
@@ -167,6 +168,7 @@ export default function ReportsExcelPage() {
             onOpenDashboard={handleOpenDashboard}
         />
         {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
+         {reportStatus === "running" && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
       </FullBleed>
 
       {showDash && dashboardData && (

@@ -2,14 +2,14 @@
 "use client";
 
 import { Download } from "lucide-react";
-import { downloadCSV } from "@/utils/csv";     // already added earlier
+import { downloadCSV } from "@/utils/csv";
 import type { TableRow } from "@/utils/csv";
 
 type Props = {
-  uploadedCount: number;          // how many files uploaded (0..3)
-  canRun: boolean;                // true when the required files are present
-  hasResults: boolean;            // true after Python run finished & results ready
-  tableRows: TableRow[];          // current table rows for CSV
+  uploadedCount: number;          // current number of uploaded files
+  requiredCount?: number;         // defaults to 3
+  hasResults: boolean;            // true after the Python run completes successfully
+  tableRows: TableRow[];          // what you render in the table
   onRun: () => void;
   onDownloadExcel: () => void;
   onOpenDashboard: () => void;
@@ -17,82 +17,77 @@ type Props = {
 
 export default function ActionsRow({
   uploadedCount,
-  canRun,
+  requiredCount = 3,
   hasResults,
   tableRows,
   onRun,
   onDownloadExcel,
   onOpenDashboard,
 }: Props) {
-  const noUploads = uploadedCount === 0;
+  const allUploaded = uploadedCount >= requiredCount;
 
-  // --- Disabled logic per your spec ---
-  const runDisabled = !canRun;                 // enabled only when required uploads are present
-  const excelDisabled = !hasResults;           // enabled after run
-  const csvDisabled = !hasResults;             // enabled after run
-  const openDisabled = !hasResults;            // enabled after run
+  // Enablement rules
+  const runEnabled = allUploaded;              // turns green when all uploaded
+  const downloadsEnabled = hasResults;         // turn green after a successful run
 
-  // If NO uploads at all, all four show disabled + red strike hover
-  const allDisabled = noUploads;
+  // Guarded handlers (never fire while disabled)
+  const handleRun = () => { if (runEnabled) onRun(); };
+  const handleExcel = () => { if (downloadsEnabled) onDownloadExcel(); };
+  const handleCsv = () => { if (downloadsEnabled) downloadCSV(tableRows); };
+  const handleOpen = () => { if (downloadsEnabled) onOpenDashboard(); };
 
-  // Guarded handlers
-  const safeRun = () => { if (!runDisabled && !allDisabled) onRun(); };
-  const safeExcel = () => { if (!excelDisabled && !allDisabled) onDownloadExcel(); };
-  const safeCsv = () => { if (!csvDisabled && !allDisabled) downloadCSV(tableRows); };
-  const safeOpen = () => { if (!openDisabled && !allDisabled) onOpenDashboard(); };
-
-  // Helper to compute classes
-  const cx = (disabled: boolean) =>
-    ["btn-secondary", (disabled || allDisabled) ? "btn-disabled" : ""].join(" ").trim();
+  // Pick class per button state
+  const cls = (enabled: boolean) =>
+    enabled ? "btn-primary" : "btn-secondary btn-disabled";
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-      {/* Run Report (SAME colorway as the others) */}
+      {/* Run Report — green after all uploads */}
       <button
         type="button"
-        aria-disabled={runDisabled || allDisabled}
-        disabled={runDisabled || allDisabled}
-        onClick={safeRun}
-        className={cx(runDisabled)}
-        title={runDisabled || allDisabled ? "Upload required files to run" : "Run Report"}
+        onClick={handleRun}
+        aria-disabled={!runEnabled}
+        disabled={!runEnabled}
+        className={cls(runEnabled)}
+        title={runEnabled ? "Run Report" : "Upload all required files first"}
       >
         Run Report
       </button>
 
-      {/* Download Excel */}
+      {/* Download Excel — green after run */}
       <button
         type="button"
-        aria-disabled={excelDisabled || allDisabled}
-        disabled={excelDisabled || allDisabled}
-        onClick={safeExcel}
-        className={cx(excelDisabled)}
-        title={excelDisabled || allDisabled ? "Run the report first" : "Download Excel"}
+        onClick={handleExcel}
+        aria-disabled={!downloadsEnabled}
+        disabled={!downloadsEnabled}
+        className={cls(downloadsEnabled)}
+        title={downloadsEnabled ? "Download Excel" : "Run the report first"}
       >
         <Download className="btn-icon" />
         Download Excel
       </button>
 
-      {/* Download CSV */}
+      {/* Download CSV — green after run */}
       <button
         type="button"
-        aria-disabled={csvDisabled || allDisabled}
-        disabled={csvDisabled || allDisabled}
-        onClick={safeCsv}
-        className={cx(csvDisabled)}
-        title={csvDisabled || allDisabled ? "Run the report first" : "Download CSV"}
+        onClick={handleCsv}
+        aria-disabled={!downloadsEnabled}
+        disabled={!downloadsEnabled}
+        className={cls(downloadsEnabled)}
+        title={downloadsEnabled ? "Download CSV" : "Run the report first"}
       >
         <Download className="btn-icon" />
         Download CSV
       </button>
 
-      {/* Open Dashboard */}
+      {/* Open Dashboard — green after run */}
       <button
         type="button"
-        aria-disabled={openDisabled || allDisabled}
-        disabled={openDisabled || allDisabled}
-        onClick={safeOpen}
-        className={cx(openDisabled)}
-        title={openDisabled || allDisabled ? "Run the report first" : "Open Dashboard"}
+        onClick={handleOpen}
+        aria-disabled={!downloadsEnabled}
+        disabled={!downloadsEnabled}
+        className={cls(downloadsEnabled)}
+        title={downloadsEnabled ? "Open Dashboard" : "Run the report first"}
       >
         Open Dashboard
       </button>

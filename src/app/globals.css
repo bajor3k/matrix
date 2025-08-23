@@ -451,62 +451,6 @@
   margin-top: 0.375rem;
 }
 
-/* Ensure page content doesn’t inherit odd outer padding from ancestors */
-main > .mx-auto.max-w-7xl {
-  padding-left: 1rem !important;    /*  px-4  */
-  padding-right: 1rem !important;
-}
-@media (min-width: 768px) {
-  main > .mx-auto.max-w-7xl {
-    padding-left: 1.5rem !important; /* md:px-6 */
-    padding-right: 1.5rem !important;
-  }
-}
-@media (min-width: 1024px) {
-  main > .mx-auto.max-w-7xl {
-    padding-left: 2rem !important;   /* lg:px-8 */
-    padding-right: 2rem !important;
-  }
-}
-
-html.dark .recharts-default-tooltip {
-  --tooltip-bg: #0b0b0b;
-  --tooltip-fg: #ffffff;
-  border-color: rgba(255,255,255,0.12) !important;
-}
-html.dark .recharts-legend-wrapper {
-  color: rgba(255,255,255,0.75) !important;
-}
-
-/* ——— Report section typography (aligned to top-nav scale) ——— */
-.report-heading {
-  /* mobile: same as nav items (text-sm) */
-  font-size: 0.875rem;      /* 14px */
-  line-height: 1.25rem;     /* 20px */
-  font-weight: 600;         /* semibold */
-  letter-spacing: 0.01em;   /* slight tracking like nav */
-}
-@media (min-width: 768px) {
-  .report-heading {
-    /* md+: nav items bump to base (16px) */
-    font-size: 1rem;        /* 16px */
-    line-height: 1.5rem;    /* 24px */
-  }
-}
-
-.report-copy {
-  /* just under the heading; body tone matches nav dropdown text */
-  font-size: 0.8125rem;     /* ~13px on mobile */
-  line-height: 1.375rem;    /* ~22px for readability */
-  opacity: 0.9;
-}
-@media (min-width: 768px) {
-  .report-copy {
-    font-size: 0.9375rem;   /* ~15px on md+ (Tailwind text-sm equivalent) */
-    line-height: 1.5rem;
-  }
-}
-
 .btn-secondary {
   position: relative; /* needed for strike overlay */
   display: inline-flex;
@@ -563,3 +507,84 @@ html.dark .btn-secondary:hover {
 .details-no-marker summary { list-style: none; }
 .details-no-marker summary::-webkit-details-marker { display: none; }
     
+/* Green primary (brand) */
+.btn-primary {
+  position: relative;                           /* for future overlays */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 9999px;
+  border: 1px solid #08e28f;
+  background: #08e28f;                          /* brand green */
+  color: #0b0b0b;                               /* readable on green */
+  font-size: 0.9375rem;                         /* ~15px */
+  font-weight: 700;                             /* same heft you’re using */
+  transition: filter 120ms ease, opacity 120ms ease, background 120ms ease;
+}
+.btn-primary:hover { filter: brightness(0.96); }
+.btn-primary:active { filter: brightness(0.92); }
+
+html.dark .btn-primary {
+  border-color: #08e28f;
+  background: #08e28f;
+  color: #0b0b0b;
+}
+
+/* Keep disabled look + red strike for ANY button type */
+.btn-disabled,
+button[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn-disabled:hover::after,
+button[disabled]:hover::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 50%;
+  height: 2px;
+  background: #e31211;           /* brand red */
+  transform: rotate(-12deg);
+  border-radius: 9999px;
+  box-shadow: 0 0 0 0.25px #e31211;
+}
+
+html.dark .recharts-default-tooltip {
+  --tooltip-bg: #0b0b0b;
+  --tooltip-fg: #ffffff;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+html.dark .recharts-legend-wrapper {
+  color: rgba(255,255,255,0.75) !important;
+}
+
+/* ——— Report section typography (aligned to top-nav scale) ——— */
+.report-heading {
+  /* mobile: same as nav items (text-sm) */
+  font-size: 0.875rem;      /* 14px */
+  line-height: 1.25rem;     /* 20px */
+  font-weight: 600;         /* semibold */
+  letter-spacing: 0.01em;   /* slight tracking like nav */
+}
+@media (min-width: 768px) {
+  .report-heading {
+    /* md+: nav items bump to base (16px) */
+    font-size: 1rem;        /* 16px */
+    line-height: 1.5rem;    /* 24px */
+  }
+}
+
+.report-copy {
+  /* just under the heading; body tone matches nav dropdown text */
+  font-size: 0.8125rem;     /* ~13px on mobile */
+  line-height: 1.375rem;    /* ~22px for readability */
+  opacity: 0.9;
+}
+@media (min-width: 768px) {
+  .report-copy {
+    font-size: 0.9375rem;   /* ~15px on md+ (Tailwind text-sm equivalent) */
+    line-height: 1.5rem;
+  }
+}
