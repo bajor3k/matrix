@@ -12,6 +12,7 @@ import FullBleed from "./layout/FullBleed";
 import ActionsRow from "./reports/ActionsRow";
 import { saveAs } from "file-saver";
 import ResultsTableCard from "./reports/ResultsTableCard";
+import { downloadCSV } from "@/utils/csv";
 
 type Props = {
   reportName: string;
@@ -65,7 +66,7 @@ export default function ReportScaffold({
   });
   const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
 
-  const uploadedFlags = files.map(f => !!f);
+  const filesReady = files.slice(0, requiredFileCount).every(Boolean);
 
   const handleFileChange = (index: number) => (file: File | null) => {
     setFiles(prevFiles => {
@@ -117,7 +118,7 @@ export default function ReportScaffold({
   };
 
   async function runReport() {
-    if (uploadedFlags.slice(0, requiredFileCount).some(f => !f)) return;
+    if (!filesReady) return;
     setReportStatus("running"); 
     setError(null); 
 
@@ -177,13 +178,12 @@ export default function ReportScaffold({
       
       <FullBleed>
         <ActionsRow
-          uploadedFlags={uploadedFlags}
-          requiredCount={requiredFileCount}
-          hasResults={reportStatus === "success"}
+          filesReady={filesReady}
+          reportStatus={reportStatus}
           dashboardVisible={dashboardVisible}
-          tableRows={tableRows}
           onRun={runReport}
           onDownloadExcel={downloadExcel}
+          onDownloadCsv={() => downloadCSV(tableRows)}
           onToggleDashboard={() => setDashboardVisible(v => !v)}
         />
         {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}

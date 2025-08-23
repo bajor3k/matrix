@@ -12,6 +12,7 @@ import { saveAs } from "file-saver";
 import ActionsRow from "@/components/reports/ActionsRow";
 import UploadCard from "@/components/UploadCard";
 import ResultsTableCard from "@/components/reports/ResultsTableCard";
+import { downloadCSV } from "@/utils/csv";
 
 
 const REPORT_SUMMARY =
@@ -63,7 +64,7 @@ export default function ReportsExcelPage() {
   });
   const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
 
-  const uploadedFlags = files.map(f => !!f);
+  const filesReady = files.filter(Boolean).length === 3;
 
   const handleFileChange = (index: number) => (file: File | null) => {
     setFiles(prevFiles => {
@@ -115,7 +116,7 @@ export default function ReportsExcelPage() {
   };
 
   async function runReport() {
-    if (uploadedFlags.filter(Boolean).length < 3) return;
+    if (!filesReady) return;
     setReportStatus("running");
     setError(null);
 
@@ -168,13 +169,12 @@ export default function ReportsExcelPage() {
         
       <FullBleed>
         <ActionsRow
-            uploadedFlags={uploadedFlags}
-            requiredCount={3}
-            hasResults={reportStatus === "success"}
+            filesReady={filesReady}
+            reportStatus={reportStatus}
             dashboardVisible={dashboardVisible}
-            tableRows={tableRows}
             onRun={runReport}
             onDownloadExcel={downloadExcel}
+            onDownloadCsv={() => downloadCSV(tableRows)}
             onToggleDashboard={() => setDashboardVisible(v => !v)}
         />
         {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}

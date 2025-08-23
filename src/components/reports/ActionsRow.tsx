@@ -7,28 +7,32 @@ import type { TableRow } from "@/utils/csv";
 import { ActionPill } from "@/components/ui/ActionPill";
 
 type Props = {
-  uploadedFlags: boolean[];
-  requiredCount?: number;
-  hasResults: boolean;
+  filesReady: boolean;
+  reportStatus: "idle" | "running" | "success" | "error";
   dashboardVisible: boolean;
-  tableRows: TableRow[];
   onRun: () => void;
   onDownloadExcel: () => void;
+  onDownloadCsv: () => void;
   onToggleDashboard: () => void;
 };
 
 export default function ActionsRow({
-  uploadedFlags,
-  requiredCount = 3,
-  hasResults,
+  filesReady,
+  reportStatus,
   dashboardVisible,
-  tableRows,
   onRun,
   onDownloadExcel,
+  onDownloadCsv,
   onToggleDashboard,
 }: Props) {
-  const canRun = uploadedFlags.slice(0, requiredCount).every(Boolean);
-  const canDownload = hasResults;
+  const canRun = filesReady && reportStatus !== "running";
+  const ranSuccess = reportStatus === "success";
+  const downloadsOn = ranSuccess;
+  const dashOn = ranSuccess;
+  const mavenOn = ranSuccess;
+
+  const runVariant = canRun || ranSuccess ? "primary" : "default";
+  const postVariant = ranSuccess ? "primary" : "default";
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -37,41 +41,46 @@ export default function ActionsRow({
         disabled={!canRun}
         label="Run Report"
         srLabel="Run report"
-        className="bg-[#08e28f] text-black hover:brightness-95 dark:text-black"
+        variant={runVariant}
       />
 
       <ActionPill
         onClick={onDownloadExcel}
-        disabled={!canDownload}
+        disabled={!downloadsOn}
         label="Excel"
         srLabel="Download Excel"
         title="Download Excel"
         icon={<DownloadIcon className="w-4 h-4" />}
+        variant={postVariant}
       />
 
       <ActionPill
-        onClick={() => downloadCSV(tableRows)}
-        disabled={!canDownload}
+        onClick={onDownloadCsv}
+        disabled={!downloadsOn}
         label="CSV"
         srLabel="Download CSV"
         title="Download CSV"
         icon={<DownloadIcon className="w-4 h-4" />}
+        variant={postVariant}
       />
 
       <ActionPill
         onClick={onToggleDashboard}
-        disabled={!canDownload}
+        disabled={!dashOn}
         label={dashboardVisible ? "Hide Dashboard" : "Open Dashboard"}
         srLabel={dashboardVisible ? "Hide dashboard" : "Open dashboard"}
+        variant={postVariant}
       />
 
       {/* NEW: Maven (non-functional for now) */}
       <ActionPill
-        disabled
+        // onClick={...}  // wire later
+        disabled={!mavenOn}
         label="Maven"
-        srLabel="Maven (coming soon)"
-        title="Maven (coming soon)"
+        srLabel="Ask Maven"
+        title="Ask Maven"
         icon={<Brain className="w-4 h-4" />}
+        variant={postVariant}
       />
     </div>
   );

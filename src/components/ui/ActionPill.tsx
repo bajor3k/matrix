@@ -5,9 +5,10 @@ export function ActionPill({
   onClick,
   disabled,
   icon,
-  label,        // visible label: "Excel", "CSV", "Run Report", etc.
-  srLabel,      // screen-reader label: e.g. "Download Excel"
-  title,        // optional tooltip
+  label,
+  srLabel,
+  title,
+  variant = "default", // 'default' | 'primary'
   className = "",
 }: {
   onClick?: () => void;
@@ -16,8 +17,22 @@ export function ActionPill({
   label: string;
   srLabel?: string;
   title?: string;
+  variant?: "default" | "primary";
   className?: string;
 }) {
+  const base =
+    "inline-flex items-center gap-2 rounded-full h-11 px-4 " +
+    "border transition-colors select-none " +
+    "disabled:opacity-55 disabled:cursor-not-allowed";
+
+  const styles =
+    variant === "primary"
+      ? // BRAND GREEN #08e28f
+        "bg-[#08e28f] text-black border-transparent hover:brightness-95"
+      : // dark/light neutral pill
+        "bg-[#121212] text-white dark:bg-white/10 dark:text-white " +
+        "border-black/10 dark:border-white/10 hover:bg-black dark:hover:bg-white/15";
+
   return (
     <button
       type="button"
@@ -25,14 +40,7 @@ export function ActionPill({
       disabled={disabled}
       aria-label={srLabel || label}
       title={title || label}
-      className={[
-        "inline-flex items-center gap-2 rounded-full h-11 px-4",
-        "border border-black/10 dark:border-white/10",
-        "bg-[#121212] text-white dark:bg-white/10 dark:text-white",
-        "hover:bg-black dark:hover:bg-white/15",
-        "disabled:opacity-55 disabled:cursor-not-allowed",
-        className,
-      ].join(" ")}
+      className={[base, styles, className].join(" ")}
     >
       {icon ? <span className="shrink-0">{icon}</span> : null}
       <span className="leading-none">{label}</span>
