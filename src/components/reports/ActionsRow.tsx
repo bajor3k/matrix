@@ -2,13 +2,10 @@
 "use client";
 
 import { Download as DownloadIcon, Brain } from "lucide-react";
-import { downloadCSV } from "@/utils/csv";
-import type { TableRow } from "@/utils/csv";
 import { ActionPill } from "@/components/ui/ActionPill";
 
 type Props = {
   filesReady: boolean;
-  reportStatus: "idle" | "running" | "success" | "error";
   dashboardVisible: boolean;
   onRun: () => void;
   onDownloadExcel: () => void;
@@ -18,69 +15,78 @@ type Props = {
 
 export default function ActionsRow({
   filesReady,
-  reportStatus,
   dashboardVisible,
   onRun,
   onDownloadExcel,
   onDownloadCsv,
   onToggleDashboard,
 }: Props) {
-  const canRun = filesReady && reportStatus !== "running";
-  const ranSuccess = reportStatus === "success";
-  const downloadsOn = ranSuccess;
-  const dashOn = ranSuccess;
-  const mavenOn = ranSuccess;
+  // BEFORE uploads:
+  //   - All neutral pills; labels "normal" (muted)
+  // AFTER uploads:
+  //   - Run Report => primary (green) + enabled
+  //   - Excel/CSV/Dashboard/Maven => neutral but label "bright" + enabled
 
-  const runVariant = canRun || ranSuccess ? "primary" : "default";
-  const postVariant = ranSuccess ? "primary" : "default";
+  const runVariant        = filesReady ? "primary" : "neutral";
+  const runDisabled       = !filesReady;
+
+  const postPillDisabled  = !filesReady;              // enabled after uploads
+  const postPillVariant   = "neutral" as const;       // stays neutral even after uploads
+  const postPillEmphasis  = filesReady ? "bright" : "normal";
+
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
       <ActionPill
         onClick={onRun}
-        disabled={!canRun}
+        disabled={runDisabled}
         label="Run Report"
         srLabel="Run report"
         variant={runVariant}
+        labelEmphasis="bright"
       />
 
       <ActionPill
         onClick={onDownloadExcel}
-        disabled={!downloadsOn}
+        disabled={postPillDisabled}
         label="Excel"
         srLabel="Download Excel"
         title="Download Excel"
         icon={<DownloadIcon className="w-4 h-4" />}
-        variant={postVariant}
+        variant={postPillVariant}
+        labelEmphasis={postPillEmphasis}
       />
 
       <ActionPill
         onClick={onDownloadCsv}
-        disabled={!downloadsOn}
+        disabled={postPillDisabled}
         label="CSV"
         srLabel="Download CSV"
         title="Download CSV"
         icon={<DownloadIcon className="w-4 h-4" />}
-        variant={postVariant}
+        variant={postPillVariant}
+        labelEmphasis={postPillEmphasis}
       />
 
       <ActionPill
         onClick={onToggleDashboard}
-        disabled={!dashOn}
+        disabled={postPillDisabled}
         label={dashboardVisible ? "Hide Dashboard" : "Open Dashboard"}
         srLabel={dashboardVisible ? "Hide dashboard" : "Open dashboard"}
-        variant={postVariant}
+        variant={postPillVariant}
+        labelEmphasis={postPillEmphasis}
       />
 
-      {/* NEW: Maven (non-functional for now) */}
+      {/* NEW: AskMaven (non-functional for now) */}
       <ActionPill
         // onClick={...}  // wire later
-        disabled={!mavenOn}
+        disabled={postPillDisabled}
         label="Maven"
-        srLabel="Ask Maven"
-        title="Ask Maven"
+        srLabel="Maven"
+        title="Maven"
         icon={<Brain className="w-4 h-4" />}
-        variant={postVariant}
+        variant={postPillVariant}
+        labelEmphasis={postPillEmphasis}
       />
     </div>
   );

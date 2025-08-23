@@ -179,7 +179,6 @@ export default function ReportScaffold({
       <FullBleed>
         <ActionsRow
           filesReady={filesReady}
-          reportStatus={reportStatus}
           dashboardVisible={dashboardVisible}
           onRun={runReport}
           onDownloadExcel={downloadExcel}

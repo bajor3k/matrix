@@ -170,7 +170,6 @@ export default function ReportsExcelPage() {
       <FullBleed>
         <ActionsRow
             filesReady={filesReady}
-            reportStatus={reportStatus}
             dashboardVisible={dashboardVisible}
             onRun={runReport}
             onDownloadExcel={downloadExcel}
