@@ -6,88 +6,98 @@ import { downloadCSV } from "@/utils/csv";
 import type { TableRow } from "@/utils/csv";
 
 type Props = {
-  uploadedCount: number;          // current number of uploaded files
-  requiredCount?: number;         // defaults to 3
-  hasResults: boolean;            // true after the Python run completes successfully
-  tableRows: TableRow[];          // what you render in the table
+  /** One boolean per file slot; true if that slot has a file. Example: [true, false, true] */
+  uploadedFlags: boolean[];
+  /** How many files are required to enable Run Report. Default: uploadedFlags.length */
+  requiredCount?: number;
+  /** True after the Python pipeline finishes successfully (results ready). */
+  hasResults: boolean;
+  /** Data currently shown in the table — used for CSV export. */
+  tableRows: TableRow[];
   onRun: () => void;
   onDownloadExcel: () => void;
   onOpenDashboard: () => void;
 };
 
 export default function ActionsRow({
-  uploadedCount,
-  requiredCount = 3,
+  uploadedFlags,
+  requiredCount,
   hasResults,
   tableRows,
   onRun,
   onDownloadExcel,
   onOpenDashboard,
 }: Props) {
-  const allUploaded = uploadedCount >= requiredCount;
+  const req = Math.max(requiredCount ?? uploadedFlags.length, 1);
+
+  // Strict: require ALL of the first `req` slots to be truthy.
+  const allUploaded =
+    uploadedFlags.length >= req &&
+    uploadedFlags.slice(0, req).every(Boolean);
 
   // Enablement rules
-  const runEnabled = allUploaded;              // turns green when all uploaded
-  const downloadsEnabled = hasResults;         // turn green after a successful run
+  const runEnabled = allUploaded;
+  const downloadsReady = hasResults;
 
-  // Guarded handlers (never fire while disabled)
-  const handleRun = () => { if (runEnabled) onRun(); };
-  const handleExcel = () => { if (downloadsEnabled) onDownloadExcel(); };
-  const handleCsv = () => { if (downloadsEnabled) downloadCSV(tableRows); };
-  const handleOpen = () => { if (downloadsEnabled) onOpenDashboard(); };
+  // Guarded handlers
+  const safeRun = () => { if (runEnabled) onRun(); };
+  const safeExcel = () => { if (downloadsReady) onDownloadExcel(); };
+  const safeCsv = () => { if (downloadsReady) downloadCSV(tableRows); };
+  const safeOpen = () => { if (downloadsReady) onOpenDashboard(); };
 
-  // Pick class per button state
-  const cls = (enabled: boolean) =>
-    enabled ? "btn-primary" : "btn-secondary btn-disabled";
+  // Class helpers
+  const clsRun = runEnabled ? "btn-primary" : "btn-secondary btn-disabled";
+  const clsReady = (ready: boolean) =>
+    ready ? "btn-secondary btn-secondary--ready" : "btn-secondary btn-disabled";
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-      {/* Run Report — green after all uploads */}
+      {/* Run Report — ONLY turns green when ALL required files uploaded */}
       <button
         type="button"
-        onClick={handleRun}
+        onClick={safeRun}
         aria-disabled={!runEnabled}
         disabled={!runEnabled}
-        className={cls(runEnabled)}
+        className={clsRun}
         title={runEnabled ? "Run Report" : "Upload all required files first"}
       >
         Run Report
       </button>
 
-      {/* Download Excel — green after run */}
+      {/* Download Excel — emphasized text when ready (NOT green) */}
       <button
         type="button"
-        onClick={handleExcel}
-        aria-disabled={!downloadsEnabled}
-        disabled={!downloadsEnabled}
-        className={cls(downloadsEnabled)}
-        title={downloadsEnabled ? "Download Excel" : "Run the report first"}
+        onClick={safeExcel}
+        aria-disabled={!downloadsReady}
+        disabled={!downloadsReady}
+        className={clsReady(downloadsReady)}
+        title={downloadsReady ? "Download Excel" : "Run the report first"}
       >
         <Download className="btn-icon" />
         Download Excel
       </button>
 
-      {/* Download CSV — green after run */}
+      {/* Download CSV — emphasized text when ready (NOT green) */}
       <button
         type="button"
-        onClick={handleCsv}
-        aria-disabled={!downloadsEnabled}
-        disabled={!downloadsEnabled}
-        className={cls(downloadsEnabled)}
-        title={downloadsEnabled ? "Download CSV" : "Run the report first"}
+        onClick={safeCsv}
+        aria-disabled={!downloadsReady}
+        disabled={!downloadsReady}
+        className={clsReady(downloadsReady)}
+        title={downloadsReady ? "Download CSV" : "Run the report first"}
       >
         <Download className="btn-icon" />
         Download CSV
       </button>
 
-      {/* Open Dashboard — green after run */}
+      {/* Open Dashboard — emphasized text when ready (NOT green) */}
       <button
         type="button"
-        onClick={handleOpen}
-        aria-disabled={!downloadsEnabled}
-        disabled={!downloadsEnabled}
-        className={cls(downloadsEnabled)}
-        title={downloadsEnabled ? "Open Dashboard" : "Run the report first"}
+        onClick={safeOpen}
+        aria-disabled={!downloadsReady}
+        disabled={!downloadsReady}
+        className={clsReady(downloadsReady)}
+        title={downloadsReady ? "Open Dashboard" : "Run the report first"}
       >
         Open Dashboard
       </button>

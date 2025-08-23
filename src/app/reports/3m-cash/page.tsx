@@ -59,7 +59,6 @@ export default function ReportsExcelPage() {
   const [reportStatus, setReportStatus] = React.useState<"idle" | "running" | "success" | "error">("idle");
 
   const requiredCount = 3;
-  const uploadedCount = Object.values(ok).filter(Boolean).length;
   const hasResults = reportStatus === "success";
 
   function accept(key: UploadKey, f: File | null) {
@@ -102,7 +101,7 @@ export default function ReportsExcelPage() {
 
 
   async function runMergeJSON() {
-    if (uploadedCount < requiredCount) return;
+    if (Object.values(ok).filter(Boolean).length < requiredCount) return;
     setReportStatus("running");
     setError(null);
     setShowDash(false);
@@ -159,8 +158,8 @@ export default function ReportsExcelPage() {
         
       <FullBleed>
         <ActionsRow
-            uploadedCount={uploadedCount}
-            requiredCount={requiredCount}
+            uploadedFlags={[ok.pyfee, ok.pycash_2, ok.pypi]}
+            requiredCount={3}
             hasResults={hasResults}
             tableRows={dashboardData?.tableRows || []}
             onRun={runMergeJSON}

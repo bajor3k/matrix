@@ -477,26 +477,6 @@ html.dark .btn-secondary:hover {
   background: rgba(255,255,255,0.1);
 }
 
-.btn-disabled,
-.btn-secondary[disabled] {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.btn-disabled:hover::after,
-.btn-secondary[disabled]:hover::after {
-  content: "";
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  top: 50%;
-  height: 2px;
-  background: #e31211;
-  transform: rotate(-12deg);
-  border-radius: 9999px;
-  box-shadow: 0 0 0 0.25px #e31211;
-}
-
 .btn-icon {
   width: 1rem;
   height: 1rem;
@@ -530,6 +510,15 @@ html.dark .btn-primary {
   background: #08e28f;
   color: #0b0b0b;
 }
+
+.btn-secondary--ready {
+  font-weight: 700;
+  color: #0b0b0b;
+}
+html.dark .btn-secondary--ready {
+  color: rgba(255,255,255,.98);
+}
+
 
 /* Keep disabled look + red strike for ANY button type */
 .btn-disabled,

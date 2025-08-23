@@ -56,7 +56,6 @@ export default function ReportScaffold({
   const [dashboardData, setDashboardData] = React.useState<{ kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null>(null);
   const [showDash, setShowDash] = React.useState(false);
 
-  const uploadedCount = Object.values(ok).filter(Boolean).length;
   const hasResults = reportStatus === "success" && dashboardData !== null;
 
 
@@ -110,7 +109,7 @@ export default function ReportScaffold({
   }
 
   async function runMergeJSON() {
-    if (uploadedCount < requiredFileCount) return;
+    if (Object.values(ok).filter(Boolean).length < requiredFileCount) return;
     setReportStatus("running"); 
     setError(null); 
     setShowDash(false); 
@@ -163,14 +162,14 @@ export default function ReportScaffold({
       <FullBleed>
         <UploadRow>
           <UploadCard slotId="upload-a" onFileAccepted={(f)=>accept("a",f)} dropzoneText="Drop File 1 here"/>
-          <UploadCard slotId="upload-b" onFileAccepted={(f)=>accept("b",f)} dropzoneText="Drop File 2 here"/>
-          <UploadCard slotId="upload-c" onFileAccepted={(f)=>accept("c",f)} dropzoneText="Drop File 3 here"/>
+          {requiredFileCount > 1 && <UploadCard slotId="upload-b" onFileAccepted={(f)=>accept("b",f)} dropzoneText="Drop File 2 here"/>}
+          {requiredFileCount > 2 && <UploadCard slotId="upload-c" onFileAccepted={(f)=>accept("c",f)} dropzoneText="Drop File 3 here"/>}
         </UploadRow>
       </FullBleed>
       
       <FullBleed>
         <ActionsRow
-          uploadedCount={uploadedCount}
+          uploadedFlags={[ok.a, ok.b, ok.c]}
           requiredCount={requiredFileCount}
           hasResults={hasResults}
           tableRows={dashboardData?.tableRows || []}
