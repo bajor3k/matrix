@@ -59,7 +59,7 @@ export default function UploadCard({
         "rounded-xl border-2 border-dashed",
         isDragActive ? "border-[#08e28f] text-[#08e28f]" : "border-black/30 text-black/90 dark:border-white/40 dark:text-white/90",
         "px-6 py-5 cursor-pointer transition-colors",
-        "bg-[#fcfbfb] dark:bg-transparent",
+        "bg-[#fcfbfb] dark:bg-[#101010]",
         className
       )}
       role="button"
