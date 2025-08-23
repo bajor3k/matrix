@@ -30,7 +30,6 @@ export const toolbarSections: ToolbarSection[] = [
     { id: 'CRM', title: 'CRM' },
     { id: 'Analytics', title: 'Analytics' },
     { id: 'Resources', title: 'Resources' },
-    { id: 'Jira', title: 'Jira' },
 ];
 
 export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
@@ -69,5 +68,4 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Tools', icon: Calculator, href: '/resource-matrix?tab=tools' },
     { name: 'Training', icon: GraduationCap, href: '/resource-matrix?tab=training' },
   ],
-  'Jira': [],
 };

@@ -12,7 +12,7 @@ export interface NavItem {
   hasNewAlerts?: boolean;
 }
 
-export type ToolbarSectionKey = 'Reports' | 'CRM' | 'Analytics' | 'Resources' | 'Jira';
+export type ToolbarSectionKey = 'Reports' | 'CRM' | 'Analytics' | 'Resources';
 
 export interface ToolbarSection {
   id: ToolbarSectionKey;
