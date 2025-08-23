@@ -4,13 +4,14 @@
 import React from "react";
 import UploadCard from "@/components/UploadCard";
 import ReportsDashboard from "./reports/ReportsDashboard";
-import type { TableRow } from "./reports/ReportsDashboard.types";
+import type { TableRow } from "./reports/ResultsTableCard";
 import ReportsPageShell from "./reports/ReportsPageShell";
 import HelpHeader, { helpHeaderAutoDismiss } from "./reports/HelpHeader";
 import { UploadRow } from "./reports/UploadRow";
 import FullBleed from "./layout/FullBleed";
 import ActionsRow from "./reports/ActionsRow";
 import { saveAs } from "file-saver";
+import ResultsTableCard from "./reports/ResultsTableCard";
 
 type Props = {
   reportName: string;
@@ -20,13 +21,10 @@ type Props = {
   requiredFileCount?: 1 | 2 | 3;
 };
 
-interface DashboardData {
-    metrics: {
-        totalAdvisoryFees: string;
-        totalAccounts: number;
-        flaggedShort: number;
-    };
-    tableRows: TableRow[];
+interface DashboardMetrics {
+    totalAdvisoryFees: string;
+    totalAccounts: number;
+    flaggedShort: number;
 }
 
 // Helper to safely format numbers as currency
@@ -53,10 +51,14 @@ export default function ReportScaffold({
   const [files, setFiles] = React.useState<(File | null)[]>([null, null, null]);
   const [reportStatus, setReportStatus] = React.useState<"idle" | "running" | "success" | "error">("idle");
   const [error, setError] = React.useState<string | null>(null);
-  const [dashboardData, setDashboardData] = React.useState<DashboardData | null>(null);
-  const [showDash, setShowDash] = React.useState(false);
+  const [dashboardVisible, setDashboardVisible] = React.useState(false);
+  const [metrics, setMetrics] = React.useState<DashboardMetrics>({
+      totalAdvisoryFees: "$0.00",
+      totalAccounts: 0,
+      flaggedShort: 0,
+  });
+  const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
 
-  const hasResults = reportStatus === "success" && dashboardData !== null;
   const uploadedFlags = files.map(f => !!f);
 
   const handleFileChange = (index: number) => (file: File | null) => {
@@ -70,10 +72,14 @@ export default function ReportScaffold({
     });
   };
 
-  function transformDataForDashboard(data: any[]): DashboardData | null {
-    if (!data || data.length === 0) return null;
-
-    const tableRows: TableRow[] = data.map(r => ({
+  function processApiData(data: any[]) {
+    if (!data || data.length === 0) {
+      setMetrics({ totalAdvisoryFees: '$0.00', totalAccounts: 0, flaggedShort: 0 });
+      setTableRows([]);
+      return;
+    }
+    
+    const rows: TableRow[] = data.map(r => ({
       ip: r['IP'] ?? '',
       acct: r['Account Number'] ?? '',
       value: money(r['Value']),
@@ -82,21 +88,22 @@ export default function ReportScaffold({
       short: (num(r['Cash']) ?? 0) < (num(r['Advisory Fees']) ?? 0),
     }));
 
-    const metrics = {
-        totalAdvisoryFees: money(tableRows.reduce((sum, row) => sum + (num(row.fee) || 0), 0)),
-        totalAccounts: tableRows.length,
-        flaggedShort: tableRows.filter(r => r.short).length
+    const newMetrics = {
+        totalAdvisoryFees: money(rows.reduce((sum, row) => sum + (num(row.fee) || 0), 0)),
+        totalAccounts: rows.length,
+        flaggedShort: rows.filter(r => r.short).length
     };
-
-    return { metrics, tableRows };
+    
+    setTableRows(rows);
+    setMetrics(newMetrics);
   }
 
-  async function runMergeJSON() {
-    if (uploadedFlags.filter(Boolean).length < requiredFileCount) return;
+  async function runReport() {
+    if (uploadedFlags.slice(0, requiredFileCount).some(f => !f)) return;
     setReportStatus("running"); 
     setError(null); 
-    setShowDash(false); 
-    setDashboardData(null);
+    setDashboardVisible(false);
+
     try {
       const fd = new FormData();
       if (files[0]) fd.append("fileA", files[0]);
@@ -106,8 +113,10 @@ export default function ReportScaffold({
       const res = await fetch(`${mergeApiPath}?format=json`, { method: "POST", body: fd });
       if (!res.ok) throw new Error(await res.text());
       const rows = await res.json();
-      setDashboardData(transformDataForDashboard(rows));
+      
+      processApiData(rows);
       setReportStatus("success");
+      setDashboardVisible(true);
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
       setReportStatus("error");
@@ -115,7 +124,7 @@ export default function ReportScaffold({
   }
 
   async function downloadExcel() {
-    if (!hasResults) return;
+    if (reportStatus !== "success") return;
     const fd = new FormData();
     if (files[0]) fd.append("fileA", files[0]);
     if (files[1]) fd.append("fileB", files[1]);
@@ -128,12 +137,13 @@ export default function ReportScaffold({
         saveAs(blob, `${reportName.replace(/\s+/g, "_").toLowerCase()}_merged.xlsx`);
     } catch (e: any) {
         setError(e?.message || "Failed to download Excel file.");
-        setReportStatus("error");
     }
   }
   
-  const handleOpenDashboard = () => {
-    if (dashboardData) setShowDash(true);
+  const onOpenDashboard = () => {
+    if (reportStatus === 'success') {
+      setDashboardVisible(true);
+    }
   }
 
   return (
@@ -159,21 +169,24 @@ export default function ReportScaffold({
         <ActionsRow
           uploadedFlags={uploadedFlags}
           requiredCount={requiredFileCount}
-          hasResults={hasResults}
-          tableRows={dashboardData?.tableRows || []}
-          onRun={runMergeJSON}
+          hasResults={reportStatus === "success"}
+          tableRows={tableRows}
+          onRun={runReport}
           onDownloadExcel={downloadExcel}
-          onOpenDashboard={handleOpenDashboard}
+          onOpenDashboard={onOpenDashboard}
         />
         {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
         {reportStatus === 'running' && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
       </FullBleed>
 
-      {showDash && dashboardData && (
-           <ReportsDashboard 
-                metrics={dashboardData.metrics}
-                onAsk={(q) => console.log("User asked:", q)}
-            />
+      {dashboardVisible && (
+        <>
+          <ReportsDashboard 
+              metrics={metrics}
+              onAsk={(q) => console.log("User asked:", q)}
+          />
+          <ResultsTableCard rows={tableRows} />
+        </>
       )}
     </ReportsPageShell>
   );

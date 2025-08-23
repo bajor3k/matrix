@@ -2,15 +2,16 @@
 "use client";
 
 import React from "react";
-import UploadCard from "@/components/UploadCard";
 import ReportsDashboard from "@/components/reports/ReportsDashboard";
 import ReportsPageShell from "@/components/reports/ReportsPageShell";
 import HelpHeader, { helpHeaderAutoDismiss } from "@/components/reports/HelpHeader";
 import { UploadRow } from "@/components/reports/UploadRow";
-import type { TableRow } from "@/components/reports/ReportsDashboard.types";
+import type { TableRow } from "@/components/reports/ResultsTableCard";
 import FullBleed from "@/components/layout/FullBleed";
 import { saveAs } from "file-saver";
 import ActionsRow from "@/components/reports/ActionsRow";
+import UploadCard from "@/components/UploadCard";
+import ResultsTableCard from "@/components/reports/ResultsTableCard";
 
 
 const REPORT_SUMMARY =
@@ -38,25 +39,25 @@ const num = (v: any): number | null => {
   return isFinite(n) ? n : null;
 }
 
-interface DashboardData {
-    metrics: {
-        totalAdvisoryFees: string;
-        totalAccounts: number;
-        flaggedShort: number;
-    };
-    tableRows: TableRow[];
+interface DashboardMetrics {
+    totalAdvisoryFees: string;
+    totalAccounts: number;
+    flaggedShort: number;
 }
 
 export default function ReportsExcelPage() {
   const [files, setFiles] = React.useState<(File | null)[]>([null, null, null]);
-  
   const [error, setError] = React.useState<string | null>(null);
-  const [dashboardData, setDashboardData] = React.useState<DashboardData | null>(null);
-  const [showDash, setShowDash] = React.useState(false);
   const [reportStatus, setReportStatus] = React.useState<"idle" | "running" | "success" | "error">("idle");
+  const [dashboardVisible, setDashboardVisible] = React.useState(false);
 
-  const requiredCount = 3;
-  const hasResults = reportStatus === "success";
+  const [metrics, setMetrics] = React.useState<DashboardMetrics>({
+      totalAdvisoryFees: "$0.00",
+      totalAccounts: 0,
+      flaggedShort: 0,
+  });
+  const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
+
   const uploadedFlags = files.map(f => !!f);
 
   const handleFileChange = (index: number) => (file: File | null) => {
@@ -70,11 +71,14 @@ export default function ReportsExcelPage() {
     });
   };
 
-  // New function to transform API data into dashboard props
-  function transformDataForDashboard(data: any[]): DashboardData | null {
-    if (!data || data.length === 0) return null;
+  function processApiData(data: any[]) {
+    if (!data || data.length === 0) {
+      setMetrics({ totalAdvisoryFees: '$0.00', totalAccounts: 0, flaggedShort: 0 });
+      setTableRows([]);
+      return;
+    }
 
-    const tableRows: TableRow[] = data.map(r => ({
+    const rows: TableRow[] = data.map(r => ({
       ip: r['IP'] ?? '',
       acct: r['Account'] ?? '',
       value: money(r['Value']),
@@ -83,22 +87,23 @@ export default function ReportsExcelPage() {
       short: (num(r['Cash']) ?? 0) < (num(r['Advisory Fee']) ?? 0),
     }));
 
-    const metrics = {
-        totalAdvisoryFees: money(tableRows.reduce((sum, row) => sum + (num(row.fee) || 0), 0)),
-        totalAccounts: tableRows.length,
-        flaggedShort: tableRows.filter(r => r.short).length
+    const newMetrics = {
+        totalAdvisoryFees: money(rows.reduce((sum, row) => sum + (num(row.fee) || 0), 0)),
+        totalAccounts: rows.length,
+        flaggedShort: rows.filter(r => r.short).length
     };
-
-    return { metrics, tableRows };
+    
+    setTableRows(rows);
+    setMetrics(newMetrics);
   }
 
 
-  async function runMergeJSON() {
-    if (uploadedFlags.filter(Boolean).length < requiredCount) return;
+  async function runReport() {
+    if (uploadedFlags.filter(Boolean).length < 3) return;
     setReportStatus("running");
     setError(null);
-    setShowDash(false);
-    setDashboardData(null);
+    setDashboardVisible(false);
+
     try {
       const fd = new FormData();
       fd.append("pycash_1", files[0]!);
@@ -107,8 +112,10 @@ export default function ReportsExcelPage() {
       const res = await fetch("/api/reports/3m-cash/merge?format=json", { method: "POST", body: fd });
       if (!res.ok) throw new Error(await res.text());
       const rows = await res.json();
-      setDashboardData(transformDataForDashboard(rows));
+      
+      processApiData(rows);
       setReportStatus("success");
+      setDashboardVisible(true);
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
       setReportStatus("error");
@@ -116,7 +123,7 @@ export default function ReportsExcelPage() {
   }
 
   async function downloadExcel() {
-    if (!hasResults) return;
+    if (reportStatus !== "success") return;
     try {
       const fd = new FormData();
       fd.append("pycash_1", files[0]!);
@@ -131,8 +138,10 @@ export default function ReportsExcelPage() {
     }
   }
 
-  const handleOpenDashboard = () => {
-    if(dashboardData) setShowDash(true);
+  const onOpenDashboard = () => {
+    if (reportStatus === 'success') {
+      setDashboardVisible(true);
+    }
   }
 
   return (
@@ -153,21 +162,24 @@ export default function ReportsExcelPage() {
         <ActionsRow
             uploadedFlags={uploadedFlags}
             requiredCount={3}
-            hasResults={hasResults}
-            tableRows={dashboardData?.tableRows || []}
-            onRun={runMergeJSON}
+            hasResults={reportStatus === "success"}
+            tableRows={tableRows}
+            onRun={runReport}
             onDownloadExcel={downloadExcel}
-            onOpenDashboard={handleOpenDashboard}
+            onOpenDashboard={onOpenDashboard}
         />
         {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
          {reportStatus === "running" && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
       </FullBleed>
 
-      {showDash && dashboardData && (
-        <ReportsDashboard 
-            metrics={dashboardData.metrics}
-            onAsk={(q) => console.log("User asked:", q)}
-        />
+      {dashboardVisible && (
+        <>
+          <ReportsDashboard 
+              metrics={metrics}
+              onAsk={(q) => console.log("User asked:", q)}
+          />
+          <ResultsTableCard rows={tableRows} />
+        </>
       )}
     </ReportsPageShell>
   );
