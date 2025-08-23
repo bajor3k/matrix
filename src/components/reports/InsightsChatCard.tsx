@@ -1,4 +1,3 @@
-// components/reports/InsightsChatCard.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -10,14 +9,14 @@ export default function InsightsChatCard({
   onAsk,
   className,
 }: {
-  onAsk?: (q: string) => void; // hook for later model integration
+  onAsk?: (q: string) => void;
   className?: string;
 }) {
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "assistant",
       text:
-        "Ask a question about this report (fees, accounts, flagged short…). “What’s the average advisory fee?”",
+        "Ask a question about this report (fees, accounts, flagged short…). E.g., “What’s the average advisory fee?”",
     },
   ]);
   const [q, setQ] = useState("");
@@ -29,7 +28,8 @@ export default function InsightsChatCard({
 
     setMessages((m) => [...m, { role: "user", text: question }]);
     setQ("");
-    // placeholder echo
+
+    // placeholder echo; wire this to your backend/LLM later
     setTimeout(() => {
       setMessages((m) => [
         ...m,
@@ -44,16 +44,6 @@ export default function InsightsChatCard({
     onAsk?.(question);
   };
 
-  const Suggestion = ({ text }: { text: string }) => (
-    <button
-      type="button"
-      onClick={() => setQ(text)}
-      className="text-xs rounded-full border border-white/10 px-3 py-1 text-white/80 hover:bg-white/5"
-    >
-      {text}
-    </button>
-  );
-
   return (
     <section
       className={[
@@ -61,17 +51,10 @@ export default function InsightsChatCard({
         "bg-white dark:bg-[#101010]",
         className || "",
       ].join(" ")}
+      aria-label="Ask about this report"
     >
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="report-heading text-white/85">Ask about this report</h3>
-        <div className="hidden md:flex items-center gap-2">
-          <Suggestion text="Which IP has the highest fees?" />
-          <Suggestion text="How many accounts are short?" />
-          <Suggestion text="Top 5 accounts by value" />
-        </div>
-      </div>
-
-      <div className="h-[320px] md:h-[360px] rounded-xl border border-white/10 overflow-auto p-3 space-y-3">
+      {/* Messages area (added a small top margin since header is gone) */}
+      <div className="mt-1 h-[320px] md:h-[360px] rounded-xl border border-white/10 overflow-auto p-3 space-y-3">
         {messages.map((m, i) => (
           <div
             key={i}
@@ -86,19 +69,16 @@ export default function InsightsChatCard({
         ))}
       </div>
 
+      {/* Input row */}
       <form onSubmit={submit} className="mt-3 flex items-center gap-2">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Ask a question about the data…"
+          aria-label="Ask a question about the data"
           className="flex-1 rounded-xl bg-black/20 dark:bg-black/30 border border-white/10 px-3 py-2 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-white/20"
         />
-        <button
-          type="submit"
-          className="btn-secondary"
-          title="Send"
-          aria-label="Send"
-        >
+        <button type="submit" className="btn-secondary" title="Ask">
           <Send className="btn-icon" />
           Ask
         </button>
