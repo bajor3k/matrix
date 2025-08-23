@@ -25,6 +25,7 @@ interface DashboardMetrics {
     totalAdvisoryFees: string;
     totalAccounts: number;
     flaggedShort: number;
+    totalRows: number;
 }
 
 // Helper to safely format numbers as currency
@@ -56,6 +57,7 @@ export default function ReportScaffold({
       totalAdvisoryFees: "$0.00",
       totalAccounts: 0,
       flaggedShort: 0,
+      totalRows: 0,
   });
   const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
 
@@ -74,7 +76,7 @@ export default function ReportScaffold({
 
   function processApiData(data: any[]) {
     if (!data || data.length === 0) {
-      setMetrics({ totalAdvisoryFees: '$0.00', totalAccounts: 0, flaggedShort: 0 });
+      setMetrics({ totalAdvisoryFees: '$0.00', totalAccounts: 0, flaggedShort: 0, totalRows: 0 });
       setTableRows([]);
       return;
     }
@@ -91,7 +93,8 @@ export default function ReportScaffold({
     const newMetrics = {
         totalAdvisoryFees: money(rows.reduce((sum, row) => sum + (num(row.fee) || 0), 0)),
         totalAccounts: rows.length,
-        flaggedShort: rows.filter(r => r.short).length
+        flaggedShort: rows.filter(r => r.short).length,
+        totalRows: rows.length,
     };
     
     setTableRows(rows);

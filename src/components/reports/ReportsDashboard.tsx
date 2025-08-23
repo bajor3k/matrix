@@ -7,6 +7,7 @@ type Props = {
     totalAdvisoryFees: string;
     totalAccounts: number;
     flaggedShort: number;
+    totalRows: number;
   };
   onAsk?: (q: string) => void;
 };
@@ -18,7 +19,7 @@ export default function ReportsDashboard({
   return (
     <div
       className="
-        w-full max-w-none               /* ← stretch */
+        w-full max-w-none
         grid gap-4 md:gap-6 items-stretch
         grid-cols-1 lg:grid-cols-12
       "

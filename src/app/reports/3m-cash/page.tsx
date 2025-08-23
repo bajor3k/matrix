@@ -43,6 +43,7 @@ interface DashboardMetrics {
     totalAdvisoryFees: string;
     totalAccounts: number;
     flaggedShort: number;
+    totalRows: number;
 }
 
 export default function ReportsExcelPage() {
@@ -55,6 +56,7 @@ export default function ReportsExcelPage() {
       totalAdvisoryFees: "$0.00",
       totalAccounts: 0,
       flaggedShort: 0,
+      totalRows: 0,
   });
   const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
 
@@ -73,7 +75,7 @@ export default function ReportsExcelPage() {
 
   function processApiData(data: any[]) {
     if (!data || data.length === 0) {
-      setMetrics({ totalAdvisoryFees: '$0.00', totalAccounts: 0, flaggedShort: 0 });
+      setMetrics({ totalAdvisoryFees: '$0.00', totalAccounts: 0, flaggedShort: 0, totalRows: 0 });
       setTableRows([]);
       return;
     }
@@ -90,7 +92,8 @@ export default function ReportsExcelPage() {
     const newMetrics = {
         totalAdvisoryFees: money(rows.reduce((sum, row) => sum + (num(row.fee) || 0), 0)),
         totalAccounts: rows.length,
-        flaggedShort: rows.filter(r => r.short).length
+        flaggedShort: rows.filter(r => r.short).length,
+        totalRows: rows.length,
     };
     
     setTableRows(rows);
@@ -102,7 +105,6 @@ export default function ReportsExcelPage() {
     if (uploadedFlags.filter(Boolean).length < 3) return;
     setReportStatus("running");
     setError(null);
-    setDashboardVisible(false);
 
     try {
       const fd = new FormData();
