@@ -499,25 +499,26 @@ html.dark .btn-secondary--ready {
 }
 
 
-/* Keep disabled look + red strike for ANY button type */
+/* Disabled state without the red slash */
 .btn-disabled,
 button[disabled] {
   opacity: 0.55;
   cursor: not-allowed;
 }
-.btn-disabled:hover::after,
-button[disabled]:hover::after {
-  content: "";
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  top: 50%;
-  height: 2px;
-  background: #e31211;           /* brand red */
-  transform: rotate(-12deg);
-  border-radius: 9999px;
-  box-shadow: 0 0 0 0.25px #e31211;
+
+.btn-disabled:hover,
+button[disabled]:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  background-color: initial; /* Or whatever the default disabled bg is */
 }
+
+/* Remove pseudo-elements that might create the slash */
+.btn-disabled::before, .btn-disabled::after,
+button[disabled]::before, button[disabled]::after {
+  content: none !important;
+}
+
 
 html.dark .recharts-default-tooltip {
   --tooltip-bg: #0b0b0b;
