@@ -163,6 +163,10 @@
   background: #000;
 }
 
+/* Improve placeholder contrast app-wide */
+::placeholder { color: rgba(17, 24, 39, 0.55); }          /* light */
+.dark ::placeholder { color: rgba(255, 255, 255, 0.60); } /* dark */
+
 
 @layer utilities {
   .neon-glow {

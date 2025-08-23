@@ -9,11 +9,13 @@ type Props = {
     flaggedShort: number;
     totalRows: number;
   };
+  messages: Array<{ role: "user" | "assistant"; content: string }>;
   onAsk?: (q: string) => void;
 };
 
 export default function ReportsDashboard({
   metrics,
+  messages,
   onAsk,
 }: Props) {
   return (
@@ -25,7 +27,7 @@ export default function ReportsDashboard({
       "
     >
       <KPIStackCard metrics={metrics} className="lg:col-span-3 h-full" />
-      <InsightsChatCard onAsk={onAsk} className="lg:col-span-9 h-full" />
+      <InsightsChatCard messages={messages} onAsk={onAsk} className="lg:col-span-9 h-full" />
     </div>
   );
 }

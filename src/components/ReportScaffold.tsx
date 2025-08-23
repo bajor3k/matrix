@@ -53,6 +53,10 @@ export default function ReportScaffold({
   const [reportStatus, setReportStatus] = React.useState<"idle" | "running" | "success" | "error">("idle");
   const [error, setError] = React.useState<string | null>(null);
   const [dashboardVisible, setDashboardVisible] = React.useState(false);
+  const [chatMessages, setChatMessages] = React.useState<Array<{ role: 'user' | 'assistant'; content: string }>>([
+    { role: 'assistant', content: 'Ask a question about this report (fees, accounts, flagged short, etc.).' },
+  ]);
+
   const [metrics, setMetrics] = React.useState<DashboardMetrics>({
       totalAdvisoryFees: "$0.00",
       totalAccounts: 0,
@@ -100,6 +104,17 @@ export default function ReportScaffold({
     setTableRows(rows);
     setMetrics(newMetrics);
   }
+
+  const handleAsk = (question: string) => {
+    setChatMessages((prev) => [...prev, { role: 'user', content: question }]);
+    // Placeholder for LLM response
+    setTimeout(() => {
+      setChatMessages((prev) => [
+        ...prev,
+        { role: 'assistant', content: 'Thanks for asking! This feature is coming soon.' },
+      ]);
+    }, 1000);
+  };
 
   async function runReport() {
     if (uploadedFlags.slice(0, requiredFileCount).some(f => !f)) return;
@@ -179,7 +194,8 @@ export default function ReportScaffold({
         <>
           <ReportsDashboard 
               metrics={metrics}
-              onAsk={(q) => console.log("User asked:", q)}
+              messages={chatMessages}
+              onAsk={handleAsk}
           />
           <ResultsTableCard rows={tableRows} />
         </>
