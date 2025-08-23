@@ -16,8 +16,11 @@ export type TableRow = {
 };
 
 export type ReportsDashboardProps = {
-  kpis: Kpi[];
-  donutTitle?: string;           // default: "Advisory Fees by IP"
-  donutData: DonutSlice[];
+  metrics: {
+    totalAdvisoryFees: string;
+    totalAccounts: number;
+    flaggedShort: number;
+  };
   tableRows: TableRow[];
+  onAsk?: (q: string) => void;
 };

@@ -1,77 +1,31 @@
 // src/components/reports/ReportsDashboard.tsx
 "use client";
 
-import {
-  PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
-} from "recharts";
-import type { ReportsDashboardProps } from "./ReportsDashboard.types";
+import KPIStackCard from "@/components/reports/KPIStackCard";
+import InsightsChatCard from "@/components/reports/InsightsChatCard";
+import type { TableRow } from "./ReportsDashboard.types";
 
-const PALETTE = [
-  "#08e28f", "#19c07a", "#24a56c", "#2f8b5f",
-  "#3a7051", "#455643", "#596b60", "#6a7c72",
-];
+type Props = {
+  metrics: {
+    totalAdvisoryFees: string;
+    totalAccounts: number;
+    flaggedShort: number;
+  };
+  tableRows: TableRow[];
+  onAsk?: (q: string) => void;
+};
 
 export default function ReportsDashboard({
-  kpis,
-  donutTitle = "Advisory Fees by IP",
-  donutData,
+  metrics,
   tableRows,
-}: ReportsDashboardProps) {
+  onAsk,
+}: Props) {
   return (
     <div className="min-h-[60vh] bg-background text-foreground">
       <div className="mx-auto max-w-7xl px-4 py-6 space-y-6">
-        {/* KPIs + Donut */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4 lg:col-span-2">
-            {kpis?.map((k, i) => (
-              <div key={i} className="rounded-2xl border border-border bg-card/50 p-5 dark:bg-transparent">
-                <div className="text-xs text-muted-foreground">{k.label}</div>
-                <div className="mt-1 text-xl font-semibold text-foreground/90">{k.value}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="rounded-2xl border border-border bg-card/50 p-5 dark:bg-transparent">
-            <div className="text-sm text-foreground/80">{donutTitle}</div>
-            <div className="h-64 mt-2">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={donutData}
-                    dataKey="value"
-                    nameKey="name"
-                    innerRadius="55%"
-                    outerRadius="85%"
-                    startAngle={90}
-                    endAngle={-270}
-                    paddingAngle={1}
-                    stroke="var(--card)"
-                  >
-                    {donutData?.map((_, idx) => (
-                      <Cell key={idx} fill={PALETTE[idx % PALETTE.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      background: "hsl(var(--background))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: 12,
-                      color: "hsl(var(--foreground))",
-                      fontSize: 12,
-                    }}
-                    wrapperClassName="recharts-default-tooltip"
-                  />
-                  <Legend
-                    verticalAlign="middle"
-                    align="right"
-                    layout="vertical"
-                    iconType="circle"
-                    wrapperStyle={{ color: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+        <div className="grid gap-4 md:gap-6 grid-cols-1 lg:grid-cols-4">
+            <KPIStackCard metrics={metrics} className="lg:col-span-1" />
+            <InsightsChatCard onAsk={onAsk} className="lg:col-span-3" />
         </div>
 
         {/* Table */}
@@ -121,7 +75,6 @@ export default function ReportsDashboard({
             </table>
           </div>
         </div>
-
       </div>
     </div>
   );

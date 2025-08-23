@@ -7,7 +7,7 @@ import ReportsDashboard from "@/components/reports/ReportsDashboard";
 import ReportsPageShell from "@/components/reports/ReportsPageShell";
 import HelpHeader, { helpHeaderAutoDismiss } from "@/components/reports/HelpHeader";
 import { UploadRow } from "@/components/reports/UploadRow";
-import type { DonutSlice, Kpi, TableRow } from "@/components/reports/ReportsDashboard.types";
+import type { TableRow } from "@/components/reports/ReportsDashboard.types";
 import FullBleed from "@/components/layout/FullBleed";
 import { saveAs } from "file-saver";
 import ActionsRow from "@/components/reports/ActionsRow";
@@ -38,11 +38,20 @@ const num = (v: any): number | null => {
   return isFinite(n) ? n : null;
 }
 
+interface DashboardData {
+    metrics: {
+        totalAdvisoryFees: string;
+        totalAccounts: number;
+        flaggedShort: number;
+    };
+    tableRows: TableRow[];
+}
+
 export default function ReportsExcelPage() {
   const [files, setFiles] = React.useState<(File | null)[]>([null, null, null]);
   
   const [error, setError] = React.useState<string | null>(null);
-  const [dashboardData, setDashboardData] = React.useState<{ kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null>(null);
+  const [dashboardData, setDashboardData] = React.useState<DashboardData | null>(null);
   const [showDash, setShowDash] = React.useState(false);
   const [reportStatus, setReportStatus] = React.useState<"idle" | "running" | "success" | "error">("idle");
 
@@ -62,7 +71,7 @@ export default function ReportsExcelPage() {
   };
 
   // New function to transform API data into dashboard props
-  function transformDataForDashboard(data: any[]): { kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null {
+  function transformDataForDashboard(data: any[]): DashboardData | null {
     if (!data || data.length === 0) return null;
 
     const tableRows: TableRow[] = data.map(r => ({
@@ -74,21 +83,13 @@ export default function ReportsExcelPage() {
       short: (num(r['Cash']) ?? 0) < (num(r['Advisory Fee']) ?? 0),
     }));
 
-    const kpis: Kpi[] = [
-      { label: "Total Advisory Fees", value: money(tableRows.reduce((sum, row) => sum + (num(row.fee) || 0), 0)) },
-      { label: "Total Accounts", value: tableRows.length.toLocaleString() },
-      { label: "Flagged Short", value: tableRows.filter(r => r.short).length.toLocaleString() }
-    ];
+    const metrics = {
+        totalAdvisoryFees: money(tableRows.reduce((sum, row) => sum + (num(row.fee) || 0), 0)),
+        totalAccounts: tableRows.length,
+        flaggedShort: tableRows.filter(r => r.short).length
+    };
 
-    const feesByIp: Record<string, number> = tableRows.reduce((acc, row) => {
-        const ip = row.ip || '(Unspecified)';
-        acc[ip] = (acc[ip] || 0) + (num(row.fee) || 0);
-        return acc;
-    }, {} as Record<string, number>);
-
-    const donutData: DonutSlice[] = Object.entries(feesByIp).map(([name, value]) => ({ name, value }));
-
-    return { kpis, donutData, tableRows };
+    return { metrics, tableRows };
   }
 
 
@@ -163,7 +164,10 @@ export default function ReportsExcelPage() {
       </FullBleed>
 
       {showDash && dashboardData && (
-        <ReportsDashboard {...dashboardData} />
+        <ReportsDashboard 
+            metrics={dashboardData.metrics}
+            onAsk={(q) => console.log("User asked:", q)}
+        />
       )}
     </ReportsPageShell>
   );
