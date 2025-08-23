@@ -102,7 +102,6 @@ export default function ReportScaffold({
     if (uploadedFlags.slice(0, requiredFileCount).some(f => !f)) return;
     setReportStatus("running"); 
     setError(null); 
-    setDashboardVisible(false);
 
     try {
       const fd = new FormData();
@@ -116,7 +115,6 @@ export default function ReportScaffold({
       
       processApiData(rows);
       setReportStatus("success");
-      setDashboardVisible(true);
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
       setReportStatus("error");
@@ -140,12 +138,6 @@ export default function ReportScaffold({
     }
   }
   
-  const onOpenDashboard = () => {
-    if (reportStatus === 'success') {
-      setDashboardVisible(true);
-    }
-  }
-
   return (
     <ReportsPageShell>
       <FullBleed>
@@ -170,10 +162,11 @@ export default function ReportScaffold({
           uploadedFlags={uploadedFlags}
           requiredCount={requiredFileCount}
           hasResults={reportStatus === "success"}
+          dashboardVisible={dashboardVisible}
           tableRows={tableRows}
           onRun={runReport}
           onDownloadExcel={downloadExcel}
-          onOpenDashboard={onOpenDashboard}
+          onToggleDashboard={() => setDashboardVisible(v => !v)}
         />
         {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
         {reportStatus === 'running' && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}

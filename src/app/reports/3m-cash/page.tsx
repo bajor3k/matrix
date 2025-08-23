@@ -115,7 +115,6 @@ export default function ReportsExcelPage() {
       
       processApiData(rows);
       setReportStatus("success");
-      setDashboardVisible(true);
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
       setReportStatus("error");
@@ -138,12 +137,6 @@ export default function ReportsExcelPage() {
     }
   }
 
-  const onOpenDashboard = () => {
-    if (reportStatus === 'success') {
-      setDashboardVisible(true);
-    }
-  }
-
   return (
     <ReportsPageShell>
       <FullBleed>
@@ -163,10 +156,11 @@ export default function ReportsExcelPage() {
             uploadedFlags={uploadedFlags}
             requiredCount={3}
             hasResults={reportStatus === "success"}
+            dashboardVisible={dashboardVisible}
             tableRows={tableRows}
             onRun={runReport}
             onDownloadExcel={downloadExcel}
-            onOpenDashboard={onOpenDashboard}
+            onToggleDashboard={() => setDashboardVisible(v => !v)}
         />
         {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
          {reportStatus === "running" && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
