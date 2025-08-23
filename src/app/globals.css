@@ -595,3 +595,13 @@ html.dark .btn-primary {
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
+
+.pt-safe {
+  padding-top: max(12px, env(safe-area-inset-top)); /* small gap or safe area, whichever is larger */
+}
+@media (min-width: 768px) {
+  .pt-safe { padding-top: max(16px, env(safe-area-inset-top)); }
+}
+@media (min-width: 1024px) {
+  .pt-safe { padding-top: max(20px, env(safe-area-inset-top)); }
+}
