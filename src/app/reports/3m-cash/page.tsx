@@ -11,6 +11,9 @@ import { cn } from "@/lib/utils";
 import { saveAs } from "file-saver";
 import type { DonutSlice, Kpi, TableRow } from "@/components/reports/ReportsDashboard.types";
 import FullBleed from "@/components/layout/FullBleed";
+import { downloadCSV } from "@/utils/csv";
+import { Download } from "lucide-react";
+
 
 type UploadKey = "pyfee" | "pycash_2" | "pypi";
 
@@ -51,7 +54,7 @@ export default function ReportsExcelPage() {
 
   const [isRunning, setIsRunning] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [dashboardData, setDashboardData] = React.useState<any | null>(null);
+  const [dashboardData, setDashboardData] = React.useState<{ kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null>(null);
   const [showDash, setShowDash] = React.useState(false);
 
   const allReady = ok.pyfee && ok.pycash_2 && ok.pypi;
@@ -161,48 +164,48 @@ export default function ReportsExcelPage() {
       </FullBleed>
         
       <FullBleed>
-        <div className="flex flex-col items-center gap-3 pt-2">
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button
-            onClick={runMergeJSON}
-            disabled={!allReady || isRunning}
-            className={cn(
-                "rounded-2xl px-5 py-3 text-sm font-semibold transition shadow-sm",
-                allReady && !isRunning ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md" : "bg-[#2f3136] text-zinc-400 cursor-not-allowed"
-            )}
+              onClick={runMergeJSON}
+              disabled={!allReady || isRunning}
+              className={cn(
+                  "rounded-full px-5 py-2.5 text-sm font-semibold text-black transition shadow-sm",
+                  allReady && !isRunning ? "bg-[#08e28f] hover:opacity-90"
+                                         : "bg-gray-400 dark:bg-gray-700 text-gray-700 dark:text-gray-400 cursor-not-allowed"
+              )}
             >
-            {isRunning ? "Running…" : "Run 3M Cash Report"}
+              {isRunning ? "Running…" : "Run 3M Cash Report"}
             </button>
-
-            <div className="flex gap-3">
             <button
                 onClick={downloadExcel}
                 disabled={!dashboardData || isRunning}
-                className={cn(
-                "rounded-xl px-4 py-2 text-sm transition border border-border",
-                !dashboardData ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-card hover:bg-muted"
-                )}
+                className="btn-secondary"
             >
-                Download Excel
+              <Download className="w-4 h-4" />
+              Download Excel
+            </button>
+            <button
+                onClick={() => dashboardData && downloadCSV(dashboardData.tableRows)}
+                disabled={!dashboardData || isRunning}
+                className="btn-secondary"
+            >
+              <Download className="w-4 h-4" />
+              Download CSV
             </button>
             <button
                 onClick={() => setShowDash(v => !v)}
                 disabled={!dashboardData || isRunning}
-                className={cn(
-                "rounded-xl px-4 py-2 text-sm transition border border-border",
-                !dashboardData ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-card hover:bg-muted"
-                )}
+                className="btn-secondary"
             >
                 {showDash ? "Hide Dashboard" : "Open Dashboard"}
             </button>
-            </div>
-
-            {error && <div className="text-xs text-rose-400">{error}</div>}
         </div>
+        {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
       </FullBleed>
 
-        {showDash && dashboardData && (
-            <ReportsDashboard {...dashboardData} />
-        )}
+      {showDash && dashboardData && (
+        <ReportsDashboard {...dashboardData} />
+      )}
     </ReportsPageShell>
   );
 }

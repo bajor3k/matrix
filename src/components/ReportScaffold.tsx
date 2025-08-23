@@ -11,6 +11,8 @@ import ReportsPageShell from "./reports/ReportsPageShell";
 import { ReportSection } from "./reports/ReportSection";
 import { UploadRow } from "./reports/UploadRow";
 import FullBleed from "./layout/FullBleed";
+import { downloadCSV } from "@/utils/csv";
+import { Download } from "lucide-react";
 
 type Key = "a" | "b" | "c";
 
@@ -49,7 +51,7 @@ export default function ReportScaffold({
   });
   const [isRunning, setIsRunning] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [dashboardData, setDashboardData] = React.useState<any | null>(null);
+  const [dashboardData, setDashboardData] = React.useState<{ kpis: Kpi[], donutData: DonutSlice[], tableRows: TableRow[] } | null>(null);
   const [showDash, setShowDash] = React.useState(false);
 
   const allReady = ok.a || ok.b || ok.c;
@@ -58,9 +60,9 @@ export default function ReportScaffold({
     const handleCleared = (e: Event) => {
       const customEvent = e as CustomEvent;
       const { slotId } = customEvent.detail;
-      if (slotId.includes('test-upload-a')) setFiles(s => ({...s, a: null})), setOk(s => ({...s, a: false}));
-      if (slotId.includes('test-upload-b')) setFiles(s => ({...s, b: null})), setOk(s => ({...s, b: false}));
-      if (slotId.includes('test-upload-c')) setFiles(s => ({...s, c: null})), setOk(s => ({...s, c: false}));
+      if (slotId && slotId.includes('upload-a')) setFiles(s => ({...s, a: null})), setOk(s => ({...s, a: false}));
+      if (slotId && slotId.includes('upload-b')) setFiles(s => ({...s, b: null})), setOk(s => ({...s, b: false}));
+      if (slotId && slotId.includes('upload-c')) setFiles(s => ({...s, c: null})), setOk(s => ({...s, c: false}));
     }
     window.addEventListener('upload:cleared', handleCleared);
     return () => window.removeEventListener('upload:cleared', handleCleared);
@@ -166,53 +168,54 @@ export default function ReportScaffold({
       
       <FullBleed>
         <UploadRow>
-          <UploadCard onFileAccepted={(f)=>accept("a",f)} onFileCleared={() => accept("a", null)} dropzoneText="Drop TEST_1 here"/>
-          <UploadCard onFileAccepted={(f)=>accept("b",f)} onFileCleared={() => accept("b", null)} dropzoneText="Drop TEST_2 here"/>
-          <UploadCard onFileAccepted={(f)=>accept("c",f)} onFileCleared={() => accept("c", null)} dropzoneText="Drop TEST_3 here"/>
+          <UploadCard slotId="upload-a" onFileAccepted={(f)=>accept("a",f)} onFileCleared={() => accept("a", null)} dropzoneText="Drop File 1 here"/>
+          <UploadCard slotId="upload-b" onFileAccepted={(f)=>accept("b",f)} onFileCleared={() => accept("b", null)} dropzoneText="Drop File 2 here"/>
+          <UploadCard slotId="upload-c" onFileAccepted={(f)=>accept("c",f)} onFileCleared={() => accept("c", null)} dropzoneText="Drop File 3 here"/>
         </UploadRow>
       </FullBleed>
       
       <FullBleed>
-        <div className="flex flex-col items-center gap-3 pt-2">
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <button
             onClick={runMergeJSON}
             disabled={!allReady || isRunning}
             className={cn(
-              "rounded-2xl px-5 py-3 text-sm font-semibold transition shadow-sm",
-              allReady && !isRunning ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md"
-                                     : "bg-[#2f3136] text-zinc-400 cursor-not-allowed"
+              "rounded-full px-5 py-2.5 text-sm font-semibold text-black transition shadow-sm",
+              allReady && !isRunning ? "bg-[#08e28f] hover:opacity-90"
+                                     : "bg-gray-400 dark:bg-gray-700 text-gray-700 dark:text-gray-400 cursor-not-allowed"
             )}
           >
             {isRunning ? "Running…" : "Run Report"}
           </button>
 
-          <div className="flex gap-3">
-            <button
-              onClick={downloadExcel}
-              disabled={!dashboardData || isRunning}
-              className={cn(
-                "rounded-xl px-4 py-2 text-sm transition border border-border",
-                !dashboardData ? "bg-muted text-muted-foreground cursor-not-allowed"
-                      : "bg-card hover:bg-muted"
-              )}
-            >
-              Download Excel
-            </button>
-            <button
-              onClick={showDash ? handleHideDashboard : handleOpenDashboard}
-              disabled={!dashboardData || isRunning}
-              className={cn(
-                "rounded-xl px-4 py-2 text-sm transition border border-border",
-                !dashboardData ? "bg-muted text-muted-foreground cursor-not-allowed"
-                      : "bg-card hover:bg-muted"
-              )}
-            >
-              {showDash ? "Hide Dashboard" : "Open Dashboard"}
-            </button>
-          </div>
+          <button
+            onClick={downloadExcel}
+            disabled={!dashboardData || isRunning}
+            className="btn-secondary"
+          >
+            <Download className="w-4 h-4" />
+            Download Excel
+          </button>
 
-          {error && <div className="text-xs text-rose-400">{error}</div>}
+          <button
+            onClick={() => dashboardData && downloadCSV(dashboardData.tableRows)}
+            disabled={!dashboardData || isRunning}
+            className="btn-secondary"
+            aria-label="Download CSV"
+          >
+            <Download className="w-4 h-4" />
+            Download CSV
+          </button>
+
+          <button
+            onClick={showDash ? handleHideDashboard : handleOpenDashboard}
+            disabled={!dashboardData || isRunning}
+            className="btn-secondary"
+          >
+            {showDash ? "Hide Dashboard" : "Open Dashboard"}
+          </button>
         </div>
+        {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
       </FullBleed>
 
       {showDash && dashboardData && (
