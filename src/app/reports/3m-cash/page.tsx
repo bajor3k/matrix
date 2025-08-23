@@ -41,7 +41,7 @@ const num = (v: any): number | null => {
 }
 
 interface DashboardMetrics {
-    totalAdvisoryFees: string;
+    totalAdvisoryFees: number;
     totalAccounts: number;
     flaggedShort: number;
     totalRows: number;
@@ -52,12 +52,9 @@ export default function ReportsExcelPage() {
   const [error, setError] = React.useState<string | null>(null);
   const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
   const [dashboardVisible, setDashboardVisible] = React.useState(false);
-  const [chatMessages, setChatMessages] = React.useState<Array<{ role: 'user' | 'assistant'; content: string }>>([
-    { role: 'assistant', content: 'Ask a question about this report (fees, accounts, flagged short, etc.).' },
-  ]);
 
   const [metrics, setMetrics] = React.useState<DashboardMetrics>({
-      totalAdvisoryFees: "$0.00",
+      totalAdvisoryFees: 0,
       totalAccounts: 0,
       flaggedShort: 0,
       totalRows: 0,
@@ -79,22 +76,27 @@ export default function ReportsExcelPage() {
 
   function processApiData(data: any[]) {
     if (!data || data.length === 0) {
-      setMetrics({ totalAdvisoryFees: '$0.00', totalAccounts: 0, flaggedShort: 0, totalRows: 0 });
+      setMetrics({ totalAdvisoryFees: 0, totalAccounts: 0, flaggedShort: 0, totalRows: 0 });
       setTableRows([]);
       return;
     }
 
-    const rows: TableRow[] = data.map(r => ({
-      ip: r['IP'] ?? '',
-      acct: r['Account'] ?? '',
-      value: money(r['Value']),
-      fee: money(r['Advisory Fee']),
-      cash: money(r['Cash']),
-      short: (num(r['Cash']) ?? 0) < (num(r['Advisory Fee']) ?? 0),
-    }));
+    let totalFees = 0;
+    const rows: TableRow[] = data.map(r => {
+      const advisoryFee = num(r['Advisory Fee']) ?? 0;
+      totalFees += advisoryFee;
+      return {
+          ip: r['IP'] ?? '',
+          acct: r['Account'] ?? '',
+          value: money(r['Value']),
+          fee: money(advisoryFee),
+          cash: money(r['Cash']),
+          short: (num(r['Cash']) ?? 0) < advisoryFee,
+      }
+    });
 
     const newMetrics = {
-        totalAdvisoryFees: money(rows.reduce((sum, row) => sum + (num(row.fee) || 0), 0)),
+        totalAdvisoryFees: totalFees,
         totalAccounts: rows.length,
         flaggedShort: rows.filter(r => r.short).length,
         totalRows: rows.length,
@@ -103,17 +105,6 @@ export default function ReportsExcelPage() {
     setTableRows(rows);
     setMetrics(newMetrics);
   }
-
-  const handleAsk = (question: string) => {
-    setChatMessages((prev) => [...prev, { role: 'user', content: question }]);
-    // Placeholder for LLM response
-    setTimeout(() => {
-      setChatMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: 'Thanks for asking! This feature is coming soon.' },
-      ]);
-    }, 1000);
-  };
 
   async function runReport() {
     if (!filesReady) return;
@@ -185,8 +176,6 @@ export default function ReportsExcelPage() {
         <>
           <ReportsDashboard 
               metrics={metrics}
-              messages={chatMessages}
-              onAsk={handleAsk}
           />
           <ResultsTableCard rows={tableRows} />
         </>

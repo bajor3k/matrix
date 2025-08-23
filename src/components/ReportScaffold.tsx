@@ -23,7 +23,7 @@ type Props = {
 };
 
 interface DashboardMetrics {
-    totalAdvisoryFees: string;
+    totalAdvisoryFees: number;
     totalAccounts: number;
     flaggedShort: number;
     totalRows: number;
@@ -54,12 +54,9 @@ export default function ReportScaffold({
   const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
   const [error, setError] = React.useState<string | null>(null);
   const [dashboardVisible, setDashboardVisible] = React.useState(false);
-  const [chatMessages, setChatMessages] = React.useState<Array<{ role: 'user' | 'assistant'; content: string }>>([
-    { role: 'assistant', content: 'Ask a question about this report (fees, accounts, flagged short, etc.).' },
-  ]);
 
   const [metrics, setMetrics] = React.useState<DashboardMetrics>({
-      totalAdvisoryFees: "$0.00",
+      totalAdvisoryFees: 0,
       totalAccounts: 0,
       flaggedShort: 0,
       totalRows: 0,
@@ -81,23 +78,33 @@ export default function ReportScaffold({
 
   function processApiData(data: any[]) {
     if (!data || data.length === 0) {
-      setMetrics({ totalAdvisoryFees: '$0.00', totalAccounts: 0, flaggedShort: 0, totalRows: 0 });
+      setMetrics({ totalAdvisoryFees: 0, totalAccounts: 0, flaggedShort: 0, totalRows: 0 });
       setTableRows([]);
       return;
     }
     
-    const rows: TableRow[] = data.map(r => ({
-      ip: r['IP'] ?? '',
-      acct: r['Account Number'] ?? '',
-      value: money(r['Value']),
-      fee: money(r['Advisory Fees']),
-      cash: money(r['Cash']),
-      short: (num(r['Cash']) ?? 0) < (num(r['Advisory Fees']) ?? 0),
-    }));
+    let totalFees = 0;
+    const accountNumbers = new Set<string>();
+
+    const rows: TableRow[] = data.map(r => {
+      const advisoryFee = num(r['Advisory Fees']) ?? 0;
+      totalFees += advisoryFee;
+      if (r['Account Number']) {
+        accountNumbers.add(r['Account Number']);
+      }
+      return {
+        ip: r['IP'] ?? '',
+        acct: r['Account Number'] ?? '',
+        value: money(r['Value']),
+        fee: money(advisoryFee),
+        cash: money(r['Cash']),
+        short: (num(r['Cash']) ?? 0) < advisoryFee,
+      };
+    });
 
     const newMetrics = {
-        totalAdvisoryFees: money(rows.reduce((sum, row) => sum + (num(row.fee) || 0), 0)),
-        totalAccounts: rows.length,
+        totalAdvisoryFees: totalFees,
+        totalAccounts: accountNumbers.size,
         flaggedShort: rows.filter(r => r.short).length,
         totalRows: rows.length,
     };
@@ -105,17 +112,6 @@ export default function ReportScaffold({
     setTableRows(rows);
     setMetrics(newMetrics);
   }
-
-  const handleAsk = (question: string) => {
-    setChatMessages((prev) => [...prev, { role: 'user', content: question }]);
-    // Placeholder for LLM response
-    setTimeout(() => {
-      setChatMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: 'Thanks for asking! This feature is coming soon.' },
-      ]);
-    }, 1000);
-  };
 
   async function runReport() {
     if (!filesReady) return;
@@ -197,8 +193,6 @@ export default function ReportScaffold({
         <>
           <ReportsDashboard 
               metrics={metrics}
-              messages={chatMessages}
-              onAsk={handleAsk}
           />
           <ResultsTableCard rows={tableRows} />
         </>

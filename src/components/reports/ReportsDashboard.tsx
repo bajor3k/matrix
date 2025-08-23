@@ -1,35 +1,32 @@
 // src/components/reports/ReportsDashboard.tsx
-import KPIStackCard from "@/components/reports/KPIStackCard";
-import InsightsChatCard from "@/components/reports/InsightsChatCard";
+import { KpiRow } from "@/components/reports/KpiRow";
 
 type Props = {
   metrics: {
-    totalAdvisoryFees: string;
+    totalAdvisoryFees: number;
     totalAccounts: number;
     flaggedShort: number;
     totalRows: number;
   };
-  messages: Array<{ role: "user" | "assistant"; content: string }>;
-  onAsk?: (q: string) => void;
 };
 
 export default function ReportsDashboard({
   metrics,
-  messages,
-  onAsk,
 }: Props) {
   return (
     <div
       className="
         w-full max-w-none
         grid gap-4 md:gap-6 items-stretch
-        grid-cols-1 lg:grid-cols-12
+        grid-cols-1
       "
     >
-      <KPIStackCard metrics={metrics} className="lg:col-span-3 h-full" />
-      <div className="lg:col-span-9 min-h-0">
-          <InsightsChatCard messages={messages} onAsk={onAsk} />
-      </div>
+      <KpiRow
+        totalAdvisoryFees={metrics.totalAdvisoryFees}
+        totalAccounts={metrics.totalAccounts}
+        flaggedShort={metrics.flaggedShort}
+        totalRows={metrics.totalRows}
+      />
     </div>
   );
 }
