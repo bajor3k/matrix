@@ -1,19 +1,20 @@
 // components/reports/ActionsRow.tsx
 "use client";
 
-import { Download } from "lucide-react";
+import { Download as DownloadIcon } from "lucide-react";
 import { downloadCSV } from "@/utils/csv";
 import type { TableRow } from "@/utils/csv";
+import { ActionPill } from "@/components/ui/ActionPill";
 
 type Props = {
-  uploadedFlags: boolean[];           // [!!file1, !!file2, !!file3]
-  requiredCount?: number;             // default 3
-  hasResults: boolean;                // true after run finishes successfully
-  dashboardVisible: boolean;          // controls Open/Hide label
+  uploadedFlags: boolean[];
+  requiredCount?: number;
+  hasResults: boolean;
+  dashboardVisible: boolean;
   tableRows: TableRow[];
   onRun: () => void;
   onDownloadExcel: () => void;
-  onToggleDashboard: () => void;      // <-- toggle only when hasResults
+  onToggleDashboard: () => void;
 };
 
 export default function ActionsRow({
@@ -26,69 +27,43 @@ export default function ActionsRow({
   onDownloadExcel,
   onToggleDashboard,
 }: Props) {
-  const allUploaded =
-    uploadedFlags.length >= requiredCount &&
-    uploadedFlags.slice(0, requiredCount).every(Boolean);
-
-  const runEnabled = allUploaded;
-  const resultsReady = hasResults;
-
-  const clsPrimary = (enabled: boolean) =>
-    enabled ? "btn-primary" : "btn-secondary btn-disabled";
-  const clsReady = (ready: boolean) =>
-    ready ? "btn-secondary btn-secondary--ready" : "btn-secondary btn-disabled";
+  const canRun = uploadedFlags.slice(0, requiredCount).every(Boolean);
+  const canDownload = hasResults;
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-      {/* Run Report */}
-      <button
-        type="button"
-        onClick={() => runEnabled && onRun()}
-        disabled={!runEnabled}
-        aria-disabled={!runEnabled}
-        className={clsPrimary(runEnabled)}
-        title={runEnabled ? "Run Report" : "Upload all required files first"}
-      >
-        Run Report
-      </button>
+      <ActionPill
+        onClick={onRun}
+        disabled={!canRun}
+        label="Run Report"
+        srLabel="Run report"
+        className="bg-[#08e28f] text-black hover:brightness-95 dark:text-black"
+      />
 
-      {/* Download Excel */}
-      <button
-        type="button"
-        onClick={() => resultsReady && onDownloadExcel()}
-        disabled={!resultsReady}
-        aria-disabled={!resultsReady}
-        className={clsReady(resultsReady)}
-        title={resultsReady ? "Download Excel" : "Run the report first"}
-      >
-        <Download className="btn-icon" />
-        Download Excel
-      </button>
+      <ActionPill
+        onClick={onDownloadExcel}
+        disabled={!canDownload}
+        label="Excel"
+        srLabel="Download Excel"
+        title="Download Excel"
+        icon={<DownloadIcon className="w-4 h-4" />}
+      />
 
-      {/* Download CSV */}
-      <button
-        type="button"
-        onClick={() => resultsReady && downloadCSV(tableRows)}
-        disabled={!resultsReady}
-        aria-disabled={!resultsReady}
-        className={clsReady(resultsReady)}
-        title={resultsReady ? "Download CSV" : "Run the report first"}
-      >
-        <Download className="btn-icon" />
-        Download CSV
-      </button>
+      <ActionPill
+        onClick={() => downloadCSV(tableRows)}
+        disabled={!canDownload}
+        label="CSV"
+        srLabel="Download CSV"
+        title="Download CSV"
+        icon={<DownloadIcon className="w-4 h-4" />}
+      />
 
-      {/* Open / Hide Dashboard (toggles only, never auto-opens) */}
-      <button
-        type="button"
-        onClick={() => resultsReady && onToggleDashboard()}
-        disabled={!resultsReady}
-        aria-disabled={!resultsReady}
-        className={clsReady(resultsReady)}
-        title={resultsReady ? "Open or hide the dashboard" : "Run the report first"}
-      >
-        {dashboardVisible ? "Hide Dashboard" : "Open Dashboard"}
-      </button>
+      <ActionPill
+        onClick={onToggleDashboard}
+        disabled={!canDownload}
+        label={dashboardVisible ? "Hide Dashboard" : "Open Dashboard"}
+        srLabel={dashboardVisible ? "Hide dashboard" : "Open dashboard"}
+      />
     </div>
   );
 }
