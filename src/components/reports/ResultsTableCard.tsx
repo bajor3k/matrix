@@ -1,12 +1,20 @@
-// components/reports/ResultsTableCard.tsx
+
 import React from "react";
-import type { TableRow } from "@/utils/csv";
+
+export type TableRow = {
+  ip: string;
+  acct: string;
+  value: string;
+  fee: string;
+  cash: string;
+  short: boolean;
+};
 
 export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
   return (
     <section
       className="
-        w-full max-w-none               /* ← stretch */
+        w-full max-w-none
         rounded-2xl border border-white/10
         bg-white dark:bg-[#101010]
         p-3 md:p-4
@@ -25,6 +33,7 @@ export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
               <th className="py-2.5 font-semibold">Status</th>
             </tr>
           </thead>
+
           <tbody>
             {rows.length === 0 ? (
               <tr>
@@ -34,19 +43,31 @@ export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
               </tr>
             ) : (
               rows.map((r, i) => (
-                <tr key={i} className="border-b border-dashed border-white/5 last:border-0 hover:bg-white/5">
-                  <td className="py-2 pr-4 pl-2 text-white/90">{r.ip}</td>
-                  <td className="py-2 pr-4 text-white/90">{r.acct}</td>
-                  <td className="py-2 pr-4 text-white">{r.value}</td>
-                  <td className="py-2 pr-4 text-white">{r.fee}</td>
-                  <td className="py-2 pr-4 text-white">{r.cash}</td>
-                  <td className="py-2 text-white/90">
+                <tr
+                  key={i}
+                  className="
+                    /* zebra striping */
+                    odd:bg-[#fcfbfb] even:bg-[#f3f3f3]
+                    dark:odd:bg-[#0b0b0b] dark:even:bg-[#141414]
+
+                    /* borders + hover */
+                    border-b border-black/10 dark:border-white/5 last:border-0
+                    hover:bg-black/[.04] dark:hover:bg-white/5
+                  "
+                >
+                  <td className="py-2 pr-4 pl-2 text-black dark:text-white">{r.ip}</td>
+                  <td className="py-2 pr-4 text-black dark:text-white">{r.acct}</td>
+                  <td className="py-2 pr-4 text-black dark:text-white">{r.value}</td>
+                  <td className="py-2 pr-4 text-black dark:text-white">{r.fee}</td>
+                  <td className="py-2 pr-4 text-black dark:text-white">{r.cash}</td>
+                  <td className="py-2 text-black dark:text-white">
                     {r.short ? (
-                        <span className="inline-block px-2 py-0.5 text-xs font-bold rounded-full border border-red-500 text-red-400 bg-red-500/10">
-                            Short
-                        </span>
+                      <span className="inline-flex items-center rounded-full px-2 py-[2px] text-xs
+                                       bg-[#2a0000] text-[#e31211] dark:bg-[#2a0000]">
+                        Short
+                      </span>
                     ) : (
-                        <span className="text-white/40">—</span>
+                      "—"
                     )}
                   </td>
                 </tr>
