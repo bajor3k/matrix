@@ -1,20 +1,19 @@
-import * as aq from 'arquero';
 import { cosine, embed } from './embed';
 import { loadKB } from './storage';
 
 export type AskResult = { answer: string; evidence: string[] };
 
-const NUMERIC_KEYS = ['Value','Advisory Fees','Cash'];  // adjust if your keys differ
-const ALIASES: Record<string,string> = {
-  value: 'Value', fee: 'Advisory Fees', fees: 'Advisory Fees', cash: 'Cash'
-};
-const normKey = (q: string) => ALIASES[q.toLowerCase()] ?? q;
-
+// Try to coerce strings like "$6,546.00" to numbers
 function asNum(v: any) {
   if (typeof v === 'number') return v;
-  const s = String(v ?? '').replace(/[$,%,\s]/g,'');
+  const s = String(v ?? '').replace(/[$,%\s,]/g, '');
   const n = parseFloat(s);
   return Number.isFinite(n) ? n : NaN;
+}
+
+// Pick the numeric columns from a row
+function numericColumns(row: Record<string, any>) {
+  return Object.keys(row).filter(k => Number.isFinite(asNum(row[k])));
 }
 
 export async function askMaven(question: string): Promise<AskResult> {
@@ -23,90 +22,46 @@ export async function askMaven(question: string): Promise<AskResult> {
     return { answer: 'No uploaded data found. Run the report first.', evidence: [] };
   }
 
-  // --- retrieval ---
+  // 1) Retrieve relevant rows to the free-form question
   const qVec = await embed(question);
   const ranked = kb.rows
     .map(x => ({ ...x, s: cosine(qVec, x.e) }))
     .sort((a, b) => b.s - a.s);
-  const evidence = ranked.slice(0, 8).map(x => x.t);
-  const table = aq.from(kb.rows.map(x => x.r));
 
-  const q = question.trim().toLowerCase();
+  const top = ranked.slice(0, 20);                 // evidence pool
+  const evidence = top.slice(0, 8).map(x => x.t);  // compact receipts
 
-  // --- 1) TOP/BOTTOM N BY COLUMN ---
-  // e.g., "top 10 accounts by cash", "bottom 5 by fees"
-  const mTop = q.match(/\b(top|bottom)\s+(\d+)?\s*(?:accounts?|rows?)?\s*(?:by|on)\s+([a-z\s]+)\b/);
-  if (mTop) {
-    const dir = mTop[1] === 'top' ? 'desc' : 'asc';
-    const N = mTop[2] ? parseInt(mTop[2],10) : 10;
-    const col = normKey(mTop[3].trim());
-    const out = table
-      .derive({ metric: (d: any) => asNum(d[col]) })
-      .orderby(dir === 'desc' ? aq.desc('metric') : aq.asc('metric'))
-      .select('IP','Account Number', col)
-      .objects()
-      .slice(0, N);
-    return {
-      answer: `${mTop[1].toUpperCase()} ${out.length} by ${col}:\n` +
-              out.map((r:any)=>`• ${r['Account Number']} — ${r[col]}`).join('\n'),
-      evidence
-    };
+  // 2) Lightweight, generic analysis (no presets)
+  //    Aggregate over any numeric columns present in the evidence rows.
+  const rows = top.map(x => x.r);
+  const cols = rows.length ? numericColumns(rows[0]) : [];
+  const summary: string[] = [];
+
+  for (const col of cols) {
+    const nums = rows.map(r => asNum(r[col])).filter(n => Number.isFinite(n));
+    if (!nums.length) continue;
+
+    const count = nums.length;
+    const sum   = nums.reduce((a, b) => a + b, 0);
+    const avg   = sum / count;
+    const min   = Math.min(...nums);
+    const max   = Math.max(...nums);
+
+    summary.push(
+      `${col}: count ${count}, sum ${sum.toLocaleString()}, avg ${avg.toLocaleString()}, min ${min.toLocaleString()}, max ${max.toLocaleString()}`
+    );
   }
 
-  // --- 2) COUNT WHERE COL <|>|<=|>= NUMBER ---
-  // e.g., "how many accounts where cash < fees", "count where cash < 500"
-  const mCmp = q.match(/\b(count|how many).*(cash|fees|value)[^0-9<>]*(<=|>=|<|>)\s*\$?([\d,\.]+)/);
-  if (mCmp) {
-    const key = normKey(mCmp[2]);
-    const op  = mCmp[3];
-    const val = parseFloat(mCmp[4].replace(/,/g,''));
-    const out = table
-      .derive({ num: (d:any) => asNum(d[key]) })
-      .filter((d:any) =>
-        op === '<'  ? d.num <  val :
-        op === '>'  ? d.num >  val :
-        op === '<=' ? d.num <= val :
-                      d.num >= val
-      )
-      .objects();
-    return { answer: `Count where ${key} ${op} ${val}: ${out.length}`, evidence };
-  }
+  // 3) Build a free-form answer with receipts
+  const header = summary.length
+    ? `Here’s a quick take based on the most relevant rows to your question:\n` +
+      summary.join('\n')
+    : `I pulled the most relevant rows to your question.`;
 
-  // --- 3) CASH < FEES (common ask) ---
-  if (q.includes('cash') && q.includes('<') && q.includes('fee') || q.includes('short')) {
-    const out = table
-      .derive({
-        cash_n: (d:any) => asNum(d['Cash']),
-        fees_n: (d:any) => asNum(d['Advisory Fees'])
-      })
-      .filter((d:any) => d.cash_n < d.fees_n)
-      .select('IP','Account Number','Cash','Advisory Fees')
-      .objects();
-    if (!out.length) return { answer: 'No accounts where Cash < Fees.', evidence };
-    return {
-      answer: `Accounts where Cash < Fees (${out.length}):\n` +
-              out.slice(0,25).map((r:any)=>`• ${r['Account Number']} (Cash ${r.Cash}, Fees ${r['Advisory Fees']})`).join('\n'),
-      evidence
-    };
-  }
+  const ans =
+    header +
+    `\n\nTop matches:\n` +
+    evidence.join('\n');
 
-  // --- 4) SUM/AVG ---
-  // e.g., "total cash", "average fees"
-  const mAgg = q.match(/\b(total|sum|average|avg)\s+(cash|fees|value)\b/);
-  if (mAgg) {
-    const agg = mAgg[1];
-    const key = normKey(mAgg[2]);
-    const nums = table.objects().map((r:any)=>asNum(r[key])).filter((n)=>Number.isFinite(n));
-    if (!nums.length) return { answer: `No numeric data for ${key}.`, evidence };
-    const sum = nums.reduce((a,b)=>a+b,0);
-    const avg = sum / nums.length;
-    const ans = agg.startsWith('avg') ? `Average ${key}: ${avg.toLocaleString()}` : `Total ${key}: ${sum.toLocaleString()}`;
-    return { answer: ans, evidence };
-  }
-
-  // --- Fallback: show the most relevant rows ---
-  return {
-    answer: `Here’s what your data most closely points to:\n` + evidence.join('\n'),
-    evidence
-  };
+  return { answer: ans, evidence };
 }
