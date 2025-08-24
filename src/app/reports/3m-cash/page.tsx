@@ -1,7 +1,7 @@
 // src/app/reports/3m-cash/page.tsx
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReportsDashboard from "@/components/reports/ReportsDashboard";
 import ReportsPageShell from "@/components/reports/ReportsPageShell";
 import HelpHeader, { helpHeaderAutoDismiss } from "@/components/reports/HelpHeader";
@@ -15,6 +15,7 @@ import ResultsTableCard from "@/components/reports/ResultsTableCard";
 import { downloadCSV } from "@/utils/csv";
 import { MavenLayout } from "@/components/reports/maven/MavenLayout";
 import { indexMergedRows } from '@/lib/askmaven/kb';
+import { loadKB } from '@/lib/askmaven/storage';
 
 
 const REPORT_SUMMARY =
@@ -76,11 +77,36 @@ export default function ReportsExcelPage() {
       log: () => console.log({ kbReady, kbLoading }),
     };
   }
-
+  
   const filesReady = files.filter(Boolean).length === 3;
   const canOpenMaven = runState === "success";
 
-  React.useEffect(() => {
+  useEffect(() => {
+    let mounted = true;
+
+    // Initial check (e.g., after a page refresh)
+    loadKB().then(kb => {
+      if (!mounted) return;
+      if (kb?.rows?.length) {
+        setKbReady(true);
+        setKbCount(kb.rows.length);
+      }
+    });
+
+    // React to fresh indexing from the custom event
+    const onKB = (e: any) => {
+      setKbReady(true);
+      setKbCount(e?.detail?.count ?? 0);
+    };
+    window.addEventListener('askmaven:kb-updated', onKB);
+
+    return () => {
+      mounted = false;
+      window.removeEventListener('askmaven:kb-updated', onKB);
+    };
+  }, []);
+
+  useEffect(() => {
     const onEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") setIsMavenOpen(false);
     };
@@ -157,9 +183,8 @@ export default function ReportsExcelPage() {
 
       setKbLoading(true);
       try {
-        const { count } = await indexMergedRows(rows);
-        setKbReady(true);
-        setKbCount(count);
+        await indexMergedRows(rows);
+        // State update for kbReady and kbCount is now handled by the event listener
       } finally {
         setKbLoading(false);
       }

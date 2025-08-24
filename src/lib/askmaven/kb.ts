@@ -16,13 +16,18 @@ export function rowText(r: any): string {
 // Call this right after Run Report succeeds.
 // mergedRows: Array<object> from your Python merge in the UI
 export async function indexMergedRows(mergedRows: any[]) {
-  const rows = [];
+  const rows: { r:any; t:string; e:number[] }[] = [];
   for (const r of mergedRows) {
     const t = rowText(r);
     const e = await embed(t);
     rows.push({ r, t, e });
   }
-  const columns = Object.keys(mergedRows?.[0] ?? {});
-  await saveKB({ createdAt: Date.now(), columns, rows });
+  const packet = { createdAt: Date.now(), columns: Object.keys(mergedRows?.[0] ?? {}), rows };
+  await saveKB(packet);
+
+  // 🔔 notify the UI that KB is ready
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('askmaven:kb-updated', { detail: { count: rows.length } }));
+  }
   return { count: rows.length };
 }
