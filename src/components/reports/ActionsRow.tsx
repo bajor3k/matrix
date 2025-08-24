@@ -15,6 +15,9 @@ type Props = {
   onDownloadCsv: () => void;
   onToggleDashboard: () => void;
   onAskMaven: () => void;
+  kbLoading: boolean;
+  kbReady: boolean;
+  kbCount: number;
 };
 
 export default function ActionsRow({
@@ -26,6 +29,9 @@ export default function ActionsRow({
   onDownloadCsv,
   onToggleDashboard,
   onAskMaven,
+  kbLoading,
+  kbReady,
+  kbCount,
 }: Props) {
   
   const isReady = filesReady && runState !== 'running' && runState !== 'success';
@@ -78,16 +84,21 @@ export default function ActionsRow({
         srLabel={dashboardVisible ? "Hide dashboard" : "Open dashboard"}
         labelEmphasis={postRunLabelEmphasis}
       />
-
-      <ActionPill
-        onClick={onAskMaven}
-        disabled={!isSuccess}
-        label="Maven"
-        srLabel="Ask Maven"
-        title="Ask Maven"
-        icon={<Brain className="w-4 h-4" />}
-        labelEmphasis={postRunLabelEmphasis}
-      />
+      <div className="flex items-center gap-2">
+        <ActionPill
+          onClick={onAskMaven}
+          disabled={!isSuccess || !kbReady}
+          label="Maven"
+          srLabel="Ask Maven"
+          title="Ask Maven"
+          icon={<Brain className="w-4 h-4" />}
+          labelEmphasis={postRunLabelEmphasis}
+        />
+         {kbLoading && <span className="text-xs text-neutral-400">Indexing...</span>}
+         {kbReady && !kbLoading && (
+            <span className="text-xs text-emerald-400">Ready ({kbCount} rows)</span>
+         )}
+      </div>
     </div>
   );
 }

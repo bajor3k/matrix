@@ -14,6 +14,7 @@ import UploadCard from "@/components/UploadCard";
 import ResultsTableCard from "@/components/reports/ResultsTableCard";
 import { downloadCSV } from "@/utils/csv";
 import { MavenLayout } from "@/components/reports/maven/MavenLayout";
+import { indexMergedRows } from '@/lib/askmaven/kb';
 
 
 const REPORT_SUMMARY =
@@ -62,6 +63,9 @@ export default function ReportsExcelPage() {
       totalRows: 0,
   });
   const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
+  const [kbLoading, setKbLoading] = React.useState(false);
+  const [kbReady, setKbReady] = React.useState(false);
+  const [kbCount, setKbCount] = React.useState(0);
 
   const filesReady = files.filter(Boolean).length === 3;
   const canOpenMaven = runState === "success";
@@ -126,6 +130,8 @@ export default function ReportsExcelPage() {
     if (!filesReady) return;
     setRunState("running");
     setError(null);
+    setKbReady(false);
+    setKbCount(0);
 
     try {
       const fd = new FormData();
@@ -138,6 +144,16 @@ export default function ReportsExcelPage() {
       
       processApiData(rows);
       setRunState("success");
+
+      setKbLoading(true);
+      try {
+        const { count } = await indexMergedRows(rows);
+        setKbReady(true);
+        setKbCount(count);
+      } finally {
+        setKbLoading(false);
+      }
+
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
       setRunState("error");
@@ -191,9 +207,12 @@ export default function ReportsExcelPage() {
                 onDownloadCsv={() => downloadCSV(tableRows)}
                 onToggleDashboard={() => setDashboardVisible(v => !v)}
                 onAskMaven={openMaven}
+                kbLoading={kbLoading}
+                kbReady={kbReady}
+                kbCount={kbCount}
             />
             {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
-             {runState === "running" && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
+             {runState === "running" && !kbLoading && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
           </FullBleed>
 
           {dashboardVisible && runState === 'success' && (
