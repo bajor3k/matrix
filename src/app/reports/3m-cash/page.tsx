@@ -1,3 +1,4 @@
+
 // src/app/reports/3m-cash/page.tsx
 "use client";
 
@@ -67,14 +68,6 @@ export default function ReportsExcelPage() {
 
   const filesReady = files.filter(Boolean).length === 3;
   const canOpenMaven = runState === "success";
-
-  // This is a temporary debug hook.
-  if (typeof window !== "undefined") {
-    // @ts-ignore
-    window.AskMavenUI = {
-      log: () => console.log({ runState, error }),
-    };
-  }
   
   useEffect(() => {
     const onEsc = (e: KeyboardEvent) => {
@@ -144,17 +137,17 @@ export default function ReportsExcelPage() {
       fd.append("pypi", files[2]!);
       const res = await fetch("/api/reports/3m-cash/merge?format=json", { method: "POST", body: fd });
       if (!res.ok) throw new Error(await res.text());
-      const rows = await res.json();
+      const mergedRows = await res.json();
       
-      processApiData(rows);
+      processApiData(mergedRows);
       setRunState("success");
 
       setKbLoading(true);
       try {
-        const { count } = await indexMergedRows(rows);
-        console.log('[AskMaven KB indexed]:', count);
+        const { count } = await indexMergedRows(mergedRows);
+        console.log('[AskMaven] indexed', count, 'rows');
       } catch(e) {
-        console.error('[AskMaven indexing failed]', e);
+        console.error('[AskMaven] indexing failed', e);
       } finally {
         setKbLoading(false);
       }
