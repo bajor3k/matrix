@@ -10,7 +10,7 @@ const SAMPLE_ROWS = [
 ];
 
 async function loadSampleKB() {
-  await clearKB();
+  try { await clearKB(); } catch {}
   return indexMergedRows(SAMPLE_ROWS);
 }
 
@@ -19,13 +19,8 @@ function hasKB() {
 }
 
 if (typeof window !== 'undefined') {
-  // @ts-ignore
-  (window.AskMavenDev = {
-    loadSampleKB,
-    askMaven,
-    hasKB,
-    clearKB,
-  });
+    // @ts-ignore
+    (window.AskMavenDev = { loadSampleKB, askMaven, hasKB, clearKB });
 }
 
 export {};
