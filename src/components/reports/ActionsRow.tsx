@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Download as DownloadIcon, Brain, Loader2 } from "lucide-react";
+import { Download as DownloadIcon, Brain, Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import { ActionPill } from "@/components/ui/ActionPill";
 import { loadKB } from "@/lib/askmaven/storage";
 
@@ -106,8 +106,9 @@ export default function ActionsRow({
       <ActionPill
         onClick={onToggleDashboard}
         disabled={!isSuccess}
-        label={dashboardVisible ? "Hide Dashboard" : "Open Dashboard"}
+        label="Dashboard"
         srLabel={dashboardVisible ? "Hide dashboard" : "Open dashboard"}
+        icon={dashboardVisible ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         labelEmphasis={postRunLabelEmphasis}
       />
       <div className="flex items-center gap-2">
