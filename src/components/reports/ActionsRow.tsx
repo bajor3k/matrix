@@ -92,7 +92,7 @@ export default function ActionsRow({
           srLabel="Ask Maven"
           title="Ask Maven"
           icon={<Brain className="w-4 h-4" />}
-          labelEmphasis={postRunLabelEmphasis}
+          labelEmphasis={kbReady ? "active" : "normal"}
         />
          {kbLoading && <span className="text-xs text-neutral-400">Indexing...</span>}
          {kbReady && !kbLoading && (

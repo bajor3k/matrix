@@ -68,41 +68,32 @@ export default function ReportsExcelPage() {
   const [kbReady, setKbReady] = React.useState(false);
   const [kbCount, setKbCount] = React.useState(0);
 
-  // --- TEMP DEBUG: expose to window so we can toggle from Console ---
-  if (typeof window !== "undefined") {
-    // @ts-ignore
-    window.AskMavenUI = {
-      setKbReady: (v: boolean) => setKbReady(v),
-      setKbLoading: (v: boolean) => setKbLoading(v),
-      log: () => console.log({ kbReady, kbLoading }),
-    };
-  }
-  
   const filesReady = files.filter(Boolean).length === 3;
   const canOpenMaven = runState === "success";
 
   useEffect(() => {
-    let mounted = true;
-
-    // Initial check (e.g., after a page refresh)
+    let alive = true;
+  
+    // 1) enable if a KB already exists (e.g., after AskMavenDev.loadSampleKB())
     loadKB().then(kb => {
-      if (!mounted) return;
+      if (!alive) return;
       if (kb?.rows?.length) {
         setKbReady(true);
         setKbCount(kb.rows.length);
       }
     });
-
-    // React to fresh indexing from the custom event
+  
+    // 2) enable whenever a new KB is indexed
     const onKB = (e: any) => {
+      if (!alive) return;
       setKbReady(true);
       setKbCount(e?.detail?.count ?? 0);
     };
-    window.addEventListener('askmaven:kb-updated', onKB);
-
+    window.addEventListener("askmaven:kb-updated", onKB);
+  
     return () => {
-      mounted = false;
-      window.removeEventListener('askmaven:kb-updated', onKB);
+      alive = false;
+      window.removeEventListener("askmaven:kb-updated", onKB);
     };
   }, []);
 
@@ -184,7 +175,6 @@ export default function ReportsExcelPage() {
       setKbLoading(true);
       try {
         await indexMergedRows(rows);
-        // State update for kbReady and kbCount is now handled by the event listener
       } finally {
         setKbLoading(false);
       }
@@ -212,7 +202,7 @@ export default function ReportsExcelPage() {
   }
 
   const openMaven = () => {
-    if (!canOpenMaven) return;
+    if (!kbReady) return;
     setIsMavenOpen(true);
   };
 
