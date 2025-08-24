@@ -1,3 +1,4 @@
+
 // components/reports/maven/MavenChat.tsx
 import * as React from "react";
 import { Brain, Send } from "lucide-react";
