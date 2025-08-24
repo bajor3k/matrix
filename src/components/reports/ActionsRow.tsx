@@ -27,67 +27,66 @@ export default function ActionsRow({
   onToggleDashboard,
   onAskMaven,
 }: Props) {
-  const runVariant = filesReady ? "primary" : "neutral";
-  const runLabelEmphasis = filesReady ? "bright" : "normal";
-  const runDisabled = !filesReady || runState === "running";
+  
+  const isReady = filesReady && runState !== 'running' && runState !== 'success';
+  const isRunning = runState === 'running';
+  const isSuccess = runState === 'success';
 
-  const afterRunSuccess = runState === "success";
-
-  const postVariant = "neutral" as const;
-  const postLabelEmphasis = afterRunSuccess ? "bright" : "normal";
-  const postDisabled = !afterRunSuccess;
+  // Determine emphasis for "Run Report"
+  let runLabelEmphasis: "normal" | "bright" | "active" = "normal";
+  if (isReady) runLabelEmphasis = "bright";
+  if (isSuccess) runLabelEmphasis = "active";
+  
+  // Determine emphasis for post-run actions
+  const postRunLabelEmphasis = isSuccess ? "active" : "normal";
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
       <ActionPill
         onClick={onRun}
-        disabled={runDisabled}
+        disabled={!isReady}
+        isRunning={isRunning}
         label="Run Report"
         srLabel="Run report"
-        variant={runVariant}
         labelEmphasis={runLabelEmphasis}
       />
 
       <ActionPill
         onClick={onDownloadExcel}
-        disabled={postDisabled}
+        disabled={!isSuccess}
         label="Excel"
         srLabel="Download Excel"
         title="Download Excel"
         icon={<DownloadIcon className="w-4 h-4" />}
-        variant={postVariant}
-        labelEmphasis={postLabelEmphasis}
+        labelEmphasis={postRunLabelEmphasis}
       />
 
       <ActionPill
         onClick={onDownloadCsv}
-        disabled={postDisabled}
+        disabled={!isSuccess}
         label="CSV"
         srLabel="Download CSV"
         title="Download CSV"
         icon={<DownloadIcon className="w-4 h-4" />}
-        variant={postVariant}
-        labelEmphasis={postLabelEmphasis}
+        labelEmphasis={postRunLabelEmphasis}
       />
 
       <ActionPill
         onClick={onToggleDashboard}
-        disabled={postDisabled}
+        disabled={!isSuccess}
         label={dashboardVisible ? "Hide Dashboard" : "Open Dashboard"}
         srLabel={dashboardVisible ? "Hide dashboard" : "Open dashboard"}
-        variant={postVariant}
-        labelEmphasis={postLabelEmphasis}
+        labelEmphasis={postRunLabelEmphasis}
       />
 
       <ActionPill
         onClick={onAskMaven}
-        disabled={postDisabled}
+        disabled={!isSuccess}
         label="Maven"
         srLabel="Ask Maven"
         title="Ask Maven"
         icon={<Brain className="w-4 h-4" />}
-        variant={postVariant}
-        labelEmphasis={postLabelEmphasis}
+        labelEmphasis={postRunLabelEmphasis}
       />
     </div>
   );

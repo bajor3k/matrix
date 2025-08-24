@@ -1,7 +1,8 @@
 import * as React from "react";
+import { cn } from "@/lib/utils";
 
-type Variant = "neutral" | "primary";
-type Emphasis = "normal" | "bright";
+type Variant = "neutral"; // 'primary' is removed
+type Emphasis = "normal" | "bright" | "active";
 
 export function ActionPill({
   onClick,
@@ -13,6 +14,7 @@ export function ActionPill({
   variant = "neutral",
   labelEmphasis = "normal",
   className = "",
+  isRunning = false,
 }: {
   onClick?: () => void;
   disabled?: boolean;
@@ -23,42 +25,38 @@ export function ActionPill({
   variant?: Variant;
   labelEmphasis?: Emphasis;
   className?: string;
+  isRunning?: boolean;
 }) {
-  const base =
-    "inline-flex items-center gap-2 rounded-full h-11 px-4 border select-none transition-colors " +
-    "disabled:opacity-55 disabled:cursor-not-allowed";
+  const baseClasses =
+    "inline-flex items-center gap-2 rounded-full h-11 px-4 border select-none transition-colors duration-150 disabled:opacity-55";
 
-  const variantClasses =
-    variant === "primary"
-      ? // Brand green #08e28f
-        "bg-[#08e28f] text-black border-transparent hover:brightness-95"
-      : // Neutral pill (dark/light aware)
-        "bg-[#fcfbfb] text-black border-black/10 hover:bg-black/5 " + 
-        "dark:bg-[#121212] dark:text-white dark:border-white/10 dark:hover:bg-white/5";
+  const themeClasses =
+    "bg-black/30 dark:bg-black/30 border-neutral-800/60 dark:border-neutral-800/60 backdrop-blur-sm";
 
-  // Label emphasis for neutral pills
-  const labelClasses =
-    variant === "primary"
-      ? "text-black" // Green pill has black text
-      : labelEmphasis === "bright"
-      ? "text-black dark:text-white" // Bright text for enabled neutral pills
-      : "text-black/60 dark:text-white/70"; // Muted text for disabled neutral pills
+  const emphasisClasses = {
+    normal: "text-neutral-500 dark:text-neutral-500 cursor-not-allowed",
+    bright: "text-neutral-200 dark:text-neutral-200 hover:text-white dark:hover:text-white cursor-pointer",
+    active: "text-white dark:text-white ring-1 ring-white/15 hover:ring-white/25 cursor-pointer",
+  };
 
-  // Icon color follows label color
-  const iconClasses = labelClasses;
-
+  const runningClasses = isRunning ? "text-neutral-400 dark:text-neutral-400 cursor-wait" : "";
 
   return (
     <button
       type="button"
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || isRunning}
       aria-label={srLabel || label}
       title={title || label}
-      className={[base, variantClasses, className].join(" ")}
+      className={cn(
+          baseClasses,
+          themeClasses,
+          isRunning ? runningClasses : emphasisClasses[labelEmphasis],
+          className
+      )}
     >
-      {icon ? <span className={["shrink-0", iconClasses].join(" ")}>{icon}</span> : null}
-      <span className={["leading-none transition-colors", labelClasses].join(" ")}>{label}</span>
+      {icon && <span className="shrink-0">{icon}</span>}
+      <span className="leading-none">{label}</span>
     </button>
   );
 }
