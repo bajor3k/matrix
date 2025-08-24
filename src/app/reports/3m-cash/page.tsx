@@ -143,7 +143,10 @@ export default function ReportsExcelPage() {
 
       setKbLoading(true);
       try {
-        await indexMergedRows(rows);
+        const { count } = await indexMergedRows(rows);
+        console.log('AskMaven KB indexed:', count);
+      } catch(e) {
+        console.error('AskMaven indexing failed', e);
       } finally {
         setKbLoading(false);
       }
