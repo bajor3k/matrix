@@ -1,3 +1,4 @@
+
 // components/reports/maven/MavenLayout.tsx
 import * as React from "react";
 import { MavenChat } from "./MavenChat";
@@ -21,21 +22,17 @@ export function MavenLayout({
 }) {
   return (
     <section
-      className={[
-        // fill the viewport height just under the app top bar
-        "mt-2 h-[calc(100vh-90px)]",
-        "grid",
-        "grid-cols-[minmax(0,1fr)_minmax(360px,460px)]",
-        "gap-4",
-      ].join(" ")}
+      className="mt-2 h-[calc(100vh-90px)] flex gap-4"
     >
-      {/* LEFT: data table area, edge-to-edge */}
-      <div className="rounded-2xl border bg-[#101010] border-white/10 overflow-hidden light:bg-white light:border-black/10">
+      {/* LEFT: data table area, now a flex child */}
+      <div className="flex-1 min-w-0">
         <ResultsTableCard rows={rows} />
       </div>
 
-      {/* RIGHT: Maven chat panel */}
-      <MavenChat onClose={onClose} />
+      {/* RIGHT: Maven chat panel, now a flex child */}
+      <div className="w-[clamp(360px,30vw,460px)] shrink-0">
+        <MavenChat onClose={onClose} />
+      </div>
     </section>
   );
 }
