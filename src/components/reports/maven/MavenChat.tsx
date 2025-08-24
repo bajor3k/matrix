@@ -1,7 +1,6 @@
 // components/reports/maven/MavenChat.tsx
 import * as React from "react";
-import { Send } from "lucide-react";
-import { BrainIcon } from "@/components/icons/BrainIcon";
+import { Brain, Send } from "lucide-react";
 
 type Msg = { id: string; who: "user" | "bot"; text: string };
 
@@ -26,12 +25,14 @@ export function MavenChat({ onClose }: { onClose: () => void }) {
     setInput("");
   };
 
+  const canSend = input.trim().length > 0;
+
   return (
     <aside className="rounded-2xl border bg-[#101010] border-white/10 light:bg-[#fcfbfb] light:border-black/10 flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 light:border-black/10">
         <div className="flex items-center gap-2 text-white/70 light:text-black/70">
-          <BrainIcon className="h-4 w-4" />
+          <Brain className="h-4 w-4" />
           <span className="text-sm font-medium">Ask Maven</span>
         </div>
         <button
@@ -76,19 +77,21 @@ export function MavenChat({ onClose }: { onClose: () => void }) {
           placeholder="Ask about fees, accounts, and status…"
           className="flex-1 rounded-xl border border-white/10 bg-[#101010] px-3 py-2 text-sm placeholder:text-white/40 text-white light:bg-[#fcfbfb] light:border-black/10 light:text-black light:placeholder:text-black/40"
         />
+
         <button
           type="submit"
-          disabled={!input.trim()}
+          disabled={!canSend}
+          onClick={handleSend}
           className={[
             "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium",
+            // neutral pill
             "bg-[#101010] border-white/10 text-white/70 hover:text-white",
             "light:bg-[#fcfbfb] light:border-black/10 light:text-black/70 light:hover:text-black",
-            !input.trim() ? "opacity-50 cursor-not-allowed hover:text-inherit light:hover:text-inherit" : "",
+            // disabled
+            !canSend ? "opacity-50 cursor-not-allowed hover:text-inherit light:hover:text-inherit" : "",
           ].join(" ")}
         >
-          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <path d="M22 2 11 13" /><path d="M22 2 15 22 11 13 2 9 22 2Z" />
-          </svg>
+          <Send className="h-4 w-4" />
           Ask
         </button>
       </form>
