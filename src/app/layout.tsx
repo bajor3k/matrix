@@ -17,6 +17,10 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { SidebarProvider, useSidebar } from '@/hooks/use-sidebar.tsx';
 
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') { 
+  import('../lib/askmaven/dev-expose'); 
+}
+
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
