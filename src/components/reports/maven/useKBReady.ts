@@ -16,17 +16,19 @@ export default function useKBReady() {
       const ok = Boolean(kb?.rows?.length);
       setReady(ok);
       setCount(ok ? kb!.rows.length : null);
+      if (ok) console.log('[useKBReady] KB present:', kb!.rows.length);
     });
 
-    // event from indexMergedRows()
+    // react to event from indexMergedRows()
     const onKB = (e: any) => {
       if (!alive) return;
       setReady(true);
       setCount(e?.detail?.count ?? null);
+      console.log('[useKBReady] event askmaven:kb-updated', e?.detail);
     };
     window.addEventListener('askmaven:kb-updated', onKB);
 
-    // polling fallback (in case event missed)
+    // polling fallback (in case the event is missed)
     const iv = setInterval(async () => {
       if (!alive || ready) return;
       const kb = await loadKB();
@@ -34,6 +36,7 @@ export default function useKBReady() {
       if (ok) {
         setReady(true);
         setCount(kb!.rows.length);
+        console.log('[useKBReady] polling found KB:', kb!.rows.length);
         clearInterval(iv);
       }
     }, 800);
