@@ -30,22 +30,23 @@ export function ActionPill({
 
   const variantClasses =
     variant === "primary"
-      ? "bg-[#08e28f] text-black border-transparent hover:brightness-95"
-      : "bg-[#121212] border-black/10 dark:border-white/10 hover:bg-black";
+      ? // Brand green #08e28f
+        "bg-[#08e28f] text-black border-transparent hover:brightness-95"
+      : // Neutral pill (dark/light aware)
+        "bg-[#fcfbfb] text-black border-black/10 hover:bg-black/5 " + 
+        "dark:bg-[#121212] dark:text-white dark:border-white/10 dark:hover:bg-white/5";
 
+  // Label emphasis for neutral pills
   const labelClasses =
     variant === "primary"
-      ? "text-black"
+      ? "text-black" // Green pill has black text
       : labelEmphasis === "bright"
-      ? "text-white"
-      : "text-white/70";
+      ? "text-black dark:text-white" // Bright text for enabled neutral pills
+      : "text-black/60 dark:text-white/70"; // Muted text for disabled neutral pills
 
-  const iconClasses =
-    variant === "primary"
-      ? "text-black"
-      : labelEmphasis === "bright"
-      ? "text-white"
-      : "text-white/70";
+  // Icon color follows label color
+  const iconClasses = labelClasses;
+
 
   return (
     <button
