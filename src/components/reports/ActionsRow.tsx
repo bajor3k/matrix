@@ -1,10 +1,11 @@
+
 // components/reports/ActionsRow.tsx
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Download as DownloadIcon, Brain, Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import { ActionPill } from "@/components/ui/ActionPill";
-import { loadKB } from "@/lib/askmaven/storage";
+import MavenPill from "./maven/MavenPill";
 
 type RunState = "idle" | "running" | "success" | "error";
 
@@ -31,8 +32,6 @@ export default function ActionsRow({
   onAskMaven,
   kbLoading,
 }: Props) {
-  const [kbReady, setKbReady] = useState(false);
-  const [kbCount, setKbCount] = useState(0);
   const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,32 +40,6 @@ export default function ActionsRow({
     if (fs && barRef.current) {
       barRef.current.style.setProperty('--pill-font-size', fs);
     }
-  }, []);
-
-  useEffect(() => {
-    let alive = true;
-
-    // 1) enable if a KB already exists (e.g., after AskMavenDev.loadSampleKB())
-    loadKB().then((kb) => {
-      if (!alive) return;
-      if (kb?.rows?.length) {
-        setKbReady(true);
-        setKbCount(kb.rows.length);
-      }
-    });
-
-    // 2) enable whenever a new KB is indexed
-    const onKB = (e: any) => {
-      if (!alive) return;
-      setKbReady(true);
-      setKbCount(e?.detail?.count ?? 0);
-    };
-    window.addEventListener("askmaven:kb-updated", onKB);
-
-    return () => {
-      alive = false;
-      window.removeEventListener("askmaven:kb-updated", onKB);
-    };
   }, []);
 
   const isReady = filesReady && runState !== "running" && runState !== "success";
@@ -120,23 +93,7 @@ export default function ActionsRow({
         icon={dashboardVisible ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         labelEmphasis={postRunLabelEmphasis}
       />
-      <div className="flex items-center gap-2">
-        <ActionPill
-          onClick={onAskMaven}
-          disabled={!kbReady || kbLoading}
-          isRunning={kbLoading}
-          label="Maven"
-          srLabel="Ask Maven"
-          title="Ask Maven"
-          icon={<Brain className="w-4 h-4" />}
-          labelEmphasis={kbReady ? "active" : "normal"}
-        />
-        {kbReady && !kbLoading && (
-          <span className="text-xs text-emerald-400">
-            Ready ({kbCount} rows)
-          </span>
-        )}
-      </div>
+      <MavenPill onOpen={onAskMaven} />
     </div>
   );
 }
