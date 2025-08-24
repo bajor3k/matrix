@@ -1,7 +1,9 @@
-// components/reports/maven/MavenChat.tsx
+
+'use client';
 import * as React from "react";
 import { Brain, Send } from "lucide-react";
 import { askMaven } from "@/lib/askmaven/ask";
+import { cn } from "@/lib/cn";
 
 type Msg = { role: "user" | "bot"; text: string };
 
