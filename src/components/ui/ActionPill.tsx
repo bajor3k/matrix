@@ -28,7 +28,7 @@ export function ActionPill({
   isRunning?: boolean;
 }) {
   const baseClasses =
-    "inline-flex items-center gap-2 rounded-full h-11 px-4 border select-none transition-colors duration-150 disabled:opacity-55";
+    "inline-flex items-center gap-2 rounded-full h-11 px-4 border select-none transition-colors duration-150 disabled:opacity-55 text-[var(--pill-font-size)] font-semibold";
 
   const themeClasses =
     "bg-black/30 dark:bg-black/30 border-neutral-800/60 dark:border-neutral-800/60 backdrop-blur-sm";

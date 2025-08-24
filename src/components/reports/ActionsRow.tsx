@@ -1,7 +1,7 @@
 // components/reports/ActionsRow.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Download as DownloadIcon, Brain, Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import { ActionPill } from "@/components/ui/ActionPill";
 import { loadKB } from "@/lib/askmaven/storage";
@@ -33,6 +33,15 @@ export default function ActionsRow({
 }: Props) {
   const [kbReady, setKbReady] = useState(false);
   const [kbCount, setKbCount] = useState(0);
+  const barRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const th = document.querySelector<HTMLElement>('.report-table thead th');
+    const fs = th ? getComputedStyle(th).fontSize : null;
+    if (fs && barRef.current) {
+      barRef.current.style.setProperty('--pill-font-size', fs);
+    }
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -73,7 +82,7 @@ export default function ActionsRow({
   const postRunLabelEmphasis = isSuccess ? "active" : "normal";
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+    <div ref={barRef} className="flex flex-wrap items-center justify-center gap-3 pt-2">
       <ActionPill
         onClick={onRun}
         disabled={!isReady}

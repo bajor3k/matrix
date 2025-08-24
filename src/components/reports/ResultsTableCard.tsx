@@ -39,7 +39,7 @@ export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
       aria-label="Report rows"
     >
       <div className="overflow-auto flex-grow">
-        <table className="w-full text-sm">
+        <table className="report-table w-full text-sm">
           {/* Header — light in light-mode, dark in dark-mode */}
           <thead
             className="
