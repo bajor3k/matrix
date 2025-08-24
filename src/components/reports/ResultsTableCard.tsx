@@ -34,10 +34,11 @@ export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
         bg-white dark:bg-[#101010]
         border-[#e5e7eb] dark:border-white/10
         p-3 md:p-4
+        flex flex-col h-full
       "
       aria-label="Report rows"
     >
-      <div className="overflow-auto max-h-[70vh] min-h-[220px]">
+      <div className="overflow-auto flex-grow">
         <table className="w-full text-sm">
           {/* Header — light in light-mode, dark in dark-mode */}
           <thead
