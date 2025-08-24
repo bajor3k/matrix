@@ -2,14 +2,17 @@ import { openDB } from 'idb';
 
 const DB_NAME = 'ask-maven-db';
 const STORE = 'kb';
+const VERSION = 2; // bump to force upgrade & ensure store exists
 
 type KBRow = { r: any; t: string; e: number[] };
 export type KBPacket = { createdAt: number; columns: string[]; rows: KBRow[] };
 
 async function open() {
-  return openDB(DB_NAME, 1, {
-    upgrade(d) {
-      if (!d.objectStoreNames.contains(STORE)) d.createObjectStore(STORE);
+  return openDB(DB_NAME, VERSION, {
+    upgrade(db) {
+      if (!db.objectStoreNames.contains(STORE)) {
+        db.createObjectStore(STORE);
+      }
     }
   });
 }
@@ -25,11 +28,6 @@ export async function loadKB(): Promise<KBPacket | null> {
 }
 
 export async function clearKB() {
-  try {
-    const db = await open();
-    // If key doesn't exist, delete() will no-op
-    await db.delete(STORE, 'current');
-  } catch {
-    // swallow; database will be created lazily on next save
-  }
+  const db = await open();
+  try { await db.delete(STORE, 'current'); } catch {}
 }
