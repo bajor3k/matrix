@@ -68,6 +68,14 @@ export default function ReportsExcelPage() {
   const filesReady = files.filter(Boolean).length === 3;
   const canOpenMaven = runState === "success";
 
+  // This is a temporary debug hook.
+  if (typeof window !== "undefined") {
+    // @ts-ignore
+    window.AskMavenUI = {
+      log: () => console.log({ runState, error }),
+    };
+  }
+  
   useEffect(() => {
     const onEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") setIsMavenOpen(false);
@@ -144,9 +152,9 @@ export default function ReportsExcelPage() {
       setKbLoading(true);
       try {
         const { count } = await indexMergedRows(rows);
-        console.log('AskMaven KB indexed:', count);
+        console.log('[AskMaven KB indexed]:', count);
       } catch(e) {
-        console.error('AskMaven indexing failed', e);
+        console.error('[AskMaven indexing failed]', e);
       } finally {
         setKbLoading(false);
       }

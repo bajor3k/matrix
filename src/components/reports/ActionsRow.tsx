@@ -1,4 +1,3 @@
-
 // components/reports/ActionsRow.tsx
 "use client";
 
@@ -18,7 +17,7 @@ type Props = {
   onDownloadCsv: () => void;
   onToggleDashboard: () => void;
   onAskMaven: () => void;
-  kbLoading: boolean;
+  kbLoading?: boolean; // Now optional
 };
 
 export default function ActionsRow({
@@ -30,7 +29,7 @@ export default function ActionsRow({
   onDownloadCsv,
   onToggleDashboard,
   onAskMaven,
-  kbLoading,
+  kbLoading, // Still accept it but MavenPill is self-managed
 }: Props) {
   const barRef = useRef<HTMLDivElement>(null);
 
@@ -59,7 +58,7 @@ export default function ActionsRow({
       <ActionPill
         onClick={onRun}
         disabled={!isReady}
-        isRunning={isRunning && !kbLoading} // Only show primary spinner if not indexing
+        isRunning={isRunning && !kbLoading}
         label="Run Report"
         srLabel="Run report"
         labelEmphasis={runLabelEmphasis}
