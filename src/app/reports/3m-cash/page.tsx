@@ -67,6 +67,16 @@ export default function ReportsExcelPage() {
   const [kbReady, setKbReady] = React.useState(false);
   const [kbCount, setKbCount] = React.useState(0);
 
+  // --- TEMP DEBUG: expose to window so we can toggle from Console ---
+  if (typeof window !== "undefined") {
+    // @ts-ignore
+    window.AskMavenUI = {
+      setKbReady: (v: boolean) => setKbReady(v),
+      setKbLoading: (v: boolean) => setKbLoading(v),
+      log: () => console.log({ kbReady, kbLoading }),
+    };
+  }
+
   const filesReady = files.filter(Boolean).length === 3;
   const canOpenMaven = runState === "success";
 
