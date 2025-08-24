@@ -17,7 +17,7 @@ type Props = {
   onDownloadCsv: () => void;
   onToggleDashboard: () => void;
   onAskMaven: () => void;
-  kbLoading?: boolean; // Now optional
+  kbLoading?: boolean;
 };
 
 export default function ActionsRow({
@@ -29,7 +29,7 @@ export default function ActionsRow({
   onDownloadCsv,
   onToggleDashboard,
   onAskMaven,
-  kbLoading, // Still accept it but MavenPill is self-managed
+  kbLoading = false,
 }: Props) {
   const barRef = useRef<HTMLDivElement>(null);
 
@@ -92,7 +92,7 @@ export default function ActionsRow({
         icon={dashboardVisible ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         labelEmphasis={postRunLabelEmphasis}
       />
-      <MavenPill onOpen={onAskMaven} />
+      <MavenPill onOpen={onAskMaven} isLoading={kbLoading} />
     </div>
   );
 }

@@ -1,4 +1,3 @@
-
 // src/app/reports/3m-cash/page.tsx
 "use client";
 
@@ -129,6 +128,7 @@ export default function ReportsExcelPage() {
     if (!filesReady) return;
     setRunState("running");
     setError(null);
+    setKbLoading(false); // Reset on new run
 
     try {
       const fd = new FormData();
@@ -209,6 +209,7 @@ export default function ReportsExcelPage() {
             />
             {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
              {runState === "running" && !kbLoading && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
+             {runState === "success" && kbLoading && <div className="text-center text-xs text-muted-foreground mt-2">Indexing knowledge base...</div>}
           </FullBleed>
 
           {dashboardVisible && runState === 'success' && (
