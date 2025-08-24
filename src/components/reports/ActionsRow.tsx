@@ -1,8 +1,10 @@
 // components/reports/ActionsRow.tsx
 "use client";
 
-import { Download as DownloadIcon, Brain } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Download as DownloadIcon, Brain, Loader2 } from "lucide-react";
 import { ActionPill } from "@/components/ui/ActionPill";
+import { loadKB } from "@/lib/askmaven/storage";
 
 type RunState = "idle" | "running" | "success" | "error";
 
@@ -16,8 +18,6 @@ type Props = {
   onToggleDashboard: () => void;
   onAskMaven: () => void;
   kbLoading: boolean;
-  kbReady: boolean;
-  kbCount: number;
 };
 
 export default function ActionsRow({
@@ -30,19 +30,45 @@ export default function ActionsRow({
   onToggleDashboard,
   onAskMaven,
   kbLoading,
-  kbReady,
-  kbCount,
 }: Props) {
-  
-  const isReady = filesReady && runState !== 'running' && runState !== 'success';
-  const isRunning = runState === 'running';
-  const isSuccess = runState === 'success';
+  const [kbReady, setKbReady] = useState(false);
+  const [kbCount, setKbCount] = useState(0);
+
+  useEffect(() => {
+    let alive = true;
+
+    // 1) enable if a KB already exists (e.g., after AskMavenDev.loadSampleKB())
+    loadKB().then((kb) => {
+      if (!alive) return;
+      if (kb?.rows?.length) {
+        setKbReady(true);
+        setKbCount(kb.rows.length);
+      }
+    });
+
+    // 2) enable whenever a new KB is indexed
+    const onKB = (e: any) => {
+      if (!alive) return;
+      setKbReady(true);
+      setKbCount(e?.detail?.count ?? 0);
+    };
+    window.addEventListener("askmaven:kb-updated", onKB);
+
+    return () => {
+      alive = false;
+      window.removeEventListener("askmaven:kb-updated", onKB);
+    };
+  }, []);
+
+  const isReady = filesReady && runState !== "running" && runState !== "success";
+  const isRunning = runState === "running";
+  const isSuccess = runState === "success";
 
   // Determine emphasis for "Run Report"
   let runLabelEmphasis: "normal" | "bright" | "active" = "normal";
   if (isReady) runLabelEmphasis = "bright";
   if (isSuccess) runLabelEmphasis = "active";
-  
+
   // Determine emphasis for post-run actions
   const postRunLabelEmphasis = isSuccess ? "active" : "normal";
 
@@ -51,7 +77,7 @@ export default function ActionsRow({
       <ActionPill
         onClick={onRun}
         disabled={!isReady}
-        isRunning={isRunning}
+        isRunning={isRunning && !kbLoading} // Only show primary spinner if not indexing
         label="Run Report"
         srLabel="Run report"
         labelEmphasis={runLabelEmphasis}
@@ -88,16 +114,18 @@ export default function ActionsRow({
         <ActionPill
           onClick={onAskMaven}
           disabled={!kbReady || kbLoading}
+          isRunning={kbLoading}
           label="Maven"
           srLabel="Ask Maven"
           title="Ask Maven"
           icon={<Brain className="w-4 h-4" />}
           labelEmphasis={kbReady ? "active" : "normal"}
         />
-         {kbLoading && <span className="text-xs text-neutral-400">Indexing...</span>}
-         {kbReady && !kbLoading && (
-            <span className="text-xs text-emerald-400">Ready ({kbCount} rows)</span>
-         )}
+        {kbReady && !kbLoading && (
+          <span className="text-xs text-emerald-400">
+            Ready ({kbCount} rows)
+          </span>
+        )}
       </div>
     </div>
   );

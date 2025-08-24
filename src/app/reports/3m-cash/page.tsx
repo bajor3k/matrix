@@ -15,7 +15,6 @@ import ResultsTableCard from "@/components/reports/ResultsTableCard";
 import { downloadCSV } from "@/utils/csv";
 import { MavenLayout } from "@/components/reports/maven/MavenLayout";
 import { indexMergedRows } from '@/lib/askmaven/kb';
-import { loadKB } from '@/lib/askmaven/storage';
 
 
 const REPORT_SUMMARY =
@@ -65,37 +64,9 @@ export default function ReportsExcelPage() {
   });
   const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
   const [kbLoading, setKbLoading] = React.useState(false);
-  const [kbReady, setKbReady] = React.useState(false);
-  const [kbCount, setKbCount] = React.useState(0);
 
   const filesReady = files.filter(Boolean).length === 3;
   const canOpenMaven = runState === "success";
-
-  useEffect(() => {
-    let alive = true;
-  
-    // 1) enable if a KB already exists (e.g., after AskMavenDev.loadSampleKB())
-    loadKB().then(kb => {
-      if (!alive) return;
-      if (kb?.rows?.length) {
-        setKbReady(true);
-        setKbCount(kb.rows.length);
-      }
-    });
-  
-    // 2) enable whenever a new KB is indexed
-    const onKB = (e: any) => {
-      if (!alive) return;
-      setKbReady(true);
-      setKbCount(e?.detail?.count ?? 0);
-    };
-    window.addEventListener("askmaven:kb-updated", onKB);
-  
-    return () => {
-      alive = false;
-      window.removeEventListener("askmaven:kb-updated", onKB);
-    };
-  }, []);
 
   useEffect(() => {
     const onEsc = (e: KeyboardEvent) => {
@@ -157,8 +128,6 @@ export default function ReportsExcelPage() {
     if (!filesReady) return;
     setRunState("running");
     setError(null);
-    setKbReady(false);
-    setKbCount(0);
 
     try {
       const fd = new FormData();
@@ -202,7 +171,7 @@ export default function ReportsExcelPage() {
   }
 
   const openMaven = () => {
-    if (!kbReady) return;
+    if (!canOpenMaven) return;
     setIsMavenOpen(true);
   };
 
@@ -233,8 +202,6 @@ export default function ReportsExcelPage() {
                 onToggleDashboard={() => setDashboardVisible(v => !v)}
                 onAskMaven={openMaven}
                 kbLoading={kbLoading}
-                kbReady={kbReady}
-                kbCount={kbCount}
             />
             {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
              {runState === "running" && !kbLoading && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
