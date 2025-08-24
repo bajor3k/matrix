@@ -87,7 +87,7 @@ export default function ActionsRow({
       <div className="flex items-center gap-2">
         <ActionPill
           onClick={onAskMaven}
-          disabled={!isSuccess || !kbReady}
+          disabled={!kbReady || kbLoading}
           label="Maven"
           srLabel="Ask Maven"
           title="Ask Maven"
