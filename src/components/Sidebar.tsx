@@ -7,6 +7,7 @@ import {
   ChevronDown, ChevronUp, FileStack, Users, BarChart3, BookOpenText,
   Wallet, Percent, BadgeDollarSign, FlaskConical,
   Settings as SettingsIcon,
+  ChevronRight,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 
@@ -80,7 +81,7 @@ export default function Sidebar({
           <Icon className="h-4 w-4 shrink-0" />
           {!collapsed && title}
         </span>
-        {!collapsed && (open ? <ChevronDown className="h-4 w-4 shrink-0" /> : <ChevronRight className="h-4 w-4 shrink-0" />)}
+        {!collapsed && (open ? <ChevronUp className="h-4 w-4 shrink-0" /> : <ChevronDown className="h-4 w-4 shrink-0" />)}
       </button>
       <div className={`overflow-hidden transition-[max-height] duration-200 ease-in-out ${open && !collapsed ? "max-h-[500px]" : "max-h-0"}`}>
         <div className="mt-1 space-y-1 pl-2 pr-1">
