@@ -26,19 +26,6 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-const TickerLookupTool = dynamic(
-  () => import('@/components/dashboard/TickerLookupTool'),
-  { 
-    loading: () => (
-      <div className="lg:col-span-3 flex justify-center items-center min-h-[200px]">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    ),
-    ssr: false 
-  }
-);
-
-
 interface MarketData {
   label: string;
   polygonTicker: string;
@@ -54,42 +41,6 @@ const initialMarketOverviewData: MarketData[] = [
   { label: 'S&P 500 (SPY)', polygonTicker: 'SPY', icon: Landmark, openTime: '09:30', closeTime: '16:00', timezone: 'America/New_York' },
   { label: 'Dow Jones (DIA)', polygonTicker: 'DIA', icon: Landmark, openTime: '09:30', closeTime: '16:00', timezone: 'America/New_York' },
 ];
-
-
-const newsData = [
-  {
-    id: 1,
-    headline: "Global Markets Rally on Positive Inflation Outlook",
-    summary: "Major indices saw significant gains as new inflation data suggests a cooling trend, boosting investor confidence.",
-    timestamp: "2h ago",
-    sentiment: "positive",
-  },
-  {
-    id: 2,
-    headline: "Tech Sector Faces Scrutiny Over New Regulations",
-    summary: "Upcoming regulatory changes are causing uncertainty in the tech industry, with several large-cap stocks experiencing volatility.",
-    timestamp: "5h ago",
-    sentiment: "neutral",
-  },
-  {
-    id: 3,
-    headline: "Oil Prices Surge Amid Geopolitical Tensions",
-    summary: "Crude oil futures jumped over 3% today following new developments in international relations, impacting energy stocks.",
-    timestamp: "1d ago",
-    sentiment: "negative",
-  },
-];
-
-const getNewsSentimentBadgeClass = (sentiment: string) => {
-  switch (sentiment) {
-    case "positive":
-      return "bg-green-500/20 text-green-400 border-green-500/50";
-    case "negative":
-      return "bg-red-500/20 text-red-400 border-red-500/50";
-    default:
-      return "bg-gray-500/20 text-gray-400 border-gray-500/50";
-  }
-};
 
 interface FetchedIndexData {
   c?: number; // Close price
@@ -388,35 +339,6 @@ export default function DashboardPage() {
           })}
         </div>
       </section>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <PlaceholderCard title="Why the Market Moved" icon={Cpu} className="lg:col-span-1 h-full">
-          <p className="text-sm text-muted-foreground leading-relaxed font-serif mt-2">
-            Market sentiment turned positive following the release of favorable inflation data, suggesting that price pressures may be easing. This led to a broad rally across major indices, particularly in growth-oriented sectors like technology and consumer discretionary. Investors are now keenly awaiting upcoming corporate earnings reports for further direction.
-          </p>
-        </PlaceholderCard>
-        <PlaceholderCard title="Top News Stories" icon={Newspaper} className="lg:col-span-2 h-full">
-          <ul className="space-y-4">
-            {newsData.map((news) => (
-              <li key={news.id} className="pb-3 border-b border-border/30 last:border-b-0 last:pb-0">
-                <div className="flex items-center justify-between mb-1">
-                  <h4 className="text-base font-semibold text-foreground">{news.headline}</h4>
-                  <Badge variant="outline" className={cn("text-xs", getNewsSentimentBadgeClass(news.sentiment))}>
-                    {news.sentiment}
-                  </Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mb-1">{news.summary}</p>
-                <p className="text-xs text-muted-foreground/70">{news.timestamp}</p>
-              </li>
-            ))}
-          </ul>
-        </PlaceholderCard>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1 hidden lg:block"> {/* Spacer */} </div>
-        <TickerLookupTool />
-      </div>
     </main>
   );
 }
