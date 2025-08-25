@@ -68,13 +68,13 @@
  
   .dark {
     /* Dark Theme */
-    --background: 0 0% 0%; /* #000000 */
+    --background: 0 0% 0%;
     --foreground: 0 0% 98%;
     
-    --card: 0 0% 6.3%; /* #101010 */
+    --card: 0 0% 0%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 6.3%;
+    --popover: 0 0% 0%;
     --popover-foreground: 0 0% 98%;
     
     --primary: 0 0% 98%;
@@ -83,18 +83,18 @@
     --secondary: 0 0% 10%; /* #1a1a1a */
     --secondary-foreground: 0 0% 98%;
     
-    --muted: 0 0% 10%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 0 0% 7%;
+    --muted-foreground: 0 0% 70%;
     
-    --accent: 151 96% 46%; /* #08e28f */
+    --accent: 0 0% 7%;
     --accent-foreground: 0 0% 98%;
     
     --destructive: 0 89% 48%; /* #e31211 */
     --destructive-foreground: 0 0% 98%;
     
-    --border: 0 0% 15%; /* #262626 */
-    --input: 0 0% 15%;
-    --ring: 240 4.9% 83.9%;
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --ring: 0 0% 100%;
     
     /* Chart Colors - Monochromatic Purple (Dark) */
     --chart-1: 258 84% 58%; /* #7c3aed */
@@ -135,6 +135,10 @@
     --surface-dark:  #101010; /* dark surface for cards like help */
   }
 
+  html, body, #__next {
+    background: #000 !important;
+  }
+  
   html {
     height: 100%;
   }
@@ -610,3 +614,5 @@ html.dark .btn-primary {
 @media (min-width: 1024px) {
   .pt-safe { padding-top: max(20px, env(safe-area-inset-top)); }
 }
+
+    

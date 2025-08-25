@@ -1,3 +1,4 @@
+
 // components/AppShell.tsx
 "use client";
 
@@ -13,7 +14,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className="min-h-screen bg-[#000104] text-zinc-100"
+      className="min-h-screen bg-black text-zinc-100"
       style={
         {
           "--hh": `${HEADER_H}px`,
@@ -28,16 +29,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* SIDEBAR — sits directly under header, width is dynamic */}
       <aside
-        className="fixed left-0 top-[var(--hh)] z-30 h-[calc(100vh-var(--hh))] border-r border-white/10 bg-[#000104] overflow-hidden transition-[width] duration-200"
+        className="fixed left-0 top-[var(--hh)] z-30 h-[calc(100vh-var(--hh))] border-r border-white/10 bg-black overflow-hidden transition-[width] duration-200"
         style={{ width: "var(--sbw)" }}
       >
         <Sidebar collapsed={collapsed} />
       </aside>
 
       {/* MAIN — offset exactly by sidebar width & header height */}
-      <main className="relative z-10 px-4 py-6 transition-[margin-left] duration-200" style={{ marginLeft: "var(--sbw)", paddingTop: "var(--hh)" }}>
+      <main className="relative z-10 px-4 py-6 transition-[margin-left] duration-200 bg-transparent" style={{ marginLeft: "var(--sbw)", paddingTop: "var(--hh)" }}>
         {children}
       </main>
     </div>
   );
 }
+
+    

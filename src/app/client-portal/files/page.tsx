@@ -29,22 +29,22 @@ export default function ClientPortalFilesPage() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent 
-            className="bg-white text-black dark:bg-slate-950 dark:text-slate-50 shadow-lg rounded-md w-56"
+            className="bg-background text-foreground shadow-lg rounded-md w-56"
             align="end"
           >
-            <DropdownMenuItem className="hover:!bg-blue-100 dark:hover:!bg-blue-800/40 cursor-pointer">
+            <DropdownMenuItem className="hover:!bg-accent hover:!text-accent-foreground cursor-pointer">
               <Cloud className="mr-2 h-4 w-4 text-blue-600" />
               Attach from Dropbox
             </DropdownMenuItem>
-            <DropdownMenuItem className="hover:!bg-blue-100 dark:hover:!bg-blue-800/40 cursor-pointer">
+            <DropdownMenuItem className="hover:!bg-accent hover:!text-accent-foreground cursor-pointer">
               <Archive className="mr-2 h-4 w-4 text-muted-foreground" />
               Attach from Box
             </DropdownMenuItem>
-            <DropdownMenuItem className="hover:!bg-blue-100 dark:hover:!bg-blue-800/40 cursor-pointer">
+            <DropdownMenuItem className="hover:!bg-accent hover:!text-accent-foreground cursor-pointer">
               <Cloud className="mr-2 h-4 w-4 text-muted-foreground" />
               Attach from Google Drive
             </DropdownMenuItem>
-            <DropdownMenuItem className="hover:!bg-blue-100 dark:hover:!bg-blue-800/40 cursor-pointer">
+            <DropdownMenuItem className="hover:!bg-accent hover:!text-accent-foreground cursor-pointer">
               <Computer className="mr-2 h-4 w-4 text-muted-foreground" />
               Attach from My Computer
             </DropdownMenuItem>
@@ -83,3 +83,5 @@ export default function ClientPortalFilesPage() {
     </main>
   );
 }
+
+    

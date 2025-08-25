@@ -20,7 +20,7 @@ export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
   const { activeSection, setActiveSection } = useNavigation();
 
   return (
-    <header className="mx-auto flex h-full max-w-screen-2xl items-center gap-3 px-4">
+    <header className="flex h-full max-w-screen-2xl items-center gap-3 px-4">
       <div className="flex items-center gap-2">
         <Link
             href="/dashboard"
@@ -45,7 +45,7 @@ export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
         {toolbarSections.map((section) => (
             <Link
                 key={section.id}
-                href={`/${section.title.toLowerCase()}`}
+                href={`/${section.id === 'CRM' ? 'client-portal/home' : section.title.toLowerCase()}`}
                 onClick={() => setActiveSection(section.id)}
                 className={cn(
                     "transition-colors",
@@ -66,3 +66,5 @@ export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
     </header>
   );
 }
+
+    
