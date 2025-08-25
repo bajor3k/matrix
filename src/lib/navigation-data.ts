@@ -27,6 +27,7 @@ import {
   Banknote,
   Percent,
   BadgeDollarSign,
+  FileStack
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -38,8 +39,8 @@ export const toolbarSections: ToolbarSection[] = [
 
 export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
   'Reports': [
-    { name: 'Advisory Fees Cash', icon: Wallet, href: '/reports/3m-cash' },
-    { name: 'Cash Balance', icon: Banknote, href: '/reports/cash-alerts' },
+    { name: 'Advisory Fees Cash', icon: FileStack, href: '/reports/3m-cash' },
+    { name: 'Cash Balance', icon: Wallet, href: '/reports/cash-alerts' },
     { name: 'Margin', icon: Percent, href: '/reports/margin-notify' },
     { name: 'Advisory Fees', icon: BadgeDollarSign, href: '/reports/advisor-summary' },
     { name: 'Test', icon: FlaskConical, href: '/reports/billing-coverage' },
