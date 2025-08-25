@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from 'react';
@@ -12,7 +11,7 @@ export default function DashboardPage() {
       </h1>
 
       <section>
-        <h2 className="text-xl font-semibold text-foreground mb-6">Market Overview</h2>
+        <h2 className="sr-only">Market Overview</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <MarketCard label="Apple (AAPL)"     price={227.76} changePct={0.70} />
           <MarketCard label="Microsoft (MSFT)" price={507.23} changePct={0.59} />
