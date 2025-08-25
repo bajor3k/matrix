@@ -13,21 +13,21 @@ export default function LandingPage() {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#f6f6f6] dark:bg-black text-black dark:text-[#f2f2f2] flex flex-col font-sans transition-colors duration-300 overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-sans transition-colors duration-300 overflow-x-hidden">
       <header className="absolute top-0 left-0 right-0 p-6 md:p-8 z-20">
         <nav className="flex justify-between items-center max-w-7xl mx-auto">
           <Link href="/dashboard" className="transition-transform hover:scale-110 hover:drop-shadow-lg">
-            <Brain className="w-8 h-8 md:w-10 md:h-10 text-black dark:text-white" />
+            <Brain className="w-8 h-8 md:w-10 md:h-10 text-foreground" />
           </Link>
 
-          <div className="flex items-center space-x-4 md:space-x-6 text-sm md:text-base font-medium text-gray-800 dark:text-gray-300">
-            <Link href="/dashboard" className="hover:text-black dark:hover:text-white transition-colors">
+          <div className="flex items-center space-x-4 md:space-x-6 text-sm md:text-base font-medium text-muted-foreground">
+            <Link href="/dashboard" className="hover:text-foreground transition-colors">
               Login
             </Link>
-            <Link href="#" className="hover:text-black dark:hover:text-white transition-colors">
+            <Link href="#" className="hover:text-foreground transition-colors">
               Sign up
             </Link>
-            <button onClick={() => setIsReviewModalOpen(true)} className="hover:text-black dark:hover:text-white transition-colors">
+            <button onClick={() => setIsReviewModalOpen(true)} className="hover:text-foreground transition-colors">
               Review
             </button>
             <ThemeToggle />
@@ -38,7 +38,7 @@ export default function LandingPage() {
       <main className="flex-1 px-6 md:px-8 pt-24 md:pt-32">
         <div className="w-full max-w-7xl mx-auto text-center">
           
-          <h1 className="font-extrabold text-[20vw] leading-none text-black dark:text-white tracking-tighter mb-4 [text-shadow:48px_64px_24px_rgba(0,0,0,0.21)]">
+          <h1 className="font-extrabold text-[20vw] leading-none text-foreground tracking-tighter mb-4 [text-shadow:48px_64px_24px_rgba(0,0,0,0.21)]">
             matrix
           </h1>
 
@@ -71,7 +71,7 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
-          <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white mt-72">
+          <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-foreground mt-72">
             One Login. One Matrix.
           </h2>
           
@@ -81,7 +81,7 @@ export default function LandingPage() {
               alt="Matrix Client Analytics Dashboard Screenshot"
               width={1200}
               height={836}
-              className="rounded-lg border border-white/10 mx-auto neon-glow"
+              className="rounded-lg border border-border mx-auto neon-glow"
               priority
             />
             <div className="my-16 px-4">
@@ -90,14 +90,14 @@ export default function LandingPage() {
                 alt="Compliance Analytics Screenshot"
                 width={1200}
                 height={836}
-                className="rounded-lg shadow-2xl border border-white/10 mx-auto"
+                className="rounded-lg shadow-2xl border border-border mx-auto"
                 data-ai-hint="compliance dashboard"
               />
             </div>
           </div>
 
           <div className="py-24 md:py-32 space-y-8 md:space-y-12">
-            <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-black dark:text-white">
+            <h2 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter text-foreground">
               Analytics that power your business.
             </h2>
           </div>
@@ -112,7 +112,7 @@ export default function LandingPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsReviewModalOpen(false)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/5 backdrop-blur-md p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-md p-4"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -120,49 +120,49 @@ export default function LandingPage() {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative flex w-full max-w-4xl flex-col items-center rounded-2xl bg-white/80 p-8 shadow-2xl dark:bg-neutral-900/80 border border-white/20"
+              className="relative flex w-full max-w-4xl flex-col items-center rounded-2xl bg-card/80 p-8 shadow-2xl border border-border"
             >
               <button
-                className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-xl font-bold hover:bg-neutral-200/50"
+                className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-xl font-bold hover:bg-accent"
                 onClick={() => setIsReviewModalOpen(false)}
                 aria-label="Close review modal"
               >
                 <X className="w-4 h-4" />
               </button>
               
-              <h2 className="text-2xl font-bold mb-8 text-black dark:text-white">What People Are Saying</h2>
+              <h2 className="text-2xl font-bold mb-8 text-foreground">What People Are Saying</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="font-semibold text-lg text-black dark:text-white">Alex B.</div>
-                  <div className="italic text-neutral-700 dark:text-neutral-200">
+                  <div className="font-semibold text-lg text-foreground">Alex B.</div>
+                  <div className="italic text-muted-foreground">
                     “Whoever created this platform is a genius. If you ever get the chance to hire them, do it!”
                   </div>
-                  <div className="text-xs text-neutral-400">— Matrix Review</div>
+                  <div className="text-xs text-muted-foreground/80">— Matrix Review</div>
                 </div>
 
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="font-semibold text-lg text-black dark:text-white">Jamie L.</div>
-                  <div className="italic text-neutral-700 dark:text-neutral-200">
+                  <div className="font-semibold text-lg text-foreground">Jamie L.</div>
+                  <div className="italic text-muted-foreground">
                     “Matrix has completely transformed the way I run my business. The analytics are next-level—nothing else comes close!”
                   </div>
-                  <div className="text-xs text-neutral-400">— Matrix Review</div>
+                  <div className="text-xs text-muted-foreground/80">— Matrix Review</div>
                 </div>
 
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="font-semibold text-lg text-black dark:text-white">Priya S.</div>
-                  <div className="italic text-neutral-700 dark:text-neutral-200">
+                  <div className="font-semibold text-lg text-foreground">Priya S.</div>
+                  <div className="italic text-muted-foreground">
                     “The integration, the speed, the intelligence—Matrix is lightyears ahead of any CRM or trading platform out there. Absolutely game-changing!”
                   </div>
-                  <div className="text-xs text-neutral-400">— Matrix Review</div>
+                  <div className="text-xs text-muted-foreground/80">— Matrix Review</div>
                 </div>
 
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="font-semibold text-lg text-black dark:text-white">Chris T.</div>
-                  <div className="italic text-neutral-700 dark:text-neutral-200">
+                  <div className="font-semibold text-lg text-foreground">Chris T.</div>
+                  <div className="italic text-muted-foreground">
                     “If I could give Matrix 10 stars, I would. It’s like having an entire team of experts in one platform. Simply phenomenal.”
                   </div>
-                  <div className="text-xs text-neutral-400">— Matrix Review</div>
+                  <div className="text-xs text-muted-foreground/80">— Matrix Review</div>
                 </div>
               </div>
 

@@ -1,3 +1,4 @@
+
 // components/AppShell.tsx
 "use client";
 
@@ -5,36 +6,28 @@ import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import { TopToolbar } from "./TopToolbar";
 
-const HEADER_H = 56; // px
-
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
-  const SBW = collapsed ? 72 : 272; // Sidebar width changes based on state
-
+  
   return (
     <div
-      className="min-h-screen bg-black text-zinc-100"
+      className="min-h-screen bg-background text-foreground"
       style={
         {
-          "--hh": `${HEADER_H}px`,
-          "--sbw": `${SBW}px`,
+          "--hh": "56px",
+          "--sbw": collapsed ? "72px" : "272px",
         } as React.CSSProperties
       }
     >
-      {/* TOP NAV — full-width, brain pinned left */}
-      <header className="fixed inset-x-0 top-0 z-40 h-[var(--hh)] border-b border-white/10 bg-black/60 backdrop-blur">
+      <header className="fixed inset-x-0 top-0 z-40 h-[var(--hh)] border-b border-border bg-background/60 backdrop-blur">
         <TopToolbar onToggleCollapsed={() => setCollapsed(v => !v)} collapsed={collapsed} />
       </header>
-
-      {/* SIDEBAR — sits directly under header, width is dynamic */}
       <aside
-        className="fixed left-0 top-[var(--hh)] z-30 h-[calc(100vh-var(--hh))] border-r border-white/10 bg-black overflow-hidden transition-[width] duration-200"
+        className="fixed left-0 top-[var(--hh)] z-30 h-[calc(100vh-var(--hh))] border-r border-border bg-background overflow-hidden transition-[width] duration-200"
         style={{ width: "var(--sbw)" }}
       >
         <Sidebar collapsed={collapsed} />
       </aside>
-
-      {/* MAIN — offset exactly by sidebar width & header height */}
       <main className="relative z-10 px-4 py-6 transition-[margin-left] duration-200 bg-transparent" style={{ marginLeft: "var(--sbw)", paddingTop: "var(--hh)" }}>
         {children}
       </main>

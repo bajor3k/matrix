@@ -1,8 +1,10 @@
+
 // components/chrome/FullscreenToggle.tsx
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { Maximize2, Minimize2 } from "lucide-react";
+import { Button } from "../ui/button";
 
 declare global {
   interface Document {
@@ -20,7 +22,7 @@ export default function FullscreenToggle({
   onExit,
 }: {
   className?: string;
-  onEnter?: () => void; // optional hooks if you ever want to collapse the sidebar, etc.
+  onEnter?: () => void;
   onExit?: () => void;
 }) {
   const [isFs, setIsFs] = useState(false);
@@ -37,7 +39,6 @@ export default function FullscreenToggle({
       else throw new Error("Fullscreen API not available");
       onEnter?.();
     } catch {
-      // Fallback: presentation mode (no URL bar removal, but full-bleed app)
       document.documentElement.classList.add("presentation-mode");
       setIsSupported(false);
       setIsFs(true);
@@ -49,7 +50,6 @@ export default function FullscreenToggle({
     try {
       if (document.exitFullscreen) await document.exitFullscreen();
       else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
-      // fallthrough to finally
     } finally {
       document.documentElement.classList.remove("presentation-mode");
       onExit?.();
@@ -69,22 +69,19 @@ export default function FullscreenToggle({
   }, []);
 
   return (
-    <button
-      type="button"
+    <Button
+      variant="ghost"
+      size="icon"
       aria-label={isFs ? "Exit fullscreen" : "Enter fullscreen"}
       onClick={toggle}
-      className={[
-        "fs-btn inline-flex items-center justify-center w-9 h-9 rounded-lg",
-        "hover:bg-black/5 dark:hover:bg-white/5",
-        className || "",
-      ].join(" ")}
+      className="h-9 w-9 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
       title={isFs ? "Exit fullscreen (Esc)" : "Fullscreen"}
     >
       {isFs ? (
-        <Minimize2 className="w-5 h-5 text-gray-600 dark:text-white/70" />
+        <Minimize2 className="w-5 h-5" />
       ) : (
-        <Maximize2 className="w-5 h-5 text-gray-600 dark:text-white/70" />
+        <Maximize2 className="w-5 h-5" />
       )}
-    </button>
+    </Button>
   );
 }

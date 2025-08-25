@@ -8,7 +8,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ChevronLeft, ChevronRight, ChevronDown,
   FileStack, Users, BarChart3, BookOpen,
-  Wallet, Percent, BadgeDollarSign, FlaskConical, Home, Mail, Contact, ListChecks, Workflow, CalendarDays, Briefcase, KanbanSquare, FileText, TrendingUp, Repeat, ShieldAlert, PieChart, Shapes, Link as LinkIcon, LifeBuoy, Calculator, GraduationCap
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 
@@ -27,7 +26,7 @@ function Row({ item, active, hiddenLabel }: { item: Item; active: boolean; hidde
       href={item.href}
       title={item.name}
       className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition w-full
-        ${active ? "bg-white/10 text-white" : "text-zinc-300 hover:bg-white/5 hover:text-white"}`}
+        ${active ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}`}
     >
       <Icon className="h-4 w-4 shrink-0" />
       {!hiddenLabel && <span className="truncate">{item.name}</span>}
@@ -42,7 +41,6 @@ export default function Sidebar({
 }) {
   const pathname = usePathname();
 
-  // Auto-open the section relevant to the current route
   const isReports = useMemo(() => pathname?.startsWith("/reports"), [pathname]);
   const isCRM = useMemo(() => pathname?.startsWith("/client-portal"), [pathname]);
   const isAnalytics = useMemo(() => [
@@ -72,11 +70,10 @@ export default function Sidebar({
     title: string; icon: any; open: boolean; setOpen: (v: boolean) => void; items: Item[];
   }) => (
     <div className="mb-2">
-      {/* parent row */}
       <button
         onClick={() => setOpen(!open)}
         className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left font-medium
-          ${collapsed ? "justify-center" : ""} hover:bg-white/5`}
+          ${collapsed ? "justify-center" : ""} hover:bg-accent`}
         aria-expanded={open}
       >
         <span className="flex items-center gap-3">
@@ -85,8 +82,6 @@ export default function Sidebar({
         </span>
         {!collapsed && (open ? <ChevronDown className="h-4 w-4 shrink-0" /> : <ChevronRight className="h-4 w-4 shrink-0" />)}
       </button>
-
-      {/* submenu */}
       <div className={`overflow-hidden transition-[max-height] duration-200 ease-in-out ${open && !collapsed ? "max-h-[500px]" : "max-h-0"}`}>
         <div className="mt-1 space-y-1 pl-2 pr-1">
           {items.map((it) => (
@@ -106,5 +101,3 @@ export default function Sidebar({
     </div>
   );
 }
-
-    
