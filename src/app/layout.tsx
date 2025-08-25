@@ -5,17 +5,13 @@ import { Inter, Roboto_Mono } from 'next/font/google';
 import * as React from 'react';
 import Script from 'next/script';
 import './globals.css';
-import Sidebar from '@/components/Sidebar';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/auth-context";
 import { NavigationProvider } from '@/contexts/navigation-context';
-import { TopToolbar } from '@/components/TopToolbar';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { ThemeProvider } from '@/components/theme-provider';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import { SidebarProvider, useSidebar } from '@/hooks/use-sidebar.tsx';
+import AppShell from '@/components/AppShell';
 
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') { 
   import('../lib/askmaven/dev-expose'); 
@@ -31,8 +27,11 @@ const robotoMono = Roboto_Mono({
   subsets: ['latin'],
 });
 
-function AppLayout({ children }: { children: React.ReactNode }) {
-  const { collapsed } = useSidebar();
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   const pathname = usePathname();
   const isLandingPage = pathname === '/';
   const isReportPage = pathname.startsWith('/reports');
@@ -40,15 +39,15 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-          {isReportPage && (
-            <>
-              <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/plugins/css/pluginsCss.css' />
-              <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/plugins/plugins.css' />
-              <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/css/luckysheet.css' />
-              <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/assets/iconfont/iconfont.css' />
-              <Script src="https://cdn.plot.ly/plotly-2.32.0.min.js" strategy="lazyOnload" />
-            </>
-          )}
+        {isReportPage && (
+          <>
+            <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/plugins/css/pluginsCss.css' />
+            <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/plugins/plugins.css' />
+            <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/css/luckysheet.css' />
+            <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/assets/iconfont/iconfont.css' />
+            <Script src="https://cdn.plot.ly/plotly-2.32.0.min.js" strategy="lazyOnload" />
+          </>
+        )}
       </head>
       <body className={`${inter.variable} ${robotoMono.variable} antialiased h-screen`}>
         <ThemeProvider
@@ -63,20 +62,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
                 {isLandingPage ? (
                   <>{children}</>
                 ) : (
-                  <div className="grid min-h-screen grid-rows-[56px,1fr] grid-cols-[auto,1fr] bg-background text-foreground">
-                    <header className="row-[1] col-[1/3] z-50 sticky top-0 bg-background/95 border-b border-white/10 backdrop-blur">
-                        <TopToolbar />
-                    </header>
-                    <aside className={cn(
-                        "row-[2] col-[1] border-r border-white/10 transition-all duration-200",
-                        collapsed ? "w-16" : "w-64"
-                    )}>
-                        <Sidebar />
-                    </aside>
-                    <main className="row-[2] col-[2] overflow-y-auto no-visual-scrollbar">
-                        {children}
-                    </main>
-                  </div>
+                  <AppShell>{children}</AppShell>
                 )}
                 <Toaster />
               </TooltipProvider>
@@ -94,17 +80,4 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       </body>
     </html>
   );
-}
-
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-    return (
-        <SidebarProvider>
-            <AppLayout>{children}</AppLayout>
-        </SidebarProvider>
-    )
 }
