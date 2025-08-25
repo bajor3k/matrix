@@ -1,13 +1,12 @@
-
-// components/Sidebar.tsx
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
-  ChevronLeft, ChevronRight, ChevronDown,
-  FileStack, Users, BarChart3, BookOpen,
+  ChevronDown, ChevronUp, FileStack, Users, BarChart3, BookOpenText,
+  Wallet, Percent, BadgeDollarSign, FlaskConical,
+  Settings as SettingsIcon,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 
@@ -49,6 +48,7 @@ export default function Sidebar({
     "/model-matrix", "/contribution-matrix"
   ].some(p => pathname.startsWith(p)), [pathname]);
   const isResources = useMemo(() => pathname?.startsWith("/resource-matrix"), [pathname]);
+  const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
 
   const [openReports, setOpenReports] = useState(isReports);
   const [openCRM, setOpenCRM] = useState(isCRM);
@@ -93,11 +93,27 @@ export default function Sidebar({
   );
 
   return (
-    <div className="h-full w-full flex flex-col p-3 pt-2">
+    <div className="flex h-full w-full flex-col p-3 pt-2">
+      {/* sections */}
+      <div className="h-[calc(100%-60px)] overflow-y-auto">
         <Section title="Reports"   icon={FileStack}  open={openReports}   setOpen={setOpenReports}   items={reportItems} />
         <Section title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} />
         <Section title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} />
-        <Section title="Resources" icon={BookOpen} open={openResources} setOpen={setOpenResources} items={resourceItems} />
+        <Section title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
+      </div>
+
+      {/* footer — SETTINGS pinned at bottom */}
+      <div className="mt-auto border-t border-border pt-3">
+        <Link
+          href="/settings"
+          title="Settings"
+          className={`group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition
+            ${isSettings ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}`}
+        >
+          <SettingsIcon className="h-4 w-4" />
+          {!collapsed && <span className="truncate">Settings</span>}
+        </Link>
+      </div>
     </div>
   );
 }

@@ -27,7 +27,9 @@ import {
   Banknote,
   Percent,
   BadgeDollarSign,
-  FileStack
+  FileStack,
+  BookOpenText,
+  Settings
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -37,7 +39,7 @@ export const toolbarSections: ToolbarSection[] = [
     { id: 'Resources', title: 'Resources' },
 ];
 
-export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
+export const navigationData: Record<ToolbarSectionKey | 'Other', NavItem[]> = {
   'Reports': [
     { name: 'Advisory Fees Cash', icon: FileStack, href: '/reports/3m-cash' },
     { name: 'Cash Balance', icon: Wallet, href: '/reports/cash-alerts' },
@@ -73,4 +75,7 @@ export const navigationData: Record<ToolbarSectionKey, NavItem[]> = {
     { name: 'Tools', icon: Calculator, href: '/resource-matrix?tab=tools' },
     { name: 'Training', icon: GraduationCap, href: '/resource-matrix?tab=training' },
   ],
+  'Other': [
+      { name: 'Settings', icon: Settings, href: '/settings' },
+  ]
 };
