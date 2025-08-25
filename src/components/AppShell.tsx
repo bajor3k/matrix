@@ -1,22 +1,23 @@
 // components/AppShell.tsx
 "use client";
 
+import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import { TopToolbar } from "./TopToolbar";
 
 const HEADER_H = 56; // px
-const SBW = 256;     // sidebar width
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
+  const [collapsed, setCollapsed] = useState(false);
+  const SBW = collapsed ? 72 : 272; // Sidebar width changes based on state
+
   return (
     <div
       className="min-h-screen bg-[#000104] text-zinc-100"
       style={
         {
-          // header height + sidebar width (includes inner padding)
-          // feel free to tweak widths later in one place
-          ["--hh" as any]: "56px",
-          ["--sbw" as any]: "272px", // 256 content + 16px inner padding
+          "--hh": `${HEADER_H}px`,
+          "--sbw": `${SBW}px`,
         } as React.CSSProperties
       }
     >
@@ -25,16 +26,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <TopToolbar />
       </header>
 
-      {/* SIDEBAR — sits directly under header, fixed width */}
+      {/* SIDEBAR — sits directly under header, width is dynamic */}
       <aside
-        className="fixed left-0 top-[var(--hh)] z-30 h-[calc(100vh-var(--hh))] border-r border-white/10 bg-[#000104] overflow-x-hidden"
+        className="fixed left-0 top-[var(--hh)] z-30 h-[calc(100vh-var(--hh))] border-r border-white/10 bg-[#000104] overflow-hidden transition-[width] duration-200"
         style={{ width: "var(--sbw)" }}
       >
-        <Sidebar />
+        <Sidebar collapsed={collapsed} onToggleCollapsed={() => setCollapsed(v => !v)} />
       </aside>
 
       {/* MAIN — offset exactly by sidebar width & header height */}
-      <main className="relative z-10 px-4 py-6" style={{ marginLeft: "var(--sbw)", paddingTop: "var(--hh)" }}>
+      <main className="relative z-10 px-4 py-6 transition-[margin-left] duration-200" style={{ marginLeft: "var(--sbw)", paddingTop: "var(--hh)" }}>
         {children}
       </main>
     </div>
