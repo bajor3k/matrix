@@ -19,12 +19,9 @@ export default function DashboardPage() {
           <MarketCard label="Microsoft (MSFT)" price={507.23} changePct={0.59} />
           <MarketCard label="S&P 500 (SPY)"    isLoading />
           <MarketCard label="Dow Jones (DIA)"  isLoading />
-        </div>
-      </section>
-
-      <section>
-         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <RecentActivity />
+          <div className="lg:col-span-2">
+             <RecentActivity />
+          </div>
         </div>
       </section>
     </main>
