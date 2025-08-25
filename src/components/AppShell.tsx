@@ -1,4 +1,3 @@
-
 // components/AppShell.tsx
 "use client";
 
@@ -22,7 +21,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         } as React.CSSProperties
       }
     >
-      {/* TOP NAV — full-width, brain pinned left, no hamburger */}
+      {/* TOP NAV — full-width, brain pinned left */}
       <header className="fixed inset-x-0 top-0 z-40 h-[var(--hh)] border-b border-white/10 bg-black/60 backdrop-blur">
         <TopToolbar onToggleCollapsed={() => setCollapsed(v => !v)} collapsed={collapsed} />
       </header>
@@ -42,5 +41,3 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-
-    
