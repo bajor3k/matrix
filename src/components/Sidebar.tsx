@@ -1,3 +1,4 @@
+// components/Sidebar.tsx
 "use client";
 
 import Link from "next/link";
@@ -10,16 +11,15 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
+import { useNavigation, type NavItem } from "@/contexts/navigation-context";
 
-type Item = { name: string; href: string; icon?: any };
-
-const reportItems: Item[] = navigationData['Reports'];
-const crmItems: Item[] = navigationData['CRM'];
-const analyticsItems: Item[] = navigationData['Analytics'];
-const resourceItems: Item[] = navigationData['Resources'];
+const reportItems: NavItem[] = navigationData['Reports'];
+const crmItems: NavItem[] = navigationData['CRM'];
+const analyticsItems: NavItem[] = navigationData['Analytics'];
+const resourceItems: NavItem[] = navigationData['Resources'];
 
 
-function Row({ item, active, hiddenLabel }: { item: Item; active: boolean; hiddenLabel: boolean }) {
+function Row({ item, active, hiddenLabel }: { item: NavItem; active: boolean; hiddenLabel: boolean }) {
   const Icon = item.icon ?? FileStack;
   return (
     <Link
@@ -28,17 +28,13 @@ function Row({ item, active, hiddenLabel }: { item: Item; active: boolean; hidde
       className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition w-full
         ${active ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}`}
     >
-      <Icon className="h-4 w-4 shrink-0" />
+      <Icon className="h-5 w-5 shrink-0" />
       {!hiddenLabel && <span className="truncate">{item.name}</span>}
     </Link>
   );
 }
 
-export default function Sidebar({
-  collapsed
-}: {
-  collapsed: boolean;
-}) {
+export default function Sidebar({ collapsed }: { collapsed: boolean }) {
   const pathname = usePathname();
 
   const isReports = useMemo(() => pathname?.startsWith("/reports"), [pathname]);
@@ -46,7 +42,7 @@ export default function Sidebar({
   const isAnalytics = useMemo(() => [
     "/asset-analytics", "/client-analytics", "/financial-analytics", 
     "/conversion-analytics", "/compliance-matrix", "/portfolio-matrix", 
-    "/model-matrix", "/contribution-matrix"
+    "/model-matrix", "/contribution-matrix", "/dashboard"
   ].some(p => pathname.startsWith(p)), [pathname]);
   const isResources = useMemo(() => pathname?.startsWith("/resource-matrix"), [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
@@ -68,7 +64,7 @@ export default function Sidebar({
     setOpen,
     items,
   }: {
-    title: string; icon: any; open: boolean; setOpen: (v: boolean) => void; items: Item[];
+    title: string; icon: any; open: boolean; setOpen: (v: boolean) => void; items: NavItem[];
   }) => (
     <div className="mb-2">
       <button
@@ -78,7 +74,7 @@ export default function Sidebar({
         aria-expanded={open}
       >
         <span className="flex items-center gap-3">
-          <Icon className="h-4 w-4 shrink-0" />
+          <Icon className="h-5 w-5 shrink-0" />
           {!collapsed && title}
         </span>
         {!collapsed && (open ? <ChevronUp className="h-4 w-4 shrink-0" /> : <ChevronDown className="h-4 w-4 shrink-0" />)}
@@ -111,7 +107,7 @@ export default function Sidebar({
           className={`group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition
             ${isSettings ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}`}
         >
-          <SettingsIcon className="h-4 w-4" />
+          <SettingsIcon className="h-5 w-5 shrink-0" />
           {!collapsed && <span className="truncate">Settings</span>}
         </Link>
       </div>
