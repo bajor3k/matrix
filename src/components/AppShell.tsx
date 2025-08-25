@@ -23,7 +23,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     >
       {/* TOP NAV — full-width, brain pinned left, no hamburger */}
       <header className="fixed inset-x-0 top-0 z-40 h-[var(--hh)] border-b border-white/10 bg-black/60 backdrop-blur">
-        <TopToolbar />
+        <TopToolbar onToggleCollapsed={() => setCollapsed(v => !v)} collapsed={collapsed} />
       </header>
 
       {/* SIDEBAR — sits directly under header, width is dynamic */}
@@ -31,7 +31,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         className="fixed left-0 top-[var(--hh)] z-30 h-[calc(100vh-var(--hh))] border-r border-white/10 bg-[#000104] overflow-hidden transition-[width] duration-200"
         style={{ width: "var(--sbw)" }}
       >
-        <Sidebar collapsed={collapsed} onToggleCollapsed={() => setCollapsed(v => !v)} />
+        <Sidebar collapsed={collapsed} />
       </aside>
 
       {/* MAIN — offset exactly by sidebar width & header height */}

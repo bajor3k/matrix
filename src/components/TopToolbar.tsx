@@ -8,14 +8,19 @@ import { toolbarSections } from '@/lib/navigation-data';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 import { ThemeToggle } from './theme-toggle';
-import { Brain } from 'lucide-react';
+import { Brain, ChevronLeft, ChevronRight } from 'lucide-react';
 import FullscreenToggle from './chrome/FullscreenToggle';
 
-export function TopToolbar() {
+interface TopToolbarProps {
+    onToggleCollapsed: () => void;
+    collapsed: boolean;
+}
+
+export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
   const { activeSection, setActiveSection } = useNavigation();
 
   return (
-    <header className="mx-auto flex h-full max-w-screen-2xl items-center gap-6 px-4">
+    <header className="mx-auto flex h-full max-w-screen-2xl items-center gap-3 px-4">
       <div className="flex items-center gap-2">
         <Link
             href="/dashboard"
@@ -24,6 +29,16 @@ export function TopToolbar() {
         >
             <Brain className="w-5 h-5 text-gray-200 dark:text-white/70" />
         </Link>
+        <Button
+            onClick={onToggleCollapsed}
+            variant="ghost"
+            size="icon"
+            aria-label="Toggle sidebar"
+            title="Toggle sidebar"
+            className="h-9 w-9 text-zinc-300 hover:bg-white/10 hover:text-white"
+        >
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </Button>
       </div>
 
       <nav className="flex items-center gap-6 text-sm font-medium">
