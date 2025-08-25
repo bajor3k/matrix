@@ -13,6 +13,8 @@ import {
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
 
+export type SectionKey = "reports" | "crm" | "analytics" | "resources";
+
 const reportItems: NavItem[] = navigationData['Reports'];
 const crmItems: NavItem[] = navigationData['CRM'];
 const analyticsItems: NavItem[] = navigationData['Analytics'];
@@ -34,7 +36,17 @@ function Row({ item, active, hiddenLabel }: { item: NavItem; active: boolean; hi
   );
 }
 
-export default function Sidebar({ collapsed }: { collapsed: boolean }) {
+export default function Sidebar({
+  collapsed,
+  onExpandRequest,
+  forceOpen,
+  onForceOpenHandled,
+}: {
+  collapsed: boolean;
+  onExpandRequest: (section: SectionKey) => void;
+  forceOpen?: SectionKey | null;
+  onForceOpenHandled?: () => void;
+}) {
   const pathname = usePathname();
 
   const isReports = useMemo(() => pathname?.startsWith("/reports"), [pathname]);
@@ -57,20 +69,42 @@ export default function Sidebar({ collapsed }: { collapsed: boolean }) {
   useEffect(() => setOpenAnalytics(isAnalytics), [isAnalytics]);
   useEffect(() => setOpenResources(isResources), [isResources]);
 
+  // When parent asks to open a specific section (after expanding)
+  useEffect(() => {
+    if (!forceOpen) return;
+    setOpenReports(forceOpen === "reports");
+    setOpenCRM(forceOpen === "crm");
+    setOpenAnalytics(forceOpen === "analytics");
+    setOpenResources(forceOpen === "resources");
+    onForceOpenHandled?.();
+  }, [forceOpen, onForceOpenHandled]);
+
+
   const Section = ({
+    keyName,
     title,
     icon: Icon,
     open,
     setOpen,
     items,
   }: {
+    keyName: SectionKey;
     title: string; icon: any; open: boolean; setOpen: (v: boolean) => void; items: NavItem[];
-  }) => (
+  }) => {
+    function onHeaderClick() {
+      if (collapsed) {
+        // Request the parent to expand and open THIS section
+        onExpandRequest(keyName);
+      } else {
+        setOpen(!open);
+      }
+    }
+    return (
     <div className="mb-2">
       <button
-        onClick={() => setOpen(!open)}
+        onClick={onHeaderClick}
         className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left font-medium
-          ${collapsed ? "justify-center" : ""} hover:bg-accent`}
+         hover:bg-accent`}
         aria-expanded={open}
       >
         <span className="flex items-center gap-3">
@@ -87,16 +121,16 @@ export default function Sidebar({ collapsed }: { collapsed: boolean }) {
         </div>
       </div>
     </div>
-  );
+  )};
 
   return (
     <div className="flex h-full w-full flex-col p-3 pt-2">
       {/* sections */}
       <div className="h-[calc(100%-60px)] overflow-y-auto">
-        <Section title="Reports"   icon={FileStack}  open={openReports}   setOpen={setOpenReports}   items={reportItems} />
-        <Section title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} />
-        <Section title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} />
-        <Section title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
+        <Section keyName="reports" title="Reports"   icon={FileStack}  open={openReports}   setOpen={setOpenReports}   items={reportItems} />
+        <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} />
+        <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} />
+        <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
       </div>
 
       {/* footer — SETTINGS pinned at bottom */}

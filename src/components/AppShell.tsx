@@ -2,14 +2,27 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "@/components/Sidebar";
+import Sidebar, { type SectionKey } from "@/components/Sidebar";
 import { TopToolbar } from "./TopToolbar";
 
 const HEADER_H = 48; // px
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [forceOpen, setForceOpen] = useState<SectionKey | null>(null);
   const SBW = collapsed ? 72 : 272; // <- keep main offset in sync with sidebar
+
+  function handleSidebarToggle() {
+    setCollapsed(v => !v);
+    setForceOpen(null);
+  }
+
+  // Called by Sidebar when a primary is clicked while collapsed
+  function handleExpandRequest(section: SectionKey) {
+    setCollapsed(false);
+    setForceOpen(section);
+  }
+
 
   return (
     <div
@@ -22,13 +35,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       }
     >
       <header className="fixed inset-x-0 top-0 z-40 h-[var(--hh)] border-b border-border bg-background/60 backdrop-blur">
-        <TopToolbar onToggleCollapsed={() => setCollapsed(v => !v)} collapsed={collapsed} />
+        <TopToolbar onToggleCollapsed={handleSidebarToggle} collapsed={collapsed} />
       </header>
       <aside
         className="fixed left-0 top-[var(--hh)] z-30 h-[calc(100vh-var(--hh))] border-r border-border bg-background overflow-hidden transition-[width] duration-200"
         style={{ width: "var(--sbw)" }}
       >
-        <Sidebar collapsed={collapsed} />
+        <Sidebar
+          collapsed={collapsed}
+          onExpandRequest={handleExpandRequest}
+          forceOpen={forceOpen}
+          onForceOpenHandled={() => setForceOpen(null)}
+        />
       </aside>
       <main className="relative z-10 px-4 py-6 transition-[margin-left] duration-200 bg-transparent" style={{ marginLeft: "var(--sbw)", paddingTop: "var(--hh)" }}>
         {children}
