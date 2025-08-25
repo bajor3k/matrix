@@ -1,4 +1,3 @@
-
 // components/AppShell.tsx
 "use client";
 
@@ -6,15 +5,18 @@ import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import { TopToolbar } from "./TopToolbar";
 
+const HEADER_H = 48; // px
+
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
-  
+  const SBW = collapsed ? 72 : 272; // <- keep main offset in sync with sidebar
+
   return (
     <div
       className="min-h-screen bg-background text-foreground"
       style={
         {
-          "--hh": "56px",
+          "--hh": "48px", // Updated from 56px
           "--sbw": collapsed ? "72px" : "272px",
         } as React.CSSProperties
       }
