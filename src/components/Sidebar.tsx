@@ -1,128 +1,72 @@
-
+// components/Sidebar.tsx
 "use client";
 
 import Link from "next/link";
-import { usePathname } from 'next/navigation';
-import React, { useCallback } from "react";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import {
-  BellRing,
-  Construction,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-import type { NavItem } from "@/contexts/navigation-context";
-import { useNavigation } from "@/contexts/navigation-context";
-import { navigationData } from "@/lib/navigation-data";
-import { cn } from "@/lib/utils";
-import { useSidebar } from "@/hooks/use-sidebar.tsx";
+import { usePathname } from "next/navigation";
+import { useState, useMemo } from "react";
+import { ChevronDown, ChevronRight, FileStack, Wallet, Percent, BadgeDollarSign, FlaskConical } from "lucide-react";
 
-const alertsNavItem: NavItem = {
-  name: 'Alerts',
-  icon: BellRing,
-  href: '/alerts',
-  hasNewAlerts: true,
-};
+type Item = { label: string; href: string; icon: React.ComponentType<{ className?: string }> };
+
+const reportItems: Item[] = [
+  { label: "Advisory Fees Cash", href: "/reports/3m-cash", icon: FileStack },
+  { label: "Cash Balance",        href: "/reports/cash-alerts",       icon: Wallet },
+  { label: "Margin",              href: "/reports/margin-notify",             icon: Percent },
+  { label: "Advisory Fees",       href: "/reports/advisor-summary",      icon: BadgeDollarSign },
+  { label: "Test",                href: "/reports/billing-coverage",               icon: FlaskConical },
+];
+
+function NavLink({ item, active }: { item: Item; active: boolean }) {
+  const Icon = item.icon;
+  return (
+    <Link
+      href={item.href}
+      className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition
+                  ${active ? "bg-white/10 text-white" : "text-zinc-300 hover:bg-white/5 hover:text-white"}`}
+    >
+      <Icon className="h-4 w-4 shrink-0" />
+      <span className="truncate">{item.label}</span>
+    </Link>
+  );
+}
 
 export default function Sidebar() {
-  const currentPathname = usePathname();
-  const { activeSection } = useNavigation();
-  const { collapsed, toggleSidebar } = useSidebar();
+  const pathname = usePathname();
+  const isInReports = useMemo(() => pathname?.startsWith("/reports"), [pathname]);
+  const [open, setOpen] = useState<boolean>(isInReports);
 
-  const currentNavItems = navigationData[activeSection] || [];
-
-  const renderNavItem = useCallback((item: NavItem, index: number) => {
-    const isActive = currentPathname === item.href || (currentPathname.startsWith(item.href + '/') && item.href !== '/');
-    
-    const iconClasses = cn(
-      "w-5 h-5 shrink-0 transition-colors duration-200",
-      isActive 
-        ? "text-sidebar-primary-foreground" 
-        : item.hasNewAlerts
-          ? "animate-red-pulse text-red-500" 
-          : "text-sidebar-foreground/70 group-hover/navitem:text-sidebar-foreground"
-    );
-
-    const linkClasses = cn(
-      "flex items-center gap-4 px-4 py-2.5 rounded-[8px] transition-all duration-200 ease-out group/navitem",
-      isActive ? "bg-sidebar-primary text-sidebar-primary-foreground" : "text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-sidebar-primary/80 hover:-translate-y-px",
-      collapsed && "justify-center p-2.5"
-    );
-
-    const linkContent = (
-      <>
-        <item.icon className={iconClasses} />
-        {!collapsed && <span className="truncate text-base font-medium">{item.name}</span>}
-      </>
-    );
-
-    if (collapsed) {
-      return (
-        <Tooltip key={`${item.href}-${index}`}>
-          <TooltipTrigger asChild>
-            <Link 
-              href={item.href} 
-              className={linkClasses} 
-              aria-label={item.name}
-            >
-              {linkContent}
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent side="right" className="bg-popover text-popover-foreground text-sm rounded-md px-2 py-1 shadow-lg">
-            <p>{item.name}</p>
-          </TooltipContent>
-        </Tooltip>
-      );
-    } else {
-      return (
-        <Link 
-          key={`${item.href}-${index}`} 
-          href={item.href} 
-          className={linkClasses}
-        >
-          {linkContent}
-        </Link>
-      );
-    }
-  }, [currentPathname, collapsed]);
-  
   return (
-    <aside
-      className={cn(
-        "h-full bg-background text-sidebar-foreground flex flex-col"
-      )}
-    >
-      <div className="p-2 flex items-center" style={{ justifyContent: collapsed ? 'center' : 'flex-end' }}>
-        <button
-          type="button"
-          onClick={toggleSidebar}
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="inline-flex items-center justify-center w-8 h-8 rounded-md
-                     hover:bg-black/5 dark:hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-black/15 dark:focus:ring-white/20"
-        >
-          {collapsed ? (
-            <ChevronRight className="w-4 h-4 text-black/60 dark:text-white/70" strokeWidth={2.25} />
-          ) : (
-            <ChevronLeft className="w-4 h-4 text-black/60 dark:text-white/70" strokeWidth={2.25} />
-          )}
-        </button>
+    <aside className="w-64 bg-[#000104] text-zinc-200 p-3">
+      {/* TOP NAV ITEMS (CRM, Analytics, etc.) remain above this as you already have */}
+
+      {/* Reports parent */}
+      <button
+        onClick={() => setOpen(v => !v)}
+        className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left font-medium text-zinc-100 hover:bg-white/5"
+        aria-expanded={open}
+        aria-controls="reports-menu"
+      >
+        <span className="flex items-center gap-3">
+          {/* Use your brain icon here if you prefer */}
+          <FileStack className="h-4 w-4" />
+          Reports
+        </span>
+        {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+      </button>
+
+      {/* Reports submenu */}
+      <div
+        id="reports-menu"
+        className={`overflow-hidden transition-[max-height] duration-200 ${open ? "max-h-96" : "max-h-0"}`}
+      >
+        <div className="mt-1 space-y-1 pl-2">
+          {reportItems.map(item => (
+            <NavLink key={item.href} item={item} active={pathname === item.href} />
+          ))}
+        </div>
       </div>
 
-      <nav className={cn("flex-1 space-y-2 px-2 py-4 overflow-y-auto no-visual-scrollbar")}>
-        {currentNavItems.length > 0 ? (
-           currentNavItems.map((item, itemIndex) => renderNavItem(item, itemIndex))
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-4">
-            <Construction className="w-10 h-10 mb-2" />
-            {!collapsed && (
-              <span className="text-sm font-medium">Coming Soon</span>
-            )}
-          </div>
-        )}
-      </nav>
-      <div className="mt-auto p-2 border-t border-sidebar-border/30">
-        {renderNavItem(alertsNavItem, 999)} 
-      </div>
+      {/* …rest of your sidebar items below */}
     </aside>
   );
 }
