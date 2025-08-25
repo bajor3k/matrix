@@ -1,7 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-type Variant = "neutral"; // 'primary' is removed
 type Emphasis = "normal" | "bright" | "active";
 
 export function ActionPill({
@@ -11,7 +10,6 @@ export function ActionPill({
   label,
   srLabel,
   title,
-  variant = "neutral",
   labelEmphasis = "normal",
   className = "",
   isRunning = false,
@@ -22,24 +20,23 @@ export function ActionPill({
   label: string;
   srLabel?: string;
   title?: string;
-  variant?: Variant;
   labelEmphasis?: Emphasis;
   className?: string;
   isRunning?: boolean;
 }) {
   const baseClasses =
-    "inline-flex items-center gap-2 rounded-full h-11 px-4 border select-none transition-colors duration-150 disabled:opacity-55 text-[var(--pill-font-size)] font-semibold";
-
-  const themeClasses =
-    "bg-black/30 dark:bg-black/30 border-neutral-800/60 dark:border-neutral-800/60 backdrop-blur-sm";
+    "inline-flex items-center gap-2 rounded-full h-11 px-4 border select-none transition-colors duration-150 disabled:opacity-55 text-[var(--pill-font-size)] font-medium";
+  
+  const themeClasses = 
+    "border-border bg-transparent text-muted-foreground hover:bg-accent hover:text-accent-foreground";
 
   const emphasisClasses = {
-    normal: "text-neutral-500 dark:text-neutral-500 cursor-not-allowed",
-    bright: "text-neutral-200 dark:text-neutral-200 hover:text-white dark:hover:text-white cursor-pointer",
-    active: "text-white dark:text-white ring-1 ring-white/15 hover:ring-white/25 cursor-pointer",
+    normal: "text-muted-foreground cursor-not-allowed",
+    bright: "text-foreground hover:text-accent-foreground cursor-pointer",
+    active: "text-accent-foreground ring-1 ring-border cursor-pointer",
   };
-
-  const runningClasses = isRunning ? "text-neutral-400 dark:text-neutral-400 cursor-wait" : "";
+  
+  const runningClasses = isRunning ? "text-muted-foreground cursor-wait" : "";
 
   return (
     <button

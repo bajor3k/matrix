@@ -2,6 +2,7 @@
 
 import useKBReady from './useKBReady';
 import { Brain, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function MavenPill({ onOpen, isLoading }: { onOpen: () => void, isLoading: boolean }) {
   const { ready, count } = useKBReady();
@@ -13,12 +14,12 @@ export default function MavenPill({ onOpen, isLoading }: { onOpen: () => void, i
         aria-label="Open Ask Maven"
         onClick={onOpen}
         disabled={!ready || isLoading}
-        className={`relative inline-flex items-center gap-2 rounded-full h-11 px-4 border select-none transition-colors duration-150 font-semibold text-[var(--pill-font-size)]
-          ${ready && !isLoading
-            ? 'bg-neutral-800 hover:bg-neutral-700 text-white cursor-pointer ring-1 ring-white/15 hover:ring-white/25'
-            : 'bg-neutral-900 text-neutral-500 cursor-not-allowed'
-        }`}
-        style={{ zIndex: 2 }}
+        className={cn(
+            "inline-flex items-center gap-2 rounded-full h-11 px-4 border select-none transition-colors duration-150 font-medium text-[var(--pill-font-size)]",
+            "border-border bg-transparent text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+            "disabled:opacity-55 disabled:cursor-not-allowed",
+            "disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+        )}
       >
         {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
         <span>Maven</span>
