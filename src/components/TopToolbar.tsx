@@ -43,25 +43,6 @@ export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
         </Button>
       </div>
 
-      {/* TABS */}
-      <nav className="flex items-center gap-6 text-sm font-medium">
-        {toolbarSections.map((section) => (
-          <Link
-            key={section.id}
-            href={`/${section.id === 'CRM' ? 'client-portal/home' : section.id === 'Reports' ? 'reports/3m-cash' : section.title.toLowerCase()}`}
-            onClick={() => setActiveSection(section.id)}
-            className={cn(
-              "transition-colors",
-              activeSection === section.id
-                ? "text-white"
-                : "text-zinc-400 hover:text-white"
-            )}
-          >
-            {section.title}
-          </Link>
-        ))}
-      </nav>
-
       {/* RIGHT CLUSTER — STAYS AT FAR RIGHT */}
       <div className="ml-auto flex items-center gap-2">
         <FullscreenToggle />
