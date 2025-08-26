@@ -210,9 +210,9 @@ export default function ReportScaffold({
 
           {dashboardVisible && runState === 'success' && (
             <>
-              <ReportsDashboard 
+              {/* <ReportsDashboard 
                   metrics={metrics}
-              />
+              /> */}
               <ResultsTableCard rows={tableRows} />
             </>
           )}
