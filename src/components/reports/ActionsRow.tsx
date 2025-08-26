@@ -1,8 +1,7 @@
-
 // components/reports/ActionsRow.tsx
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Download as DownloadIcon, Brain, Loader2, ChevronDown, ChevronUp, BarChartHorizontal } from "lucide-react";
 import Pill from "@/components/ui/Pill";
 import MavenPill from "./maven/MavenPill";
@@ -44,25 +43,24 @@ export default function ActionsRow({
       <Pill
         onClick={onRun}
         disabled={!isReadyToRun || (runState === 'running' && !kbLoading)}
-        active={isReadyToRun}
       >
         {runState === 'running' && !kbLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin"/> : null}
         Run Report
       </Pill>
 
       <Pill disabled={!isSuccess} onClick={onDownloadExcel}>
-        <DownloadIcon className="w-3.5 h-3.5" />
+        <DownloadIcon className="h-3.5 w-3.5" />
         Excel
       </Pill>
-
+      
       <Pill disabled={!isSuccess} onClick={onDownloadCsv}>
-        <DownloadIcon className="w-3.5 h-3.5" />
+         <DownloadIcon className="h-3.5 w-3.5" />
         CSV
       </Pill>
 
       <Pill disabled={!isSuccess} onClick={onToggleDashboard} active={activeView === 'dashboard'}>
         Dashboard
-        {activeView === 'dashboard' ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+        {activeView === 'dashboard' ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
       </Pill>
       
       <Pill disabled={!isSuccess} onClick={onToggleKeyMetrics} active={activeView === 'key-metrics'}>

@@ -33,7 +33,7 @@ export function ActionPill({
   const emphasisClasses = {
     normal: "text-zinc-400 cursor-not-allowed hover:bg-transparent hover:text-zinc-400",
     bright: "text-white hover:bg-white/10 cursor-pointer",
-    active: "text-white hover:bg-white/10 cursor-pointer",
+    active: "bg-white/10 text-white hover:bg-white/20",
   };
   
   const runningClasses = isRunning ? "text-zinc-400 cursor-wait" : "";
