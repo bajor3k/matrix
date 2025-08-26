@@ -54,7 +54,7 @@ export default function ReportScaffold({
   const [files, setFiles] = React.useState<(File | null)[]>([null, null, null]);
   const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
   const [error, setError] = React.useState<string | null>(null);
-  const [dashboardVisible, setDashboardVisible] = React.useState(false);
+  const [activeView, setActiveView] = React.useState<"none" | "dashboard" | "key-metrics">("none");
   const [isMavenOpen, setIsMavenOpen] = React.useState(false);
 
   const [metrics, setMetrics] = React.useState<DashboardMetrics>({
@@ -194,28 +194,25 @@ export default function ReportScaffold({
           </FullBleed>
           
           <FullBleed>
-            <ActionsRow
+             <ActionsRow
               filesReady={filesReady}
               runState={runState}
-              dashboardVisible={dashboardVisible}
+              activeView={activeView}
               onRun={runReport}
               onDownloadExcel={downloadExcel}
               onDownloadCsv={() => downloadCSV(tableRows)}
-              onToggleDashboard={() => setDashboardVisible(v => !v)}
+              onToggleDashboard={() => setActiveView(prev => prev === 'dashboard' ? 'none' : 'dashboard')}
+              onToggleKeyMetrics={() => setActiveView(prev => prev === 'key-metrics' ? 'none' : 'key-metrics')}
               onAskMaven={openMaven}
             />
             {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
             {runState === 'running' && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
           </FullBleed>
-
-          {dashboardVisible && runState === 'success' && (
-            <>
-              {/* <ReportsDashboard 
-                  metrics={metrics}
-              /> */}
+          
+          {runState === 'success' && activeView === 'dashboard' && (
               <ResultsTableCard rows={tableRows} />
-            </>
           )}
+
         </>
       ) : (
          <MavenLayout rows={tableRows} onClose={() => setIsMavenOpen(false)} />
