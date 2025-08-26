@@ -25,18 +25,18 @@ export function ActionPill({
   isRunning?: boolean;
 }) {
   const baseClasses =
-    "inline-flex items-center gap-2 rounded-full h-11 px-4 border select-none transition-colors duration-150 disabled:opacity-55 text-[var(--pill-font-size)] font-medium";
+    "inline-flex items-center gap-2 rounded-full h-9 px-3 border select-none transition-colors duration-150 disabled:opacity-55 text-xs font-medium";
   
   const themeClasses = 
-    "border-border bg-transparent text-muted-foreground hover:bg-accent hover:text-accent-foreground";
+    "border-white/20 bg-transparent text-zinc-300 hover:bg-white/10 hover:text-white";
 
   const emphasisClasses = {
-    normal: "text-muted-foreground cursor-not-allowed",
-    bright: "text-foreground hover:text-accent-foreground cursor-pointer",
-    active: "text-accent-foreground ring-1 ring-border cursor-pointer",
+    normal: "text-zinc-400 cursor-not-allowed hover:bg-transparent hover:text-zinc-400",
+    bright: "text-white hover:bg-white/10 cursor-pointer",
+    active: "text-white hover:bg-white/10 cursor-pointer",
   };
   
-  const runningClasses = isRunning ? "text-muted-foreground cursor-wait" : "";
+  const runningClasses = isRunning ? "text-zinc-400 cursor-wait" : "";
 
   return (
     <button

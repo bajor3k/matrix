@@ -4,7 +4,7 @@ import useKBReady from './useKBReady';
 import { Brain, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function MavenPill({ onOpen, isLoading }: { onOpen: () => void, isLoading: boolean }) {
+export default function MavenPill({ onOpen, isLoading, disabled }: { onOpen: () => void, isLoading: boolean, disabled?: boolean }) {
   const { ready, count } = useKBReady();
 
   return (
@@ -13,15 +13,15 @@ export default function MavenPill({ onOpen, isLoading }: { onOpen: () => void, i
         type="button"
         aria-label="Open Ask Maven"
         onClick={onOpen}
-        disabled={!ready || isLoading}
+        disabled={disabled || !ready || isLoading}
         className={cn(
-            "inline-flex items-center gap-2 rounded-full h-11 px-4 border select-none transition-colors duration-150 font-medium text-[var(--pill-font-size)]",
-            "border-border bg-transparent text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+            "inline-flex items-center gap-2 rounded-full h-9 px-3 border select-none transition-colors duration-150 font-medium text-xs",
+            "border-white/20 bg-transparent text-zinc-300 hover:bg-white/10 hover:text-white",
             "disabled:opacity-55 disabled:cursor-not-allowed",
-            "disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+            "disabled:hover:bg-transparent disabled:hover:text-zinc-300"
         )}
       >
-        {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
+        {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Brain className="w-3.5 h-3.5" />}
         <span>Maven</span>
       </button>
       {ready && !isLoading && count !== null && (

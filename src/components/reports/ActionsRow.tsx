@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { Download as DownloadIcon, Brain, Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import { Download as DownloadIcon, Brain, Loader2, ChevronDown, ChevronUp, BarChartHorizontal } from "lucide-react";
 import { ActionPill } from "@/components/ui/ActionPill";
 import MavenPill from "./maven/MavenPill";
 
@@ -41,27 +41,18 @@ export default function ActionsRow({
     }
   }, []);
 
-  const isReady = filesReady && runState !== "running" && runState !== "success";
-  const isRunning = runState === "running";
+  const isReadyToRun = filesReady && runState !== "running";
   const isSuccess = runState === "success";
-
-  // Determine emphasis for "Run Report"
-  let runLabelEmphasis: "normal" | "bright" | "active" = "normal";
-  if (isReady) runLabelEmphasis = "bright";
-  if (isSuccess) runLabelEmphasis = "active";
-
-  // Determine emphasis for post-run actions
-  const postRunLabelEmphasis = isSuccess ? "active" : "normal";
 
   return (
     <div ref={barRef} className="flex flex-wrap items-center justify-center gap-3 pt-2">
       <ActionPill
         onClick={onRun}
-        disabled={!isReady}
-        isRunning={isRunning && !kbLoading}
+        disabled={!isReadyToRun}
+        isRunning={runState === 'running' && !kbLoading}
         label="Run Report"
         srLabel="Run report"
-        labelEmphasis={runLabelEmphasis}
+        labelEmphasis={isReadyToRun ? "bright" : "normal"}
       />
 
       <ActionPill
@@ -70,8 +61,8 @@ export default function ActionsRow({
         label="Excel"
         srLabel="Download Excel"
         title="Download Excel"
-        icon={<DownloadIcon className="w-4 h-4" />}
-        labelEmphasis={postRunLabelEmphasis}
+        icon={<DownloadIcon className="w-3.5 h-3.5" />}
+        labelEmphasis={isSuccess ? "active" : "normal"}
       />
 
       <ActionPill
@@ -80,8 +71,8 @@ export default function ActionsRow({
         label="CSV"
         srLabel="Download CSV"
         title="Download CSV"
-        icon={<DownloadIcon className="w-4 h-4" />}
-        labelEmphasis={postRunLabelEmphasis}
+        icon={<DownloadIcon className="w-3.5 h-3.5" />}
+        labelEmphasis={isSuccess ? "active" : "normal"}
       />
 
       <ActionPill
@@ -89,10 +80,20 @@ export default function ActionsRow({
         disabled={!isSuccess}
         label="Dashboard"
         srLabel={dashboardVisible ? "Hide dashboard" : "Open dashboard"}
-        icon={dashboardVisible ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-        labelEmphasis={postRunLabelEmphasis}
+        icon={dashboardVisible ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+        labelEmphasis={isSuccess ? "active" : "normal"}
       />
-      <MavenPill onOpen={onAskMaven} isLoading={kbLoading} />
+      
+      <ActionPill
+        onClick={onToggleDashboard}
+        disabled={!isSuccess}
+        label="Key Metrics"
+        srLabel="Toggle key metrics"
+        icon={<BarChartHorizontal className="w-3.5 h-3.5" />}
+        labelEmphasis={isSuccess ? "active" : "normal"}
+      />
+
+      <MavenPill onOpen={onAskMaven} isLoading={kbLoading} disabled={!isSuccess} />
     </div>
   );
 }
