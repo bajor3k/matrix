@@ -196,14 +196,13 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
 }
 
 
-function KpiCard({ title, value, subtitle, icon, tone = "default" } : { title: string, value: string | number, subtitle: string, icon: React.ReactNode, tone?: "default" | "alert" }) {
+function KpiCard({ title, value, subtitle, icon, tone = "default" }: { title: string, value: string | number, subtitle: string, icon: React.ReactNode, tone?: "default" | "alert" }) {
   const toneClass =
     tone === "alert"
       ? "from-rose-600/30 via-fuchsia-700/10"
-      : "from-[#2D00F7]/30 via-[#8900F2]/10";
+      : "from-black to-black";
   return (
-    <Card className="relative overflow-hidden border-slate-800 bg-black/40">
-      <div className={`pointer-events-none absolute -inset-6 blur-2xl opacity-40 bg-gradient-to-br ${toneClass} to-transparent`} />
+    <Card className="relative overflow-hidden border-slate-800 bg-black">
       <CardContent className="p-4 relative">
         <div className="flex items-center gap-2 text-slate-300 text-xs mb-1">
           {icon} <span>{title}</span>
@@ -214,6 +213,7 @@ function KpiCard({ title, value, subtitle, icon, tone = "default" } : { title: s
     </Card>
   );
 }
+
 
 
 function formatCurrency(n: number) {
