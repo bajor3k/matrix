@@ -12,8 +12,9 @@ const num = (v: any): number => {
     const n = Number(String(v).replace(/[, $]/g,''));
     return isFinite(n) ? n : 0;
   }
-  
 
+const COLORS = ["#5A189A", "#7B2CBF", "#9D4EDD", "#C77DFF", "#48BFE3", "#56CFE1", "#64DFDF", "#5AEDC9"];
+  
 // Main Component
 export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
   const metrics = useMemo(() => {
@@ -66,12 +67,14 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
           value={formatCurrency(metrics.totalFees)}
           subtitle="Sum of all fees from report"
           icon={<Banknote className="w-4 h-4" />}
+          color={COLORS[0]}
         />
         <KpiCard
           title="Accounts"
           value={metrics.totalAccounts}
           subtitle="Total accounts in the report"
           icon={<Users className="w-4 h-4" />}
+          color={COLORS[4]}
         />
         <KpiCard
           title="Flagged Short"
@@ -79,13 +82,14 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
           subtitle="Accounts with cash < fees"
           icon={<AlertTriangle className="w-4 h-4" />}
           tone="alert"
+          color="#F20089"
         />
       </div>
 
       {/* Row 2: Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Donut Chart */}
-        <Card className="lg:col-span-1 bg-black/40 border-slate-800">
+        <Card className="lg:col-span-1 bg-black border-slate-800">
           <CardContent className="p-4">
             <h3 className="text-sm text-center text-slate-300 mb-2">Short vs. Clear Accounts</h3>
             <div className="h-64">
@@ -101,8 +105,8 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                     dataKey="value"
                     stroke="none"
                   >
-                     <Cell fill="#F20089" />
-                     <Cell fill="#00A8F0" />
+                     <Cell fill={COLORS[7]} />
+                     <Cell fill={COLORS[3]} />
                   </Pie>
                   <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" className="fill-white text-3xl font-bold">
                     {formatCurrency(metrics.totalFees)}
@@ -117,18 +121,18 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
         </Card>
 
         {/* Bar Chart */}
-        <Card className="lg:col-span-1 bg-black/40 border-slate-800">
+        <Card className="lg:col-span-1 bg-black border-slate-800">
           <CardContent className="p-4">
             <h3 className="text-sm text-slate-300 mb-3">Top 6 Accounts by Advisory Fee</h3>
             <div className="h-64">
               <ResponsiveContainer>
                 <BarChart data={metrics.topFees} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
-                  <XAxis dataKey="name" fontSize={10} tick={{ fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-                  <YAxis fontSize={10} tick={{ fill: "#94a3b8" }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v/1000)}k`} />
+                  <XAxis dataKey="name" hide />
+                  <YAxis hide />
                   <Tooltip formatter={(v) => formatCurrency(Number(v))} cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
                   <Bar dataKey="fee" radius={[6, 6, 0, 0]}>
                     {metrics.topFees.map((_, i) => (
-                      <Cell key={i} fill={`hsl(${280 + i*15}, 90%, 65%)`} />
+                      <Cell key={i} fill={COLORS[(i + 1) % COLORS.length]} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -142,7 +146,8 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
           </CardContent>
         </Card>
 
-        <Card className="bg-black/40 border-slate-800">
+
+        <Card className="bg-black border-slate-800">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm text-slate-300">Cash / Value Ratio (sparkline)</h3>
@@ -154,7 +159,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                   <XAxis dataKey="idx" hide />
                   <YAxis hide domain={[0, "auto"]} />
                   <Tooltip formatter={(v) => `${Number(v).toFixed(2)}%`} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
-                  <Line type="monotone" dataKey="ratio" stroke="#A100F2" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="ratio" stroke={COLORS[4]} strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -164,8 +169,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
       </div>
 
 
-      {/* Row: Short accounts list */}
-      <Card className="bg-black/40 border-slate-800">
+      <Card className="bg-black border-slate-800">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm text-slate-300">Accounts Flagged Short</h3>
@@ -174,16 +178,16 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
           {metrics.shortRows.length === 0 ? (
             <div className="text-slate-400 text-sm">No accounts are currently flagged as <span className="text-slate-200">Short</span>.</div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
-              {metrics.shortRows.slice(0, 12).map((r) => (
-                <div key={r.accountNumber} className="flex items-center justify-between rounded-xl border border-slate-800 bg-gradient-to-r from-[#2D00F7]/20 via-[#8900F2]/10 to-transparent px-3 py-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+              {metrics.shortRows.slice(0, 12).map((r, i) => (
+                <div key={r.accountNumber} className={`flex items-center justify-between rounded-xl border border-slate-800 px-3 py-2`} style={{background: `linear-gradient(90deg, ${COLORS[i % COLORS.length]}33, transparent)`}}>
                   <div>
                     <div className="text-slate-300 text-xs">{r.ip}</div>
                     <div className="text-slate-100 text-sm font-medium">{r.accountNumber}</div>
                   </div>
                   <div className="text-right">
                     <div className="text-slate-400 text-[11px]">Cash</div>
-                    <div className="text-slate-100 text-sm">{r.cash}</div>
+                    <div className="text-slate-100 text-sm">{formatCurrency(Number(r.cash) || 0)}</div>
                   </div>
                 </div>
               ))}
@@ -196,11 +200,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
 }
 
 
-function KpiCard({ title, value, subtitle, icon, tone = "default" }: { title: string, value: string | number, subtitle: string, icon: React.ReactNode, tone?: "default" | "alert" }) {
-  const toneClass =
-    tone === "alert"
-      ? "from-rose-600/30 via-fuchsia-700/10"
-      : "from-black to-black";
+function KpiCard({ title, value, subtitle, icon, tone = "default", color }: { title: string, value: string | number, subtitle: string, icon: React.ReactNode, tone?: "default" | "alert", color?: string }) {
   return (
     <Card className="relative overflow-hidden border-slate-800 bg-black">
       <CardContent className="p-4 relative">
@@ -209,19 +209,21 @@ function KpiCard({ title, value, subtitle, icon, tone = "default" }: { title: st
         </div>
         <div className="text-2xl font-semibold text-white">{value}</div>
         {subtitle && <div className="text-[11px] text-slate-500 mt-1">{subtitle}</div>}
+        {color && <div className="absolute right-2 top-2 w-2 h-2 rounded-full" style={{backgroundColor: color}} />}
       </CardContent>
     </Card>
   );
 }
 
 
-
-function formatCurrency(n: number) {
+function formatCurrency(n: any) {
   return n?.toLocaleString?.("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }) ?? "$0";
 }
 
 
-function avg(arr: number[]) {
+function avg(arr: any[]) {
   if (!arr?.length) return 0;
   return arr.reduce((s, v) => s + Number(v || 0), 0) / arr.length;
 }
+
+    
