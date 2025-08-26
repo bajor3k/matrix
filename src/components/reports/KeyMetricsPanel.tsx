@@ -180,7 +180,11 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
               {metrics.shortRows.slice(0, 12).map((r, i) => (
-                <div key={r.accountNumber} className={`flex items-center justify-between rounded-xl border border-slate-800 px-3 py-2`} style={{background: `linear-gradient(90deg, ${COLORS[i % COLORS.length]}33, transparent)`}}>
+                <div
+                  key={r.accountNumber}
+                  className="flex items-center justify-between rounded-xl border border-slate-700 px-3 py-2 backdrop-blur-md bg-white/10"
+                  style={{ borderColor: COLORS[i % COLORS.length] }}
+                >
                   <div>
                     <div className="text-slate-300 text-xs">{r.ip}</div>
                     <div className="text-slate-100 text-sm font-medium">{r.accountNumber}</div>
@@ -225,5 +229,3 @@ function avg(arr: any[]) {
   if (!arr?.length) return 0;
   return arr.reduce((s, v) => s + Number(v || 0), 0) / arr.length;
 }
-
-    
