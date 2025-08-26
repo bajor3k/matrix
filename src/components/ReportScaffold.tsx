@@ -14,6 +14,7 @@ import { saveAs } from "file-saver";
 import ResultsTableCard from "./reports/ResultsTableCard";
 import { downloadCSV } from "@/utils/csv";
 import { MavenLayout } from "./reports/maven/MavenLayout";
+import KeyMetricsPanel from "./reports/KeyMetricsPanel";
 
 type Props = {
   reportName: string;
@@ -210,7 +211,11 @@ export default function ReportScaffold({
           </FullBleed>
           
           {runState === 'success' && activeView === 'dashboard' && (
-              <ResultsTableCard rows={tableRows} />
+            <ResultsTableCard rows={tableRows} />
+          )}
+          
+          {runState === 'success' && activeView === 'key-metrics' && (
+            <KeyMetricsPanel rows={tableRows} />
           )}
 
         </>
