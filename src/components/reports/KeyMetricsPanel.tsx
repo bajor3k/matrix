@@ -2,9 +2,8 @@
 "use client";
 import React, { useMemo, useEffect, useState } from "react";
 import { Bar, BarChart, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Banknote, Users, AlertTriangle, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 // Helper to safely parse string to number
 const num = (v: any): number => {
@@ -177,7 +176,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
               {metrics.shortRows.slice(0, 12).map((r, i) => (
-                <div key={r.accountNumber} className="report-card rounded-lg p-3">
+                <div key={r.accountNumber} className="rounded-lg border border-white/10 p-3">
                   <div className="flex justify-between items-center">
                     <div>
                       <p className="text-white font-semibold">{r.ip}</p>
@@ -200,14 +199,13 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
 
 function KpiCard({ title, value, subtitle, tone = "default", color }: { title: string, value: string | number, subtitle: string, tone?: "default" | "alert", color?: string }) {
   return (
-    <div className="report-card relative overflow-hidden rounded-2xl">
-      <div className="p-4 relative">
-        <div className="flex items-center gap-2 text-slate-300 text-xs mb-1">
-          <span>{title}</span>
+    <div className="report-card rounded-2xl p-5 flex flex-col justify-between">
+      <div className="flex items-start justify-between">
+        <p className="text-base font-medium text-zinc-300">{title}</p>
+        <div className="text-right">
+          <div className="text-4xl font-bold tracking-tight text-white">{value}</div>
+          {subtitle && <p className="mt-1 text-xs text-zinc-500">{subtitle}</p>}
         </div>
-        <div className="text-2xl font-semibold text-white">{value}</div>
-        {subtitle && <div className="text-[11px] text-slate-500 mt-1">{subtitle}</div>}
-        {color && <div className="absolute right-2 top-2 w-2 h-2 rounded-full" style={{backgroundColor: color}} />}
       </div>
     </div>
   );
