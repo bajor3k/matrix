@@ -183,7 +183,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
               {metrics.shortRows.slice(0, 12).map((r, i) => (
                 <div
                   key={r.accountNumber}
-                  className="rounded-lg border border-white/10 p-3"
+                  className="rounded-lg border border-white/10 bg-transparent p-3"
                 >
                   <div className="flex justify-between items-center">
                     <div>
