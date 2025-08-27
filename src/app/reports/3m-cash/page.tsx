@@ -54,7 +54,6 @@ export default function ReportsExcelPage() {
   const [kbLoading, setKbLoading] = React.useState(false);
 
   const filesReady = files.filter(Boolean).length === 3;
-  const canOpenMaven = runState === "success";
   
   useEffect(() => {
     const onEsc = (e: KeyboardEvent) => {
@@ -171,11 +170,7 @@ export default function ReportsExcelPage() {
                 onRun={runReport}
                 onDownloadExcel={downloadExcel}
                 onToggleKeyMetrics={() => setActiveView(prev => prev === 'key-metrics' ? 'maven' : 'key-metrics')}
-                onToggleMaven={() => setActiveView(prev => prev === 'maven' ? 'key-metrics' : 'maven')} // Simplified toggle
                 kbLoading={kbLoading}
-                isMavenOpen={isMavenOpen}
-                setIsMavenOpen={setIsMavenOpen}
-                canOpenMaven={canOpenMaven}
             />
             {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
             {runState === "running" && !kbLoading && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}

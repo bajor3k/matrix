@@ -16,11 +16,7 @@ type Props = {
   onRun: () => void;
   onDownloadExcel: () => void;
   onToggleKeyMetrics: () => void;
-  onToggleMaven: () => void; // For collapsing the side panel
   kbLoading?: boolean;
-  isMavenOpen: boolean;
-  setIsMavenOpen: (open: boolean) => void;
-  canOpenMaven: boolean;
 };
 
 export default function ActionsRow({
@@ -30,11 +26,7 @@ export default function ActionsRow({
   onRun,
   onDownloadExcel,
   onToggleKeyMetrics,
-  onToggleMaven,
   kbLoading = false,
-  isMavenOpen,
-  setIsMavenOpen,
-  canOpenMaven,
 }: Props) {
 
   const isReadyToRun = filesReady && runState !== "running";
@@ -57,12 +49,6 @@ export default function ActionsRow({
       
       <Pill disabled={!isSuccess} onClick={onToggleKeyMetrics} active={activeView === 'key-metrics'}>
         Key Metrics
-      </Pill>
-
-      <Pill onClick={() => setIsMavenOpen(!isMavenOpen)} disabled={!canOpenMaven} active={isMavenOpen}>
-        <Brain className="w-3.5 h-3.5" />
-        Maven
-        {isMavenOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronUp className="h-3.5 w-3.5" />}
       </Pill>
     </div>
   );
