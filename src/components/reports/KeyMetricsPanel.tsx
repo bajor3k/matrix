@@ -90,7 +90,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
       {/* Row 2: Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Donut Chart */}
-        <Card className="lg:col-span-1 bg-black border-slate-800">
+        <Card className="report-card lg:col-span-1 rounded-2xl">
           <CardContent className="p-4">
             <h3 className="text-sm text-center text-slate-300 mb-2">Short vs. Clear Accounts</h3>
             <div className="h-64">
@@ -122,7 +122,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
         </Card>
 
         {/* Bar Chart */}
-        <Card className="lg:col-span-1 bg-black border-slate-800">
+        <Card className="report-card lg:col-span-1 rounded-2xl">
           <CardContent className="p-4">
             <h3 className="text-sm text-slate-300 mb-3">Top 6 Accounts by Advisory Fee</h3>
             <div className="h-64">
@@ -133,7 +133,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                   <Tooltip formatter={(v) => formatCurrency(Number(v))} cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
                   <Bar dataKey="fee" radius={[6, 6, 0, 0]}>
                     {metrics.topFees.map((_, i) => (
-                      <Cell key={i} fill={KEYS_TEAL[i % KEYS_TEAL.length]} />
+                      <Cell key={i} fill={KEYS_TEAL[(i + 1) % KEYS_TEAL.length]} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -141,14 +141,14 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
               {metrics.topFees.map((t, i) => (
-                <Badge key={t.name} style={{ backgroundColor: `${KEYS_TEAL[i % KEYS_TEAL.length]}4D`, color: KEYS_TEAL[i % KEYS_TEAL.length]}} className="border-none">{t.name}: {formatCurrency(t.fee)}</Badge>
+                <Badge key={t.name} className="border-none" style={{ backgroundColor: `${KEYS_TEAL[(i + 1) % KEYS_TEAL.length]}4D`, color: KEYS_TEAL[(i + 1) % KEYS_TEAL.length]}}>{t.name}: {formatCurrency(t.fee)}</Badge>
               ))}
             </div>
           </CardContent>
         </Card>
 
 
-        <Card className="bg-black border-slate-800">
+        <Card className="report-card rounded-2xl">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm text-slate-300">Cash / Value Ratio (sparkline)</h3>
@@ -170,7 +170,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
       </div>
 
 
-      <Card className="bg-black border-slate-800">
+      <Card className="report-card rounded-2xl">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm text-slate-300">Accounts Flagged Short</h3>
@@ -183,7 +183,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
               {metrics.shortRows.slice(0, 12).map((r, i) => (
                 <div
                   key={r.accountNumber}
-                  className="rounded-lg border border-white/10 bg-transparent p-3"
+                  className="report-card rounded-lg p-3"
                 >
                   <div className="flex justify-between items-center">
                     <div>
@@ -208,7 +208,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
 
 function KpiCard({ title, value, subtitle, tone = "default", color }: { title: string, value: string | number, subtitle: string, tone?: "default" | "alert", color?: string }) {
   return (
-    <Card className="relative overflow-hidden border-slate-800 bg-black">
+    <Card className="report-card relative overflow-hidden rounded-2xl">
       <CardContent className="p-4 relative">
         <div className="flex items-center gap-2 text-slate-300 text-xs mb-1">
           <span>{title}</span>

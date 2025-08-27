@@ -64,7 +64,7 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 89% 48%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14%;
+    --border: 0 0% 25%;
     --input: 0 0% 14%;
     --ring: 0 0% 100%;
     --chart-1: 258 84% 58%;
@@ -113,5 +113,24 @@
 @layer utilities {
   .neon-glow {
     box-shadow: 0 0 60px 20px rgba(157, 78, 221, 0.65), 0 0 120px 40px rgba(80, 0, 255, 0.15);
+  }
+
+  /* One outline to rule them all (dark UI) */
+  .report-card {
+    background: transparent !important;               /* fully transparent */
+    border: 1px solid rgba(255,255,255,0.10) !important; /* faint off-white */
+    box-shadow: none !important;                       /* kill colored glows */
+    outline: none !important;
+    --tw-ring-color: transparent !important;           /* kill Tailwind rings */
+    --tw-shadow: 0 0 #0000 !important;                 /* kill custom shadows */
+  }
+
+  /* Some gradient-borders are done with pseudo elements—neutralize them */
+  .report-card::before,
+  .report-card::after {
+    content: none !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 }
