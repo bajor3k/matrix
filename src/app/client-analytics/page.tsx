@@ -130,12 +130,12 @@ export default function ClientAnalyticsPage() {
                     <span className="text-base text-foreground truncate" title={client.name}>{client.name}</span>
                   </div>
                   <div className="flex items-center gap-3 w-2/5 sm:w-1/2">
-                    <div className="w-full h-2 bg-[hsl(var(--chart-1))]/20 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-[#BAF2D8]/20 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-[hsl(var(--chart-1))]"
+                        className="h-full bg-[#BAF2D8]"
                         style={{
                           width: `${barWidthPercentage}%`,
-                          filter: "drop-shadow(0 0 5px hsl(var(--chart-1)))",
+                          filter: "drop-shadow(0 0 5px #BAF2D8)",
                         }}
                       />
                     </div>
