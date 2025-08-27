@@ -3,7 +3,6 @@
 
 import React from "react";
 import UploadCard from "@/components/UploadCard";
-import ReportsDashboard from "./reports/ReportsDashboard";
 import type { TableRow } from "./reports/ResultsTableCard";
 import ReportsPageShell from "./reports/ReportsPageShell";
 import HelpHeader, { helpHeaderAutoDismiss } from "./reports/HelpHeader";
@@ -14,6 +13,8 @@ import { saveAs } from "file-saver";
 import ResultsTableCard from "./reports/ResultsTableCard";
 import { MavenLayout } from "./reports/maven/MavenLayout";
 import KeyMetricsPanel from "./reports/KeyMetricsPanel";
+import ReportWorkspace from "./reports/ReportWorkspace";
+import { MavenChat } from "./reports/maven/MavenChat";
 
 type Props = {
   reportName: string;
@@ -54,15 +55,9 @@ export default function ReportScaffold({
   const [files, setFiles] = React.useState<(File | null)[]>([null, null, null]);
   const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
   const [error, setError] = React.useState<string | null>(null);
-  const [activeView, setActiveView] = React.useState<"none" | "dashboard" | "key-metrics">("none");
-  const [isMavenOpen, setIsMavenOpen] = React.useState(false);
+  const [activeView, setActiveView] = React.useState<"maven" | "key-metrics">("maven");
+  const [isMavenOpen, setIsMavenOpen] = React.useState(true);
 
-  const [metrics, setMetrics] = React.useState<DashboardMetrics>({
-      totalAdvisoryFees: 0,
-      totalAccounts: 0,
-      flaggedShort: 0,
-      totalRows: 0,
-  });
   const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
 
   const filesReady = files.slice(0, requiredFileCount).every(Boolean);
@@ -89,20 +84,12 @@ export default function ReportScaffold({
 
   function processApiData(data: any[]) {
     if (!data || data.length === 0) {
-      setMetrics({ totalAdvisoryFees: 0, totalAccounts: 0, flaggedShort: 0, totalRows: 0 });
       setTableRows([]);
       return;
     }
     
-    let totalFees = 0;
-    const accountNumbers = new Set<string>();
-
     const rows: TableRow[] = data.map(r => {
       const advisoryFee = num(r['Advisory Fees']) ?? 0;
-      totalFees += advisoryFee;
-      if (r['Account Number']) {
-        accountNumbers.add(r['Account Number']);
-      }
       return {
         ip: r['IP'] ?? '',
         acct: r['Account Number'] ?? '',
@@ -112,16 +99,8 @@ export default function ReportScaffold({
         short: (num(r['Cash']) ?? 0) < advisoryFee,
       };
     });
-
-    const newMetrics = {
-        totalAdvisoryFees: totalFees,
-        totalAccounts: accountNumbers.size,
-        flaggedShort: rows.filter(r => r.short).length,
-        totalRows: rows.length,
-    };
     
     setTableRows(rows);
-    setMetrics(newMetrics);
   }
 
   async function runReport() {
@@ -144,6 +123,7 @@ export default function ReportScaffold({
       
       processApiData(rows);
       setRunState("success");
+      setActiveView("maven"); // Default to maven workspace on success
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
       setRunState("error");
@@ -166,21 +146,14 @@ export default function ReportScaffold({
         setError(e?.message || "Failed to download Excel file.");
     }
   }
-
-  const openMaven = () => {
-    if (!canOpenMaven) return;
-    setIsMavenOpen(true);
-  };
   
   return (
     <ReportsPageShell>
-      {!isMavenOpen ? (
-        <>
-          <FullBleed>
+        <FullBleed>
             <HelpHeader summary={summary} instructions={instructions} />
-          </FullBleed>
-          
-          <FullBleed>
+        </FullBleed>
+        
+        <FullBleed>
             <UploadRow>
               {Array.from({ length: requiredFileCount }).map((_, index) => (
                 <UploadCard
@@ -191,35 +164,36 @@ export default function ReportScaffold({
                 />
               ))}
             </UploadRow>
-          </FullBleed>
-          
-          <FullBleed>
-             <ActionsRow
-              filesReady={filesReady}
-              runState={runState}
-              activeView={activeView}
-              onRun={runReport}
-              onDownloadExcel={downloadExcel}
-              onToggleDashboard={() => setActiveView(prev => prev === 'dashboard' ? 'none' : 'dashboard')}
-              onToggleKeyMetrics={() => setActiveView(prev => prev === 'key-metrics' ? 'none' : 'key-metrics')}
-              onAskMaven={openMaven}
+        </FullBleed>
+        
+        <FullBleed>
+            <ActionsRow
+            filesReady={filesReady}
+            runState={runState}
+            activeView={activeView}
+            onRun={runReport}
+            onDownloadExcel={downloadExcel}
+            onToggleKeyMetrics={() => setActiveView(p => p === 'key-metrics' ? 'maven' : 'key-metrics')}
+            onToggleMaven={() => setIsMavenOpen(v => !v)}
+            isMavenOpen={isMavenOpen}
+            canOpenMaven={canOpenMaven}
             />
             {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
             {runState === 'running' && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
-          </FullBleed>
-          
-          {runState === 'success' && activeView === 'dashboard' && (
-            <ResultsTableCard rows={tableRows} />
-          )}
-          
-          {runState === 'success' && activeView === 'key-metrics' && (
-            <KeyMetricsPanel rows={tableRows} />
-          )}
-
-        </>
-      ) : (
-         <MavenLayout rows={tableRows} onClose={() => setIsMavenOpen(false)} />
-      )}
+        </FullBleed>
+        
+        {runState === 'success' && (
+          <ReportWorkspace
+            isMavenOpen={isMavenOpen}
+            setIsMavenOpen={setIsMavenOpen}
+            left={
+              activeView === 'key-metrics' 
+                ? <KeyMetricsPanel rows={tableRows} /> 
+                : <ResultsTableCard rows={tableRows} />
+            }
+            right={<MavenChat onClose={() => setIsMavenOpen(false)} />}
+          />
+        )}
     </ReportsPageShell>
   );
 }

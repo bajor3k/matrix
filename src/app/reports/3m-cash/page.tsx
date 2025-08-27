@@ -2,8 +2,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import ReportsDashboard from "@/components/reports/ReportsDashboard";
-import ReportsPageShell from "@/components/reports/ReportsPageShell";
 import HelpHeader, { helpHeaderAutoDismiss } from "@/components/reports/HelpHeader";
 import { UploadRow } from "@/components/reports/UploadRow";
 import type { TableRow } from "@/components/reports/ResultsTableCard";
@@ -14,6 +12,10 @@ import UploadCard from "@/components/UploadCard";
 import ResultsTableCard from "@/components/reports/ResultsTableCard";
 import { MavenLayout } from "@/components/reports/maven/MavenLayout";
 import { indexMergedRows } from '@/lib/askmaven/kb';
+import ReportsPageShell from "@/components/reports/ReportsPageShell";
+import KeyMetricsPanel from "@/components/reports/KeyMetricsPanel";
+import ReportWorkspace from "@/components/reports/ReportWorkspace";
+import { MavenChat } from "@/components/reports/maven/MavenChat";
 
 
 const REPORT_SUMMARY =
@@ -41,26 +43,13 @@ const num = (v: any): number | null => {
   return isFinite(n) ? n : null;
 }
 
-interface DashboardMetrics {
-    totalAdvisoryFees: number;
-    totalAccounts: number;
-    flaggedShort: number;
-    totalRows: number;
-}
-
 export default function ReportsExcelPage() {
   const [files, setFiles] = React.useState<(File | null)[]>([null, null, null]);
   const [error, setError] = React.useState<string | null>(null);
   const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
-  const [dashboardVisible, setDashboardVisible] = React.useState(false);
-  const [isMavenOpen, setIsMavenOpen] = React.useState(false);
+  const [activeView, setActiveView] = React.useState<"maven" | "key-metrics">("maven");
+  const [isMavenOpen, setIsMavenOpen] = React.useState(true); // Default to open in workspace
 
-  const [metrics, setMetrics] = React.useState<DashboardMetrics>({
-      totalAdvisoryFees: 0,
-      totalAccounts: 0,
-      flaggedShort: 0,
-      totalRows: 0,
-  });
   const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
   const [kbLoading, setKbLoading] = React.useState(false);
 
@@ -89,19 +78,12 @@ export default function ReportsExcelPage() {
 
   function processApiData(data: any[]) {
     if (!data || data.length === 0) {
-      setMetrics({ totalAdvisoryFees: 0, totalAccounts: 0, flaggedShort: 0, totalRows: 0 });
       setTableRows([]);
       return;
     }
 
-    let totalFees = 0;
-    const accountNumbers = new Set<string>();
     const rows: TableRow[] = data.map(r => {
       const advisoryFee = num(r['Advisory Fee']) ?? 0;
-      totalFees += advisoryFee;
-      if (r['Account']) {
-        accountNumbers.add(r['Account']);
-      }
       return {
           ip: r['IP'] ?? '',
           acct: r['Account'] ?? '',
@@ -112,15 +94,7 @@ export default function ReportsExcelPage() {
       }
     });
 
-    const newMetrics = {
-        totalAdvisoryFees: totalFees,
-        totalAccounts: accountNumbers.size,
-        flaggedShort: rows.filter(r => r.short).length,
-        totalRows: rows.length,
-    };
-    
     setTableRows(rows);
-    setMetrics(newMetrics);
   }
 
   async function runReport() {
@@ -140,6 +114,8 @@ export default function ReportsExcelPage() {
       
       processApiData(mergedRows);
       setRunState("success");
+      setActiveView("maven"); // Default to maven view on success
+      setIsMavenOpen(true);
 
       setKbLoading(true);
       try {
@@ -173,54 +149,51 @@ export default function ReportsExcelPage() {
     }
   }
 
-  const openMaven = () => {
-    if (!canOpenMaven) return;
-    setIsMavenOpen(true);
-  };
-
   return (
     <ReportsPageShell>
-      {!isMavenOpen ? (
-        <>
-          <FullBleed>
+        <FullBleed>
             <HelpHeader summary={REPORT_SUMMARY} instructions={INSTRUCTIONS} />
-          </FullBleed>
-          
-          <FullBleed>
+        </FullBleed>
+        
+        <FullBleed>
             <UploadRow>
-              <UploadCard file={files[0]} onFileChange={handleFileChange(0)} dropzoneText="Drop PYFEE here" />
-              <UploadCard file={files[1]} onFileChange={handleFileChange(1)} dropzoneText="Drop PYCASH here" />
-              <UploadCard file={files[2]} onFileChange={handleFileChange(2)} dropzoneText="Drop PYPI here" />
+                <UploadCard file={files[0]} onFileChange={handleFileChange(0)} dropzoneText="Drop PYFEE here" />
+                <UploadCard file={files[1]} onFileChange={handleFileChange(1)} dropzoneText="Drop PYCASH here" />
+                <UploadCard file={files[2]} onFileChange={handleFileChange(2)} dropzoneText="Drop PYPI here" />
             </UploadRow>
-          </FullBleed>
-            
-          <FullBleed>
+        </FullBleed>
+        
+        <FullBleed>
             <ActionsRow
                 filesReady={filesReady}
                 runState={runState}
+                activeView={activeView}
                 onRun={runReport}
                 onDownloadExcel={downloadExcel}
-                onToggleDashboard={() => setDashboardVisible(v => !v)}
-                onAskMaven={openMaven}
+                onToggleKeyMetrics={() => setActiveView(prev => prev === 'key-metrics' ? 'maven' : 'key-metrics')}
+                onToggleMaven={() => setActiveView(prev => prev === 'maven' ? 'key-metrics' : 'maven')} // Simplified toggle
                 kbLoading={kbLoading}
+                isMavenOpen={isMavenOpen}
+                setIsMavenOpen={setIsMavenOpen}
+                canOpenMaven={canOpenMaven}
             />
             {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
-             {runState === "running" && !kbLoading && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
-             {runState === "success" && kbLoading && <div className="text-center text-xs text-muted-foreground mt-2">Indexing knowledge base...</div>}
-          </FullBleed>
+            {runState === "running" && !kbLoading && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}
+            {runState === "success" && kbLoading && <div className="text-center text-xs text-muted-foreground mt-2">Indexing knowledge base...</div>}
+        </FullBleed>
 
-          {dashboardVisible && runState === 'success' && (
-            <>
-              <ReportsDashboard 
-                  metrics={metrics}
-              />
-              <ResultsTableCard rows={tableRows} />
-            </>
-          )}
-        </>
-      ) : (
-        <MavenLayout rows={tableRows} onClose={() => setIsMavenOpen(false)} />
-      )}
+        {runState === 'success' && (
+          <ReportWorkspace
+            isMavenOpen={isMavenOpen}
+            setIsMavenOpen={setIsMavenOpen}
+            left={
+              activeView === 'key-metrics' 
+                ? <KeyMetricsPanel rows={tableRows} /> 
+                : <ResultsTableCard rows={tableRows} />
+            }
+            right={<MavenChat onClose={() => setIsMavenOpen(false)} />}
+          />
+        )}
     </ReportsPageShell>
   );
 }

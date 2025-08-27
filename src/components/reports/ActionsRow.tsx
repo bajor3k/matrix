@@ -7,7 +7,7 @@ import Pill from "@/components/ui/Pill";
 import MavenPill from "./maven/MavenPill";
 
 type RunState = "idle" | "running" | "success" | "error";
-type ActiveView = "none" | "dashboard" | "key-metrics";
+type ActiveView = "maven" | "key-metrics";
 
 type Props = {
   filesReady: boolean;
@@ -15,10 +15,12 @@ type Props = {
   activeView: ActiveView;
   onRun: () => void;
   onDownloadExcel: () => void;
-  onToggleDashboard: () => void;
   onToggleKeyMetrics: () => void;
-  onAskMaven: () => void;
+  onToggleMaven: () => void; // For collapsing the side panel
   kbLoading?: boolean;
+  isMavenOpen: boolean;
+  setIsMavenOpen: (open: boolean) => void;
+  canOpenMaven: boolean;
 };
 
 export default function ActionsRow({
@@ -27,10 +29,12 @@ export default function ActionsRow({
   activeView,
   onRun,
   onDownloadExcel,
-  onToggleDashboard,
   onToggleKeyMetrics,
-  onAskMaven,
+  onToggleMaven,
   kbLoading = false,
+  isMavenOpen,
+  setIsMavenOpen,
+  canOpenMaven,
 }: Props) {
 
   const isReadyToRun = filesReady && runState !== "running";
@@ -51,16 +55,15 @@ export default function ActionsRow({
         Excel
       </Pill>
       
-      <Pill disabled={!isSuccess} onClick={onToggleDashboard} active={activeView === 'dashboard'}>
-        Dashboard
-        {activeView === 'dashboard' ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-      </Pill>
-      
       <Pill disabled={!isSuccess} onClick={onToggleKeyMetrics} active={activeView === 'key-metrics'}>
         Key Metrics
       </Pill>
 
-      <MavenPill onOpen={onAskMaven} isLoading={kbLoading} disabled={!isSuccess} />
+      <Pill onClick={() => setIsMavenOpen(!isMavenOpen)} disabled={!canOpenMaven} active={isMavenOpen}>
+        <Brain className="w-3.5 h-3.5" />
+        Maven
+        {isMavenOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronUp className="h-3.5 w-3.5" />}
+      </Pill>
     </div>
   );
 }
