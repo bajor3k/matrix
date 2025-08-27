@@ -66,21 +66,18 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
           title="Total Advisory Fees"
           value={formatCurrency(metrics.totalFees)}
           subtitle="Sum of all fees from report"
-          icon={<Banknote className="w-4 h-4" />}
           color={COLORS[0]}
         />
         <KpiCard
           title="Accounts"
           value={metrics.totalAccounts}
           subtitle="Total accounts in the report"
-          icon={<Users className="w-4 h-4" />}
           color={COLORS[4]}
         />
         <KpiCard
           title="Flagged Short"
           value={metrics.flaggedShort}
           subtitle="Accounts with cash < fees"
-          icon={<AlertTriangle className="w-4 h-4" />}
           tone="alert"
           color="#F20089"
         />
@@ -204,12 +201,12 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
 }
 
 
-function KpiCard({ title, value, subtitle, icon, tone = "default", color }: { title: string, value: string | number, subtitle: string, icon: React.ReactNode, tone?: "default" | "alert", color?: string }) {
+function KpiCard({ title, value, subtitle, tone = "default", color }: { title: string, value: string | number, subtitle: string, tone?: "default" | "alert", color?: string }) {
   return (
     <Card className="relative overflow-hidden border-slate-800 bg-black">
       <CardContent className="p-4 relative">
-        <div className="flex items-center gap-2 text-slate-300 text-xs mb-1">
-          {icon} <span>{title}</span>
+        <div className="text-slate-300 text-xs mb-1">
+          <span>{title}</span>
         </div>
         <div className="text-2xl font-semibold text-white">{value}</div>
         {subtitle && <div className="text-[11px] text-slate-500 mt-1">{subtitle}</div>}
