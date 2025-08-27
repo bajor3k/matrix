@@ -13,13 +13,13 @@ const num = (v: any): number => {
     return isFinite(n) ? n : 0;
   }
 
-const KEYS_TEAL = [
-  "#0EA792", // Persian Green
-  "#29B48B", // Jungle Green
-  "#3DC08C", // Ocean Green
-  "#5FD797", // Medium Aquamarine
-  "#5CE4BE", // Medium Aquamarine (lighter)
-  "#4DFBF2", // Turquoise
+const KEYS_METRICS = [
+  "#98CEF3", // Baby Blue Eyes
+  "#B9E0FF", // Diamond
+  "#D0E6FB", // Water
+  "#E6D6FD", // Pale Lavender
+  "#E4C5FB", // Pale Lavender (darker)
+  "#D2ACFB", // Mauve
 ] as const;
   
 // Main Component
@@ -73,26 +73,28 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
           title="Total Advisory Fees"
           value={formatCurrency(metrics.totalFees)}
           subtitle="Sum of all fees from report"
+          color={KEYS_METRICS[0]}
         />
         <KpiCard
           title="Accounts"
           value={metrics.totalAccounts}
           subtitle="Total accounts in the report"
+          color={KEYS_METRICS[2]}
         />
         <KpiCard
           title="Flagged Short"
           value={metrics.flaggedShort}
           subtitle="Accounts with cash < fees"
           tone="alert"
+          color={KEYS_METRICS[5]}
         />
       </div>
 
       {/* Row 2: Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Donut Chart */}
-        <Card className="report-card lg:col-span-1 rounded-2xl">
-          <CardContent className="p-4">
-            <h3 className="text-sm text-center text-slate-300 mb-2">Short vs. Clear Accounts</h3>
+        <div className="report-card rounded-2xl lg:col-span-1 p-4">
+          <h3 className="text-sm text-center text-slate-300 mb-2">Short vs. Clear Accounts</h3>
             <div className="h-64">
               <ResponsiveContainer>
                 <PieChart>
@@ -106,8 +108,8 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                     dataKey="value"
                     stroke="none"
                   >
-                     <Cell fill={KEYS_TEAL[0]} />
-                     <Cell fill={KEYS_TEAL[1]} />
+                     <Cell fill={KEYS_METRICS[0]} />
+                     <Cell fill={KEYS_METRICS[1]} />
                   </Pie>
                   <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" className="fill-white text-3xl font-bold">
                     {formatCurrency(metrics.totalFees)}
@@ -118,12 +120,10 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-          </CardContent>
-        </Card>
+        </div>
 
         {/* Bar Chart */}
-        <Card className="report-card lg:col-span-1 rounded-2xl">
-          <CardContent className="p-4">
+        <div className="report-card rounded-2xl lg:col-span-1 p-4">
             <h3 className="text-sm text-slate-300 mb-3">Top 6 Accounts by Advisory Fee</h3>
             <div className="h-64">
               <ResponsiveContainer>
@@ -133,7 +133,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                   <Tooltip formatter={(v) => formatCurrency(Number(v))} cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
                   <Bar dataKey="fee" radius={[6, 6, 0, 0]}>
                     {metrics.topFees.map((_, i) => (
-                      <Cell key={i} fill={KEYS_TEAL[(i + 1) % KEYS_TEAL.length]} />
+                      <Cell key={i} fill={KEYS_METRICS[(i + 1) % KEYS_METRICS.length]} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -141,15 +141,13 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
               {metrics.topFees.map((t, i) => (
-                <Badge key={t.name} className="border-none" style={{ backgroundColor: `${KEYS_TEAL[(i + 1) % KEYS_TEAL.length]}4D`, color: KEYS_TEAL[(i + 1) % KEYS_TEAL.length]}}>{t.name}: {formatCurrency(t.fee)}</Badge>
+                 <Badge key={t.name} className="border-none" style={{ backgroundColor: `${KEYS_METRICS[(i + 1) % KEYS_METRICS.length]}4D`, color: KEYS_METRICS[(i + 1) % KEYS_METRICS.length]}}>{t.name}: {formatCurrency(t.fee)}</Badge>
               ))}
             </div>
-          </CardContent>
-        </Card>
+        </div>
 
 
-        <Card className="report-card rounded-2xl">
-          <CardContent className="p-4">
+        <div className="report-card rounded-2xl p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm text-slate-300">Cash / Value Ratio (sparkline)</h3>
               <Sparkles className="w-4 h-4 text-fuchsia-400" />
@@ -160,18 +158,16 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                   <XAxis dataKey="idx" hide />
                   <YAxis hide domain={[0, "auto"]} />
                   <Tooltip formatter={(v) => `${Number(v).toFixed(2)}%`} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
-                  <Line type="monotone" dataKey="ratio" stroke={KEYS_TEAL[5]} strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="ratio" stroke={KEYS_METRICS[0]} strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
             <p className="mt-2 text-xs text-slate-400">Avg ratio across buckets: <span className="text-slate-200">{avg(metrics.spark.map((s) => s.ratio)).toFixed(2)}%</span></p>
-          </CardContent>
-        </Card>
+        </div>
       </div>
 
 
-      <Card className="report-card rounded-2xl">
-        <CardContent className="p-4">
+      <div className="report-card rounded-2xl p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm text-slate-300">Accounts Flagged Short</h3>
             <Badge className="bg-rose-600/20 text-rose-300">{metrics.shortRows.length}</Badge>
@@ -181,26 +177,22 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
               {metrics.shortRows.slice(0, 12).map((r, i) => (
-                <div
-                  key={r.accountNumber}
-                  className="report-card rounded-lg p-3"
-                >
+                <div key={r.accountNumber} className="report-card rounded-lg p-3">
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="text-slate-300 text-xs">{r.ip}</div>
-                      <div className="text-slate-100 text-sm font-medium">{r.accountNumber}</div>
+                      <p className="text-white font-semibold">{r.ip}</p>
+                      <p className="text-zinc-400 text-sm">{r.accountNumber}</p>
                     </div>
                     <div className="text-right">
-                      <div className="text-slate-400 text-[11px]">Cash</div>
-                      <div className="text-slate-100 text-sm">{formatCurrency(Number(r.cash) || 0)}</div>
+                      <p className="text-zinc-400 text-sm">Cash</p>
+                      <p className="text-white font-bold">{r.cash}</p>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           )}
-        </CardContent>
-      </Card>
+      </div>
     </div>
   );
 }
@@ -208,16 +200,16 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
 
 function KpiCard({ title, value, subtitle, tone = "default", color }: { title: string, value: string | number, subtitle: string, tone?: "default" | "alert", color?: string }) {
   return (
-    <Card className="report-card relative overflow-hidden rounded-2xl">
-      <CardContent className="p-4 relative">
+    <div className="report-card relative overflow-hidden rounded-2xl">
+      <div className="p-4 relative">
         <div className="flex items-center gap-2 text-slate-300 text-xs mb-1">
           <span>{title}</span>
         </div>
         <div className="text-2xl font-semibold text-white">{value}</div>
         {subtitle && <div className="text-[11px] text-slate-500 mt-1">{subtitle}</div>}
         {color && <div className="absolute right-2 top-2 w-2 h-2 rounded-full" style={{backgroundColor: color}} />}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
