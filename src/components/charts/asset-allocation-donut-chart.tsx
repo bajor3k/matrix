@@ -63,7 +63,14 @@ export function AssetAllocationDonutChart() {
         <PieChart>
           <ChartTooltip
             cursor={false}
-            content={<ChartTooltipContent hideLabel nameKey="assetType" />}
+            content={<ChartTooltipContent 
+                hideLabel 
+                nameKey="assetType" 
+                formatter={(value, name) => [`${value}%`, chartConfig[name as keyof typeof chartConfig]?.label]}
+                contentStyle={{ background: "rgba(0,0,0,0.85)", border: "none" }}
+                labelStyle={{ color: "#cbd5e1" }}
+                itemStyle={{ color: "#e5e7eb" }}
+            />}
           />
           <Pie
             data={chartData}
@@ -71,14 +78,14 @@ export function AssetAllocationDonutChart() {
             nameKey="assetType"
             innerRadius={125} 
             outerRadius={175} 
-            strokeWidth={2}
-            stroke="hsl(var(--card))" 
+            stroke="none"
             activeIndex={activeIndex}
             activeShape={({ cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent }) => {
+              const label = chartConfig[payload.assetType as keyof typeof chartConfig]?.label || '';
               return (
                 <g>
                   <text x={cx} y={cy! - 10} textAnchor="middle" dominantBaseline="central" fill="hsl(var(--foreground))" className="text-lg">
-                    {payload.assetType ? chartConfig[payload.assetType as keyof typeof chartConfig]?.label : ''}
+                    {label}
                   </text>
                   <text x={cx} y={cy! + 15} textAnchor="middle" dominantBaseline="central" fill={fill} className="text-2xl font-bold">
                     {`${(percent * 100).toFixed(0)}%`}
@@ -91,8 +98,6 @@ export function AssetAllocationDonutChart() {
                     startAngle={startAngle}
                     endAngle={endAngle}
                     fill={fill}
-                    stroke={fill} 
-                    strokeWidth={2}
                   />
                 </g>
               );
@@ -103,8 +108,7 @@ export function AssetAllocationDonutChart() {
             {chartData.map((entry) => (
               <Cell
                 key={entry.assetType}
-                fill={entry.fill} 
-                style={{ outline: 'none' }} 
+                fill={chartConfig[entry.assetType as keyof typeof chartConfig].color} 
               />
             ))}
           </Pie>

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -63,11 +64,11 @@ const metricCardsData = [
 ];
 
 const assetBreakdownData = [
-  { name: "US Equities", percentage: "40%", color: "bg-[hsl(var(--chart-1))]" },
-  { name: "International Equities", percentage: "20%", color: "bg-[hsl(var(--chart-2))]" },
-  { name: "Fixed Income", percentage: "25%", color: "bg-[hsl(var(--chart-3))]" },
-  { name: "Alternatives", percentage: "10%", color: "bg-[hsl(var(--chart-4))]" },
-  { name: "Cash & Equivalents", percentage: "5%", color: "bg-[hsl(var(--chart-5))]" },
+    { name: "US Equities", percentage: "40%", color: "bg-[hsl(var(--chart-1))]" },
+    { name: "International Equities", percentage: "20%", color: "bg-[hsl(var(--chart-2))]" },
+    { name: "Fixed Income", percentage: "25%", color: "bg-[hsl(var(--chart-3))]" },
+    { name: "Alternatives", percentage: "10%", color: "bg-[hsl(var(--chart-4))]" },
+    { name: "Cash & Equivalents", percentage: "5%", color: "bg-[hsl(var(--chart-5))]" },
 ];
 
 const topPerformingAssetsData = [
@@ -84,61 +85,65 @@ export default function AssetAnalyticsPage() {
     <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Assets Analytics</h1>
       <div className="grid gap-6 md:grid-cols-3">
-        <PlaceholderCard title="Advisor">
-          <Select>
-            <SelectTrigger id="advisor-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
-              <SelectValue placeholder="Select Advisor" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="mike_mcdermott_mam">Mike McDermott MAM</SelectItem>
-              <SelectItem value="sam_rothstein_sar">Sam Rothstein SAR</SelectItem>
-            </SelectContent>
-          </Select>
-        </PlaceholderCard>
-        <PlaceholderCard title="Custodian">
-          <Select defaultValue="all_custodians">
-            <SelectTrigger id="custodian-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
-              <SelectValue placeholder="Select Custodian" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all_custodians">All Custodians</SelectItem>
-              <SelectItem value="pershing">Pershing</SelectItem>
-              <SelectItem value="schwab">Charles Schwab</SelectItem>
-              <SelectItem value="fidelity">Fidelity</SelectItem>
-              <SelectItem value="goldman">Goldman Sachs</SelectItem>
-              <SelectItem value="pas">PAS</SelectItem>
-            </SelectContent>
-          </Select>
-        </PlaceholderCard>
-        <PlaceholderCard title="Timeframe">
-          <Select defaultValue="ytd">
-            <SelectTrigger id="timeframe-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
-              <SelectValue placeholder="Select Timeframe" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="mtd">Month to Date</SelectItem>
-              <SelectItem value="qtd">Quarter to Date</SelectItem>
-              <SelectItem value="ytd">Year to Date</SelectItem>
-              <SelectItem value="trailing_12m">Trailing 12 Months</SelectItem>
-            </SelectContent>
-          </Select>
-        </PlaceholderCard>
+        <div className="card-outline rounded-2xl p-5">
+            <h3 className="text-base font-bold text-foreground mb-2">Advisor</h3>
+            <Select>
+                <SelectTrigger id="advisor-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
+                <SelectValue placeholder="Select Advisor" />
+                </SelectTrigger>
+                <SelectContent>
+                <SelectItem value="mike_mcdermott_mam">Mike McDermott MAM</SelectItem>
+                <SelectItem value="sam_rothstein_sar">Sam Rothstein SAR</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>
+        <div className="card-outline rounded-2xl p-5">
+            <h3 className="text-base font-bold text-foreground mb-2">Custodian</h3>
+            <Select defaultValue="all_custodians">
+                <SelectTrigger id="custodian-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
+                <SelectValue placeholder="Select Custodian" />
+                </SelectTrigger>
+                <SelectContent>
+                <SelectItem value="all_custodians">All Custodians</SelectItem>
+                <SelectItem value="pershing">Pershing</SelectItem>
+                <SelectItem value="schwab">Charles Schwab</SelectItem>
+                <SelectItem value="fidelity">Fidelity</SelectItem>
+                <SelectItem value="goldman">Goldman Sachs</SelectItem>
+                <SelectItem value="pas">PAS</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>
+        <div className="card-outline rounded-2xl p-5">
+            <h3 className="text-base font-bold text-foreground mb-2">Timeframe</h3>
+            <Select defaultValue="ytd">
+                <SelectTrigger id="timeframe-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
+                <SelectValue placeholder="Select Timeframe" />
+                </SelectTrigger>
+                <SelectContent>
+                <SelectItem value="mtd">Month to Date</SelectItem>
+                <SelectItem value="qtd">Quarter to Date</SelectItem>
+                <SelectItem value="ytd">Year to Date</SelectItem>
+                <SelectItem value="trailing_12m">Trailing 12 Months</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {metricCardsData.map((card, index) => (
-          <PlaceholderCard
-            key={index}
-            title={card.title}
-            value={card.value}
-            description={card.description}
-            icon={card.icon}
-            iconClassName={card.iconClassName}
-          />
+          <div key={index} className="card-outline rounded-2xl p-5">
+            <div className="flex items-center gap-3 mb-2">
+                <card.icon className={cn("h-5 w-5 shrink-0 mt-0.5", card.iconClassName || "text-muted-foreground")} />
+                <h3 className="text-base font-bold text-foreground">{card.title}</h3>
+            </div>
+            <div className="text-3xl font-bold text-foreground">{card.value}</div>
+            {card.description && <p className="text-sm text-muted-foreground mt-1">{card.description}</p>}
+          </div>
         ))}
       </div>
 
-      <PlaceholderCard title="Asset Allocation by Type">
+      <div className="card-outline rounded-2xl p-5">
+         <h3 className="text-base font-bold text-foreground mb-4">Asset Allocation by Type</h3>
          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
             <div className="h-[400px] md:h-[450px] w-full">
               <DynamicAssetAllocationDonutChart />
@@ -156,9 +161,10 @@ export default function AssetAnalyticsPage() {
               ))}
             </div>
           </div>
-      </PlaceholderCard>
+      </div>
 
-      <PlaceholderCard title="Top Performing Assets">
+      <div className="card-outline rounded-2xl p-5">
+        <h3 className="text-base font-bold text-foreground mb-4">Top Performing Assets</h3>
         <Table>
           <TableHeader>
             <TableRow>
@@ -190,7 +196,7 @@ export default function AssetAnalyticsPage() {
                 <Download className="mr-2 h-4 w-4" /> Export
             </Button>
         </div>
-      </PlaceholderCard>
+      </div>
     </main>
   );
 }
