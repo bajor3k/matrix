@@ -25,34 +25,30 @@ export function PlaceholderCard({ title, value, description, icon, iconClassName
       className
     )}>
       <CardHeader className={cn(
-        "flex flex-row items-start justify-between p-4 pb-2" // Use justify-between for actions
+        "flex flex-row items-start justify-between p-4 pb-2"
       )}>
-        <div className={cn(
-          "flex items-center gap-3",
-          isStringPathIcon && "flex-col items-start" // if image icon, stack title below
-        )}>
-          {isStringPathIcon && icon && (
-            <div className="mb-2"> {/* Adjusted margin for image icon case */}
-              <Image src={icon} alt={title} width={32} height={32} className="object-contain" />
-            </div>
-          )}
-          {!isStringPathIcon && IconComponent && (
-             <IconComponent className={cn("h-5 w-5 shrink-0 mt-0.5", iconClassName || "text-muted-foreground")} />
-          )}
-          <CardTitle className="text-base font-bold text-foreground">{title}</CardTitle>
+        <div className="flex-1">
+          <CardTitle className="text-base font-bold text-foreground flex items-center gap-2">
+             {!isStringPathIcon && IconComponent && (
+               <IconComponent className={cn("h-5 w-5 shrink-0", iconClassName || "text-muted-foreground")} />
+            )}
+            {title}
+          </CardTitle>
+          {description && !value && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
         </div>
+        {value && (
+            <div className="text-right">
+                <div className="text-3xl font-bold text-foreground">{value}</div>
+                {description && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
+            </div>
+        )}
         {headerActions && <div>{headerActions}</div>}
       </CardHeader>
       <CardContent className={cn(
         "p-4 pt-0",
         "flex flex-col flex-grow"
       )}>
-        {value && <div className="text-3xl font-bold text-foreground">{value}</div>}
-        {description && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
-        {children && <div className={cn("flex-grow", value || description ? "mt-4" : "")}>{children}</div>}
-        {!children && !value && !description && (
-          <div className="text-muted-foreground h-[50px] flex items-center flex-grow">Placeholder content</div>
-        )}
+        {children && <div className="flex-grow mt-2">{children}</div>}
       </CardContent>
     </Card>
   );

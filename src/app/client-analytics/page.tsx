@@ -14,25 +14,21 @@ const metricCardsData = [
   { 
     title: "Total Active Clients", 
     value: "238", 
-    description: <span className="text-green-400 text-sm">+5 new clients this month</span>, 
-    icon: Users 
+    description: <span className="text-sm" style={{color: '#BAF2D8'}}>+5 new clients this month</span>, 
   },
   { 
     title: "Average AUM per Client", 
     value: "$51,872", 
-    icon: DollarSign 
   },
   { 
     title: "Client Retention Rate", 
     value: "92%", 
-    description: <span className="text-sm">Over the last 12 months</span>, 
-    icon: TrendingUp 
+    description: <span className="text-sm text-muted-foreground">Over the last 12 months</span>, 
   },
   { 
     title: "New vs. Lost Clients (QTD)", 
     value: "15 / 3", 
-    description: <span className="text-sm">New clients / Lost clients</span>, 
-    icon: ArrowRightLeft 
+    description: <span className="text-sm text-muted-foreground">New clients / Lost clients</span>, 
   },
 ];
 
@@ -107,18 +103,23 @@ export default function ClientAnalyticsPage() {
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
         {metricCardsData.map((card, index) => (
-          <PlaceholderCard
-            key={index}
-            title={card.title}
-            value={card.value}
-            description={card.description}
-            icon={card.icon}
-          />
+          <div key={index} className="card-outline rounded-2xl p-5">
+            <div className="flex items-start justify-between">
+                <div>
+                    <p className="text-base font-semibold text-zinc-200">{card.title}</p>
+                </div>
+                <div className="text-right">
+                    <div className="text-4xl font-bold leading-none text-white">{card.value}</div>
+                    {card.description && <p className="mt-2 text-sm">{card.description}</p>}
+                </div>
+            </div>
+          </div>
         ))}
       </div>
 
       <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 mb-8">
-        <PlaceholderCard title="Top 10 Clients by AUM">
+        <div className="card-outline rounded-2xl p-5">
+          <h3 className="text-base font-bold text-foreground mb-4">Top 10 Clients by AUM</h3>
           <div className="space-y-3 mt-1">
             {topClientsByAumData.map((client) => {
               const barWidthPercentage = maxAum > 0 ? (client.aum / maxAum) * 100 : 0;
@@ -144,8 +145,9 @@ export default function ClientAnalyticsPage() {
               );
             })}
           </div>
-        </PlaceholderCard>
-        <PlaceholderCard title="Top 10 Accounts Without a Beneficiary" icon={AlertTriangle} iconClassName="text-yellow-400">
+        </div>
+        <div className="card-outline rounded-2xl p-5">
+        <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2"><AlertTriangle className="h-5 w-5 text-yellow-400" />Top 10 Accounts Without a Beneficiary</h3>
           <TooltipProvider>
             <Table>
               <TableHeader>
@@ -183,10 +185,11 @@ export default function ClientAnalyticsPage() {
            <p className="mt-4 text-xs text-muted-foreground">
             ⚠️ High AUM accounts are flagged. Top accounts missing beneficiary info, ranked by AUM.
           </p>
-        </PlaceholderCard>
+        </div>
       </div>
 
-      <PlaceholderCard title="Top Clients Age 65+ with Children as Beneficiaries" icon={Users} className="mt-8">
+      <div className="card-outline rounded-2xl p-5">
+        <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2"><Users className="h-5 w-5" />Top Clients Age 65+ with Children as Beneficiaries</h3>
         <div className="space-y-4 mt-2">
           {topClients65PlusWithChildBeneficiariesData.map((client) => (
             <div key={client.id} className="p-3 rounded-md border border-border/20 hover:bg-muted/10 transition-colors duration-150 ease-out">
@@ -213,7 +216,7 @@ export default function ClientAnalyticsPage() {
             Start Next-Gen Outreach
           </Button>
         </div>
-      </PlaceholderCard>
+      </div>
     </main>
   );
 }
