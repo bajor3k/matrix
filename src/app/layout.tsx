@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Inter, Roboto_Mono } from 'next/font/google';
@@ -12,10 +11,6 @@ import { NavigationProvider } from '@/contexts/navigation-context';
 import { ThemeProvider } from '@/components/theme-provider';
 import { usePathname } from 'next/navigation';
 import AppShell from '@/components/AppShell';
-
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') { 
-  import('../lib/askmaven/dev-expose'); 
-}
 
 const inter = Inter({
   variable: '--font-inter',
@@ -35,6 +30,19 @@ export default function RootLayout({
   const pathname = usePathname();
   const isLandingPage = pathname === '/';
   const isReportPage = pathname.startsWith('/reports');
+
+  React.useEffect(() => {
+    const runDevExpose = async () => {
+      if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
+        try {
+          await import('@/lib/askmaven/dev-expose');
+        } catch (err) {
+          console.warn("AskMaven dev-expose utility failed to load:", err);
+        }
+      }
+    };
+    runDevExpose();
+  }, []);
 
   return (
     <html lang="en" suppressHydrationWarning>
