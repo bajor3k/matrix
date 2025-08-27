@@ -180,7 +180,10 @@ export default function AssetAnalyticsPage() {
                 <TableCell className="text-muted-foreground">{asset.category}</TableCell>
                 <TableCell className="text-right">{asset.value}</TableCell>
                 <TableCell className="text-right">{asset.weight}</TableCell>
-                <TableCell className={`text-right font-semibold ${asset.ytdReturn.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
+                <TableCell 
+                   className="text-right font-semibold"
+                   style={{ color: asset.ytdReturn.startsWith('+') ? '#BAF2D8' : '#F87171' }}
+                >
                   {asset.ytdReturn}
                 </TableCell>
               </TableRow>
