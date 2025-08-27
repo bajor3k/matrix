@@ -13,7 +13,14 @@ const num = (v: any): number => {
     return isFinite(n) ? n : 0;
   }
 
-const COLORS = ["#5A189A", "#7B2CBF", "#9D4EDD", "#C77DFF", "#48BFE3", "#56CFE1", "#64DFDF", "#5AEDC9"];
+const KEYS_TEAL = [
+  "#0EA792", // Persian Green
+  "#29B48B", // Jungle Green
+  "#3DC08C", // Ocean Green
+  "#5FD797", // Medium Aquamarine
+  "#5CE4BE", // Medium Aquamarine (lighter)
+  "#4DFBF2", // Turquoise
+] as const;
   
 // Main Component
 export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
@@ -66,20 +73,20 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
           title="Total Advisory Fees"
           value={formatCurrency(metrics.totalFees)}
           subtitle="Sum of all fees from report"
-          color={COLORS[0]}
+          color={KEYS_TEAL[0]}
         />
         <KpiCard
           title="Accounts"
           value={metrics.totalAccounts}
           subtitle="Total accounts in the report"
-          color={COLORS[4]}
+          color={KEYS_TEAL[1]}
         />
         <KpiCard
           title="Flagged Short"
           value={metrics.flaggedShort}
           subtitle="Accounts with cash < fees"
           tone="alert"
-          color="#F20089"
+          color={KEYS_TEAL[5]}
         />
       </div>
 
@@ -102,8 +109,8 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                     dataKey="value"
                     stroke="none"
                   >
-                     <Cell fill={COLORS[7]} />
-                     <Cell fill={COLORS[3]} />
+                     <Cell fill={KEYS_TEAL[0]} />
+                     <Cell fill={KEYS_TEAL[1]} />
                   </Pie>
                   <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" className="fill-white text-3xl font-bold">
                     {formatCurrency(metrics.totalFees)}
@@ -129,15 +136,15 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                   <Tooltip formatter={(v) => formatCurrency(Number(v))} cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
                   <Bar dataKey="fee" radius={[6, 6, 0, 0]}>
                     {metrics.topFees.map((_, i) => (
-                      <Cell key={i} fill={COLORS[(i + 1) % COLORS.length]} />
+                      <Cell key={i} fill={KEYS_TEAL[i % KEYS_TEAL.length]} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
-              {metrics.topFees.map((t) => (
-                <Badge key={t.name} className="bg-slate-800/70 text-slate-200">{t.name}: {formatCurrency(t.fee)}</Badge>
+              {metrics.topFees.map((t, i) => (
+                <Badge key={t.name} style={{ backgroundColor: `${KEYS_TEAL[i % KEYS_TEAL.length]}4D`, color: KEYS_TEAL[i % KEYS_TEAL.length]}} className="border-none">{t.name}: {formatCurrency(t.fee)}</Badge>
               ))}
             </div>
           </CardContent>
@@ -156,7 +163,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                   <XAxis dataKey="idx" hide />
                   <YAxis hide domain={[0, "auto"]} />
                   <Tooltip formatter={(v) => `${Number(v).toFixed(2)}%`} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
-                  <Line type="monotone" dataKey="ratio" stroke={COLORS[4]} strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="ratio" stroke={KEYS_TEAL[5]} strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
