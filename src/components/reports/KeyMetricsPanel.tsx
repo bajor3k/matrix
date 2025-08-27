@@ -179,8 +179,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
               {metrics.shortRows.slice(0, 12).map((r, i) => (
                 <div
                   key={r.accountNumber}
-                  className="flex items-center justify-between rounded-xl border border-slate-700 px-3 py-2 backdrop-blur-md bg-white/10"
-                  style={{ borderColor: COLORS[i % COLORS.length] }}
+                  className="flex items-center justify-between rounded-xl px-3 py-2"
                 >
                   <div>
                     <div className="text-slate-300 text-xs">{r.ip}</div>
