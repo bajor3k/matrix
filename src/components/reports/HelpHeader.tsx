@@ -29,7 +29,7 @@ export default function HelpHeader({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 mt-3">
       {/* Slim Help bar */}
       {!dismissed && (
         <div
