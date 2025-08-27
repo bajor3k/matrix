@@ -72,20 +72,17 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
           title="Total Advisory Fees"
           value={formatCurrency(metrics.totalFees)}
           subtitle="Sum of all fees from report"
-          color={KEYS_METRICS[0]}
         />
         <KpiCard
           title="Accounts"
           value={metrics.totalAccounts}
           subtitle="Total accounts in the report"
-          color={KEYS_METRICS[2]}
         />
         <KpiCard
           title="Flagged Short"
           value={metrics.flaggedShort}
           subtitle="Accounts with cash < fees"
           tone="alert"
-          color={KEYS_METRICS[5]}
         />
       </div>
 
@@ -197,15 +194,16 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
 }
 
 
-function KpiCard({ title, value, subtitle, tone = "default", color }: { title: string, value: string | number, subtitle: string, tone?: "default" | "alert", color?: string }) {
+function KpiCard({ title, value, subtitle, tone = "default" }: { title: string, value: string | number, subtitle: string, tone?: "default" | "alert" }) {
   return (
-    <div className="report-card rounded-2xl p-5 flex flex-col justify-between">
-      <div className="flex items-start justify-between">
-        <p className="text-base font-medium text-zinc-300">{title}</p>
-        <div className="text-right">
-          <div className="text-4xl font-bold tracking-tight text-white">{value}</div>
-          {subtitle && <p className="mt-1 text-xs text-zinc-500">{subtitle}</p>}
-        </div>
+    <div className="report-card rounded-2xl p-5 flex items-start justify-between">
+      <div>
+        <p className="text-base font-semibold text-zinc-300">{title}</p>
+        <p className="mt-1 text-xs text-zinc-500">{subtitle}</p>
+      </div>
+
+      <div className="text-right">
+        <div className="text-4xl font-bold tracking-tight text-white">{value}</div>
       </div>
     </div>
   );
