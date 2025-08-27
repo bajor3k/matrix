@@ -15,7 +15,6 @@ type Props = {
   activeView: ActiveView;
   onRun: () => void;
   onDownloadExcel: () => void;
-  onDownloadCsv: () => void;
   onToggleDashboard: () => void;
   onToggleKeyMetrics: () => void;
   onAskMaven: () => void;
@@ -28,7 +27,6 @@ export default function ActionsRow({
   activeView,
   onRun,
   onDownloadExcel,
-  onDownloadCsv,
   onToggleDashboard,
   onToggleKeyMetrics,
   onAskMaven,
@@ -53,11 +51,6 @@ export default function ActionsRow({
         Excel
       </Pill>
       
-      <Pill disabled={!isSuccess} onClick={onDownloadCsv}>
-         <DownloadIcon className="h-3.5 w-3.5" />
-        CSV
-      </Pill>
-
       <Pill disabled={!isSuccess} onClick={onToggleDashboard} active={activeView === 'dashboard'}>
         Dashboard
         {activeView === 'dashboard' ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}

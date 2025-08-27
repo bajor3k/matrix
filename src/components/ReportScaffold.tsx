@@ -12,7 +12,6 @@ import FullBleed from "./layout/FullBleed";
 import ActionsRow from "./reports/ActionsRow";
 import { saveAs } from "file-saver";
 import ResultsTableCard from "./reports/ResultsTableCard";
-import { downloadCSV } from "@/utils/csv";
 import { MavenLayout } from "./reports/maven/MavenLayout";
 import KeyMetricsPanel from "./reports/KeyMetricsPanel";
 
@@ -201,7 +200,6 @@ export default function ReportScaffold({
               activeView={activeView}
               onRun={runReport}
               onDownloadExcel={downloadExcel}
-              onDownloadCsv={() => downloadCSV(tableRows)}
               onToggleDashboard={() => setActiveView(prev => prev === 'dashboard' ? 'none' : 'dashboard')}
               onToggleKeyMetrics={() => setActiveView(prev => prev === 'key-metrics' ? 'none' : 'key-metrics')}
               onAskMaven={openMaven}

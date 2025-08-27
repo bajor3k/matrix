@@ -12,7 +12,6 @@ import { saveAs } from "file-saver";
 import ActionsRow from "@/components/reports/ActionsRow";
 import UploadCard from "@/components/UploadCard";
 import ResultsTableCard from "@/components/reports/ResultsTableCard";
-import { downloadCSV } from "@/utils/csv";
 import { MavenLayout } from "@/components/reports/maven/MavenLayout";
 import { indexMergedRows } from '@/lib/askmaven/kb';
 
@@ -199,10 +198,8 @@ export default function ReportsExcelPage() {
             <ActionsRow
                 filesReady={filesReady}
                 runState={runState}
-                dashboardVisible={dashboardVisible}
                 onRun={runReport}
                 onDownloadExcel={downloadExcel}
-                onDownloadCsv={() => downloadCSV(tableRows)}
                 onToggleDashboard={() => setDashboardVisible(v => !v)}
                 onAskMaven={openMaven}
                 kbLoading={kbLoading}
