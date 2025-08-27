@@ -73,20 +73,17 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
           title="Total Advisory Fees"
           value={formatCurrency(metrics.totalFees)}
           subtitle="Sum of all fees from report"
-          color={KEYS_TEAL[0]}
         />
         <KpiCard
           title="Accounts"
           value={metrics.totalAccounts}
           subtitle="Total accounts in the report"
-          color={KEYS_TEAL[1]}
         />
         <KpiCard
           title="Flagged Short"
           value={metrics.flaggedShort}
           subtitle="Accounts with cash < fees"
           tone="alert"
-          color={KEYS_TEAL[5]}
         />
       </div>
 
@@ -186,15 +183,17 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
               {metrics.shortRows.slice(0, 12).map((r, i) => (
                 <div
                   key={r.accountNumber}
-                  className="flex items-center justify-between rounded-xl px-3 py-2"
+                  className="rounded-lg border border-white/10 p-3"
                 >
-                  <div>
-                    <div className="text-slate-300 text-xs">{r.ip}</div>
-                    <div className="text-slate-100 text-sm font-medium">{r.accountNumber}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-slate-400 text-[11px]">Cash</div>
-                    <div className="text-slate-100 text-sm">{formatCurrency(Number(r.cash) || 0)}</div>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="text-slate-300 text-xs">{r.ip}</div>
+                      <div className="text-slate-100 text-sm font-medium">{r.accountNumber}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-slate-400 text-[11px]">Cash</div>
+                      <div className="text-slate-100 text-sm">{formatCurrency(Number(r.cash) || 0)}</div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -211,7 +210,7 @@ function KpiCard({ title, value, subtitle, tone = "default", color }: { title: s
   return (
     <Card className="relative overflow-hidden border-slate-800 bg-black">
       <CardContent className="p-4 relative">
-        <div className="text-slate-300 text-xs mb-1">
+        <div className="flex items-center gap-2 text-slate-300 text-xs mb-1">
           <span>{title}</span>
         </div>
         <div className="text-2xl font-semibold text-white">{value}</div>
