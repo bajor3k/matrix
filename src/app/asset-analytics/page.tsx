@@ -24,44 +24,37 @@ const DynamicAssetAllocationDonutChart = dynamic(
 );
 
 const metricCardsData = [
-  {
-    title: "Total AUM",
-    value: "$12.5B",
-    description: React.createElement('span', { className: 'text-green-400 text-sm' }, '+15.8% from last quarter'),
-    icon: PiggyBank,
-    iconClassName: "text-green-500",
-  },
-  {
-    title: "YTD Return",
-    value: "+8.7%",
-    description: "vs. Benchmark +7.1%",
-    icon: TrendingUp,
-  },
-  {
-    title: "% in Model Portfolios",
-    value: "72%",
-    description: "Target 80%",
-    icon: Target,
-  },
-  {
-    title: "Inflows (MTD)",
-    value: "$350K",
-    description: "+15% from last month",
-    icon: ArrowDownCircle,
-  },
-  {
-    title: "Outflows (MTD)",
-    value: "$120K",
-    description: "-5% from last month",
-    icon: ArrowUpCircle,
-  },
-  {
-    title: "Net Flows (MTD)",
-    value: "$230K",
-    description: "Net positive inflow",
-    icon: ArrowRightLeft,
-  },
-];
+    {
+      title: "Total AUM",
+      value: "$12.5B",
+      description: "+15.8% from last quarter",
+    },
+    {
+      title: "YTD Return",
+      value: "+8.7%",
+      description: "vs. Benchmark +7.1%",
+    },
+    {
+      title: "% in Model Portfolios",
+      value: "72%",
+      description: "Target 80%",
+    },
+    {
+      title: "Inflows (MTD)",
+      value: "$350K",
+      description: "+15% from last month",
+    },
+    {
+      title: "Outflows (MTD)",
+      value: "$120K",
+      description: "-5% from last month",
+    },
+    {
+      title: "Net Flows (MTD)",
+      value: "$230K",
+      description: "Net positive inflow",
+    },
+  ];
 
 const assetBreakdownData = [
     { name: "US Equities", percentage: "40%", color: "bg-[hsl(var(--chart-1))]" },
@@ -131,14 +124,17 @@ export default function AssetAnalyticsPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {metricCardsData.map((card, index) => (
-          <div key={index} className="card-outline rounded-2xl p-5">
-            <div className="flex items-center gap-3 mb-2">
-                <card.icon className={cn("h-5 w-5 shrink-0 mt-0.5", card.iconClassName || "text-muted-foreground")} />
-                <h3 className="text-base font-bold text-foreground">{card.title}</h3>
+            <div key={index} className="card-outline rounded-2xl p-5">
+                <div className="flex items-start justify-between">
+                    <div>
+                        <p className="text-base font-semibold text-zinc-200">{card.title}</p>
+                    </div>
+                    <div className="text-right">
+                        <div className="text-4xl font-bold leading-none text-white">{card.value}</div>
+                        {card.description && <p className="mt-2 text-sm text-zinc-400">{card.description}</p>}
+                    </div>
+                </div>
             </div>
-            <div className="text-3xl font-bold text-foreground">{card.value}</div>
-            {card.description && <p className="text-sm text-muted-foreground mt-1">{card.description}</p>}
-          </div>
         ))}
       </div>
 
