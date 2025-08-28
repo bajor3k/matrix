@@ -75,7 +75,7 @@ const topPerformingAssetsData = [
 
 export default function AssetAnalyticsPage() {
   return (
-    <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8 bg-[#f8f8f8] dark:bg-background">
+    <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Assets Analytics</h1>
       <div className="grid gap-6 md:grid-cols-3">
         <PlaceholderCard theme="light-card" className="card-outline rounded-2xl p-5">
