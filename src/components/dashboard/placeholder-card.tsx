@@ -12,15 +12,22 @@ interface PlaceholderCardProps {
   children?: React.ReactNode;
   className?: string;
   headerActions?: React.ReactNode; // New prop for actions in header
+  theme?: 'default' | 'light-card';
 }
 
-export function PlaceholderCard({ title, value, description, icon, iconClassName, children, className, headerActions }: PlaceholderCardProps) {
+export function PlaceholderCard({ title, value, description, icon, iconClassName, children, className, headerActions, theme = 'default' }: PlaceholderCardProps) {
   const isStringPathIcon = typeof icon === 'string';
   const IconComponent = typeof icon === 'function' ? icon : null;
 
+  const cardClasses = {
+    'default': "bg-card text-card-foreground shadow-card-custom border border-transparent transition-shadow duration-200 hover:shadow-card-custom-hover focus-within:shadow-card-custom-hover",
+    'light-card': "bg-white dark:bg-card text-foreground dark:text-card-foreground border-[#e5e5e5] dark:border-border"
+  };
+
   return (
     <Card className={cn(
-      "bg-card text-card-foreground rounded-lg shadow-card-custom border border-transparent transition-shadow duration-200 hover:shadow-card-custom-hover focus-within:shadow-card-custom-hover",
+      "rounded-lg",
+      cardClasses[theme],
       "flex flex-col",
       className
     )}>
