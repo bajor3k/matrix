@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -122,19 +123,13 @@ export default function AssetAnalyticsPage() {
         </PlaceholderCard>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-3">
         {metricCardsData.map((card, index) => (
-            <PlaceholderCard key={index} className="rounded-2xl p-5">
-                <div className="flex items-start justify-between">
-                    <div>
-                        <p className="text-base font-semibold text-zinc-600 dark:text-zinc-200">{card.title}</p>
-                    </div>
-                    <div className="text-right">
-                        <div className="text-4xl font-bold leading-none text-black dark:text-white">{card.value}</div>
-                        {card.description && <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">{card.description}</p>}
-                    </div>
-                </div>
-            </PlaceholderCard>
+          <Card key={index} className="p-4">
+            <h4 className="text-xs font-medium text-zinc-500 dark:text-zinc-400">{card.title}</h4>
+            <div className="mt-1 text-2xl font-bold text-black dark:text-white">{card.value}</div>
+            {card.description && <p className="mt-0.5 text-[11px] text-zinc-400">{card.description}</p>}
+          </Card>
         ))}
       </div>
 
