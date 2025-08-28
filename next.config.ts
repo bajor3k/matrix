@@ -17,6 +17,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/model-matrix',
+        destination: '/asset-analytics',
+        permanent: true,
+      },
+      {
+        source: '/model-matrix/:path*',
+        destination: '/asset-analytics',
+        permanent: true,
+      },
+    ];
+  },
   experimental: {
     allowedDevOrigins: [
       'http://localhost:8888',
