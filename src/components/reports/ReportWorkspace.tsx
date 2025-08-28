@@ -49,16 +49,13 @@ export default function ReportWorkspace({ left, right, className, isMavenOpen, s
                     <div className="h-full p-3 pt-8">{right}</div>
                 </div>
             ) : (
-                // When COLLAPSED, show the trigger button
+                // When COLLAPSED, show only the brain icon as the trigger
                 <button
                   className="w-full h-full flex items-center justify-center text-zinc-500 hover:text-zinc-300"
                   onClick={() => setIsMavenOpen(true)}
                   aria-label="Open Ask Maven"
                 >
-                   <div className="flex items-center gap-2 -rotate-90 whitespace-nowrap">
-                    <Brain className="h-4 w-4" />
-                    <span className="text-xs">Ask Maven</span>
-                  </div>
+                  <Brain className="h-5 w-5" />
                 </button>
             )}
           </div>
