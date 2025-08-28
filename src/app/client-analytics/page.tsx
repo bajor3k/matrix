@@ -14,7 +14,6 @@ const metricCardsData = [
   { 
     title: "Total Active Clients", 
     value: "238", 
-    description: <span className="text-sm" style={{color: '#BAF2D8'}}>+5 new clients this month</span>, 
   },
   { 
     title: "Average AUM per Client", 
@@ -23,12 +22,10 @@ const metricCardsData = [
   { 
     title: "Client Retention Rate", 
     value: "92%", 
-    description: <span className="text-sm text-muted-foreground">Over the last 12 months</span>, 
   },
   { 
     title: "New vs. Lost Clients (QTD)", 
     value: "15 / 3", 
-    description: <span className="text-sm text-muted-foreground">New clients / Lost clients</span>, 
   },
 ];
 
@@ -103,14 +100,13 @@ export default function ClientAnalyticsPage() {
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
         {metricCardsData.map((card, index) => (
-          <div key={index} className="card-outline rounded-2xl p-5">
+          <div key={index} className="card-outline rounded-2xl p-4">
             <div className="flex items-start justify-between">
                 <div>
-                    <p className="text-base font-semibold text-zinc-200">{card.title}</p>
+                    <p className="text-sm font-semibold text-zinc-200">{card.title}</p>
                 </div>
                 <div className="text-right">
-                    <div className="text-4xl font-bold leading-none text-white">{card.value}</div>
-                    {card.description && <p className="mt-2 text-sm">{card.description}</p>}
+                    <div className="text-3xl font-bold leading-none text-white">{card.value}</div>
                 </div>
             </div>
           </div>
