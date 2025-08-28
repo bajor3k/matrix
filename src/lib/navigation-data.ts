@@ -64,7 +64,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other', NavItem[]> = {
     { name: 'Financial Analytics', icon: TrendingUp, href: '/financial-analytics' },
     { name: 'Conversion Analytics', icon: Repeat, href: '/conversion-analytics' },
     { name: 'Compliance Matrix', icon: ShieldAlert, href: '/compliance-matrix'},
-    { name: 'Portfolio Matrix', icon: PieChart, href: '/portfolio-matrix' },
     { name: 'Contribution Matrix', icon: TrendingUp, href: '/contribution-matrix' },
   ],
   'Resources': [
@@ -78,4 +77,3 @@ export const navigationData: Record<ToolbarSectionKey | 'Other', NavItem[]> = {
       { name: 'Settings', icon: Settings, href: '/settings' },
   ]
 };
-

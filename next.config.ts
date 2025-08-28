@@ -1,3 +1,4 @@
+
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
@@ -20,12 +21,12 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: '/model-matrix',
+        source: '/portfolio-matrix',
         destination: '/asset-analytics',
         permanent: true,
       },
       {
-        source: '/model-matrix/:path*',
+        source: '/portfolio-matrix/:path*',
         destination: '/asset-analytics',
         permanent: true,
       },
