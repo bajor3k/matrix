@@ -4,13 +4,12 @@ import * as React from "react";
 import Image from "next/image";
 import dynamic from 'next/dynamic';
 import { Landmark, TrendingUp, Target, ArrowDownCircle, ArrowUpCircle, ArrowRightLeft, Download, Users, DollarSign, CreditCard, PiggyBank, Loader2 } from 'lucide-react';
-import { PlaceholderCard } from '@/components/dashboard/placeholder-card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Card } from "@/components/ui/card";
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -147,7 +146,7 @@ export default function AssetAnalyticsPage() {
         ))}
       </div>
 
-      <PlaceholderCard className="rounded-2xl p-5">
+      <Card className="rounded-2xl p-5">
          <h3 className="text-base font-bold text-foreground mb-4">Asset Allocation by Type</h3>
          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
             <div className="h-[400px] md:h-[450px] w-full">
@@ -166,9 +165,9 @@ export default function AssetAnalyticsPage() {
               ))}
             </div>
           </div>
-      </PlaceholderCard>
+      </Card>
 
-      <PlaceholderCard className="rounded-2xl p-5">
+      <Card className="rounded-2xl p-5">
         <h3 className="text-base font-bold text-foreground mb-4">Top Performing Assets</h3>
         <Table>
           <TableHeader>
@@ -191,7 +190,7 @@ export default function AssetAnalyticsPage() {
                 <TableCell className="text-right">{asset.weight}</TableCell>
                 <TableCell 
                    className="text-right font-semibold"
-                   style={{ color: asset.ytdReturn.startsWith('+') ? '#BAF2D8' : '#F87171' }}
+                   style={{ color: asset.ytdReturn.startsWith('+') ? '#22c55e' : '#ef4444' }}
                 >
                   {asset.ytdReturn}
                 </TableCell>
@@ -204,7 +203,7 @@ export default function AssetAnalyticsPage() {
                 <Download className="mr-2 h-4 w-4" /> Export
             </Button>
         </div>
-      </PlaceholderCard>
+      </Card>
     </main>
   );
 }
