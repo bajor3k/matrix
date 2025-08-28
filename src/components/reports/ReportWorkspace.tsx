@@ -1,7 +1,7 @@
 // src/components/reports/ReportWorkspace.tsx
 "use client";
 import React from "react";
-import { Brain, ChevronLeft, ChevronRight } from "lucide-react";
+import { Brain, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -34,33 +34,33 @@ export default function ReportWorkspace({ left, right, className, isMavenOpen, s
           )}
         >
           <div className="flex flex-col h-full">
-            <div className="h-10 flex items-center justify-between px-3 border-b border-white/10">
-              <div className="flex items-center gap-2 overflow-hidden">
-                <Brain className="text-zinc-300 text-sm h-4 w-4 shrink-0" />
-                {isMavenOpen && <span className="text-zinc-300 text-sm font-medium truncate">Ask Maven</span>}
-              </div>
-              <button
-                aria-label={isMavenOpen ? "Collapse Ask Maven" : "Expand Ask Maven"}
-                onClick={() => setIsMavenOpen(!isMavenOpen)}
-                className="text-zinc-400 hover:text-zinc-200 text-sm p-1"
-              >
-                {isMavenOpen ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-              </button>
-            </div>
-
-            <div className="flex-1 min-h-0">
-              {isMavenOpen ? (
-                <div className="h-full p-3">{right}</div>
-              ) : (
+            {isMavenOpen ? (
+                // When OPEN, show only the close button, no header
+                 <div className="flex-1 min-h-0 relative">
+                    <div className="absolute top-2 right-2 z-10">
+                        <button
+                          aria-label="Close Ask Maven"
+                          onClick={() => setIsMavenOpen(false)}
+                          className="text-zinc-400 hover:text-zinc-200 text-sm p-1 rounded-md hover:bg-white/10"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                    </div>
+                    <div className="h-full p-3 pt-8">{right}</div>
+                </div>
+            ) : (
+                // When COLLAPSED, show the trigger button
                 <button
                   className="w-full h-full flex items-center justify-center text-zinc-500 hover:text-zinc-300"
                   onClick={() => setIsMavenOpen(true)}
                   aria-label="Open Ask Maven"
                 >
-                  <span className="text-xs -rotate-90 whitespace-nowrap">Ask</span>
+                   <div className="flex items-center gap-2 -rotate-90 whitespace-nowrap">
+                    <Brain className="h-4 w-4" />
+                    <span className="text-xs">Ask Maven</span>
+                  </div>
                 </button>
-              )}
-            </div>
+            )}
           </div>
         </aside>
       </div>

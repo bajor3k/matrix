@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 
 type Msg = { role: "user" | "bot"; text: string };
 
-export function MavenChat({ onClose }: { onClose: () => void }) {
+export function MavenChat({ onClose, hideHeader = false }: { onClose: () => void; hideHeader?: boolean }) {
   const [messages, setMessages] = React.useState<Msg[]>([]);
   const [chatLoading, setChatLoading] = React.useState(false);
   const [input, setInput] = React.useState("");
@@ -28,22 +28,32 @@ export function MavenChat({ onClose }: { onClose: () => void }) {
   return (
     <aside className="rounded-2xl border bg-card/90 dark:bg-[#101010] border-border light:border-black/10 flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
-        <div className="flex items-center gap-2 text-foreground/70">
-          <Brain className="h-4 w-4" />
-          <span className="text-sm font-medium">Ask Maven</span>
+      {!hideHeader && (
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
+            <div className="flex items-center gap-2 text-foreground/70">
+            <Brain className="h-4 w-4" />
+            <span className="text-sm font-medium">Ask Maven</span>
+            </div>
+            <button
+            onClick={onClose}
+            className="text-foreground/60 hover:text-foreground"
+            aria-label="Close Ask Maven"
+            >
+            ✕
+            </button>
         </div>
-        <button
-          onClick={onClose}
-          className="text-foreground/60 hover:text-foreground"
-          aria-label="Close Ask Maven"
-        >
-          ✕
-        </button>
-      </div>
+      )}
+
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-3 space-y-3">
+        {messages.length === 0 && !chatLoading && (
+            <div className="flex justify-start">
+                <div className="p-2 rounded-lg bg-neutral-800 text-neutral-200 text-sm">
+                    Ask me a question about the data in this report. For example: "Which accounts are short on cash?"
+                </div>
+            </div>
+        )}
         {messages.map((m, i) => (
             <div
             key={i}
@@ -77,7 +87,7 @@ export function MavenChat({ onClose }: { onClose: () => void }) {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask about fees, accounts, and status…"
+          placeholder="Ask about fees, accounts, status..."
           className="flex-1 rounded-xl border border-input bg-background px-3 py-2 text-sm
                placeholder:text-muted-foreground text-foreground"
         />
