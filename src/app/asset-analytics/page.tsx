@@ -76,11 +76,11 @@ const topPerformingAssetsData = [
 
 export default function AssetAnalyticsPage() {
   return (
-    <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
-      <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Assets Analytics</h1>
-      <div className="grid gap-6 md:grid-cols-3">
-        <PlaceholderCard className="rounded-2xl p-5">
-            <h3 className="text-base font-bold text-foreground mb-2">Advisor</h3>
+    <main className="min-h-screen flex-1 p-6 space-y-4 md:p-8">
+      <h1 className="text-3xl font-bold tracking-tight text-foreground mb-6">Assets Analytics</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <Card className="p-3">
+            <div className="text-xs font-medium text-zinc-600 dark:text-zinc-300 mb-1">Advisor</div>
             <Select>
                 <SelectTrigger id="advisor-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
                 <SelectValue placeholder="Select Advisor" />
@@ -90,9 +90,9 @@ export default function AssetAnalyticsPage() {
                 <SelectItem value="sam_rothstein_sar">Sam Rothstein SAR</SelectItem>
                 </SelectContent>
             </Select>
-        </PlaceholderCard>
-        <PlaceholderCard className="rounded-2xl p-5">
-            <h3 className="text-base font-bold text-foreground mb-2">Custodian</h3>
+        </Card>
+        <Card className="p-3">
+            <div className="text-xs font-medium text-zinc-600 dark:text-zinc-300 mb-1">Custodian</div>
             <Select defaultValue="all_custodians">
                 <SelectTrigger id="custodian-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
                 <SelectValue placeholder="Select Custodian" />
@@ -106,9 +106,9 @@ export default function AssetAnalyticsPage() {
                 <SelectItem value="pas">PAS</SelectItem>
                 </SelectContent>
             </Select>
-        </PlaceholderCard>
-        <PlaceholderCard className="rounded-2xl p-5">
-            <h3 className="text-base font-bold text-foreground mb-2">Timeframe</h3>
+        </Card>
+        <Card className="p-3">
+            <div className="text-xs font-medium text-zinc-600 dark:text-zinc-300 mb-1">Timeframe</div>
             <Select defaultValue="ytd">
                 <SelectTrigger id="timeframe-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
                 <SelectValue placeholder="Select Timeframe" />
@@ -120,15 +120,29 @@ export default function AssetAnalyticsPage() {
                 <SelectItem value="trailing_12m">Trailing 12 Months</SelectItem>
                 </SelectContent>
             </Select>
-        </PlaceholderCard>
+        </Card>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {metricCardsData.map((card, index) => (
           <Card key={index} className="p-4">
-            <h4 className="text-xs font-medium text-zinc-500 dark:text-zinc-400">{card.title}</h4>
-            <div className="mt-1 text-2xl font-bold text-black dark:text-white">{card.value}</div>
-            {card.description && <p className="mt-0.5 text-[11px] text-zinc-400">{card.description}</p>}
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="text-xs font-medium text-zinc-600 dark:text-zinc-300 truncate">
+                  {card.title}
+                </div>
+                {card.description ? (
+                  <div className="mt-1 text-[11px] text-zinc-400 dark:text-zinc-500 truncate">
+                    {card.description}
+                  </div>
+                ) : null}
+              </div>
+              <div className="text-right">
+                <div className="text-3xl md:text-4xl font-semibold leading-none text-black dark:text-white">
+                  {card.value}
+                </div>
+              </div>
+            </div>
           </Card>
         ))}
       </div>
