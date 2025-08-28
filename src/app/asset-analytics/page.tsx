@@ -78,7 +78,7 @@ export default function AssetAnalyticsPage() {
     <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Assets Analytics</h1>
       <div className="grid gap-6 md:grid-cols-3">
-        <PlaceholderCard theme="light-card" className="card-outline rounded-2xl p-5">
+        <PlaceholderCard className="rounded-2xl p-5">
             <h3 className="text-base font-bold text-foreground mb-2">Advisor</h3>
             <Select>
                 <SelectTrigger id="advisor-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
@@ -90,7 +90,7 @@ export default function AssetAnalyticsPage() {
                 </SelectContent>
             </Select>
         </PlaceholderCard>
-        <PlaceholderCard theme="light-card" className="card-outline rounded-2xl p-5">
+        <PlaceholderCard className="rounded-2xl p-5">
             <h3 className="text-base font-bold text-foreground mb-2">Custodian</h3>
             <Select defaultValue="all_custodians">
                 <SelectTrigger id="custodian-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
@@ -106,7 +106,7 @@ export default function AssetAnalyticsPage() {
                 </SelectContent>
             </Select>
         </PlaceholderCard>
-        <PlaceholderCard theme="light-card" className="card-outline rounded-2xl p-5">
+        <PlaceholderCard className="rounded-2xl p-5">
             <h3 className="text-base font-bold text-foreground mb-2">Timeframe</h3>
             <Select defaultValue="ytd">
                 <SelectTrigger id="timeframe-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
@@ -124,7 +124,7 @@ export default function AssetAnalyticsPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {metricCardsData.map((card, index) => (
-            <PlaceholderCard theme="light-card" key={index} className="card-outline rounded-2xl p-5">
+            <PlaceholderCard key={index} className="rounded-2xl p-5">
                 <div className="flex items-start justify-between">
                     <div>
                         <p className="text-base font-semibold text-zinc-600 dark:text-zinc-200">{card.title}</p>
@@ -138,7 +138,7 @@ export default function AssetAnalyticsPage() {
         ))}
       </div>
 
-      <PlaceholderCard theme="light-card" className="card-outline rounded-2xl p-5">
+      <PlaceholderCard className="rounded-2xl p-5">
          <h3 className="text-base font-bold text-foreground mb-4">Asset Allocation by Type</h3>
          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
             <div className="h-[400px] md:h-[450px] w-full">
@@ -159,7 +159,7 @@ export default function AssetAnalyticsPage() {
           </div>
       </PlaceholderCard>
 
-      <PlaceholderCard theme="light-card" className="card-outline rounded-2xl p-5">
+      <PlaceholderCard className="rounded-2xl p-5">
         <h3 className="text-base font-bold text-foreground mb-4">Top Performing Assets</h3>
         <Table>
           <TableHeader>
