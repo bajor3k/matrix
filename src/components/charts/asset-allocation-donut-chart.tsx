@@ -108,7 +108,7 @@ export function AssetAllocationDonutChart() {
             {chartData.map((entry) => (
               <Cell
                 key={entry.assetType}
-                fill={chartConfig[entry.assetType as keyof typeof chartConfig].color} 
+                fill={entry.fill}
               />
             ))}
           </Pie>
