@@ -1,7 +1,6 @@
-
 'use client';
 import * as React from "react";
-import { Brain, Send } from "lucide-react";
+import { Brain, Send, X } from "lucide-react";
 import { askMaven } from "@/lib/askmaven/ask";
 import { cn } from "@/lib/cn";
 
@@ -39,7 +38,7 @@ export function MavenChat({ onClose, hideHeader = false }: { onClose: () => void
             className="text-foreground/60 hover:text-foreground"
             aria-label="Close Ask Maven"
             >
-            ✕
+            <X className="h-4 w-4" />
             </button>
         </div>
       )}

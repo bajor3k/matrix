@@ -35,18 +35,9 @@ export default function ReportWorkspace({ left, right, className, isMavenOpen, s
         >
           <div className="flex flex-col h-full">
             {isMavenOpen ? (
-                // When OPEN, show only the close button, no header
+                // When OPEN, the content inside `right` (MavenChat) will have its own close button.
                  <div className="flex-1 min-h-0 relative">
-                    <div className="absolute top-2 right-2 z-10">
-                        <button
-                          aria-label="Close Ask Maven"
-                          onClick={() => setIsMavenOpen(false)}
-                          className="text-zinc-400 hover:text-zinc-200 text-sm p-1 rounded-md hover:bg-white/10"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                    </div>
-                    <div className="h-full p-3 pt-8">{right}</div>
+                    <div className="h-full">{right}</div>
                 </div>
             ) : (
                 // When COLLAPSED, show only the brain icon as the trigger
