@@ -189,8 +189,7 @@ export default function AssetAnalyticsPage() {
                 <TableCell className="text-right">{asset.value}</TableCell>
                 <TableCell className="text-right">{asset.weight}</TableCell>
                 <TableCell 
-                   className="text-right font-semibold"
-                   style={{ color: asset.ytdReturn.startsWith('+') ? '#22c55e' : '#ef4444' }}
+                   className="text-right font-semibold text-[hsl(var(--chart-3))]"
                 >
                   {asset.ytdReturn}
                 </TableCell>

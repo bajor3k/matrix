@@ -5,9 +5,9 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%; /* #FFFFFF */
+    --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
-    --card: 240 10% 98%; /* #FAFAFA */
+    --card: 240 10% 98%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
@@ -25,12 +25,12 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 1.5rem;
-    --chart-1: 258 84% 58%;
-    --chart-2: 256 90% 66%;
-    --chart-3: 151 96% 46%;
-    --chart-4: 250 95% 85%;
-    --chart-5: 252 91% 95%;
-    --chart-orange: 260 50% 40%;
+    --chart-1: 198 88% 70%; /* #98CEF3 */
+    --chart-2: 206 100% 87%; /* #B9E0FF */
+    --chart-3: 208 85% 90%; /* #D0E6FB */
+    --chart-4: 260 84% 92%; /* #E6D6FD */
+    --chart-5: 268 88% 91%; /* #E4C5FB */
+    --chart-6: 268 91% 86%; /* #D2ACFB */
     --sidebar-background: transparent;
     --sidebar-foreground: 240 10% 3.9%;
     --sidebar-primary: 240 4.8% 95.9%;
@@ -48,9 +48,9 @@
   }
 
   .dark {
-    --background: 0 0% 0%; /* #000000 */
+    --background: 0 0% 0%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 6.27%; /* #101010 */
+    --card: 0 0% 6.27%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 0%;
     --popover-foreground: 0 0% 98%;
@@ -64,15 +64,15 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 89% 48%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 10.2%; /* #1a1a1a */
+    --border: 0 0% 10.2%;
     --input: 0 0% 14%;
     --ring: 0 0% 100%;
-    --chart-1: 258 84% 58%;
-    --chart-2: 256 90% 66%;
-    --chart-3: 151 96% 46%;
-    --chart-4: 250 95% 85%;
-    --chart-5: 252 91% 95%;
-    --chart-orange: 260 50% 40%;
+    --chart-1: 198 88% 70%; /* #98CEF3 */
+    --chart-2: 206 100% 87%; /* #B9E0FF */
+    --chart-3: 208 85% 90%; /* #D0E6FB */
+    --chart-4: 260 84% 92%; /* #E6D6FD */
+    --chart-5: 268 88% 91%; /* #E4C5FB */
+    --chart-6: 268 91% 86%; /* #D2ACFB */
     --sidebar-background: transparent;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 0 0% 10%;
