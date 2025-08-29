@@ -95,6 +95,7 @@ export default function ClientAnalyticsPage() {
       <style jsx>{`
         .client-analytics-page :global(.card-outline) {
           background: #0c0c0c !important;
+          border: none !important;
         }
       `}</style>
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Client Analytics</h1>
@@ -217,3 +218,5 @@ export default function ClientAnalyticsPage() {
     </main>
   );
 }
+
+    
