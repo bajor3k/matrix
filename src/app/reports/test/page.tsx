@@ -4,14 +4,21 @@ import * as React from "react";
 import ReportsPageShell from "@/components/reports/ReportsPageShell";
 import HelpHeader from "@/components/reports/HelpHeader";
 import FullBleed from "@/components/layout/FullBleed";
-import TripleReportModal from "@/components/reports/TripleReportModal";
-import { Button } from "@/components/ui/button";
+import ActionsRow from "@/components/reports/ActionsRow";
 
 export default function TestReportPage() {
-    const [pickerOpen, setPickerOpen] = React.useState(false);
-    const [selected, setSelected] = React.useState<{positions?: File; activity?: File; fees?: File}>({});
+    const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
+    const [activeView, setActiveView] = React.useState<"maven" | "key-metrics">("maven");
 
-    const ready = !!(selected.positions && selected.activity && selected.fees);
+    const handleRunReport = (files?: { report1: File; report2: File; report3: File }) => {
+        if (!files) return;
+        console.log("Running report with files:", files);
+        setRunState("running");
+        // Simulate API call
+        setTimeout(() => {
+            setRunState("success");
+        }, 1500);
+    };
 
     return (
         <ReportsPageShell>
@@ -23,39 +30,22 @@ export default function TestReportPage() {
             </FullBleed>
 
             <FullBleed>
-                 <div className="flex items-center justify-center gap-2 mt-4">
-                    <Button className="rounded-full h-9" disabled={!ready}>
-                        Run Report
-                    </Button>
-                    <Button variant="secondary" className="rounded-full h-9">Excel</Button>
-                    <Button variant="secondary" className="rounded-full h-9">Key Metrics</Button>
-                </div>
+                 <ActionsRow
+                    filesReady={true} // The modal inside ActionsRow handles file readiness
+                    runState={runState}
+                    activeView={activeView}
+                    onRun={handleRunReport}
+                    onDownloadExcel={() => console.log("Download Excel clicked")}
+                    onToggleKeyMetrics={() => setActiveView(p => p === 'key-metrics' ? 'maven' : 'key-metrics')}
+                 />
             </FullBleed>
-
-             <TripleReportModal
-                open={pickerOpen}
-                onOpenChange={setPickerOpen}
-                onComplete={(files) => {
-                  setSelected(files);
-                }}
-              />
 
              {/* Placeholder for results display */}
              <div className="mt-8 text-center text-muted-foreground">
-                {ready ? (
-                    <div className="space-y-1">
-                        <p>Files are ready to be processed:</p>
-                        <ul className="text-xs list-disc list-inside">
-                           <li>Positions: {selected.positions?.name}</li>
-                           <li>Activity: {selected.activity?.name}</li>
-                           <li>Fees: {selected.fees?.name}</li>
-                        </ul>
-                    </div>
-                ) : (
-                    <p>Please upload the required files to run the report.</p>
-                )}
+                {runState === 'idle' && <p>Please upload files via the 'Download' button to run the report.</p>}
+                {runState === 'running' && <p>Report is running...</p>}
+                {runState === 'success' && <p>Report ran successfully. View results in the table or ask Maven.</p>}
              </div>
-
         </ReportsPageShell>
     );
 }
