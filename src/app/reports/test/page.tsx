@@ -5,20 +5,14 @@ import ReportsPageShell from "@/components/reports/ReportsPageShell";
 import HelpHeader from "@/components/reports/HelpHeader";
 import FullBleed from "@/components/layout/FullBleed";
 import UploadBrowse from "@/components/reports/UploadBrowse";
-import ThreeFileUploadModal from "@/components/reports/ThreeFileUploadModal";
+import ExcelTriplePicker from "@/components/reports/ExcelTriplePicker";
 import { Button } from "@/components/ui/button";
 
 export default function TestReportPage() {
-    const [modalOpen, setModalOpen] = React.useState(false);
-    const [files, setFiles] = React.useState<{ report1?: File; report2?: File; report3?: File }>({});
+    const [pickerOpen, setPickerOpen] = React.useState(false);
+    const [selected, setSelected] = React.useState<{report1?: File; report2?: File; report3?: File}>({});
 
-    const handleComplete = (completedFiles: { report1: File; report2: File; report3: File }) => {
-        setFiles(completedFiles);
-        // You can trigger the report run automatically here or enable the "Run Report" button.
-        console.log("Files selected:", completedFiles);
-    };
-
-    const filesReady = !!(files.report1 && files.report2 && files.report3);
+    const ready = !!(selected.report1 && selected.report2 && selected.report3);
 
     return (
         <ReportsPageShell>
@@ -31,8 +25,8 @@ export default function TestReportPage() {
 
             <FullBleed>
                  <div className="flex items-center justify-center gap-2 mt-4">
-                    <UploadBrowse onClick={() => setModalOpen(true)} />
-                    <Button className="rounded-full h-9" disabled={!filesReady}>
+                    <UploadBrowse onClick={() => setPickerOpen(true)} />
+                    <Button className="rounded-full h-9" disabled={!ready}>
                         Run Report
                     </Button>
                     <Button variant="secondary" className="rounded-full h-9">Excel</Button>
@@ -40,22 +34,25 @@ export default function TestReportPage() {
                 </div>
             </FullBleed>
 
-             <ThreeFileUploadModal
-                open={modalOpen}
-                onOpenChange={setModalOpen}
+             <ExcelTriplePicker
+                open={pickerOpen}
+                onOpenChange={setPickerOpen}
+                title="SELECT FILES"
                 labels={["Household Positions", "Account Activity", "Fee Schedule"]}
-                onComplete={handleComplete}
-             />
+                onComplete={(files) => {
+                  setSelected(files);
+                }}
+              />
 
              {/* Placeholder for results display */}
              <div className="mt-8 text-center text-muted-foreground">
-                {filesReady ? (
+                {ready ? (
                     <div className="space-y-1">
                         <p>Files are ready to be processed:</p>
                         <ul className="text-xs list-disc list-inside">
-                           <li>{files.report1?.name}</li>
-                           <li>{files.report2?.name}</li>
-                           <li>{files.report3?.name}</li>
+                           <li>{selected.report1?.name}</li>
+                           <li>{selected.report2?.name}</li>
+                           <li>{selected.report3?.name}</li>
                         </ul>
                     </div>
                 ) : (
