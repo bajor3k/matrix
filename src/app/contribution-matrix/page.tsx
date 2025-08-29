@@ -128,35 +128,6 @@ const IRA_TYPES_ORDER: AccountType[] = ['Roth IRA', 'Traditional IRA', 'SEP IRA'
 
 export default function ContributionMatrixPage() {
   const accounts = initialContributionAccounts;
-  const [mavenQuery, setMavenQuery] = React.useState("");
-  const [mavenResponse, setMavenResponse] = React.useState<string | null>(null);
-  const [isLoadingMaven, setIsLoadingMaven] = React.useState(false);
-  const { toast } = useToast();
-
-
-  const handleAskMaven = async () => {
-    if (!mavenQuery.trim()) return;
-    setIsLoadingMaven(true);
-    setMavenResponse(null);
-    await new Promise(resolve => setTimeout(resolve, 1500)); 
-
-    let responseText = "I'm not sure how to answer that. Try asking about maxing out a specific IRA type.";
-    if (mavenQuery.toLowerCase().includes("max out my roth")) {
-      const rothAccount = accounts.find(acc => acc.accountType === "Roth IRA");
-      if (rothAccount) {
-        const remaining = rothAccount.annualLimit - rothAccount.amountContributed;
-        if (remaining > 0) {
-          responseText = `To max out your Roth IRA (${rothAccount.originalAccountName || rothAccount.accountName}), you need to contribute $${remaining.toLocaleString()} more this year.`;
-        } else {
-          responseText = `Your Roth IRA (${rothAccount.originalAccountName || rothAccount.accountName}) is already maxed out for the year!`;
-        }
-      } else {
-        responseText = "You don't seem to have a Roth IRA account listed.";
-      }
-    }
-    setMavenResponse(responseText);
-    setIsLoadingMaven(false);
-  };
 
   const monthsLeft = calculateMonthsLeft();
   
@@ -300,37 +271,6 @@ export default function ContributionMatrixPage() {
         ))}
       </div>
 
-      <PlaceholderCard title="Ask Maven (Contribution Assistant)" className="mt-8">
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Label htmlFor="maven-query-input" className="sr-only">Ask Maven</Label>
-            <Input 
-              id="maven-query-input"
-              placeholder="e.g., How much more to max out my Roth?"
-              value={mavenQuery}
-              onChange={(e) => setMavenQuery(e.target.value)}
-              className="flex-grow bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary"
-              disabled={isLoadingMaven}
-            />
-            <Button onClick={handleAskMaven} disabled={isLoadingMaven || !mavenQuery.trim()}>
-              {isLoadingMaven ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MessageSquare className="mr-2 h-4 w-4" />}
-              Ask
-            </Button>
-          </div>
-          {isLoadingMaven && (
-            <div className="flex items-center justify-center p-4 text-muted-foreground">
-              <Loader2 className="mr-2 h-5 w-5 animate-spin text-primary" />
-              Maven is thinking...
-            </div>
-          )}
-          {mavenResponse && !isLoadingMaven && (
-            <div className="p-4 bg-muted/30 rounded-md text-foreground">
-              <p className="font-semibold mb-1">Maven says:</p>
-              <p>{mavenResponse}</p>
-            </div>
-          )}
-        </div>
-      </PlaceholderCard>
     </main>
   );
 }
