@@ -6,7 +6,6 @@ import dynamic from 'next/dynamic';
 import { Landmark, TrendingUp, Target, ArrowDownCircle, ArrowUpCircle, ArrowRightLeft, Download, Users, DollarSign, CreditCard, PiggyBank, Loader2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
@@ -77,50 +76,6 @@ export default function AssetAnalyticsPage() {
   return (
     <main className="min-h-screen flex-1 p-6 space-y-4 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-6">Assets Analytics</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <Card className="p-3">
-            <div className="text-xs font-medium text-zinc-600 dark:text-zinc-300 mb-1">Advisor</div>
-            <Select>
-                <SelectTrigger id="advisor-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
-                <SelectValue placeholder="Select Advisor" />
-                </SelectTrigger>
-                <SelectContent>
-                <SelectItem value="mike_mcdermott_mam">Mike McDermott MAM</SelectItem>
-                <SelectItem value="sam_rothstein_sar">Sam Rothstein SAR</SelectItem>
-                </SelectContent>
-            </Select>
-        </Card>
-        <Card className="p-3">
-            <div className="text-xs font-medium text-zinc-600 dark:text-zinc-300 mb-1">Custodian</div>
-            <Select defaultValue="all_custodians">
-                <SelectTrigger id="custodian-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
-                <SelectValue placeholder="Select Custodian" />
-                </SelectTrigger>
-                <SelectContent>
-                <SelectItem value="all_custodians">All Custodians</SelectItem>
-                <SelectItem value="pershing">Pershing</SelectItem>
-                <SelectItem value="schwab">Charles Schwab</SelectItem>
-                <SelectItem value="fidelity">Fidelity</SelectItem>
-                <SelectItem value="goldman">Goldman Sachs</SelectItem>
-                <SelectItem value="pas">PAS</SelectItem>
-                </SelectContent>
-            </Select>
-        </Card>
-        <Card className="p-3">
-            <div className="text-xs font-medium text-zinc-600 dark:text-zinc-300 mb-1">Timeframe</div>
-            <Select defaultValue="ytd">
-                <SelectTrigger id="timeframe-select" className="w-full bg-muted border border-border text-foreground shadow-inner transition-colors hover:border-primary focus:ring-2 focus:ring-primary">
-                <SelectValue placeholder="Select Timeframe" />
-                </SelectTrigger>
-                <SelectContent>
-                <SelectItem value="mtd">Month to Date</SelectItem>
-                <SelectItem value="qtd">Quarter to Date</SelectItem>
-                <SelectItem value="ytd">Year to Date</SelectItem>
-                <SelectItem value="trailing_12m">Trailing 12 Months</SelectItem>
-                </SelectContent>
-            </Select>
-        </Card>
-      </div>
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {metricCardsData.map((card, index) => (
