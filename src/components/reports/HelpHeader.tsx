@@ -33,7 +33,7 @@ export default function HelpHeader({
       {/* Slim Help bar */}
       {!dismissed && (
         <div
-          className="flex items-center justify-between rounded-xl border px-4 py-2 text-sm bg-[--surface-light] border-[rgba(0,0,0,0.1)] dark:bg-[--surface-dark] dark:border-[rgba(255,255,255,0.1)]"
+          className="flex items-center justify-between rounded-xl border px-4 py-2 text-sm bg-card border-border dark:bg-[#0c0c0c] dark:border-none"
         >
           <div className="flex items-center gap-2">
             <HelpCircle className="w-4 h-4 text-gray-600 dark:text-gray-400" />
@@ -61,7 +61,7 @@ export default function HelpHeader({
       <details
         open={open}
         onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}
-        className="rounded-2xl border details-no-marker bg-[--surface-light] border-[rgba(0,0,0,0.1)] dark:bg-[--surface-dark] dark:border-[rgba(255,255,255,0.1)]"
+        className="rounded-2xl details-no-marker bg-card dark:bg-[#0c0c0c] border border-border dark:border-none"
       >
         <summary className="cursor-pointer px-5 py-3 flex items-center justify-between">
           <div className="text-sm font-semibold text-gray-800 dark:text-gray-200">How this report works</div>
