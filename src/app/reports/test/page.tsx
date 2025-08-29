@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -5,14 +6,14 @@ import ReportsPageShell from "@/components/reports/ReportsPageShell";
 import HelpHeader from "@/components/reports/HelpHeader";
 import FullBleed from "@/components/layout/FullBleed";
 import UploadBrowse from "@/components/reports/UploadBrowse";
-import ExcelTriplePicker from "@/components/reports/ExcelTriplePicker";
+import TripleReportModal from "@/components/reports/TripleReportModal";
 import { Button } from "@/components/ui/button";
 
 export default function TestReportPage() {
     const [pickerOpen, setPickerOpen] = React.useState(false);
-    const [selected, setSelected] = React.useState<{report1?: File; report2?: File; report3?: File}>({});
+    const [selected, setSelected] = React.useState<{ positions?: File; activity?: File; fees?: File }>({});
 
-    const ready = !!(selected.report1 && selected.report2 && selected.report3);
+    const ready = !!(selected.positions && selected.activity && selected.fees);
 
     return (
         <ReportsPageShell>
@@ -34,11 +35,9 @@ export default function TestReportPage() {
                 </div>
             </FullBleed>
 
-             <ExcelTriplePicker
+             <TripleReportModal
                 open={pickerOpen}
                 onOpenChange={setPickerOpen}
-                title="SELECT FILES"
-                labels={["Household Positions", "Account Activity", "Fee Schedule"]}
                 onComplete={(files) => {
                   setSelected(files);
                 }}
@@ -50,9 +49,9 @@ export default function TestReportPage() {
                     <div className="space-y-1">
                         <p>Files are ready to be processed:</p>
                         <ul className="text-xs list-disc list-inside">
-                           <li>{selected.report1?.name}</li>
-                           <li>{selected.report2?.name}</li>
-                           <li>{selected.report3?.name}</li>
+                           <li>Positions: {selected.positions?.name}</li>
+                           <li>Activity: {selected.activity?.name}</li>
+                           <li>Fees: {selected.fees?.name}</li>
                         </ul>
                     </div>
                 ) : (
