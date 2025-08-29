@@ -5,6 +5,7 @@ import React from "react";
 import { Download as DownloadIcon, Brain, Loader2, ChevronDown, ChevronUp, BarChartHorizontal } from "lucide-react";
 import Pill from "@/components/ui/Pill";
 import MavenPill from "./maven/MavenPill";
+import { Button } from "../ui/button";
 
 type RunState = "idle" | "running" | "success" | "error";
 type ActiveView = "maven" | "key-metrics";
@@ -50,6 +51,14 @@ export default function ActionsRow({
       <Pill disabled={!isSuccess} onClick={onToggleKeyMetrics} active={activeView === 'key-metrics'}>
         Key Metrics
       </Pill>
+      
+      <Button
+        variant="secondary"
+        className="rounded-full h-9 text-white font-semibold"
+        onClick={(e) => e.preventDefault()} // disables any default action
+      >
+        Download
+      </Button>
     </div>
   );
 }
