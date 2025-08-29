@@ -2,18 +2,36 @@
 "use client";
 
 import * as React from "react";
-import { Download as DownloadIcon, Brain, Loader2, ChevronDown, ChevronUp, BarChartHorizontal } from "lucide-react";
-import Pill from "@/components/ui/Pill";
-import MavenPill from "./maven/MavenPill";
-import { Button } from "../ui/button";
-import TripleReportModal from "./TripleReportModal";
+import { cn } from "@/lib/utils";
 import type { TestReportFiles } from "@/utils/reports/test/runTestReport";
+import ReportDownloadModal from "./ReportDownloadModal";
 
-type RunState = "idle" | "running" | "success" | "error";
-type ActiveView = "maven" | "key-metrics";
+type PillProps = {
+  label: string;
+  active?: boolean;
+  onClick?: () => void;
+};
+
+function Pill({ label, active = false, onClick }: PillProps) {
+  return (
+    <button
+      onClick={active ? onClick : undefined}
+      disabled={!active}
+      className={cn(
+        "px-5 py-2 rounded-full border transition-colors h-9",
+        "border-white/10 bg-black",
+        active
+          ? "text-white/80 hover:text-white"
+          : "text-white/40 cursor-not-allowed"
+      )}
+    >
+      {label}
+    </button>
+  );
+}
+
 
 type Props = {
-  /** Your existing handler that kicks off the Python job */
   onRun: (files: TestReportFiles) => Promise<void> | void;
   onExportExcel?: () => void;
   onOpenKeyMetrics?: () => void;
@@ -31,36 +49,21 @@ export default function ActionsRow({
 
   return (
     <>
-      <div className={`report-actions flex items-center gap-2 ${className}`}>
-        {/* Download FIRST (jet black + faint outline) */}
-        <Button
-          variant="secondary"
-          className="rounded-full h-9 bg-black border border-white/20 text-white font-semibold"
-          onClick={() => setOpen(true)}
-        >
-          Download
-        </Button>
-
-        <Button className="rounded-full h-9" disabled>
-          Run Report
-        </Button>
-
-        <Button variant="secondary" className="rounded-full h-9" onClick={onExportExcel}>
-          Excel
-        </Button>
-        <Button variant="secondary" className="rounded-full h-9" onClick={onOpenKeyMetrics}>
-          Key Metrics
-        </Button>
+      <div className={`report-actions flex items-center justify-center gap-3 ${className}`}>
+         <Pill label="Download" active onClick={() => setOpen(true)} />
+         <Pill label="Run Report" />
+         <Pill label="Excel" />
+         <Pill label="Key Metrics" />
       </div>
 
-      <TripleReportModal
+      <ReportDownloadModal
         open={open}
         onOpenChange={setOpen}
         labels={["Household Positions", "Account Activity", "Fee Schedule"]}
         onComplete={async (files) => {
           try {
             setIsRunning(true);
-            await onRun(files);                 // <-- TRIGGER PYTHON RUN HERE
+            await onRun(files);
           } finally {
             setIsRunning(false);
           }
