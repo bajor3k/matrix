@@ -2,8 +2,8 @@
 "use client"
 
 import * as React from "react"
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Sector } from "recharts"
-
+import { PieChart, Pie, Sector, Tooltip } from "recharts"
+import { PieAutoColors } from "@/components/charts/rechartsAuto";
 import {
   ChartContainer,
   ChartTooltip,
@@ -59,7 +59,6 @@ export function AssetAllocationDonutChart() {
       config={chartConfig}
       className="mx-auto aspect-square h-full max-h-[450px] w-full"
     >
-      <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <ChartTooltip
             cursor={false}
@@ -72,7 +71,7 @@ export function AssetAllocationDonutChart() {
                 itemStyle={{ color: "#e5e7eb" }}
             />}
           />
-          <Pie
+          <PieAutoColors
             data={chartData}
             dataKey="value"
             nameKey="assetType"
@@ -80,6 +79,7 @@ export function AssetAllocationDonutChart() {
             outerRadius={175} 
             stroke="none"
             activeIndex={activeIndex}
+            autoCellsCount={chartData.length}
             activeShape={({ cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent }) => {
               const label = chartConfig[payload.assetType as keyof typeof chartConfig]?.label || '';
               return (
@@ -105,15 +105,8 @@ export function AssetAllocationDonutChart() {
             onMouseEnter={(_, index) => setActiveSegmentKey(chartData[index].assetType)}
             onMouseLeave={() => setActiveSegmentKey(null)}
           >
-            {chartData.map((entry) => (
-              <Cell
-                key={entry.assetType}
-                fill={entry.fill}
-              />
-            ))}
-          </Pie>
+          </PieAutoColors>
         </PieChart>
-      </ResponsiveContainer>
     </ChartContainer>
   )
 }

@@ -1,10 +1,11 @@
 
 "use client";
 import React, { useMemo, useEffect, useState } from "react";
-import { Bar, BarChart, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from "lucide-react";
 import { BABY_BLUE_PALETTE } from "@/lib/palette";
+import { PieAutoColors, BarAutoColors, LineAutoColors } from "@/components/charts/rechartsAuto";
 
 // Helper to safely parse string to number
 const num = (v: any): number => {
@@ -87,7 +88,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
               <ResponsiveContainer>
                 <PieChart>
                   <Tooltip contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
-                  <Pie
+                  <PieAutoColors
                     data={metrics.donutData}
                     cx="50%"
                     cy="50%"
@@ -95,10 +96,9 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                     outerRadius="80%"
                     dataKey="value"
                     stroke="none"
+                    autoCellsCount={metrics.donutData.length}
                   >
-                     <Cell fill={BABY_BLUE_PALETTE[0]} />
-                     <Cell fill={BABY_BLUE_PALETTE[1]} />
-                  </Pie>
+                  </PieAutoColors>
                   <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" className="fill-white text-3xl font-bold">
                     {formatCurrency(metrics.totalFees)}
                   </text>
@@ -119,11 +119,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                   <XAxis dataKey="name" hide />
                   <YAxis hide />
                   <Tooltip formatter={(v) => formatCurrency(Number(v))} cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
-                  <Bar dataKey="fee" radius={[6, 6, 0, 0]}>
-                    {metrics.topFees.map((_, i) => (
-                      <Cell key={i} fill={BABY_BLUE_PALETTE[(i + 1) % BABY_BLUE_PALETTE.length]} />
-                    ))}
-                  </Bar>
+                  <BarAutoColors dataKey="fee" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -146,7 +142,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                   <XAxis dataKey="idx" hide />
                   <YAxis hide domain={[0, "auto"]} />
                   <Tooltip formatter={(v) => `${Number(v).toFixed(2)}%`} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
-                  <Line type="monotone" dataKey="ratio" stroke={BABY_BLUE_PALETTE[0]} strokeWidth={2} dot={false} />
+                  <LineAutoColors type="monotone" dataKey="ratio" strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>

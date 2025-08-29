@@ -12,7 +12,7 @@ import { NavigationProvider } from '@/contexts/navigation-context';
 import { ThemeProvider } from '@/components/theme-provider';
 import { usePathname } from 'next/navigation';
 import AppShell from '@/components/AppShell';
-import { initRechartsPalette } from '@/lib/charts/rechartsTheme';
+
 
 const inter = Inter({
   variable: '--font-inter',
@@ -33,9 +33,6 @@ export default function RootLayout({
   const isLandingPage = pathname === '/';
   const isReportPage = pathname.startsWith('/reports');
   
-  React.useEffect(() => {
-    initRechartsPalette();
-  }, [])
 
   React.useEffect(() => {
     const runDevExpose = async () => {
