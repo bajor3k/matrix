@@ -4,6 +4,7 @@ import React, { useMemo, useEffect, useState } from "react";
 import { Bar, BarChart, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from "lucide-react";
+import { BABY_BLUE_PALETTE } from "@/lib/palette";
 
 // Helper to safely parse string to number
 const num = (v: any): number => {
@@ -12,15 +13,6 @@ const num = (v: any): number => {
     return isFinite(n) ? n : 0;
   }
 
-const KEYS_METRICS = [
-  "#98CEF3", // Baby Blue Eyes
-  "#B9E0FF", // Diamond
-  "#D0E6FB", // Water
-  "#E6D6FD", // Pale Lavender
-  "#E4C5FB", // Pale Lavender (darker)
-  "#D2ACFB", // Mauve
-] as const;
-  
 // Main Component
 export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
   const metrics = useMemo(() => {
@@ -104,8 +96,8 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                     dataKey="value"
                     stroke="none"
                   >
-                     <Cell fill={KEYS_METRICS[0]} />
-                     <Cell fill={KEYS_METRICS[1]} />
+                     <Cell fill={BABY_BLUE_PALETTE[0]} />
+                     <Cell fill={BABY_BLUE_PALETTE[1]} />
                   </Pie>
                   <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" className="fill-white text-3xl font-bold">
                     {formatCurrency(metrics.totalFees)}
@@ -129,7 +121,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                   <Tooltip formatter={(v) => formatCurrency(Number(v))} cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
                   <Bar dataKey="fee" radius={[6, 6, 0, 0]}>
                     {metrics.topFees.map((_, i) => (
-                      <Cell key={i} fill={KEYS_METRICS[(i + 1) % KEYS_METRICS.length]} />
+                      <Cell key={i} fill={BABY_BLUE_PALETTE[(i + 1) % BABY_BLUE_PALETTE.length]} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -137,7 +129,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
               {metrics.topFees.map((t, i) => (
-                 <Badge key={t.name} className="border-none" style={{ backgroundColor: `${KEYS_METRICS[(i + 1) % KEYS_METRICS.length]}4D`, color: KEYS_METRICS[(i + 1) % KEYS_METRICS.length]}}>{t.name}: {formatCurrency(t.fee)}</Badge>
+                 <Badge key={t.name} className="border-none" style={{ backgroundColor: `${BABY_BLUE_PALETTE[(i + 1) % BABY_BLUE_PALETTE.length]}4D`, color: BABY_BLUE_PALETTE[(i + 1) % BABY_BLUE_PALETTE.length]}}>{t.name}: {formatCurrency(t.fee)}</Badge>
               ))}
             </div>
         </div>
@@ -154,7 +146,7 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
                   <XAxis dataKey="idx" hide />
                   <YAxis hide domain={[0, "auto"]} />
                   <Tooltip formatter={(v) => `${Number(v).toFixed(2)}%`} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
-                  <Line type="monotone" dataKey="ratio" stroke={KEYS_METRICS[0]} strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="ratio" stroke={BABY_BLUE_PALETTE[0]} strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>

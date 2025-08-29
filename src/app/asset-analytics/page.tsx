@@ -50,11 +50,11 @@ const metricCardsData = [
   ];
 
 const assetBreakdownData = [
-    { name: "US Equities", percentage: "40%", color: "bg-[hsl(var(--chart-1))]" },
-    { name: "International Equities", percentage: "20%", color: "bg-[hsl(var(--chart-2))]" },
-    { name: "Fixed Income", percentage: "25%", color: "bg-[hsl(var(--chart-3))]" },
-    { name: "Alternatives", percentage: "10%", color: "bg-[hsl(var(--chart-4))]" },
-    { name: "Cash & Equivalents", percentage: "5%", color: "bg-[hsl(var(--chart-5))]" },
+    { name: "US Equities", percentage: "40%", color: "bg-palette-1" },
+    { name: "International Equities", percentage: "20%", color: "bg-palette-2" },
+    { name: "Fixed Income", percentage: "25%", color: "bg-palette-3" },
+    { name: "Alternatives", percentage: "10%", color: "bg-palette-4" },
+    { name: "Cash & Equivalents", percentage: "5%", color: "bg-palette-5" },
 ];
 
 const topPerformingAssetsData = [
@@ -133,7 +133,7 @@ export default function AssetAnalyticsPage() {
                 <TableCell className="text-right">{asset.value}</TableCell>
                 <TableCell className="text-right">{asset.weight}</TableCell>
                 <TableCell 
-                   className="text-right font-semibold text-[hsl(var(--chart-3))]"
+                   className="text-right font-semibold kpi-value"
                 >
                   {asset.ytdReturn}
                 </TableCell>

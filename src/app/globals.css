@@ -45,12 +45,23 @@
     --nav-w-expanded: 14rem;
     --nav-w-collapsed: 4rem;
     --nav-w: var(--nav-w-expanded);
+    
+    /* Baby-Blue palette */
+    --palette-1: #98CEF3; /* Baby Blue Eyes */
+    --palette-2: #B9E0FF; /* Diamond */
+    --palette-3: #D0E6FB; /* Water */
+    --palette-4: #E6D6FD; /* Pale Lavender */
+    --palette-5: #E4C5FB; /* Pale Lavender (alt) */
+    --palette-6: #D2ACFB; /* Mauve */
+
+    /* Default text/fill for “key metrics” and chart accents */
+    --kpi-color: var(--palette-1);
   }
 
   .dark {
     --background: 0 0% 0%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 4.7%; /* #0c0c0c */
+    --card: #0c0c0c;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 0%;
     --popover-foreground: 0 0% 98%;
@@ -64,7 +75,7 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 89% 48%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 4.7%; /* Match card background to remove outline */
+    --border: none;
     --input: 0 0% 14%;
     --ring: 0 0% 100%;
     --chart-1: 258 84% 58%;
@@ -113,4 +124,13 @@
   .neon-glow {
     box-shadow: 0 0 60px 20px rgba(157, 78, 221, 0.65), 0 0 120px 40px rgba(80, 0, 255, 0.15);
   }
+
+  .kpi-value {
+    color: var(--kpi-color) !important;
+  }
+}
+
+/* Recharts (SVG) axis/label default textcolor stays neutral */
+.recharts-text, .recharts-cartesian-axis-tick-value {
+  fill: rgba(255,255,255,0.75);
 }

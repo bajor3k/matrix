@@ -60,7 +60,16 @@ export default {
   				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
-  			}
+  			},
+            palette: {
+              '1': 'var(--palette-1)',
+              '2': 'var(--palette-2)',
+              '3': 'var(--palette-3)',
+              '4': 'var(--palette-4)',
+              '5': 'var(--palette-5)',
+              '6': 'var(--palette-6)',
+            },
+            kpi: 'var(--kpi-color)',
   		},
   		borderRadius: {
   			lg: 'var(--radius)', 
