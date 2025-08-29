@@ -1,8 +1,11 @@
+
 // components/MarketCard.tsx
+import { cn } from "@/lib/utils";
+
 type MarketCardProps = {
-  label: string;      // e.g., "Apple (AAPL)"
-  price?: number;     // latest price
-  changePct?: number; // e.g., 0.70 for +0.70%
+  label: string;
+  price?: number;
+  changePct?: number;
   isLoading?: boolean;
 };
 
@@ -10,15 +13,26 @@ export default function MarketCard({ label, price, changePct, isLoading }: Marke
   const up = (changePct ?? 0) >= 0;
 
   return (
-    <div className="rounded-3xl bg-card text-card-foreground shadow-sm border border-border p-5 w-full">
-      <div className="text-sm font-medium opacity-90">{label}</div>
-
-      <div className="mt-2 flex items-baseline gap-3">
-        <div className="text-3xl font-semibold tabular-nums">
-          {isLoading || price == null ? "Loading..." : `$${price.toFixed(2)}`}
+    <div className="rounded-2xl bg-card text-card-foreground p-4 border border-border">
+      <div className="flex items-center justify-between gap-4">
+        {/* LEFT: name/ticker + change */}
+        <div className="min-w-0">
+          <div className="text-sm text-muted-foreground truncate">{label}</div>
+          <div
+            className={cn(
+              "text-xs mt-1 font-semibold",
+              changePct == null ? "text-muted-foreground" : up ? "text-emerald-400" : "text-rose-400"
+            )}
+          >
+            {isLoading || changePct == null ? "—" : `${up ? "↑" : "↓"} ${Math.abs(changePct).toFixed(2)}%`}
+          </div>
         </div>
-        <div className={`text-sm font-semibold ${up ? "text-emerald-400" : "text-red-400"}`}>
-          {isLoading || changePct == null ? "" : `${up ? "↑" : "↓"} ${Math.abs(changePct).toFixed(2)}%`}
+
+        {/* RIGHT: price */}
+        <div className="shrink-0 text-right">
+          <div className="text-2xl leading-none font-bold tracking-tight">
+            {isLoading || price == null ? "Loading..." : `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          </div>
         </div>
       </div>
     </div>
