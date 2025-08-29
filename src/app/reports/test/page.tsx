@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -11,7 +10,7 @@ import { Button } from "@/components/ui/button";
 
 export default function TestReportPage() {
     const [pickerOpen, setPickerOpen] = React.useState(false);
-    const [selected, setSelected] = React.useState<{ positions?: File; activity?: File; fees?: File }>({});
+    const [selected, setSelected] = React.useState<{positions?: File; activity?: File; fees?: File}>({});
 
     const ready = !!(selected.positions && selected.activity && selected.fees);
 
