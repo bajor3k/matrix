@@ -3,12 +3,11 @@
 
 import * as React from "react";
 import { PlaceholderCard } from '@/components/dashboard/placeholder-card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { AlertOctagon, Repeat as RepeatIcon, UserX, Activity, MessageSquare, FileDown, Filter, CalendarDays, ShieldAlert, Ban } from 'lucide-react';
+import { AlertOctagon, Repeat as RepeatIcon, UserX, Activity, Filter, CalendarDays, ShieldAlert } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 interface FlaggedActivity {
   id: string;
@@ -43,7 +42,6 @@ const getFlagBadgeClassName = (flag: FlaggedActivity["complianceFlag"]): string 
 
 
 export default function ComplianceMatrixPage() {
-  const [mavenQuery, setMavenQuery] = React.useState("");
   const [flaggedActivityData, setFlaggedActivityData] = React.useState<FlaggedActivity[]>([]);
 
   React.useEffect(() => {
@@ -158,27 +156,6 @@ export default function ComplianceMatrixPage() {
             ))}
           </TableBody>
         </Table>
-      </PlaceholderCard>
-
-      <PlaceholderCard title="Maven Compliance Assistant">
-        <div className="space-y-4">
-          <Input
-            placeholder="Ask: Why was account XYZ123 flagged for excessive trading?"
-            value={mavenQuery}
-            onChange={(e) => setMavenQuery(e.target.value)}
-            className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-primary"
-          />
-          <Button className="w-full sm:w-auto">
-            <MessageSquare className="mr-2 h-4 w-4" /> Ask Maven
-          </Button>
-          <div className="mt-4 p-4 bg-muted/30 rounded-md min-h-[100px]">
-            <p className="text-sm text-muted-foreground italic">AI response and suggested actions will appear here...</p>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-4 justify-end">
-            <Button variant="outline"><FileDown className="mr-2 h-4 w-4" />Generate Audit Notes</Button>
-            <Button variant="outline"><FileDown className="mr-2 h-4 w-4" />Export Flagged Summary (PDF)</Button>
-          </div>
-        </div>
       </PlaceholderCard>
 
     </main>
