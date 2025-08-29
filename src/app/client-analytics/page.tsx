@@ -23,10 +23,6 @@ const metricCardsData = [
     title: "Client Retention Rate", 
     value: "92%", 
   },
-  { 
-    title: "New vs. Lost Clients (QTD)", 
-    value: "15 / 3", 
-  },
 ];
 
 const topClientsByAumData = [
@@ -95,10 +91,15 @@ export default function ClientAnalyticsPage() {
   }, [])
 
   return (
-    <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
+    <main className="client-analytics-page min-h-screen flex-1 p-6 space-y-8 md:p-8">
+      <style jsx>{`
+        .client-analytics-page :global(.card-outline) {
+          background: #0c0c0c !important;
+        }
+      `}</style>
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Client Analytics</h1>
       
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+      <div className="grid gap-6 md:grid-cols-3 mb-8">
         {metricCardsData.map((card, index) => (
           <div key={index} className="card-outline rounded-2xl p-4">
             <div className="flex items-start justify-between">
