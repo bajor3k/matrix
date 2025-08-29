@@ -5,6 +5,7 @@ import React from "react";
 import { Download as DownloadIcon, Brain, Loader2, ChevronDown, ChevronUp, BarChartHorizontal } from "lucide-react";
 import Pill from "@/components/ui/Pill";
 import MavenPill from "./maven/MavenPill";
+import UploadBrowse from "./UploadBrowse";
 
 type RunState = "idle" | "running" | "success" | "error";
 type ActiveView = "maven" | "key-metrics";
@@ -34,6 +35,14 @@ export default function ActionsRow({
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+      <UploadBrowse
+        accept=".xlsx,.csv"
+        multiple={false}
+        onFilesSelected={(files) => {
+          // plug your logic later
+          // e.g., toast(`Selected ${files[0].name}`)
+        }}
+      />
       <Pill
         onClick={onRun}
         disabled={!isReadyToRun || (runState === 'running' && !kbLoading)}
