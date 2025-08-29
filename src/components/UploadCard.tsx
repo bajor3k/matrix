@@ -52,15 +52,14 @@ export default function UploadCard({
       {...getRootProps()}
       className={cn(
         "relative flex flex-col items-center justify-center text-center gap-2",
-        // Match other cards: solid thin border + rounded + surfaces
-        "rounded-2xl border bg-white dark:bg-[#101010]",
-        "border-[#e5e7eb] dark:border-white/10",
+        "rounded-2xl bg-card dark:bg-[#0c0c0c]", // Use card background, override dark to #0c0c0c
+        "border-border dark:border-none", // Use theme border, remove in dark mode
         "px-6 py-5 cursor-pointer transition-colors",
-        // Hover: subtle emphasis (no dashed)
-        "hover:border-black/20 dark:hover:border-white/20",
-        // Drag active: brand green ring (solid), no dash
+        // Hover: subtle emphasis
+        "hover:border-black/20 dark:hover:bg-white/5",
+        // Drag active: brand green ring
         isDragActive
-          ? "ring-2 ring-[#08e28f] ring-offset-2 ring-offset-white dark:ring-offset-[#0b0b0b]"
+          ? "ring-2 ring-[#08e28f] ring-offset-2 ring-offset-background"
           : "",
         className
       )}
