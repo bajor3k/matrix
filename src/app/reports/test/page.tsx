@@ -1,3 +1,4 @@
+// app/reports/test/page.tsx
 "use client";
 
 import * as React from "react";
@@ -5,19 +6,22 @@ import ReportsPageShell from "@/components/reports/ReportsPageShell";
 import HelpHeader from "@/components/reports/HelpHeader";
 import FullBleed from "@/components/layout/FullBleed";
 import ActionsRow from "@/components/reports/ActionsRow";
+import { runTestReport, type TestReportFiles } from "@/utils/reports/test/runTestReport";
 
 export default function TestReportPage() {
     const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
     const [activeView, setActiveView] = React.useState<"maven" | "key-metrics">("maven");
 
-    const handleRunReport = (files?: { report1: File; report2: File; report3: File }) => {
-        if (!files) return;
-        console.log("Running report with files:", files);
+     const handleRun = async (files: TestReportFiles) => {
         setRunState("running");
-        // Simulate API call
-        setTimeout(() => {
+        try {
+            const result = await runTestReport(files);
+            console.log("Test report run result:", result);
             setRunState("success");
-        }, 1500);
+        } catch(e) {
+            console.error("Failed to run test report", e);
+            setRunState("error");
+        }
     };
 
     return (
@@ -31,12 +35,7 @@ export default function TestReportPage() {
 
             <FullBleed>
                  <ActionsRow
-                    filesReady={true} // The modal inside ActionsRow handles file readiness
-                    runState={runState}
-                    activeView={activeView}
-                    onRun={handleRunReport}
-                    onDownloadExcel={() => console.log("Download Excel clicked")}
-                    onToggleKeyMetrics={() => setActiveView(p => p === 'key-metrics' ? 'maven' : 'key-metrics')}
+                    onRun={handleRun}
                  />
             </FullBleed>
 
@@ -45,6 +44,7 @@ export default function TestReportPage() {
                 {runState === 'idle' && <p>Please upload files via the 'Download' button to run the report.</p>}
                 {runState === 'running' && <p>Report is running...</p>}
                 {runState === 'success' && <p>Report ran successfully. View results in the table or ask Maven.</p>}
+                {runState === 'error' && <p className="text-red-400">An error occurred while running the report.</p>}
              </div>
         </ReportsPageShell>
     );

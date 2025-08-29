@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -206,11 +205,6 @@ export default function TripleReportModal({
           <div className="text-xs text-white/60 mr-auto">
             {Number(!!files.positions) + Number(!!files.activity) + Number(!!files.fees)}/3 uploaded
           </div>
-          {/* If you want explicit confirmation instead of auto-close, uncomment: */}
-          {/* <Button disabled={!ready} className="rounded-full" onClick={() => {
-                onComplete({ positions: files.positions!, activity: files.activity!, fees: files.fees! });
-                onOpenChange(false);
-            }}>Continue</Button> */}
           <Button variant="secondary" className="rounded-full" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
