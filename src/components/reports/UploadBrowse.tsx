@@ -1,3 +1,4 @@
+
 // src/components/reports/UploadBrowse.tsx
 "use client";
 
@@ -11,6 +12,7 @@ type UploadBrowseProps = {
   onFilesSelected?: (files: FileList) => void; // you can plug logic later
   className?: string;              // extra classes if needed
   id?: string;                     // optional id for tests
+  onClick?: () => void;
 };
 
 export default function UploadBrowse({
@@ -19,10 +21,17 @@ export default function UploadBrowse({
   onFilesSelected,
   className = "",
   id,
+  onClick
 }: UploadBrowseProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const openPicker = () => inputRef.current?.click();
+  const openPicker = () => {
+    if (onClick) {
+        onClick();
+    } else {
+        inputRef.current?.click()
+    }
+  };
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     if (e.target.files && e.target.files.length > 0) {
