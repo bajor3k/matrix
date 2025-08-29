@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from 'react';
@@ -12,23 +11,28 @@ export default function DashboardPage() {
         Welcome Josh!
       </h1>
 
-      <section>
-        <h2 className="sr-only">Market Overview</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <MarketCard label="Apple (AAPL)" price={227.76} changePct={0.70} />
-          <MarketCard label="Microsoft (MSFT)" price={507.23} changePct={0.59} />
-          <MarketCard label="S&P 500 (SPY)" isLoading />
-          <MarketCard label="Dow Jones (DIA)" isLoading />
+      <div className="grid grid-cols-12 gap-4">
+
+        {/* Top row: four stock cards, 3 columns each */}
+        <div className="col-span-12 sm:col-span-6 xl:col-span-3">
+            <MarketCard label="Apple (AAPL)" price={227.76} changePct={0.70} />
         </div>
-      </section>
-       <section>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <RecentActivity />
-              </div>
-              {/* Other components can go here */}
-          </div>
-      </section>
+        <div className="col-span-12 sm:col-span-6 xl:col-span-3">
+            <MarketCard label="Microsoft (MSFT)" price={507.23} changePct={0.59} />
+        </div>
+        <div className="col-span-12 sm:col-span-6 xl:col-span-3">
+            <MarketCard label="S&P 500 (SPY)" isLoading />
+        </div>
+        <div className="col-span-12 sm:col-span-6 xl:col-span-3">
+            <MarketCard label="Dow Jones (DIA)" isLoading />
+        </div>
+
+        {/* Recent Activity: move to the RIGHT half (same width as two cards) */}
+        <div className="col-span-12 xl:col-span-6 xl:col-start-7">
+          <RecentActivity />
+        </div>
+
+      </div>
     </main>
   );
 }
