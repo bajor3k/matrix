@@ -32,19 +32,16 @@ export default function ConversionAnalyticsPage() {
     {
       title: "Total Non-Managed Accounts",
       value: "245",
-      description: "Number of non-managed accounts",
       icon: Users
     },
     {
       title: "Total AUM in Non-Managed",
       value: "$82,000,000",
-      description: "Assets not enrolled in managed programs",
       icon: DollarSign
     },
     {
       title: "Estimated Lost Revenue (YTD)",
       value: "$162,000",
-      description: "Estimated advisory revenue not earned YTD",
       icon: TrendingDown
     },
   ];
@@ -75,7 +72,6 @@ export default function ConversionAnalyticsPage() {
             key={index}
             title={card.title}
             value={card.value}
-            description={card.description}
             icon={card.icon}
           />
         ))}
