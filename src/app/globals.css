@@ -50,7 +50,7 @@
   .dark {
     --background: 0 0% 0%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 8%; /* Updated from 4.7% to 8% for a slightly lighter card */
+    --card: 0 0% 4.7%; /* #0c0c0c */
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 0%;
     --popover-foreground: 0 0% 98%;
@@ -64,7 +64,7 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 89% 48%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 15%; /* Updated from 3.9% to 15% for a more visible border */
+    --border: 0 0% 4.7%; /* Match card background to remove outline */
     --input: 0 0% 14%;
     --ring: 0 0% 100%;
     --chart-1: 258 84% 58%;
@@ -81,8 +81,7 @@
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 0 0% 15%;
     --sidebar-ring: 240 4.9% 83.9%;
-    --shadow-card-custom: 0 4px 24px 0 rgba(255, 255, 255, 0.08),
-      0 2px 8px 0 rgba(0, 0, 0, 0.25);
+    --shadow-card-custom: none;
     --shadow-card-custom-hover: 0 6px 32px 0 rgba(255, 255, 255, 0.12),
       0 4px 12px 0 rgba(0, 0, 0, 0.3);
   }

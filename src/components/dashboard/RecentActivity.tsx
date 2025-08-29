@@ -17,7 +17,7 @@ const items: Activity[] = [
 
 export default function RecentActivity() {
   return (
-    <section className="rounded-2xl border border-border bg-card text-card-foreground p-4 h-full">
+    <section className="rounded-2xl bg-[#0c0c0c] text-card-foreground p-4 h-full border-none shadow-none">
       {/* Header (keep count + View all) */}
       <header className="flex items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-3">
