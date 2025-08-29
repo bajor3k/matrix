@@ -76,7 +76,7 @@ export default function AssetAnalyticsPage() {
           <Card key={index} className="p-4">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <div className="text-xs font-medium text-zinc-600 dark:text-zinc-300 truncate">
+                <div className="text-base font-bold text-zinc-600 dark:text-zinc-300 truncate">
                   {card.title}
                 </div>
               </div>
