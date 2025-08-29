@@ -25,7 +25,7 @@ export default function TestReportPage() {
 
             <FullBleed>
                  <div className="flex items-center justify-center gap-2 mt-4">
-                    <UploadBrowse onClick={() => setPickerOpen(true)} />
+                    <UploadBrowse disablePicker onClick={() => setPickerOpen(true)} />
                     <Button className="rounded-full h-9" disabled={!ready}>
                         Run Report
                     </Button>
