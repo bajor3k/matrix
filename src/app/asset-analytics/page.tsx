@@ -26,32 +26,26 @@ const metricCardsData = [
     {
       title: "Total AUM",
       value: "$12.5B",
-      description: "+15.8% from last quarter",
     },
     {
       title: "YTD Return",
       value: "+8.7%",
-      description: "vs. Benchmark +7.1%",
     },
     {
       title: "% in Model Portfolios",
       value: "72%",
-      description: "Target 80%",
     },
     {
       title: "Inflows (MTD)",
       value: "$350K",
-      description: "+15% from last month",
     },
     {
       title: "Outflows (MTD)",
       value: "$120K",
-      description: "-5% from last month",
     },
     {
       title: "Net Flows (MTD)",
       value: "$230K",
-      description: "Net positive inflow",
     },
   ];
 
@@ -85,11 +79,6 @@ export default function AssetAnalyticsPage() {
                 <div className="text-xs font-medium text-zinc-600 dark:text-zinc-300 truncate">
                   {card.title}
                 </div>
-                {card.description ? (
-                  <div className="mt-1 text-[11px] text-zinc-400 dark:text-zinc-500 truncate">
-                    {card.description}
-                  </div>
-                ) : null}
               </div>
               <div className="text-right">
                 <div className="text-3xl md:text-4xl font-semibold leading-none text-black dark:text-white">
