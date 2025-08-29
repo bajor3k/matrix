@@ -4,7 +4,6 @@ import * as React from "react";
 import ReportsPageShell from "@/components/reports/ReportsPageShell";
 import HelpHeader from "@/components/reports/HelpHeader";
 import FullBleed from "@/components/layout/FullBleed";
-import UploadBrowse from "@/components/reports/UploadBrowse";
 import TripleReportModal from "@/components/reports/TripleReportModal";
 import { Button } from "@/components/ui/button";
 
@@ -25,7 +24,6 @@ export default function TestReportPage() {
 
             <FullBleed>
                  <div className="flex items-center justify-center gap-2 mt-4">
-                    <UploadBrowse disablePicker onClick={() => setPickerOpen(true)} />
                     <Button className="rounded-full h-9" disabled={!ready}>
                         Run Report
                     </Button>
