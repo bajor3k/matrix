@@ -32,9 +32,23 @@ export default function ActionsRow({
 
   const isReadyToRun = filesReady && runState !== "running";
   const isSuccess = runState === "success";
+  
+  const noop = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+      <Button
+        variant="secondary"
+        className="rounded-full h-9 bg-black border border-white/20 text-white font-semibold"
+        onClick={noop}
+        aria-label="Download"
+      >
+        Download
+      </Button>
+
       <Pill
         onClick={onRun}
         disabled={!isReadyToRun || (runState === 'running' && !kbLoading)}
@@ -51,14 +65,7 @@ export default function ActionsRow({
       <Pill disabled={!isSuccess} onClick={onToggleKeyMetrics} active={activeView === 'key-metrics'}>
         Key Metrics
       </Pill>
-      
-      <Button
-        variant="secondary"
-        className="rounded-full h-9 text-white font-semibold"
-        onClick={(e) => e.preventDefault()} // disables any default action
-      >
-        Download
-      </Button>
+
     </div>
   );
 }
