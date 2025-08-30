@@ -56,12 +56,14 @@
 
     /* Default text/fill for “key metrics” and chart accents */
     --kpi-color: var(--palette-1);
+    --surface-card: #111112;
+    --card-border-subtle: rgba(255,255,255,.10);
   }
 
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 0 0% 4.7%; /* This is #0c0c0c */
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
@@ -92,6 +94,8 @@
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 0 0% 100% / 0.10;
     --sidebar-ring: 0 0% 100% / 0.12;
+    --surface-card: #0c0c0c; /* <— the requested global card color */
+    --card-border-subtle: rgba(255,255,255,.10);
   }
 }
 
@@ -212,4 +216,10 @@
 [data-theme="dark"] .MuiDivider-root {
   border-color: var(--nav-divider) !important;
   background: var(--nav-divider) !important;
+}
+
+.dark .report-card,
+[data-theme="dark"] .report-card {
+  background-color: var(--surface-card) !important;
+  border-color: var(--card-border-subtle) !important;
 }

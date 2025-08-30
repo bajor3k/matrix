@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { PlaceholderCard } from "@/components/dashboard/placeholder-card";
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -73,25 +74,11 @@ export default function AssetAnalyticsPage() {
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {metricCardsData.map((card, index) => (
-          <Card key={index} className="p-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <div className="text-base font-bold text-zinc-600 dark:text-zinc-300 truncate">
-                  {card.title}
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-3xl md:text-4xl font-semibold leading-none text-black dark:text-white">
-                  {card.value}
-                </div>
-              </div>
-            </div>
-          </Card>
+          <PlaceholderCard key={index} title={card.title} value={card.value} />
         ))}
       </div>
 
-      <Card className="rounded-2xl p-5">
-         <h3 className="text-base font-bold text-foreground mb-4">Asset Allocation by Type</h3>
+      <PlaceholderCard title="Asset Allocation by Type">
          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
             <div className="h-[400px] md:h-[450px] w-full">
               <DynamicAssetAllocationDonutChart />
@@ -109,10 +96,9 @@ export default function AssetAnalyticsPage() {
               ))}
             </div>
           </div>
-      </Card>
+      </PlaceholderCard>
 
-      <Card className="rounded-2xl p-5">
-        <h3 className="text-base font-bold text-foreground mb-4">Top Performing Assets</h3>
+      <PlaceholderCard title="Top Performing Assets">
         <Table>
           <TableHeader>
             <TableRow>
@@ -146,7 +132,7 @@ export default function AssetAnalyticsPage() {
                 <Download className="mr-2 h-4 w-4" /> Export
             </Button>
         </div>
-      </Card>
+      </PlaceholderCard>
     </main>
   );
 }
