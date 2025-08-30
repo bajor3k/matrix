@@ -12,7 +12,7 @@ export default function MarketCard({ label, price, changePct, isLoading }: Marke
   const up = (changePct ?? 0) >= 0;
 
   return (
-    <div className="rounded-2xl bg-[#0c0c0c] text-card-foreground p-4 border-none shadow-none">
+    <div className="rounded-2xl bg-[var(--surface-card)] text-card-foreground p-4 border border-[var(--card-border-subtle)] shadow-none">
       <div className="flex items-center justify-between gap-4">
         {/* LEFT: name/ticker + change */}
         <div className="min-w-0">
