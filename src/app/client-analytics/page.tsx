@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui/card';
 
 const metricCardsData = [
   { 
@@ -91,18 +92,12 @@ export default function ClientAnalyticsPage() {
   }, [])
 
   return (
-    <main className="client-analytics-page min-h-screen flex-1 p-6 space-y-8 md:p-8">
-      <style jsx>{`
-        .client-analytics-page :global(.card-outline) {
-          background: #0c0c0c !important;
-          border: none !important;
-        }
-      `}</style>
+    <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Client Analytics</h1>
       
       <div className="grid gap-6 md:grid-cols-3 mb-8">
         {metricCardsData.map((card, index) => (
-          <div key={index} className="card-outline rounded-2xl p-4">
+          <Card key={index} className="rounded-2xl p-4">
             <div className="flex items-start justify-between">
                 <div>
                     <p className="text-sm font-semibold text-zinc-200">{card.title}</p>
@@ -111,12 +106,12 @@ export default function ClientAnalyticsPage() {
                     <div className="text-3xl font-bold leading-none text-white">{card.value}</div>
                 </div>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 
       <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 mb-8">
-        <div className="card-outline rounded-2xl p-5">
+        <Card className="rounded-2xl p-5">
           <h3 className="text-base font-bold text-foreground mb-4">Top 10 Clients by AUM</h3>
           <div className="space-y-3 mt-1">
             {topClientsByAumData.map((client) => {
@@ -143,8 +138,8 @@ export default function ClientAnalyticsPage() {
               );
             })}
           </div>
-        </div>
-        <div className="card-outline rounded-2xl p-5">
+        </Card>
+        <Card className="rounded-2xl p-5">
         <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2"><AlertTriangle className="h-5 w-5 text-yellow-400" />Top 10 Accounts Without a Beneficiary</h3>
           <TooltipProvider>
             <Table>
@@ -183,10 +178,10 @@ export default function ClientAnalyticsPage() {
            <p className="mt-4 text-xs text-muted-foreground">
             ⚠️ High AUM accounts are flagged. Top accounts missing beneficiary info, ranked by AUM.
           </p>
-        </div>
+        </Card>
       </div>
 
-      <div className="card-outline rounded-2xl p-5">
+      <Card className="rounded-2xl p-5">
         <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2"><Users className="h-5 w-5" />Top Clients Age 65+ with Children as Beneficiaries</h3>
         <div className="space-y-4 mt-2">
           {topClients65PlusWithChildBeneficiariesData.map((client) => (
@@ -214,7 +209,7 @@ export default function ClientAnalyticsPage() {
             Start Next-Gen Outreach
           </Button>
         </div>
-      </div>
+      </Card>
     </main>
   );
 }
