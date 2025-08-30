@@ -132,116 +132,84 @@
   fill: rgba(255,255,255,0.75);
 }
 
-/* ---------- Tokens ---------- */
+/* -------------------- NAV / DIVIDER TOKENS -------------------- */
 :root {
-  /* light fallback (if you support it) */
-  --surface-card: #111112;
-  --card-border-subtle: rgba(255,255,255,.10);
+  /* Light defaults */
+  --nav-divider: rgba(2, 6, 23, .10);        /* faint dark line on light bg (≈ gray-900/10) */
+  --nav-border:  rgba(2, 6, 23, .12);
 }
 
 :root.dark, .dark, [data-theme="dark"] {
-  --surface-card: #0c0c0c; /* <— the requested global card color */
-  --card-border-subtle: rgba(255,255,255,.10);
+  /* Dark replacements */
+  --nav-divider: rgba(255,255,255, .10);     /* faint white line */
+  --nav-border:  rgba(255,255,255, .12);     /* slightly stronger for edges */
 }
 
-/* ---------- Generic “card-like” containers ---------- */
-/* Your own cards / panels / widgets / tiles */
-.dark .card,
-[data-theme="dark"] .card,
-.dark .panel,
-[data-theme="dark"] .panel,
-.dark .widget,
-[data-theme="dark"] .widget,
-.dark .tile,
-[data-theme="dark"] .tile,
-.dark .chart-card,
-[data-theme="dark"] .chart-card,
-.dark .table-container,
-[data-theme="dark"] .table-container,
-.dark .stat-card,
-[data-theme="dark"] .stat-card {
-  background-color: var(--surface-card) !important;
-  border-color: var(--card-border-subtle) !important;
-  /* keep existing border width/radius/shadow from component */
+/* Sidebar: correct the faint lines + kill the green edge */
+/* Sidebar container surface & edge */
+.dark .sidebar,
+[data-theme="dark"] .sidebar {
+  background: #0b0b0b !important;                /* your dark shell */
+  color: rgba(255,255,255,.75) !important;
+  border-right: 1px solid var(--nav-border) !important;
+  /* neutralize any green debug/brand line on the left */
+  border-left: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
-/* ---------- shadcn/ui (uses CSS vars like --card) ---------- */
-.dark .bg-card,
-[data-theme="dark"] .bg-card,
-.dark .shadcn-card,
-[data-theme="dark"] .shadcn-card {
-  background-color: var(--surface-card) !important;
-  border-color: var(--card-border-subtle) !important;
+/* Section separators inside the sidebar */
+.dark .sidebar hr,
+[data-theme="dark"] .sidebar hr,
+.dark .sidebar .divider,
+[data-theme="dark"] .sidebar .divider {
+  border: 0;
+  border-top: 1px solid var(--nav-divider) !important;
+  opacity: 1;
 }
 
-/* ---------- MUI (Material UI) ---------- */
-.dark .MuiPaper-root,
-[data-theme="dark"] .MuiPaper-root,
-.dark .MuiCard-root,
-[data-theme="dark"] .MuiCard-root,
-.dark .MuiDrawer-paper,
-[data-theme="dark"] .MuiDrawer-paper,
-.dark .MuiPopover-paper,
-[data-theme="dark"] .MuiPopover-paper,
-.dark .MuiMenu-paper,
-[data-theme="dark"] .MuiMenu-paper,
-.dark .MuiDialog-paper,
-[data-theme="dark"] .MuiDialog-paper {
-  background-color: var(--surface-card) !important;
-  border-color: var(--card-border-subtle) !important;
+/* “divide-y” style lists inside the sidebar */
+.dark .sidebar .divide-y > :not([hidden]) ~ :not([hidden]),
+[data-theme="dark"] .sidebar .divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-top: 1px solid var(--nav-divider) !important;
 }
 
-/* ---------- Ant Design ---------- */
-.dark .ant-card,
-[data-theme="dark"] .ant-card,
-.dark .ant-card-bordered,
-[data-theme="dark"] .ant-card-bordered,
-.dark .ant-modal-content,
-[data-theme="dark"] .ant-modal-content,
-.dark .ant-drawer-content,
-[data-theme="dark"] .ant-drawer-content,
-.dark .ant-popover-inner,
-[data-theme="dark"] .ant-popover-inner,
-.dark .ant-dropdown-menu,
-[data-theme="dark"] .ant-dropdown-menu {
-  background: var(--surface-card) !important;
-  border-color: var(--card-border-subtle) !important;
+/* Optional: item hover/active still subtle in dark */
+.dark .sidebar a,
+[data-theme="dark"] .sidebar a { color: rgba(255,255,255,.60) !important; }
+.dark .sidebar a:hover,
+[data-theme="dark"] .sidebar a:hover { color: rgba(255,255,255,.92) !important; }
+.dark .sidebar .active,
+[data-theme="dark"] .sidebar a[aria-current="page"] { color: rgba(255,255,255,.92) !important; }
+
+
+/* Top bar: faint bottom separator in dark */
+/* Top navigation bar */
+.dark .topbar,
+[data-theme="dark"] .topbar,
+.dark .header,
+[data-theme="dark"] .header {
+  background: #0b0b0b !important;
+  color: rgba(255,255,255,.70) !important;
+  border-bottom: 1px solid var(--nav-border) !important; /* faint, not harsh white */
 }
 
-/* ---------- Headless UI / Radix modals & popovers ---------- */
-.dark [role="dialog"],
-[data-theme="dark"] [role="dialog"],
-.dark [role="menu"],
-[data-theme="dark"] [role="menu"],
-.dark [role="tooltip"],
-[data-theme="dark"] [role="tooltip"] {
-  background-color: var(--surface-card) !important;
-  border: 1px solid var(--card-border-subtle) !important;
+/* Generic separators that appear in navs/menus */
+/* Any hr/divider in dark mode becomes faint white */
+.dark hr, [data-theme="dark"] hr {
+  border: 0;
+  border-top: 1px solid var(--nav-divider) !important;
 }
 
-/* ---------- Tables (inside cards) ---------- */
-.dark .table,
-[data-theme="dark"] .table,
-.dark .table-wrapper,
-[data-theme="dark"] .table-wrapper {
-  background-color: var(--surface-card) !important;
-  border-color: var(--card-border-subtle) !important;
-}
-
-/* ---------- Chart containers (so charts sit on same surface) ---------- */
-.dark .chart-container,
-[data-theme="dark"] .chart-container,
-.dark .recharts-wrapper,
-[data-theme="dark"] .recharts-wrapper,
-.dark .echarts-for-react,
-[data-theme="dark"] .echarts-for-react,
-.dark canvas.chartjs-render-monitor,
-[data-theme="dark"] canvas.chartjs-render-monitor {
-  background-color: var(--surface-card) !important;
-}
-
-/* ---------- Kill any hardcoded black that fights the token ---------- */
-.dark .bg-black,
-[data-theme="dark"] .bg-black {
-  background-color: var(--surface-card) !important;
+/* Radix/Headless/Ant/MUI menu & popover separators */
+.dark [role="menu"] hr,
+.dark [role="menuitemseparator"],
+.dark .ant-dropdown-menu-item-divider,
+.dark .MuiDivider-root,
+[data-theme="dark"] [role="menu"] hr,
+[data-theme="dark"] [role="menuitemseparator"],
+[data-theme="dark"] .ant-dropdown-menu-item-divider,
+[data-theme="dark"] .MuiDivider-root {
+  border-color: var(--nav-divider) !important;
+  background: var(--nav-divider) !important;
 }
