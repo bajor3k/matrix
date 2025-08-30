@@ -17,7 +17,7 @@ const items: Activity[] = [
 
 export default function RecentActivity() {
   return (
-    <section className="rounded-2xl bg-[#0c0c0c] text-card-foreground p-4 h-full border-none shadow-none">
+    <section className="rounded-2xl bg-[var(--surface-1)] text-card-foreground p-4 h-full border border-[var(--stroke-weak)] shadow-none">
       {/* Header (keep count + View all) */}
       <header className="flex items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-3">
@@ -31,10 +31,10 @@ export default function RecentActivity() {
         </a>
       </header>
 
-      {/* List (no accent rail, no pills) */}
+      {/* List */}
       <ul className="space-y-2">
         {items.map((it, i) => (
-          <li key={i}>
+          <li key={i} className="border-b border-[var(--stroke-weak)] last:border-b-0">
             <div className="flex items-center justify-between gap-3 py-1.5">
               <div className="min-w-0">
                 <div className="truncate text-sm">
@@ -46,7 +46,6 @@ export default function RecentActivity() {
               </div>
               <time className="shrink-0 text-xs text-muted-foreground">{it.when}</time>
             </div>
-            {i < items.length - 1 && <div className="border-t border-border/50" />}
           </li>
         ))}
       </ul>

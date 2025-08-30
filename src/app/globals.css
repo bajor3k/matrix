@@ -59,11 +59,30 @@
   }
 
   .dark {
-    --background: 0 0% 0%;
+    /* ---------- Neutral tokens for the dark theme ---------- */
+    --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --card: #0c0c0c;
+    
+    /* Surfaces */
+    --surface-0: #0b0b0b;        /* page bg / app shell */
+    --surface-1: #0c0c0c;        /* cards, bars */
+    --surface-2: #111112;        /* popovers, overlays */
+
+    /* Text */
+    --text-weak:  rgba(255,255,255,.55);
+    --text-mid:   rgba(255,255,255,.75);
+    --text-strong:rgba(255,255,255,.92);
+
+    /* Strokes (borders/dividers) — keep them faint */
+    --stroke-weak: rgba(255,255,255,.08);
+    --stroke-mid:  rgba(255,255,255,.12);
+
+    /* Focus ring (subtle white; no green) */
+    --focus-ring:  rgba(255,255,255,.18);
+
+    --card: 240 10% 3.9%; /* or var(--surface-1) */
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 0%;
+    --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
@@ -137,19 +156,28 @@
 
 /* ---- Dark fallback: never allow white screen ---- */
 html, body, #__next, #root {
-  background-color: #0b0b0b !important;  /* Jet black / your dark base */
-  color: rgba(255,255,255,.92);
+  background-color: var(--surface-0, #0b0b0b) !important;
+  color: var(--text-strong, rgba(255,255,255,.92));
   min-height: 100%;
 }
 
 * {
-  border-color: rgba(255,255,255,.10);
+  border-color: var(--stroke-mid, rgba(255,255,255,.10));
 }
 
 /* Dialog / overlays */
 [data-radix-popper-content-wrapper],
 [role="dialog"],
 [role="tooltip"] {
-  background-color: #0b0b0b !important;
-  color: rgba(255,255,255,.92) !important;
+  background-color: var(--surface-2, #111112) !important;
+  color: var(--text-strong, rgba(255,255,255,.92)) !important;
+  border: 1px solid var(--stroke-mid, rgba(255,255,255,.12)) !important;
+}
+
+/* Kill any accidental green debug outline and replace with subtle ring */
+*:focus { outline: none !important; }
+*:focus-visible {
+  outline: 2px solid var(--focus-ring, rgba(255,255,255,.18)) !important;
+  outline-offset: 2px;
+  border-radius: 6px;
 }
