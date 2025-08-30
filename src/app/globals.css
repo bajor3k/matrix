@@ -134,3 +134,22 @@
 .recharts-text, .recharts-cartesian-axis-tick-value {
   fill: rgba(255,255,255,0.75);
 }
+
+/* ---- Dark fallback: never allow white screen ---- */
+html, body, #__next, #root {
+  background-color: #0b0b0b !important;  /* Jet black / your dark base */
+  color: rgba(255,255,255,.92);
+  min-height: 100%;
+}
+
+* {
+  border-color: rgba(255,255,255,.10);
+}
+
+/* Dialog / overlays */
+[data-radix-popper-content-wrapper],
+[role="dialog"],
+[role="tooltip"] {
+  background-color: #0b0b0b !important;
+  color: rgba(255,255,255,.92) !important;
+}
