@@ -46,12 +46,26 @@ export default function ActionsRow({
 }: Props) {
   const [open, setOpen] = React.useState(false);
   const [isRunning, setIsRunning] = React.useState(false);
+  const [selectedFiles, setSelectedFiles] = React.useState<TestReportFiles | null>(null);
+
+  const canRun = !!selectedFiles;
+
+  const handleRunClick = async () => {
+    if (!selectedFiles) return;
+    try {
+        setIsRunning(true);
+        await onRun(selectedFiles);
+    } finally {
+        setIsRunning(false);
+    }
+  }
+
 
   return (
     <>
       <div className={`report-actions flex items-center justify-center gap-3 ${className}`}>
          <Pill label="Download" active onClick={() => setOpen(true)} />
-         <Pill label="Run Report" />
+         <Pill label="Run Report" active={canRun && !isRunning} onClick={handleRunClick} />
          <Pill label="Excel" />
          <Pill label="Key Metrics" />
       </div>
@@ -59,14 +73,9 @@ export default function ActionsRow({
       <ReportDownloadModal
         open={open}
         onOpenChange={setOpen}
-        labels={["Household Positions", "Account Activity", "Fee Schedule"]}
-        onComplete={async (files) => {
-          try {
-            setIsRunning(true);
-            await onRun(files);
-          } finally {
-            setIsRunning(false);
-          }
+        onComplete={(files) => {
+            setSelectedFiles(files)
+            setOpen(false);
         }}
       />
     </>
