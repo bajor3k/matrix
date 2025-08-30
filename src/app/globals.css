@@ -213,3 +213,11 @@
   border-color: var(--nav-divider) !important;
   background: var(--nav-divider) !important;
 }
+
+header {
+    border-bottom-color: hsl(var(--border)) !important;
+}
+
+.dark header {
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
