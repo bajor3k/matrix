@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { HelpCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const LS_KEY = "reports.help.dismissed";
 
@@ -61,7 +62,10 @@ export default function HelpHeader({
       <details
         open={open}
         onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}
-        className="rounded-2xl details-no-marker bg-card dark:bg-[#0c0c0c] border border-border dark:border-card-border-subtle"
+        className={cn(
+          "rounded-2xl details-no-marker bg-card dark:bg-[#0c0c0c]",
+          "border border-border dark:border-card-border-subtle" // Apply the border here
+        )}
       >
         <summary className="cursor-pointer px-5 py-3 flex items-center justify-between">
           <div className="text-sm font-semibold text-gray-800 dark:text-gray-200">How this report works</div>
