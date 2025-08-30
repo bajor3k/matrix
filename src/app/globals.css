@@ -59,28 +59,9 @@
   }
 
   .dark {
-    /* ---------- Neutral tokens for the dark theme ---------- */
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    
-    /* Surfaces */
-    --surface-0: #0b0b0b;        /* page bg / app shell */
-    --surface-1: #0c0c0c;        /* cards, bars */
-    --surface-2: #111112;        /* popovers, overlays */
-
-    /* Text */
-    --text-weak:  rgba(255,255,255,.55);
-    --text-mid:   rgba(255,255,255,.75);
-    --text-strong:rgba(255,255,255,.92);
-
-    /* Strokes (borders/dividers) — keep them faint */
-    --stroke-weak: rgba(255,255,255,.08);
-    --stroke-mid:  rgba(255,255,255,.12);
-
-    /* Focus ring (subtle white; no green) */
-    --focus-ring:  rgba(255,255,255,.18);
-
-    --card: 240 10% 3.9%; /* or var(--surface-1) */
+    --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
@@ -111,9 +92,6 @@
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 255 255 255 / 0.1;
     --sidebar-ring: 240 4.9% 83.9%;
-    --shadow-card-custom: none;
-    --shadow-card-custom-hover: 0 6px 32px 0 rgba(255, 255, 255, 0.12),
-      0 4px 12px 0 rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -154,30 +132,116 @@
   fill: rgba(255,255,255,0.75);
 }
 
-/* ---- Dark fallback: never allow white screen ---- */
-html, body, #__next, #root {
-  background-color: var(--surface-0, #0b0b0b) !important;
-  color: var(--text-strong, rgba(255,255,255,.92));
-  min-height: 100%;
+/* ---------- Tokens ---------- */
+:root {
+  /* light fallback (if you support it) */
+  --surface-card: #111112;
+  --card-border-subtle: rgba(255,255,255,.10);
 }
 
-* {
-  border-color: var(--stroke-mid, rgba(255,255,255,.10));
+:root.dark, .dark, [data-theme="dark"] {
+  --surface-card: #0c0c0c; /* <— the requested global card color */
+  --card-border-subtle: rgba(255,255,255,.10);
 }
 
-/* Dialog / overlays */
-[data-radix-popper-content-wrapper],
-[role="dialog"],
-[role="tooltip"] {
-  background-color: var(--surface-2, #111112) !important;
-  color: var(--text-strong, rgba(255,255,255,.92)) !important;
-  border: 1px solid var(--stroke-mid, rgba(255,255,255,.12)) !important;
+/* ---------- Generic “card-like” containers ---------- */
+/* Your own cards / panels / widgets / tiles */
+.dark .card,
+[data-theme="dark"] .card,
+.dark .panel,
+[data-theme="dark"] .panel,
+.dark .widget,
+[data-theme="dark"] .widget,
+.dark .tile,
+[data-theme="dark"] .tile,
+.dark .chart-card,
+[data-theme="dark"] .chart-card,
+.dark .table-container,
+[data-theme="dark"] .table-container,
+.dark .stat-card,
+[data-theme="dark"] .stat-card {
+  background-color: var(--surface-card) !important;
+  border-color: var(--card-border-subtle) !important;
+  /* keep existing border width/radius/shadow from component */
 }
 
-/* Kill any accidental green debug outline and replace with subtle ring */
-*:focus { outline: none !important; }
-*:focus-visible {
-  outline: 2px solid var(--focus-ring, rgba(255,255,255,.18)) !important;
-  outline-offset: 2px;
-  border-radius: 6px;
+/* ---------- shadcn/ui (uses CSS vars like --card) ---------- */
+.dark .bg-card,
+[data-theme="dark"] .bg-card,
+.dark .shadcn-card,
+[data-theme="dark"] .shadcn-card {
+  background-color: var(--surface-card) !important;
+  border-color: var(--card-border-subtle) !important;
+}
+
+/* ---------- MUI (Material UI) ---------- */
+.dark .MuiPaper-root,
+[data-theme="dark"] .MuiPaper-root,
+.dark .MuiCard-root,
+[data-theme="dark"] .MuiCard-root,
+.dark .MuiDrawer-paper,
+[data-theme="dark"] .MuiDrawer-paper,
+.dark .MuiPopover-paper,
+[data-theme="dark"] .MuiPopover-paper,
+.dark .MuiMenu-paper,
+[data-theme="dark"] .MuiMenu-paper,
+.dark .MuiDialog-paper,
+[data-theme="dark"] .MuiDialog-paper {
+  background-color: var(--surface-card) !important;
+  border-color: var(--card-border-subtle) !important;
+}
+
+/* ---------- Ant Design ---------- */
+.dark .ant-card,
+[data-theme="dark"] .ant-card,
+.dark .ant-card-bordered,
+[data-theme="dark"] .ant-card-bordered,
+.dark .ant-modal-content,
+[data-theme="dark"] .ant-modal-content,
+.dark .ant-drawer-content,
+[data-theme="dark"] .ant-drawer-content,
+.dark .ant-popover-inner,
+[data-theme="dark"] .ant-popover-inner,
+.dark .ant-dropdown-menu,
+[data-theme="dark"] .ant-dropdown-menu {
+  background: var(--surface-card) !important;
+  border-color: var(--card-border-subtle) !important;
+}
+
+/* ---------- Headless UI / Radix modals & popovers ---------- */
+.dark [role="dialog"],
+[data-theme="dark"] [role="dialog"],
+.dark [role="menu"],
+[data-theme="dark"] [role="menu"],
+.dark [role="tooltip"],
+[data-theme="dark"] [role="tooltip"] {
+  background-color: var(--surface-card) !important;
+  border: 1px solid var(--card-border-subtle) !important;
+}
+
+/* ---------- Tables (inside cards) ---------- */
+.dark .table,
+[data-theme="dark"] .table,
+.dark .table-wrapper,
+[data-theme="dark"] .table-wrapper {
+  background-color: var(--surface-card) !important;
+  border-color: var(--card-border-subtle) !important;
+}
+
+/* ---------- Chart containers (so charts sit on same surface) ---------- */
+.dark .chart-container,
+[data-theme="dark"] .chart-container,
+.dark .recharts-wrapper,
+[data-theme="dark"] .recharts-wrapper,
+.dark .echarts-for-react,
+[data-theme="dark"] .echarts-for-react,
+.dark canvas.chartjs-render-monitor,
+[data-theme="dark"] canvas.chartjs-render-monitor {
+  background-color: var(--surface-card) !important;
+}
+
+/* ---------- Kill any hardcoded black that fights the token ---------- */
+.dark .bg-black,
+[data-theme="dark"] .bg-black {
+  background-color: var(--surface-card) !important;
 }
