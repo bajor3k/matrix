@@ -61,7 +61,7 @@
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 4.7%;
+    --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
@@ -212,12 +212,4 @@
 [data-theme="dark"] .MuiDivider-root {
   border-color: var(--nav-divider) !important;
   background: var(--nav-divider) !important;
-}
-
-header {
-    border-bottom-color: hsl(var(--border)) !important;
-}
-
-.dark header {
-    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
 }
