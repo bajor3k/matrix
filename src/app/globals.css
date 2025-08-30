@@ -75,23 +75,23 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 89% 48%;
     --destructive-foreground: 0 0% 98%;
-    --border: 255 255 255 / 0.1;
+    --border: 0 0% 100% / 0.10;
     --input: 0 0% 14%;
-    --ring: 0 0% 100%;
+    --ring: 0 0% 100% / 0.12;
     --chart-1: 258 84% 58%;
     --chart-2: 256 90% 66%;
     --chart-3: 151 96% 46%;
     --chart-4: 250 95% 85%;
     --chart-5: 252 91% 95%;
     --chart-orange: 260 50% 40%;
-    --sidebar-background: transparent;
+    --sidebar-background: 0 0% 6%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 0 0% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 0 0% 10%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 255 255 255 / 0.1;
-    --sidebar-ring: 240 4.9% 83.9%;
+    --sidebar-border: 0 0% 100% / 0.10;
+    --sidebar-ring: 0 0% 100% / 0.12;
   }
 }
 
@@ -149,9 +149,9 @@
 /* Sidebar container surface & edge */
 .dark .sidebar,
 [data-theme="dark"] .sidebar {
-  background: #0b0b0b !important;                /* your dark shell */
+  background: hsl(var(--sidebar-background)) !important;
   color: rgba(255,255,255,.75) !important;
-  border-right: 1px solid var(--nav-border) !important;
+  border-right: 1px solid hsl(var(--sidebar-border)) !important;
   /* neutralize any green debug/brand line on the left */
   border-left: none !important;
   box-shadow: none !important;
@@ -189,7 +189,7 @@
 [data-theme="dark"] .topbar,
 .dark .header,
 [data-theme="dark"] .header {
-  background: #0b0b0b !important;
+  background: hsl(var(--background)) !important;
   color: rgba(255,255,255,.70) !important;
   border-bottom: 1px solid var(--nav-border) !important; /* faint, not harsh white */
 }
