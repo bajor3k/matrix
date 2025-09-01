@@ -59,12 +59,18 @@
   }
 
   .dark {
-    --background: 240 10% 3.9%;
+    /* page/background tokens (keep as you prefer) */
+    --background: 240 10% 3.9%;        /* page shell */
     --foreground: 0 0% 98%;
-    --card: 240 4% 5%;
+
+    /* 🔑 card/panel surfaces: set to #0c0c0c */
+    --card: 0 0% 4.7%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+
+    /* popovers often read like cards; match unless you want different */
+    --popover: 0 0% 4.7%;
     --popover-foreground: 0 0% 98%;
+    
     --primary: 258 84% 58%; /* Soft purple glow */
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 10%;
@@ -187,6 +193,44 @@
   .grid [data-card="true"] {
     border-radius: var(--card-radius);
     overflow: hidden;
+  }
+
+  /* === DARK MODE: FORCE CARD SURFACES TO #0c0c0c =========================== */
+  /* universal card selector — low specificity using :where() */
+  .dark :where(
+    /* our own / common aliases */
+    .bg-card, .surface-card, [data-card="true"], .panel, .card, .shadcn-card,
+    /* Ant Design */
+    .ant-card, .ant-card-bordered,
+    /* Material UI */
+    .MuiCard-root, .MuiPaper-root.MuiCard-root,
+    /* Chakra */
+    .chakra-card,
+    /* Mantine */
+    .mantine-Card-root,
+    /* generic “cardy” sections used in dashboards */
+    section[data-surface="card"], article[data-surface="card"]
+  ) {
+    background-color: #0c0c0c;               /* exact color */
+    background: #0c0c0c;                     /* hard fallback */
+  }
+
+  /* Some libs style card body separately — match it too */
+  .dark :where(
+    .ant-card-body,
+    .MuiCardContent-root,
+    .mantine-Card-section
+  ) {
+    background-color: #0c0c0c;
+  }
+
+  /* Dialogs/popovers that visually act as “cards” */
+  .dark :where(
+    .ant-popover-inner, .ant-dropdown-menu, .ant-modal-content,
+    .MuiPopover-paper, .MuiPaper-root.MuiPopover-paper,
+    .chakra-popover__content, .mantine-Popover-dropdown
+  ) {
+    background-color: hsl(var(--popover)); /* we set this to #0c0c0c above */
   }
 }
 
@@ -381,3 +425,5 @@ hr {
 :root .sidebar [data-state="open"] {
   background: var(--sidebar-active-light) !important;
 }
+
+    
