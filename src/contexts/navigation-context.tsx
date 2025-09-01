@@ -27,7 +27,7 @@ interface NavigationContextType {
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
 
 export function NavigationProvider({ children }: { children: ReactNode }) {
-  const [activeSection, setActiveSection] = useState<ToolbarSectionKey>('Reports');
+  const [activeSection, setActiveSection] = useState<ToolbarSectionKey>('CRM');
 
   return (
     <NavigationContext.Provider value={{ activeSection, setActiveSection }}>

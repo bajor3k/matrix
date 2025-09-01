@@ -15,6 +15,7 @@ import { useNavigation, type NavItem } from "@/contexts/navigation-context";
 
 export type SectionKey = "reports" | "crm" | "analytics" | "resources";
 
+const reportItems: NavItem[] = navigationData['Reports'];
 const crmItems: NavItem[] = navigationData['CRM'];
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
@@ -48,19 +49,21 @@ export default function Sidebar({
 }) {
   const pathname = usePathname();
 
-  const isCRM = useMemo(() => pathname?.startsWith("/client-portal"), [pathname]);
+  const isReports = useMemo(() => pathname?.startsWith("/reports"), [pathname]);
+  const isCRM = useMemo(() => pathname?.startsWith("/crm"), [pathname]);
   const isAnalytics = useMemo(() => [
-    "/asset-analytics", "/client-analytics", "/financial-analytics", 
-    "/conversion-analytics", "/compliance-matrix", "/portfolio-matrix", 
-    "/model-matrix", "/contribution-matrix", "/dashboard"
-  ].some(p => pathname.startsWith(p)), [pathname]);
-  const isResources = useMemo(() => pathname?.startsWith("/resource-matrix"), [pathname]);
+    "/analytics/asset", "/analytics/client", "/analytics/financial", 
+    "/analytics/conversion", "/analytics/compliance", "/analytics/contribution"
+  ].some(p => pathname.startsWith(p)) || pathname.startsWith("/dashboard"), [pathname]);
+  const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
 
+  const [openReports, setOpenReports] = useState(isReports);
   const [openCRM, setOpenCRM] = useState(isCRM);
   const [openAnalytics, setOpenAnalytics] = useState(isAnalytics);
   const [openResources, setOpenResources] = useState(isResources);
 
+  useEffect(() => setOpenReports(isReports), [isReports]);
   useEffect(() => setOpenCRM(isCRM), [isCRM]);
   useEffect(() => setOpenAnalytics(isAnalytics), [isAnalytics]);
   useEffect(() => setOpenResources(isResources), [isResources]);
@@ -68,6 +71,7 @@ export default function Sidebar({
   // When parent asks to open a specific section (after expanding)
   useEffect(() => {
     if (!forceOpen) return;
+    setOpenReports(forceOpen === "reports");
     setOpenCRM(forceOpen === "crm");
     setOpenAnalytics(forceOpen === "analytics");
     setOpenResources(forceOpen === "resources");
@@ -123,6 +127,7 @@ export default function Sidebar({
     <div className="flex h-full w-full flex-col p-3 pt-2">
       {/* sections */}
       <div className="h-[calc(100%-60px)] overflow-y-auto">
+        <Section keyName="reports" title="Reports"   icon={FileStack}  open={openReports}   setOpen={setOpenReports}   items={reportItems} />
         <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} />
         <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} />
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />

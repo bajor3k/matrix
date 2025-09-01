@@ -3,8 +3,13 @@
 import * as React from 'react';
 import MarketCard from "@/components/MarketCard";
 import RecentActivity from "@/components/dashboard/RecentActivity";
+import { redirect } from 'next/navigation';
 
 export default function DashboardPage() {
+  React.useEffect(() => {
+    redirect('/crm/home');
+  }, []);
+
   return (
     <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground">

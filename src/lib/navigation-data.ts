@@ -33,13 +33,17 @@ import {
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
+    { id: 'Reports', title: 'Reports' },
     { id: 'CRM', title: 'CRM' },
     { id: 'Analytics', title: 'Analytics' },
     { id: 'Resources', title: 'Resources' },
 ];
 
 export const navigationData: Record<ToolbarSectionKey | 'Other', NavItem[]> = {
-  'Reports': [],
+  'Reports': [
+    { name: 'Advisory Fees', icon: BadgeDollarSign, href: '/reports/advisory-fees'},
+    { name: 'Cash', icon: Wallet, href: '/reports/cash'},
+  ],
   'CRM': [
     { name: 'Home', icon: HomeIcon, href: '/crm/home' },
     { name: 'Email', icon: Mail, href: '/crm/email' },
@@ -60,11 +64,11 @@ export const navigationData: Record<ToolbarSectionKey | 'Other', NavItem[]> = {
     { name: 'Contribution Matrix', icon: TrendingUp, href: '/analytics/contribution' },
   ],
   'Resources': [
-    { name: 'Quick Links', icon: LinkIcon, href: '/resource-matrix?tab=quick_links' },
-    { name: 'Documents', icon: FileText, href: '/resource-matrix?tab=documents' },
-    { name: 'Support', icon: LifeBuoy, href: '/resource-matrix?tab=support' },
-    { name: 'Tools', icon: Calculator, href: '/resource-matrix?tab=tools' },
-    { name: 'Training', icon: GraduationCap, href: '/resource-matrix?tab=training' },
+    { name: 'Quick Links', icon: LinkIcon, href: '/resources?tab=quick_links' },
+    { name: 'Documents', icon: FileText, href: '/resources?tab=documents' },
+    { name: 'Support', icon: LifeBuoy, href: '/resources?tab=support' },
+    { name: 'Tools', icon: Calculator, href: '/resources?tab=tools' },
+    { name: 'Training', icon: GraduationCap, href: '/resources?tab=training' },
   ],
   'Other': [
       { name: 'Settings', icon: Settings, href: '/settings' },
