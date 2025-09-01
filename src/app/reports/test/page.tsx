@@ -5,7 +5,8 @@ export const dynamic = "force-dynamic"; // bypass any static caching
 export const revalidate = 0;            // ensure no ISR artifacts during migration
 
 async function getData() {
-  const res = await fetch("/api/test", {
+  const host = process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000";
+  const res = await fetch(`${host}/api/test`, {
     cache: "no-store",
     next: { tags: ["reports-test"] },
   });
