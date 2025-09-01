@@ -71,19 +71,19 @@
     --popover: 0 0% 4.7%;
     --popover-foreground: 0 0% 98%;
     
-    --primary: 258 84% 58%; /* Soft purple glow */
+    --primary: 0 0% 12%; /* #1f1f1f */
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 10%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 7%;
     --muted-foreground: 0 0% 70%;
-    --accent: 258 84% 58% / 0.1; /* Soft purple glow at 10% opacity */
+    --accent: 0 0% 12%; /* #1f1f1f */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 89% 48%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 100% / 0.10;
     --input: 0 0% 14%;
-    --ring: 258 84% 58%; /* Ring to match primary accent */
+    --ring: 0 0% 18%;
     --radius: 1rem;
     --chart-1: 258 84% 58%;
     --chart-2: 256 90% 66%;
@@ -450,4 +450,11 @@ hr {
   width: 0; height: 0; display: none;
 }
 
+/* Ensure any “active/selected” pills use the new accent */
+.nav-item[aria-current="page"],
+.nav-item[data-state="active"],
+.nav-item[data-active="true"] {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground));
+}
     

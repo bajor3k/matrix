@@ -27,7 +27,8 @@ function Row({ item, active, hiddenLabel }: { item: NavItem; active: boolean; hi
     <Link
       href={item.href}
       title={item.name}
-      className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition w-full
+      data-active={active}
+      className={`nav-item flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition w-full
         ${active ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}`}
     >
       <Icon className="h-5 w-5 shrink-0" />
@@ -138,7 +139,8 @@ export default function Sidebar({
         <Link
           href="/settings"
           title="Settings"
-          className={`group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition
+          data-active={isSettings}
+          className={`nav-item group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition
             ${isSettings ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}`}
         >
           <SettingsIcon className="h-5 w-5 shrink-0" />
