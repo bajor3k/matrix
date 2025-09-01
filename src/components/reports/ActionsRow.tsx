@@ -1,4 +1,3 @@
-
 // components/reports/ActionsRow.tsx
 "use client";
 
@@ -15,6 +14,7 @@ type ActiveView = "none" | "dashboard" | "key-metrics" | "maven";
 type Props = {
   filesReady: boolean;
   runState: RunState;
+  activeView: ActiveView;
   onRun: () => void;
   onDownloadExcel?: () => void;
   onToggleKeyMetrics?: () => void;
@@ -28,6 +28,7 @@ type Props = {
 export default function ActionsRow({
   filesReady,
   runState,
+  activeView,
   onRun,
   onDownloadExcel,
   onToggleKeyMetrics,
@@ -49,19 +50,12 @@ export default function ActionsRow({
           excelHref={runState === 'success' ? excelDownloadPath : null}
           onKeyMetrics={runState === 'success' ? onToggleKeyMetrics : undefined}
         />
-         <Button
-          variant="secondary"
-          className="rounded-full h-9"
-          onClick={onToggleMaven}
-          disabled={!canOpenMaven}
-        >
-           {isMavenOpen ? 'Hide Maven' : 'Ask Maven'}
-        </Button>
       </div>
 
       <ReportDownloadModal
         open={modalOpen}
         onOpenChange={setModalOpen}
+        title="Download Required Reports"
         onComplete={(files: any) => {
             // This component no longer handles file state directly.
             // The parent `ReportScaffold` will get files from its own `UploadSlot`s.
