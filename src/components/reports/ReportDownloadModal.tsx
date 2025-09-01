@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import { CheckCircle2 } from "lucide-react";
 
 type TestFilesModalProps = {
   open: boolean;
@@ -46,7 +47,7 @@ export default function ReportDownloadModal({ open, onOpenChange, onComplete }: 
 
   const done = () => {
     if (test1 && test2 && test3) {
-      onComplete({ test1, test2, test3 });
+      onComplete({ report1: test1, report2: test2, report3: test3 });
       resetAndClose();
     }
   };
@@ -161,6 +162,13 @@ function FileTile({
           </>
         )}
       </button>
+      
+      {file && (
+        <div className="mt-2 flex items-center justify-center gap-1 text-xs font-semibold text-emerald-400" aria-live="polite">
+          <CheckCircle2 className="h-3.5 w-3.5" />
+          <span>Success</span>
+        </div>
+      )}
     </div>
   );
 }
