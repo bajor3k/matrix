@@ -33,20 +33,13 @@ import {
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
-    { id: 'Reports', title: 'Reports' },
     { id: 'CRM', title: 'CRM' },
     { id: 'Analytics', title: 'Analytics' },
     { id: 'Resources', title: 'Resources' },
 ];
 
 export const navigationData: Record<ToolbarSectionKey | 'Other', NavItem[]> = {
-  'Reports': [
-    { name: 'Advisory Fees Cash', icon: FileStack, href: '/reports/3m-cash' },
-    { name: 'Cash Balance', icon: Wallet, href: '/reports/cash-alerts' },
-    { name: 'Margin', icon: Percent, href: '/reports/margin-notify' },
-    { name: 'Advisory Fees', icon: BadgeDollarSign, href: '/reports/advisor-summary' },
-    { name: 'Test', icon: FlaskConical, href: '/reports/test' },
-  ],
+  'Reports': [],
   'CRM': [
     { name: 'Home', icon: HomeIcon, href: '/client-portal/home' },
     { name: 'Email', icon: Mail, href: '/client-portal/email' },
