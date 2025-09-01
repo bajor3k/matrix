@@ -33,13 +33,6 @@ const averageRevenueData = {
   icon: DollarSign,
 };
 
-const grossMarginData = {
-  title: "Target Gross Margin",
-  value: "42%",
-  progressNumericValue: 42,
-  icon: Target,
-};
-
 export default function FinancialAnalyticsPage() {
   return (
     <main className="min-h-screen flex-1 p-6 space-y-6 md:p-8">
@@ -64,22 +57,6 @@ export default function FinancialAnalyticsPage() {
           description={averageRevenueData.description}
           icon={averageRevenueData.icon}
         />
-        <PlaceholderCard
-          title={grossMarginData.title}
-          value={grossMarginData.value}
-          icon={grossMarginData.icon}
-        >
-          <Progress
-            value={grossMarginData.progressNumericValue}
-            className={cn(
-              "h-3 mt-2",
-              grossMarginData.progressNumericValue >= 40 ? "[&>div]:bg-[hsl(var(--chart-3))]" : // Green
-              grossMarginData.progressNumericValue >= 30 ? "[&>div]:bg-[hsl(var(--chart-4))]" : // Yellow
-                                                            "[&>div]:bg-[hsl(var(--chart-5))]"  // Red
-            )}
-            aria-label={`Gross Margin ${grossMarginData.progressNumericValue}%`}
-          />
-        </PlaceholderCard>
       </div>
 
       <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
