@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Sidebar, { type SectionKey } from "@/components/Sidebar";
 import { TopToolbar } from "./TopToolbar";
+import { cn } from "@/lib/utils";
 
 const HEADER_H = 48; // px
 
@@ -38,7 +39,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <TopToolbar onToggleCollapsed={handleSidebarToggle} collapsed={collapsed} />
       </header>
       <aside
-        className="fixed left-0 top-[var(--hh)] z-30 h-[calc(100vh-var(--hh))] border-r border-sidebar-border bg-background overflow-hidden transition-[width] duration-200"
+        className={cn(
+          "fixed left-0 top-[var(--hh)] z-30 h-[calc(100vh-var(--hh))] border-r border-sidebar-border bg-background transition-[width] duration-200",
+          "nav-scroll" // <--- Added class here
+        )}
         style={{ width: "var(--sbw)" }}
       >
         <Sidebar
@@ -54,3 +58,5 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
+
+    

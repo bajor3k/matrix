@@ -439,3 +439,15 @@ hr {
 ){
   display: none !important;
 }
+
+/* Invisible scrollbar for the left nav */
+.nav-scroll {
+  overflow-y: auto;                 /* scrolling works when hovered */
+  -ms-overflow-style: none;         /* IE/Edge */
+  scrollbar-width: none;            /* Firefox */
+}
+.nav-scroll::-webkit-scrollbar {    /* Chrome/Safari/Opera */
+  width: 0; height: 0; display: none;
+}
+
+    
