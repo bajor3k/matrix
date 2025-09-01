@@ -1,4 +1,3 @@
-
 "use client";
 import * as React from "react";
 import Image from "next/image";
@@ -104,7 +103,7 @@ export default function AssetAnalyticsPage() {
           </CardContent>
         </Card>
         <FlowsDivergingCard
-            title="Inflows vs Outflows"
+            title="Inflow v. Outflow"
             data={flowsData}
             initialTimeframe="MTD"
         />
