@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%; /* Light mode background */
+    --background: 0 0% 100%; /* Light mode background */
     --foreground: 240 10% 3.9%; /* Light mode text */
     --card: 0 0% 100%; /* Light mode card background */
     --card-foreground: 240 10% 3.9%;
@@ -425,5 +425,17 @@ hr {
 :root .sidebar [data-state="open"] {
   background: var(--sidebar-active-light) !important;
 }
-
     
+/* Hide any upload/drop cards on Reports pages only (no flash of content) */
+[data-route="reports"] :where(
+  .report-upload-trio,
+  .report-upload-row,
+  .report-dropzone,
+  .dropzone-card,
+  .file-drop-card,
+  .upload-zone,
+  [data-dropzone],
+  [data-role="report-upload"]
+){
+  display: none !important;
+}
