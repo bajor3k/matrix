@@ -41,7 +41,8 @@ function removeCardNode(node: Element) {
     || node.closest('[class*="card"]')
     || node.parentElement;
 
-  if (container && container.parentElement) {
+  // Check if the container is still in the DOM before trying to remove it
+  if (container && container.parentElement && document.body.contains(container)) {
     container.parentElement.removeChild(container);
   }
 }
