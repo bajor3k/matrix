@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic"; // bypass any static caching
 export const revalidate = 0;            // ensure no ISR artifacts during migration
 
 async function getData() {
-  const res = await fetch("http://localhost:3000/api/test", {
+  const res = await fetch("/api/test", {
     cache: "no-store",
     next: { tags: ["reports-test"] },
   });
