@@ -148,7 +148,7 @@ export default function ClientPortalContactsPage() {
                         <TableRow key={contact.id} className="hover:bg-muted/10 border-b-border/20"><TableCell className="px-6 py-4">
                             <Checkbox id={`contact-${contact.id}`} aria-label={`Select contact ${contact.name}`} />
                           </TableCell><TableCell className="font-medium text-foreground px-6 py-4 whitespace-nowrap truncate">
-                             <a href={`/client-portal/contacts/${contact.id}`} className="hover:underline hover:text-primary">
+                             <a href={`/crm/contacts/${contact.id}`} className="hover:underline hover:text-primary">
                               {contact.name}
                             </a>
                           </TableCell><TableCell className="text-muted-foreground px-6 py-4 whitespace-nowrap truncate">{contact.phone}</TableCell><TableCell className="text-muted-foreground px-6 py-4 whitespace-nowrap truncate">{contact.email}</TableCell><TableCell className="px-6 py-4 whitespace-nowrap">

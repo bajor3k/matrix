@@ -1,5 +1,5 @@
 
-// src/app/client-portal/email/page.tsx
+// src/app/crm/email/page.tsx
 "use client";
 
 import * as React from 'react';
