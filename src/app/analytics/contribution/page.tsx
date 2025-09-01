@@ -188,12 +188,12 @@ export default function ContributionMatrixPage() {
             value={`${item.percentageFunded.toFixed(1)}%`}
             description={
               <>
-                <p className="text-sm text-green-400 mt-1">
+                <span className="block text-sm text-green-400 mt-1">
                   +${item.totalOpportunity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} fee potential
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
+                </span>
+                <span className="block text-xs text-muted-foreground mt-1">
                   (${item.totalRemaining.toLocaleString()} remaining)
-                </p>
+                </span>
               </>
             }
             className="text-center"
