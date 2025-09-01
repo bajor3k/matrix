@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -23,6 +22,7 @@ type Props = {
   instructions?: React.ReactNode;
   mergeApiPath?: string;
   requiredFileCount?: 1 | 2 | 3;
+  fileLabels?: string[];
 };
 
 interface DashboardMetrics {
@@ -52,6 +52,7 @@ export default function ReportScaffold({
   instructions = "",
   mergeApiPath = "/api/reports/TBD/merge",
   requiredFileCount = 1,
+  fileLabels,
 }: Props) {
   const [files, setFiles] = React.useState<(File | null)[]>([null, null, null]);
   const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
@@ -162,7 +163,7 @@ export default function ReportScaffold({
                     key={index}
                     file={files[index]}
                     onFileChange={handleFileChange(index)}
-                    dropzoneText={`Drop File ${index + 1} here`}
+                    dropzoneText={fileLabels?.[index] ?? `Drop File ${index + 1} here`}
                   />
                 ))}
               </UploadRow>
