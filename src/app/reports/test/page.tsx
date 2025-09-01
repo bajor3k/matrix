@@ -1,12 +1,17 @@
 // app/reports/test/page.tsx
+import { headers } from "next/headers";
 import { revalidateTestTag } from "./refresh-action";
 
 export const dynamic = "force-dynamic"; // bypass any static caching
 export const revalidate = 0;            // ensure no ISR artifacts during migration
 
 async function getData() {
-  const host = process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000";
-  const res = await fetch(`${host}/api/test`, {
+  const h = headers();
+  const proto = h.get("x-forwarded-proto") ?? "http";
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  if (!host) throw new Error("Host header missing");
+
+  const res = await fetch(`${proto}://${host}/api/test`, {
     cache: "no-store",
     next: { tags: ["reports-test"] },
   });
