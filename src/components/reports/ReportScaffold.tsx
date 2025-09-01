@@ -1,4 +1,3 @@
-
 // src/components/reports/ReportScaffold.tsx
 "use client";
 
@@ -95,7 +94,7 @@ export default function ReportScaffold({
   };
 
   const handleModalComplete = (uploadedFiles: File[]) => {
-    const newFiles: (File | null)[] = [null, null, null];
+    const newFiles: (File | null)[] = Array(requiredFileCount).fill(null);
     uploadedFiles.slice(0, requiredFileCount).forEach((file, index) => {
       if (file) {
         newFiles[index] = file;
