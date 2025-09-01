@@ -1,7 +1,7 @@
+// src/components/reports/ReportScaffold.tsx
 "use client";
 
 import React from "react";
-import UploadCard from "@/components/UploadCard";
 import type { TableRow } from "./ResultsTableCard";
 import ReportsPageShell from "./ReportsPageShell";
 import HelpHeader, { helpHeaderAutoDismiss } from "./HelpHeader";
@@ -15,6 +15,7 @@ import KeyMetricsPanel from "./KeyMetricsPanel";
 import ReportWorkspace from "./ReportWorkspace";
 import { MavenChat } from "./maven/MavenChat";
 import { FLAGS } from "@/lib/featureFlags";
+import UploadSlot from "@/components/UploadSlot";
 
 type Props = {
   reportName: string;
@@ -73,14 +74,21 @@ export default function ReportScaffold({
     return () => window.removeEventListener("keydown", onEsc);
   }, []);
 
-  const handleFileChange = (index: number) => (file: File | null) => {
-    setFiles(prevFiles => {
-      const newFiles = [...prevFiles];
-      newFiles[index] = file;
-      if (newFiles.filter(Boolean).length === 1 && file !== null) {
-        helpHeaderAutoDismiss();
-      }
-      return newFiles;
+  const handleFileChange = (index: number) => async (file: File | null) => {
+    return new Promise<void>((resolve, reject) => {
+        try {
+            setFiles(prevFiles => {
+              const newFiles = [...prevFiles];
+              newFiles[index] = file;
+              if (newFiles.filter(Boolean).length === 1 && file !== null) {
+                helpHeaderAutoDismiss();
+              }
+              return newFiles;
+            });
+            resolve();
+        } catch(err) {
+            reject(err);
+        }
     });
   };
 
@@ -159,11 +167,10 @@ export default function ReportScaffold({
           <FullBleed>
               <UploadRow>
                 {Array.from({ length: requiredFileCount }).map((_, index) => (
-                  <UploadCard
+                  <UploadSlot
                     key={index}
-                    file={files[index]}
-                    onFileChange={handleFileChange(index)}
-                    dropzoneText={fileLabels?.[index] ?? `Drop File ${index + 1} here`}
+                    title={fileLabels?.[index] ?? `File ${index + 1}`}
+                    onUpload={handleFileChange(index)}
                   />
                 ))}
               </UploadRow>
