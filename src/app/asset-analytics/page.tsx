@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { PlaceholderCard } from "@/components/dashboard/placeholder-card";
+import { AllocationLegend } from "@/components/analytics/AllocationLegend";
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -50,6 +51,14 @@ const topPerformingAssetsData = [
   { symbol: 'NVDA', name: 'NVIDIA Corporation', category: 'Technology', value: '$750K', weight: '6.0%', ytdReturn: '+22.3%' },
 ];
 
+const allocationData = [
+  { label: "US Equities", value: 40, color: "var(--palette-1)" },
+  { label: "International Equities", value: 20, color: "var(--palette-2)" },
+  { label: "Fixed Income", value: 25, color: "var(--palette-3)" },
+  { label: "Alternatives", value: 10, color: "var(--palette-5)" },
+  { label: "Cash & Equivalents", value: 5, color: "var(--palette-6)" },
+];
+
 
 export default function AssetAnalyticsPage() {
   return (
@@ -68,7 +77,20 @@ export default function AssetAnalyticsPage() {
             <CardTitle>Asset Allocation by Type</CardTitle>
           </CardHeader>
           <CardContent className="min-h-[420px]">
-            <DynamicAssetAllocationDonutChart />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+              <div className="flex justify-center">
+                <DynamicAssetAllocationDonutChart data={allocationData} />
+              </div>
+              <div className="px-1">
+                <AllocationLegend
+                  items={allocationData.map((d) => ({
+                    label: d.label,
+                    value: `${d.value}%`,
+                    color: d.color,
+                  }))}
+                />
+              </div>
+            </div>
           </CardContent>
         </Card>
         <Card className="col-span-1">

@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Pie, PieChart, Sector } from "recharts"
+import { Pie, PieChart, Sector, Cell } from "recharts"
 
 import {
   ChartContainer,
@@ -11,39 +11,25 @@ import {
 } from "@/components/ui/chart"
 import type { ChartConfig } from "@/components/ui/chart"
 
-const chartData = [
-  { assetType: "usEquities", value: 40, fill: "var(--palette-1)" },
-  { assetType: "intlEquities", value: 20, fill: "var(--palette-2)" },
-  { assetType: "fixedIncome", value: 25, fill: "var(--palette-3)" },
-  { assetType: "alternatives", value: 10, fill: "var(--palette-4)" },
-  { assetType: "cash", value: 5, fill: "var(--palette-5)" },
-]
+interface ChartDataItem {
+  label: string;
+  value: number;
+  color: string;
+}
 
 const chartConfig = {
   value: {
     label: "Percentage",
   },
-  usEquities: {
-    label: "US Equities",
-  },
-  intlEquities: {
-    label: "International Equities",
-  },
-  fixedIncome: {
-    label: "Fixed Income",
-  },
-  alternatives: {
-    label: "Alternatives",
-  },
-  cash: {
-    label: "Cash & Equivalents",
-  },
+  "US Equities": { label: "US Equities" },
+  "International Equities": { label: "International Equities" },
+  "Fixed Income": { label: "Fixed Income" },
+  "Alternatives": { label: "Alternatives" },
+  "Cash & Equivalents": { label: "Cash & Equivalents" },
 } satisfies ChartConfig
 
-export function AssetAllocationDonutChart() {
+export function AssetAllocationDonutChart({ data }: { data: ChartDataItem[] }) {
   const [activeIndex, setActiveIndex] = React.useState<number | null>(null)
-
-  const activeSegment = activeIndex !== null ? chartData[activeIndex] : null;
 
   return (
     <ChartContainer
@@ -56,17 +42,17 @@ export function AssetAllocationDonutChart() {
           content={
             <ChartTooltipContent
               hideLabel
-              formatter={(value, name) => [
-                `${value}%`,
-                chartConfig[name as keyof typeof chartConfig]?.label,
+              formatter={(value, name, item) => [
+                `${item.payload.value}%`,
+                item.payload.label,
               ]}
             />
           }
         />
         <Pie
-          data={chartData}
+          data={data}
           dataKey="value"
-          nameKey="assetType"
+          nameKey="label"
           innerRadius={125}
           outerRadius={175}
           strokeWidth={2}
@@ -85,7 +71,6 @@ export function AssetAllocationDonutChart() {
             payload,
             percent,
           }) => {
-            const label = chartConfig[payload.assetType as keyof typeof chartConfig]?.label || ''
             return (
               <g>
                 <text
@@ -96,7 +81,7 @@ export function AssetAllocationDonutChart() {
                   fill="hsl(var(--foreground))"
                   className="text-lg"
                 >
-                  {label}
+                  {payload.label}
                 </text>
                 <text
                   x={cx}
@@ -120,7 +105,11 @@ export function AssetAllocationDonutChart() {
               </g>
             )
           }}
-        />
+        >
+          {data.map((entry) => (
+            <Cell key={entry.label} fill={entry.color} />
+          ))}
+        </Pie>
       </PieChart>
     </ChartContainer>
   )
