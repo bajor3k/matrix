@@ -1,20 +1,13 @@
 // app/reports/test/page.tsx
 import { headers } from "next/headers";
 import { revalidateTestTag } from "./refresh-action";
+import { GET } from "@/app/api/test/route";
 
 export const dynamic = "force-dynamic"; // bypass any static caching
 export const revalidate = 0;            // ensure no ISR artifacts during migration
 
 async function getData() {
-  const h = headers();
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  const host = h.get("x-forwarded-host") ?? h.get("host");
-  if (!host) throw new Error("Host header missing");
-
-  const res = await fetch(`${proto}://${host}/api/test`, {
-    cache: "no-store",
-    next: { tags: ["reports-test"] },
-  });
+  const res = await GET();
   if (!res.ok) throw new Error("Failed to load test data");
   return res.json();
 }
