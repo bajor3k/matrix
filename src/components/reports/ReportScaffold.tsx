@@ -102,7 +102,7 @@ export default function ReportScaffold({
       const advisoryFee = num(r['Advisory Fees']) ?? 0;
       return {
         ip: r['IP'] ?? '',
-        acct: r['Account Number'] ?? '',
+        acct: r['Account Number'] ?? r['Account'] ?? '',
         value: money(r['Value']),
         fee: money(advisoryFee),
         cash: money(r['Cash']),
@@ -141,7 +141,7 @@ export default function ReportScaffold({
   }
 
   async function downloadExcel() {
-    if (runState !== "success") return;
+    if (runState !== "success" && !filesReady) return;
     const fd = new FormData();
     if (files[0]) fd.append("fileA", files[0]);
     if (files[1]) fd.append("fileB", files[1]);
@@ -181,7 +181,6 @@ export default function ReportScaffold({
             <ActionsRow
             filesReady={filesReady}
             runState={runState}
-            activeView={activeView}
             onRun={runReport}
             onDownloadExcel={downloadExcel}
             onToggleKeyMetrics={() => setActiveView(p => p === 'key-metrics' ? 'maven' : 'key-metrics')}
