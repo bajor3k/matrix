@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
+import { CardHeader, CardTitle } from '@/components/ui/card';
 dayjs.extend(isoWeek);
 
 type FlowRow = { date: string; inflow: number; outflow: number };
@@ -109,21 +110,23 @@ export default function FlowsDivergingCard({
   return (
     <section className={`${cardBase} ${className || ''}`}>
       {/* Header */}
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <h3 className="text-[15px] font-semibold text-[rgba(255,255,255,.90)]">{title}</h3>
-        <div className="flex items-center gap-2">
-          {(Object.keys(TF_LABELS) as Timeframe[]).map((k) => (
-            <button
-              key={k}
-              onClick={() => setTf(k)}
-              className={tf === k ? chipActive : chipMuted}
-              aria-pressed={tf === k}
-            >
-              {TF_LABELS[k]}
-            </button>
-          ))}
+      <CardHeader className="p-0 mb-3">
+        <div className="flex items-center justify-between gap-3">
+            <CardTitle>{title}</CardTitle>
+            <div className="flex items-center gap-2">
+            {(Object.keys(TF_LABELS) as Timeframe[]).map((k) => (
+                <button
+                key={k}
+                onClick={() => setTf(k)}
+                className={tf === k ? chipActive : chipMuted}
+                aria-pressed={tf === k}
+                >
+                {TF_LABELS[k]}
+                </button>
+            ))}
+            </div>
         </div>
-      </div>
+      </CardHeader>
 
       {/* Chart */}
       <div className="h-[260px] sm:h-[300px]">
