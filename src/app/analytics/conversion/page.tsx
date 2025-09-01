@@ -2,7 +2,7 @@
 "use client"; // Required for Tooltip and potential future interactions
 
 import * as React from 'react';
-import { Users, DollarSign, TrendingDown, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Users, DollarSign, TrendingDown, ArrowUpRight, ArrowDownRight, TrendingUp } from 'lucide-react';
 import { PlaceholderCard } from '@/components/dashboard/placeholder-card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -44,6 +44,11 @@ export default function ConversionAnalyticsPage() {
       value: "$162,000",
       icon: TrendingDown
     },
+    {
+      title: "Conversion Rate (est.)",
+      value: "5.2%",
+      icon: TrendingUp
+    },
   ];
 
   const topHouseholdsByNonManagedAUMData = [
@@ -66,7 +71,7 @@ export default function ConversionAnalyticsPage() {
     <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Conversion Analytics</h1>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {metricCardsData.map((card, index) => (
           <PlaceholderCard
             key={index}
