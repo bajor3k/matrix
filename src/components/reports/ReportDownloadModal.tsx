@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { CheckCircle2, Trash2 } from "lucide-react";
+import { CheckCircle2, Trash2, Upload } from "lucide-react";
 
 type TestFilesModalProps = {
   open: boolean;
@@ -151,14 +151,14 @@ function FileTile({
       {/* Clickable area */}
       <button
         onClick={onPick}
-        className="w-full rounded-lg border border-border bg-card px-3 py-10 text-center text-muted-foreground hover:text-foreground transition"
+        className="w-full rounded-lg border border-border bg-card px-3 py-10 text-center text-muted-foreground hover:text-foreground transition flex flex-col items-center justify-center"
       >
         {file ? (
           <span className="block truncate text-foreground">{file.name}</span>
         ) : (
           <>
-            <span className="block mb-1">Drop file here</span>
-            <span className="text-xs text-muted-foreground/80">.xlsx or .xls</span>
+            <Upload className="h-6 w-6 mb-2" />
+            <span className="block">Browse</span>
           </>
         )}
       </button>
