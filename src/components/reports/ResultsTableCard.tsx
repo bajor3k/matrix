@@ -16,9 +16,9 @@ function StatusPill({ short }: { short: boolean }) {
     <span
       className="
         inline-flex items-center rounded-full px-2 py-[2px] text-xs font-medium
-        text-[#e31211]
-        bg-[#ffe9e9] dark:bg-[#2a0000]
-        border border-[#e31211]/20 dark:border-[#e31211]/25
+        text-destructive
+        bg-destructive/10
+        border border-destructive/20
       "
     >
       Short
@@ -31,8 +31,7 @@ export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
     <section
       className="
         w-full max-w-none rounded-2xl border
-        bg-white dark:bg-[#101010]
-        border-[#e5e7eb] dark:border-white/10
+        bg-card text-card-foreground
         p-3 md:p-4
         flex flex-col h-full
       "
@@ -40,13 +39,13 @@ export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
     >
       <div className="overflow-auto flex-grow">
         <table className="report-table w-full text-sm">
-          {/* Header — light in light-mode, dark in dark-mode */}
+          {/* Header */}
           <thead
             className="
               sticky top-0 z-10
-              bg-[#fcfbfb] dark:bg-[#0b0b0b]
-              text-black/80 dark:text-white/70
-              border-b border-[#e5e7eb] dark:border-white/10
+              bg-card
+              text-muted-foreground
+              border-b border-border
             "
           >
             <tr>
@@ -62,7 +61,7 @@ export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-black/60 dark:text-white/60">
+                <td colSpan={6} className="py-8 text-center text-muted-foreground">
                   No rows to display. Run the report to populate results.
                 </td>
               </tr>
@@ -71,23 +70,16 @@ export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
                 <tr
                   key={i}
                   className="
-                    /* zebra striping */
-                    odd:bg-[#fcfbfb] even:bg-[#f3f3f3]
-                    dark:odd:bg-[#0b0b0b] dark:even:bg-[#141414]
-
-                    /* borders + hover */
-                    border-b border-black/10 dark:border-white/5 last:border-0
-                    hover:bg-black/[.04] dark:hover:bg-white/5
+                    border-b border-border last:border-0
+                    hover:bg-muted/50
                   "
                 >
-                  <td className="py-2 pr-4 pl-2 text-black dark:text-white">{r.ip}</td>
-                  <td className="py-2 pr-4 text-black dark:text-white">{r.acct}</td>
-                  <td className="py-2 pr-4 text-black dark:text-white">{r.value}</td>
-                  <td className="py-2 pr-4 text-black dark:text-white">{r.fee}</td>
-                  <td className="py-2 pr-4 text-black dark:text-white">{r.cash}</td>
-
-                  {/* Status column — NO black cell background; just zebra row background */}
-                  <td className="py-2 text-black dark:text-white">
+                  <td className="py-2 pr-4 pl-2 text-foreground">{r.ip}</td>
+                  <td className="py-2 pr-4 text-foreground">{r.acct}</td>
+                  <td className="py-2 pr-4 text-foreground">{r.value}</td>
+                  <td className="py-2 pr-4 text-foreground">{r.fee}</td>
+                  <td className="py-2 pr-4 text-foreground">{r.cash}</td>
+                  <td className="py-2 text-foreground">
                     <StatusPill short={r.short} />
                   </td>
                 </tr>

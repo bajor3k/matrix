@@ -52,14 +52,11 @@ export default function UploadCard({
       {...getRootProps()}
       className={cn(
         "relative flex flex-col items-center justify-center text-center gap-2",
-        "rounded-2xl bg-card dark:bg-[#0c0c0c]", // Use card background, override dark to #0c0c0c
-        "border-border dark:border-none", // Use theme border, remove in dark mode
+        "rounded-2xl bg-card border",
         "px-6 py-5 cursor-pointer transition-colors",
-        // Hover: subtle emphasis
-        "hover:border-black/20 dark:hover:bg-white/5",
-        // Drag active: brand green ring
+        "hover:border-primary/50",
         isDragActive
-          ? "ring-2 ring-[#08e28f] ring-offset-2 ring-offset-background"
+          ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
           : "",
         className
       )}
@@ -73,21 +70,21 @@ export default function UploadCard({
             type="button"
             onClick={handleRemove}
             aria-label={`Remove file from slot ${slot}`}
-            className="p-1 rounded hover:bg-black/[.04] dark:hover:bg-white/5"
+            className="p-1 rounded hover:bg-destructive/10"
           >
-            <Trash2 className="w-5 h-5 text-[#e31211]" />
+            <Trash2 className="w-5 h-5 text-destructive" />
           </button>
         ) : (
-          <Upload className="w-6 h-6 text-[#08e28f]" />
+          <Upload className="w-6 h-6 text-primary" />
         )}
       </div>
 
       {!file ? (
-        <p className="mt-5 text-base font-semibold leading-tight text-black dark:text-white">
+        <p className="mt-5 text-base font-semibold leading-tight text-foreground">
           {dropzoneText}
         </p>
       ) : (
-        <p className="mt-6 text-sm text-[#08e28f] leading-tight">
+        <p className="mt-6 text-sm text-primary leading-tight">
           Success <span aria-hidden>🙂</span>
         </p>
       )}

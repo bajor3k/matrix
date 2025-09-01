@@ -34,22 +34,22 @@ export default function HelpHeader({
       {/* Slim Help bar */}
       {!dismissed && (
         <div
-          className="flex items-center justify-between rounded-xl border px-4 py-2 text-sm bg-card border-border dark:bg-[#0c0c0c] dark:border-card-border-subtle"
+          className="flex items-center justify-between rounded-xl border px-4 py-2 text-sm bg-card border-border"
         >
           <div className="flex items-center gap-2">
-            <HelpCircle className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-            <span className="text-gray-700 dark:text-gray-300">Need a refresher on this report?</span>
+            <HelpCircle className="w-4 h-4 text-muted-foreground" />
+            <span className="text-muted-foreground">Need a refresher on this report?</span>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={() => setOpen(true)}
-              className="underline underline-offset-2 text-[#08e28f] hover:opacity-90"
+              className="underline underline-offset-2 text-primary hover:opacity-90"
             >
               View instructions
             </button>
             <button
               onClick={dismiss}
-              className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              className="text-muted-foreground hover:text-foreground"
               title="Don’t show again"
             >
               Hide
@@ -63,24 +63,24 @@ export default function HelpHeader({
         open={open}
         onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}
         className={cn(
-          "rounded-2xl details-no-marker bg-card dark:bg-[#0c0c0c]",
-          "border border-border dark:border-card-border-subtle" // Apply the border here
+          "rounded-2xl details-no-marker bg-card",
+          "border border-border"
         )}
       >
         <summary className="cursor-pointer px-5 py-3 flex items-center justify-between">
-          <div className="text-sm font-semibold text-gray-800 dark:text-gray-200">How this report works</div>
-          <span className="text-gray-500 dark:text-gray-400 text-xs">{open ? "Hide" : "Show"}</span>
+          <div className="text-sm font-semibold text-foreground">How this report works</div>
+          <span className="text-muted-foreground text-xs">{open ? "Hide" : "Show"}</span>
         </summary>
 
         <div className="px-5 pb-5 space-y-4">
           <section>
-            <h3 className="report-heading text-gray-900 dark:text-gray-100 mb-2">Report Summary</h3>
-            <div className="report-copy text-gray-700 dark:text-gray-300">{summary}</div>
+            <h3 className="report-heading text-foreground mb-2">Report Summary</h3>
+            <div className="report-copy text-muted-foreground">{summary}</div>
           </section>
 
           <section>
-            <h3 className="report-heading text-gray-900 dark:text-gray-100 mb-2">Instructions</h3>
-            <div className="report-copy text-gray-700 dark:text-gray-300">{instructions}</div>
+            <h3 className="report-heading text-foreground mb-2">Instructions</h3>
+            <div className="report-copy text-muted-foreground">{instructions}</div>
           </section>
         </div>
       </details>

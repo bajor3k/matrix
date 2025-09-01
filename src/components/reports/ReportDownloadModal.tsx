@@ -57,13 +57,13 @@ export default function ReportDownloadModal({ open, onOpenChange, onComplete }: 
       <div className="absolute inset-0 bg-black/60" onClick={resetAndClose} />
 
       {/* Modal */}
-      <div className="relative w-[720px] max-w-[92vw] rounded-2xl border border-white/10 bg-[#0c0c0c] shadow-xl">
+      <div className="relative w-[720px] max-w-[92vw] rounded-2xl border border-border bg-card shadow-xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
-          <h2 className="text-white/85 tracking-wide">SELECT FILES TO DOWNLOAD</h2>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+          <h2 className="text-foreground tracking-wide">SELECT FILES TO DOWNLOAD</h2>
           <button
             onClick={resetAndClose}
-            className="text-white/60 hover:text-white/90 transition"
+            className="text-muted-foreground hover:text-foreground transition"
             aria-label="Close"
           >
             ✕
@@ -99,25 +99,23 @@ export default function ReportDownloadModal({ open, onOpenChange, onComplete }: 
           <input ref={i3} type="file" accept={ACCEPT} onChange={onPick(setTest3)} className="hidden" />
 
           {/* Progress hint */}
-          <div className="mt-4 text-sm text-white/50">
+          <div className="mt-4 text-sm text-muted-foreground">
             {Number(!!test1) + Number(!!test2) + Number(!!test3)}/3 uploaded
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-white/10">
+        <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-border">
           <button
             onClick={resetAndClose}
-            className="px-4 py-2 rounded-full border border-white/10 bg-black text-white/70 hover:text-white/90"
+            className="px-4 py-2 rounded-full border border-border bg-background text-muted-foreground hover:text-foreground"
           >
             Cancel
           </button>
           <button
             onClick={done}
             disabled={!allSelected}
-            className={`px-4 py-2 rounded-full border border-white/10 bg-black transition ${
-              allSelected ? "text-white/85 hover:text-white" : "text-white/40 cursor-not-allowed"
-            }`}
+            className={`px-4 py-2 rounded-full border border-border bg-background transition text-foreground disabled:text-muted-foreground disabled:cursor-not-allowed`}
           >
             Done
           </button>
@@ -139,11 +137,11 @@ function FileTile({
   onClear: () => void;
 }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-[#0b0b0b] p-4">
+    <div className="rounded-xl border border-border bg-background p-4">
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-white/80">{label}</span>
+        <span className="text-foreground">{label}</span>
         {file ? (
-          <button onClick={onClear} className="text-white/50 hover:text-white/90 text-sm">
+          <button onClick={onClear} className="text-muted-foreground hover:text-foreground text-sm">
             Clear
           </button>
         ) : null}
@@ -152,14 +150,14 @@ function FileTile({
       {/* Clickable area */}
       <button
         onClick={onPick}
-        className="w-full rounded-lg border border-white/10 bg-black px-3 py-10 text-center text-white/60 hover:text-white/85 transition"
+        className="w-full rounded-lg border border-border bg-card px-3 py-10 text-center text-muted-foreground hover:text-foreground transition"
       >
         {file ? (
-          <span className="block truncate text-white/80">{file.name}</span>
+          <span className="block truncate text-foreground">{file.name}</span>
         ) : (
           <>
             <span className="block mb-1">Drop file here</span>
-            <span className="text-xs text-white/50">.xlsx or .xls</span>
+            <span className="text-xs text-muted-foreground/80">.xlsx or .xls</span>
           </>
         )}
       </button>

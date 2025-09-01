@@ -5,59 +5,56 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%; /* #0c0c0c */
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --background: 0 0% 98%; /* Light mode background */
+    --foreground: 240 10% 3.9%; /* Light mode text */
+    --card: 0 0% 100%; /* Light mode card background */
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
     --primary: 258 84% 58%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 10%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 7%;
-    --muted-foreground: 0 0% 70%;
-    --accent: 0 0% 7%;
-    --accent-foreground: 0 0% 98%;
+    --secondary: 0 0% 95%; /* Light mode secondary */
+    --secondary-foreground: 240 10% 3.9%;
+    --muted: 0 0% 95%; /* Light mode muted */
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 95%; /* Light mode accent */
+    --accent-foreground: 240 10% 3.9%;
     --destructive: 0 89% 48%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 100% / 0.10;
-    --input: 0 0% 14%;
-    --ring: 0 0% 100% / 0.12;
-    --radius: 1.5rem;
+    --border: 0 0% 89%; /* Light mode border */
+    --input: 0 0% 89%; /* Light mode input */
+    --ring: 258 84% 58%; /* Ring to match primary accent */
     --chart-1: 258 84% 58%;
     --chart-2: 256 90% 66%;
     --chart-3: 151 96% 46%;
     --chart-4: 250 95% 85%;
     --chart-5: 252 91% 95%;
     --chart-orange: 30 90% 50%;
-    --sidebar-background: 0 0% 6%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 0 0% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 0 0% 10%;
-    --sidebar-accent-foreground: 0 0% 98%;
+    
+    --sidebar-background: 0 0% 96%; /* Light mode sidebar */
+    --sidebar-foreground: 240 10% 3.9%;
+    --sidebar-primary: 0 0% 95%;
+    --sidebar-primary-foreground: 240 10% 3.9%;
+    --sidebar-accent: 0 0% 90%;
+    --sidebar-accent-foreground: 240 10% 3.9%;
     --sidebar-border: 0 0% 100% / 0.10;
     --sidebar-ring: 0 0% 100% / 0.12;
-    --shadow-card-custom: 0 2px 8px 0 rgba(60, 60, 60, 0.08);
-    --shadow-card-custom-hover: 0 4px 12px 0 rgba(60, 60, 0, 0.1);
-    --header-h: 3.5rem;
-    --nav-w-expanded: 14rem;
-    --nav-w-collapsed: 4rem;
-    --nav-w: var(--nav-w-expanded);
-    
-    /* Baby-Blue palette */
-    --palette-1: #98CEF3; /* Baby Blue Eyes */
-    --palette-2: #B9E0FF; /* Diamond */
-    --palette-3: #D0E6FB; /* Water */
-    --palette-4: #E6D6FD; /* Pale Lavender */
-    --palette-5: #E4C5FB; /* Pale Lavender (alt) */
-    --palette-6: #D2ACFB; /* Mauve */
 
-    /* Default text/fill for “key metrics” and chart accents */
+    --surface-card: #ffffff;
+    --card-border-subtle: rgba(0,0,0,.10);
+
+    /* Palette and KPI */
+    --palette-1: #98CEF3;
+    --palette-2: #B9E0FF;
+    --palette-3: #D0E6FB;
+    --palette-4: #E6D6FD;
+    --palette-5: #E4C5FB;
+    --palette-6: #D2ACFB;
     --kpi-color: var(--palette-1);
-    --surface-card: #111112;
-    --card-border-subtle: rgba(255,255,255,.10);
+
+    /* Nav dividers */
+    --nav-divider: rgba(2, 6, 23, .10);
+    --nav-border:  rgba(2, 6, 23, .12);
   }
 
   .dark {
@@ -96,6 +93,10 @@
     --sidebar-ring: 0 0% 100% / 0.12;
     --surface-card: #0c0c0c;
     --card-border-subtle: rgba(255,255,255,.10);
+
+    /* Nav dividers */
+    --nav-divider: rgba(255,255,255, .10);
+    --nav-border:  rgba(255,255,255, .12);
   }
 }
 
@@ -188,86 +189,61 @@
   fill: rgba(255,255,255,0.75);
 }
 
-/* -------------------- NAV / DIVIDER TOKENS -------------------- */
-:root {
-  /* Light defaults */
-  --nav-divider: rgba(2, 6, 23, .10);
-  --nav-border:  rgba(2, 6, 23, .12);
+.dark .recharts-text, .dark .recharts-cartesian-axis-tick-value {
+  fill: rgba(255,255,255,0.75);
+}
+:root .recharts-text, :root .recharts-cartesian-axis-tick-value {
+  fill: rgba(0,0,0,0.75);
 }
 
-:root.dark, .dark, [data-theme="dark"] {
-  /* Dark replacements */
-  --nav-divider: rgba(255,255,255, .10);
-  --nav-border:  rgba(255,255,255, .12);
+/* ---------------------------------------------------------- */
+/*  Topbar separator: match the faint divider used projectwide */
+/* ---------------------------------------------------------- */
+:root { --topbar-sep: rgba(2, 6, 23, .08); }                 /* light */
+.dark { --topbar-sep: rgba(255,255,255,.08); }  /* dark = faint white */
+
+/* Normalize ALL header variants to the same faint separator */
+.topbar, header[role="banner"], .app-header, .site-header, .navbar, [data-topbar],
+.sticky.top-0, .fixed.top-0 {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  box-shadow: inset 0 -1px 0 var(--topbar-sep) !important;
+  background: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
 }
 
-/* Sidebar: correct the faint lines + kill the green edge */
-/* Sidebar container surface & edge */
-.dark .sidebar,
-[data-theme="dark"] .sidebar {
-  background: hsl(var(--sidebar-background)) !important;
-  color: rgba(255,255,255,.75) !important;
-  border-right: 1px solid hsl(var(--sidebar-border)) !important;
-  /* neutralize any green debug/brand line on the left */
-  border-left: none !important;
+.topbar::after, header[role="banner"]::after, .navbar::after, [data-topbar]::after {
+  content: none !important;
+}
+.topbar.border, header[role="banner"].border, .navbar.border, [data-topbar].border {
+  border-bottom: 1px solid var(--topbar-sep) !important;
+}
+
+/* -------------------- SIDEBAR (light + dark) -------------------- */
+.sidebar {
+  background: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  border-right: 1px solid var(--nav-border) !important;
   box-shadow: none !important;
   outline: none !important;
 }
-
-/* Section separators inside the sidebar */
-.dark .sidebar hr,
-[data-theme="dark"] .sidebar hr,
-.dark .sidebar .divider,
-[data-theme="dark"] .sidebar .divider {
+.dark .sidebar {
+  background: #0b0b0b !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  border-right: 1px solid var(--nav-border) !important;
+}
+.sidebar hr,
+.sidebar .divider,
+.sidebar .divide-y > :not([hidden]) ~ :not([hidden]) {
   border: 0;
   border-top: 1px solid var(--nav-divider) !important;
   opacity: 1;
 }
 
-/* “divide-y” style lists inside the sidebar */
-.dark .sidebar .divide-y > :not([hidden]) ~ :not([hidden]),
-[data-theme="dark"] .sidebar .divide-y > :not([hidden]) ~ :not([hidden]) {
-  border-top: 1px solid var(--nav-divider) !important;
-}
-
-/* Optional: item hover/active still subtle in dark */
-.dark .sidebar a,
-[data-theme="dark"] .sidebar a { color: rgba(255,255,255,.60) !important; }
-.dark .sidebar a:hover,
-[data-theme="dark"] .sidebar a:hover { color: rgba(255,255,255,.92) !important; }
-.dark .sidebar .active,
-[data-theme="dark"] .sidebar a[aria-current="page"] { color: rgba(255,255,255,.92) !important; }
-
-
-/* Top bar: faint bottom separator in dark */
-/* Top navigation bar */
-.dark .topbar,
-[data-theme="dark"] .topbar,
-.dark .header,
-[data-theme="dark"] .header {
-  background: hsl(var(--background)) !important;
-  color: rgba(255,255,255,.70) !important;
-  border-bottom: 1px solid var(--nav-border) !important;
-}
-
-/* Generic separators that appear in navs/menus */
-/* Any hr/divider in dark mode becomes faint white */
-.dark hr, [data-theme="dark"] hr {
+hr {
   border: 0;
   border-top: 1px solid var(--nav-divider) !important;
-}
-
-/* Radix/Headless/Ant/MUI menu & popover separators */
-.dark [role="menu"] hr,
-.dark [role="menuitemseparator"],
-.dark .ant-dropdown-menu-item-divider,
-.dark .MuiDivider-root,
-[data-theme="dark"] [role="menu"] hr,
-[data-theme="dark"] [role="menuitemseparator"],
-[data-theme="dark"] .ant-dropdown-menu-item-divider,
-[data-theme="dark"] .MuiDivider-root {
-  border-color: var(--nav-divider) !important;
-  background: var(--nav-divider) !important;
 }
 
 .dark .report-card,
@@ -276,77 +252,25 @@
   border-color: var(--card-border-subtle) !important;
 }
 
-/* ---------------------------------------------------------- */
-/*  Topbar separator: match the faint divider used projectwide */
-/* ---------------------------------------------------------- */
-
-/* A dedicated token so we can tune the header line separately if we ever need to */
-:root { --topbar-sep: rgba(2, 6, 23, .08); }                 /* light */
-:root.dark, .dark, [data-theme="dark"] { --topbar-sep: rgba(255,255,255,.08); }  /* dark = faint white */
-
-/* Normalize ALL header variants to the same faint separator in dark */
-.dark .topbar,
-.dark header[role="banner"],
-.dark .app-header,
-.dark .site-header,
-.dark .navbar,
-.dark [data-topbar],
-/* common utility combos that tend to carry their own border/shadow */
-.dark .sticky.top-0,
-.dark .fixed.top-0 {
-  /* remove any heavy border/shadow the component brings */
-  border-bottom: 0 !important;
-  box-shadow: none !important;
-  outline: none !important;
-
-  /* re-apply a single subtle line, identical to our faint dividers */
-  /* use inset so it survives translucency/backdrop-blur headers too */
-  box-shadow: inset 0 -1px 0 var(--topbar-sep) !important;
-  background: hsl(var(--background)) !important;  /* keep your shell color */
-  color: rgba(255,255,255,.70) !important;        /* same text tone as elsewhere */
-}
-
-/* Some header libraries draw the line with a ::after stripe—turn that off */
-.dark .topbar::after,
-.dark header[role="banner"]::after,
-.dark .navbar::after,
-.dark [data-topbar]::after {
-  content: none !important;
-}
-
-/* If your header has a border utility stuck on it, make sure it inherits the faint value */
-.dark .topbar.border,
-.dark header[role="banner"].border,
-.dark .navbar.border,
-.dark [data-topbar].border {
-  border-bottom: 1px solid var(--topbar-sep) !important;
-}
-
 /* -------------------- SIDEBAR HOVER / ACTIVE (fix purple) -------------------- */
-/* New tokens: faint backgrounds for hover/active */
 :root {
-  /* light mode */
-  --sidebar-hover-light: rgba(2, 6, 23, .04);  /* subtle dark on light bg */
+  --sidebar-hover-light: rgba(2, 6, 23, .04);
   --sidebar-active-light: rgba(2, 6, 23, .06);
 }
-
-.dark, [data-theme="dark"] {
-  /* dark mode */
-  --sidebar-hover: rgba(255,255,255,.04);     /* faint white/gray */
+.dark {
+  --sidebar-hover: rgba(255,255,255,.04);
   --sidebar-active: rgba(255,255,255,.08);
 }
 
-/* Reset any component that tries to use brand/primary/accent purple */
 .dark .sidebar a,
 .dark .sidebar button,
 .dark .sidebar [role="menuitem"] {
-  background: transparent;                /* baseline */
-  background-image: none !important;      /* kill gradient/brand backgrounds */
+  background: transparent;
+  background-image: none !important;
   color: rgba(255,255,255,.72);
   transition: background-color .12s ease, color .12s ease;
 }
 
-/* HOVER (dark) */
 .dark .sidebar a:hover,
 .dark .sidebar button:hover,
 .dark .sidebar [role="menuitem"]:hover,
@@ -357,7 +281,6 @@
   background-image: none !important;
 }
 
-/* ACTIVE / SELECTED (dark) */
 .dark .sidebar .active,
 .dark .sidebar a[aria-current="page"],
 .dark .sidebar [data-selected="true"],
@@ -369,8 +292,6 @@
   background-image: none !important;
 }
 
-/* Sometimes UI libs add utility classes like bg-primary/10 on active states.
-   Ensure those don't override our dark-gray selection. */
 .dark .sidebar [class*="bg-primary"],
 .dark .sidebar [class*="bg-accent"],
 .dark .sidebar [class*="bg-violet"],
@@ -379,7 +300,6 @@
   background-image: none !important;
 }
 
-/* Light mode parity (keeps original faint gray highlight) */
 :root .sidebar a:hover,
 :root .sidebar button:hover,
 :root .sidebar [role="menuitem"]:hover {
