@@ -1,51 +1,47 @@
 // app/reports/test/page.tsx
-"use client";
+import { revalidateTestTag } from "./refresh-action";
 
-import * as React from "react";
-import ReportsPageShell from "@/components/reports/ReportsPageShell";
-import HelpHeader from "@/components/reports/HelpHeader";
-import FullBleed from "@/components/layout/FullBleed";
-import ActionsRow from "@/components/reports/ActionsRow";
-import { runTestReport, type TestReportFiles } from "@/utils/reports/test/runTestReport";
+export const dynamic = "force-dynamic"; // bypass any static caching
+export const revalidate = 0;            // ensure no ISR artifacts during migration
 
-export default function TestReportPage() {
-    const [runState, setRunState] = React.useState<"idle" | "running" | "success" | "error">("idle");
-    const [activeView, setActiveView] = React.useState<"maven" | "key-metrics">("maven");
+async function getData() {
+  const res = await fetch("http://localhost:3000/api/test", {
+    cache: "no-store",
+    next: { tags: ["reports-test"] },
+  });
+  if (!res.ok) throw new Error("Failed to load test data");
+  return res.json();
+}
 
-     const handleRun = async (files: TestReportFiles) => {
-        setRunState("running");
-        try {
-            const result = await runTestReport(files);
-            console.log("Test report run result:", result);
-            setRunState("success");
-        } catch(e) {
-            console.error("Failed to run test report", e);
-            setRunState("error");
-        }
-    };
+export default async function TestReportPage() {
+  const data = await getData();
 
-    return (
-        <ReportsPageShell>
-            <FullBleed>
-                <HelpHeader 
-                    summary="This is a test report dashboard. Upload files with columns for 'IP', 'Account Number', 'Value', 'Advisory Fees', and 'Cash' to see the dashboard."
-                    instructions="Upload up to three XLSX or CSV files below. The data will be merged based on 'IP' and 'Account Number' columns."
-                />
-            </FullBleed>
+  return (
+    <main className="p-6 text-sm text-neutral-200">
+      <h1 className="text-xl font-semibold mb-2">Test Report</h1>
+      <p className="opacity-80 mb-4">Route is live. Data + cache are wired.</p>
 
-            <FullBleed>
-                 <ActionsRow
-                    onRun={handleRun}
-                 />
-            </FullBleed>
+      <div className="rounded-2xl border border-white/10 bg-[#0c0c0c] p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-xs opacity-70">Status</div>
+            <div className="font-medium">OK</div>
+          </div>
+          <div className="text-right">
+            <div className="text-xs opacity-70">Last updated</div>
+            <div className="font-mono">{data.timestamp}</div>
+          </div>
+        </div>
 
-             {/* Placeholder for results display */}
-             <div className="mt-8 text-center text-muted-foreground">
-                {runState === 'idle' && <p>Please upload files via the 'Download' button to run the report.</p>}
-                {runState === 'running' && <p>Report is running...</p>}
-                {runState === 'success' && <p>Report ran successfully. View results in the table or ask Maven.</p>}
-                {runState === 'error' && <p className="text-red-400">An error occurred while running the report.</p>}
-             </div>
-        </ReportsPageShell>
-    );
+        <form action={revalidateTestTag} className="mt-4">
+          <button
+            type="submit"
+            className="rounded-xl border border-white/10 px-3 py-1.5 hover:border-white/20"
+          >
+            Refresh
+          </button>
+        </form>
+      </div>
+    </main>
+  );
 }

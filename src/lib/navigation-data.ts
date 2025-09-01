@@ -45,7 +45,7 @@ export const navigationData: Record<ToolbarSectionKey | 'Other', NavItem[]> = {
     { name: 'Cash Balance', icon: Wallet, href: '/reports/cash-alerts' },
     { name: 'Margin', icon: Percent, href: '/reports/margin-notify' },
     { name: 'Advisory Fees', icon: BadgeDollarSign, href: '/reports/advisor-summary' },
-    { name: 'Test', icon: FlaskConical, href: '/reports/billing-coverage' },
+    { name: 'Test', icon: FlaskConical, href: '/reports/test' },
   ],
   'CRM': [
     { name: 'Home', icon: HomeIcon, href: '/client-portal/home' },
