@@ -24,6 +24,7 @@
     --border: 0 0% 89%; /* Light mode border */
     --input: 0 0% 89%; /* Light mode input */
     --ring: 258 84% 58%; /* Ring to match primary accent */
+    --radius: 1rem;
     --chart-1: 258 84% 58%;
     --chart-2: 256 90% 66%;
     --chart-3: 151 96% 46%;
@@ -60,7 +61,7 @@
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%; /* #0c0c0c */
+    --card: 240 4% 5%;
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
@@ -77,6 +78,7 @@
     --border: 0 0% 100% / 0.10;
     --input: 0 0% 14%;
     --ring: 258 84% 58%; /* Ring to match primary accent */
+    --radius: 1rem;
     --chart-1: 258 84% 58%;
     --chart-2: 256 90% 66%;
     --chart-3: 151 96% 46%;
@@ -121,6 +123,73 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
+
+@layer components {
+  /* === GLOBAL CARD SHAPE RESET ============================================= */
+  /* Single place to control card corner */
+  :root { --card-radius: var(--radius); } /* you already define --radius */
+
+  /* A “universal card selector” — everything that visually looks like a card   */
+  /* Uses :where() to keep specificity *very* low, so it wins without !important */
+  :where(
+    /* our own */
+    .bg-card, .surface-card, [data-card="true"], .panel, .card, .shadcn-card,
+    /* common lib cards */
+    .ant-card, .ant-card-bordered,                       /* Ant Design */
+    .MuiCard-root, .MuiPaper-root.MuiCard-root,          /* MUI */
+    .chakra-card,                                        /* Chakra */
+    .mantine-Card-root,                                  /* Mantine */
+    /* our dashboard/layout “panel” wrappers if any */
+    section[data-surface="card"], article[data-surface="card"]
+  ) {
+    border-radius: var(--card-radius);
+    /* clip contents so charts/tables respect corners */
+    overflow: hidden; /* fallback for older browsers */
+    overflow: clip;   /* modern, avoids creating stacking context */
+    background-clip: padding-box; /* cleaner antialiasing on masks */
+  }
+
+  /* If a component tries to flatten corners, put them back */
+  :where(
+    .bg-card, .surface-card, [data-card="true"], .panel, .card, .shadcn-card,
+    .ant-card, .MuiCard-root, .chakra-card, .mantine-Card-root
+  ).rounded-none { border-radius: var(--card-radius); }
+
+  /* Any card whose shape is applied to a *child* wrapper (e.g., table/charts) */
+  :where(.bg-card, .surface-card, .card, .ant-card, .MuiCard-root) > :where(
+    .card-header, .card-content, .card-footer, .ant-card-body,
+    .MuiCardContent-root, .MuiCardHeader-root
+  ) {
+    border-radius: inherit;
+  }
+
+  /* Prevent inner “modules” from disabling clipping */
+  :where(.bg-card, .surface-card, .card, .ant-card, .MuiCard-root) > :where(*) {
+    /* only adjust if libraries set overflow-visible */
+    overflow: initial;
+  }
+
+  /* Charts & canvases: ensure they obey card radius when placed directly inside */
+  :where(.bg-card, .surface-card, .card, .ant-card, .MuiCard-root)
+    :where(.recharts-wrapper, canvas, svg, .echarts-for-react) {
+    border-radius: inherit;
+    overflow: hidden;
+    background-clip: padding-box;
+  }
+
+  /* Table cards: outer card clips; tables themselves keep square rows */
+  :where(.bg-card, .surface-card, .card, .ant-card, .MuiCard-root) table {
+    border-radius: 0;
+  }
+
+  /* Grid-list dashboards often render “square by default”. Catch those items. */
+  .grid > :where(.bg-card, .surface-card, .panel, .card, .ant-card, .MuiCard-root),
+  .grid [data-card="true"] {
+    border-radius: var(--card-radius);
+    overflow: hidden;
+  }
+}
+
 
 @layer utilities {
   .neon-glow {
