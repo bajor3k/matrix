@@ -1,3 +1,4 @@
+
 // src/components/reports/ReportScaffold.tsx
 "use client";
 
@@ -60,6 +61,7 @@ export default function ReportScaffold({
   const [error, setError] = React.useState<string | null>(null);
   const [activeView, setActiveView] = React.useState<"maven" | "key-metrics">("maven");
   const [isMavenOpen, setIsMavenOpen] = React.useState(true);
+  const [excelDownloadPath, setExcelDownloadPath] = React.useState<string | null>(null);
 
   const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
 
@@ -116,7 +118,8 @@ export default function ReportScaffold({
   async function runReport() {
     if (!filesReady) return;
     setRunState("running"); 
-    setError(null); 
+    setError(null);
+    setExcelDownloadPath(null);
 
     try {
       const fd = new FormData();
@@ -133,6 +136,7 @@ export default function ReportScaffold({
       
       processApiData(rows);
       setRunState("success");
+      setExcelDownloadPath(`${mergeApiPath}?format=xlsx`);
       setActiveView("maven"); // Default to maven workspace on success
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
@@ -141,14 +145,16 @@ export default function ReportScaffold({
   }
 
   async function downloadExcel() {
-    if (runState !== "success" && !filesReady) return;
+    if (!excelDownloadPath) return;
+    
+    // The download is now a direct link, but if we need to POST again:
     const fd = new FormData();
     if (files[0]) fd.append("fileA", files[0]);
     if (files[1]) fd.append("fileB", files[1]);
     if (files[2]) fd.append("fileC", files[2]);
 
     try {
-        const res = await fetch(`${mergeApiPath}?format=xlsx`, { method: "POST", body: fd });
+        const res = await fetch(excelDownloadPath, { method: "POST", body: fd });
         if (!res.ok) throw new Error(await res.text());
         const blob = await res.blob();
         saveAs(blob, `${reportName.replace(/\s+/g, "_").toLowerCase()}_merged.xlsx`);
@@ -187,6 +193,7 @@ export default function ReportScaffold({
             onToggleMaven={() => setIsMavenOpen(v => !v)}
             isMavenOpen={isMavenOpen}
             canOpenMaven={canOpenMaven}
+            excelDownloadPath={excelDownloadPath}
             />
             {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
             {runState === 'running' && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}

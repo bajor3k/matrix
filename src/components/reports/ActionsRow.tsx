@@ -1,12 +1,13 @@
+
 // components/reports/ActionsRow.tsx
 "use client";
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import type { TestReportFiles } from "@/utils/reports/test/runTestReport";
 import ReportDownloadModal from "./ReportDownloadModal";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
+import ReportButtons from "./ReportButtons";
 
 type RunState = "idle" | "running" | "success" | "error";
 type ActiveView = "none" | "dashboard" | "key-metrics" | "maven";
@@ -21,6 +22,7 @@ type Props = {
   isMavenOpen?: boolean;
   canOpenMaven?: boolean;
   className?: string;
+  excelDownloadPath?: string | null;
 };
 
 export default function ActionsRow({
@@ -33,36 +35,21 @@ export default function ActionsRow({
   isMavenOpen = false,
   canOpenMaven = false,
   className = "",
+  excelDownloadPath = null,
 }: Props) {
     const [modalOpen, setModalOpen] = React.useState(false);
     
   return (
     <>
       <div className={`report-actions flex items-center justify-center gap-3 ${className}`}>
+        <ReportButtons
+          onRun={onRun}
+          running={runState === 'running'}
+          downloadHref={filesReady ? "/api/placeholder" : null} // Example for template download
+          excelHref={runState === 'success' ? excelDownloadPath : null}
+          onKeyMetrics={runState === 'success' ? onToggleKeyMetrics : undefined}
+        />
          <Button
-          className="rounded-full h-9"
-          onClick={onRun}
-          disabled={!filesReady || runState === 'running'}
-        >
-          {runState === 'running' ? <Loader2 className="animate-spin" /> : 'Run Report'}
-        </Button>
-         <Button
-          variant="secondary"
-          className="rounded-full h-9"
-          onClick={onDownloadExcel}
-          disabled={runState !== 'success' && !filesReady}
-        >
-          Excel
-        </Button>
-         <Button
-          variant="secondary"
-          className="rounded-full h-9"
-          onClick={onToggleKeyMetrics}
-          disabled={runState !== 'success'}
-        >
-           Key Metrics
-        </Button>
-        <Button
           variant="secondary"
           className="rounded-full h-9"
           onClick={onToggleMaven}
