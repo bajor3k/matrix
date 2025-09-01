@@ -180,6 +180,28 @@ export default function ContributionMatrixPage() {
     <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Contribution Matrix</h1>
       
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {aggregatedDataByType.map((item) => (
+          <PlaceholderCard 
+            key={item.name} 
+            title={item.name}
+            value={`${item.percentageFunded.toFixed(1)}%`}
+            description={
+              <>
+                <p className="text-sm text-green-400 mt-1">
+                  +${item.totalOpportunity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} fee potential
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  (${item.totalRemaining.toLocaleString()} remaining)
+                </p>
+              </>
+            }
+            className="text-center"
+          >
+          </PlaceholderCard>
+        ))}
+      </div>
+
       <PlaceholderCard title="IRA Contribution Overview" className="overflow-x-auto">
         <Table>
           <TableHeader>
@@ -257,34 +279,6 @@ export default function ContributionMatrixPage() {
         </div>
       </PlaceholderCard>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        {aggregatedDataByType.map((item) => (
-          <PlaceholderCard 
-            key={item.name} 
-            title={item.name} 
-            className="flex flex-col items-center text-center"
-          >
-            <AccountTypeProgressRing 
-              progress={item.percentageFunded} 
-              accountType={item.name as AccountType} 
-              size={150} 
-              strokeWidth={12} 
-            />
-            <p className="text-3xl font-bold text-foreground mt-3">
-              {item.percentageFunded.toFixed(1)}% <span className="text-base font-normal text-muted-foreground">Funded</span>
-            </p>
-            <p className="text-sm text-green-400 mt-1">
-              +${item.totalOpportunity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} fee potential left
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              (${item.totalRemaining.toLocaleString()} remaining contribution)
-            </p>
-          </PlaceholderCard>
-        ))}
-      </div>
-
     </main>
   );
 }
-
-    
