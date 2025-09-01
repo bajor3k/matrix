@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { cn } from "@/lib/utils";
 import { PlaceholderCard } from "@/components/dashboard/placeholder-card";
 import { AllocationLegend } from "@/components/analytics/AllocationLegend";
+import FlowsDivergingCard from '@/components/analytics/FlowsDivergingCard';
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -59,6 +60,15 @@ const allocationData = [
   { label: "Cash & Equivalents", value: 5, color: "var(--palette-6)" },
 ];
 
+const flowsData = [
+    { date: '2025-08-01', inflow: 120000, outflow: 45000 },
+    { date: '2025-08-02', inflow: 25000, outflow: 30000 },
+    { date: '2025-08-03', inflow: 60000, outflow: 8000 },
+    { date: '2025-08-04', inflow: 10000, outflow: 95000 },
+    { date: '2025-08-05', inflow: 85000, outflow: 15000 },
+    { date: '2025-08-06', inflow: 40000, outflow: 50000 },
+    { date: '2025-08-07', inflow: 75000, outflow: 20000 },
+];
 
 export default function AssetAnalyticsPage() {
   return (
@@ -93,9 +103,11 @@ export default function AssetAnalyticsPage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="col-span-1">
-          <CardContent className="min-h-[420px]" />
-        </Card>
+        <FlowsDivergingCard
+            title="Inflows vs Outflows"
+            data={flowsData}
+            initialTimeframe="MTD"
+        />
       </div>
 
       <PlaceholderCard title="Top Performing Assets">
