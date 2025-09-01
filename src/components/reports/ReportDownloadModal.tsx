@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Trash2 } from "lucide-react";
 
 type TestFilesModalProps = {
   open: boolean;
@@ -142,8 +142,8 @@ function FileTile({
       <div className="mb-2 flex items-center justify-between">
         <span className="text-foreground">{label}</span>
         {file ? (
-          <button onClick={onClear} className="text-muted-foreground hover:text-foreground text-sm">
-            Clear
+          <button onClick={onClear} className="text-muted-foreground hover:text-destructive transition-colors p-1 -mr-1" aria-label="Clear file">
+            <Trash2 className="h-4 w-4" />
           </button>
         ) : null}
       </div>
