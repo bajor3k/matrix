@@ -1,9 +1,10 @@
+
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useDropzone, type FileRejection } from "react-dropzone";
 import React from "react";
-import { Upload, Trash2 } from "lucide-react";
+import { Upload, Trash2, CheckCircle, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type UploadCardProps = {
@@ -23,20 +24,26 @@ export default function UploadCard({
   accept,
   slot,
 }: UploadCardProps) {
-  const onDrop = useCallback(
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+
+  const handleFileChange = useCallback(
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
       if (fileRejections.length > 0) {
         console.warn("File rejected:", fileRejections);
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 4000);
       }
       if (acceptedFiles.length > 0) {
         onFileChange(acceptedFiles[0]);
+        setStatus("success");
+        setTimeout(() => setStatus("idle"), 3500);
       }
     },
     [onFileChange]
   );
   
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
+    onDrop: handleFileChange,
     multiple: false,
     accept: accept ? { 'application/vnd.ms-excel': ['.xls', '.xlsx'], 'text/csv': ['.csv'] } : undefined,
     noKeyboard: false,
@@ -45,6 +52,7 @@ export default function UploadCard({
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
     onFileChange(null);
+    setStatus("idle");
   };
   
   return (
@@ -84,8 +92,20 @@ export default function UploadCard({
           {dropzoneText}
         </p>
       ) : (
-        <p className="mt-6 text-sm text-primary leading-tight">
-          Success <span aria-hidden>🙂</span>
+        <p className="mt-6 text-sm font-medium text-primary leading-tight truncate max-w-full px-2">
+          {file.name}
+        </p>
+      )}
+
+      {status === "success" && file && (
+        <p className="mt-1 text-xs font-semibold text-emerald-400 flex items-center gap-1" aria-live="polite">
+          <CheckCircle className="h-3 w-3"/> Success
+        </p>
+      )}
+
+      {status === "error" && (
+         <p className="mt-1 text-xs font-semibold text-red-400 flex items-center gap-1" aria-live="polite">
+          <AlertCircle className="h-3 w-3"/> Failed. Try again.
         </p>
       )}
     </div>
