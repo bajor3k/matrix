@@ -33,20 +33,12 @@ const metricCardsData = [
       value: "+8.7%",
     },
     {
-      title: "% in Model Portfolios",
-      value: "72%",
-    },
-    {
       title: "Inflows (MTD)",
       value: "$350K",
     },
     {
       title: "Outflows (MTD)",
       value: "$120K",
-    },
-    {
-      title: "Net Flows (MTD)",
-      value: "$230K",
     },
   ];
 
@@ -72,7 +64,7 @@ export default function AssetAnalyticsPage() {
     <main className="min-h-screen flex-1 p-6 space-y-4 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-6">Assets Analytics</h1>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metricCardsData.map((card, index) => (
           <PlaceholderCard key={index} title={card.title} value={card.value} />
         ))}
