@@ -9,25 +9,21 @@ const topMetricCardsData = [
   {
     title: "Total Revenue",
     value: "$2.3M",
-    description: "+12% this quarter",
     icon: DollarSign,
   },
   {
     title: "Net Profit Margin",
     value: "18.5%",
-    description: "Improved by 2%",
     icon: TrendingUp,
   },
   {
     title: "Operational Costs",
     value: "$850K",
-    description: "-3% from last quarter",
     icon: CreditCard,
   },
   {
     title: "Average Revenue per Client",
     value: "$12,450",
-    description: "+5% vs. previous quarter",
     icon: DollarSign,
   },
 ];
