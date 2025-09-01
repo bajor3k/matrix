@@ -4,7 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import dynamic from 'next/dynamic';
 import { Landmark, TrendingUp, Target, ArrowDownCircle, ArrowUpCircle, ArrowRightLeft, Download, Users, DollarSign, CreditCard, PiggyBank, Loader2 } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -42,14 +42,6 @@ const metricCardsData = [
     },
   ];
 
-const assetBreakdownData = [
-    { name: "US Equities", percentage: "40%", color: "bg-palette-1" },
-    { name: "International Equities", percentage: "20%", color: "bg-palette-2" },
-    { name: "Fixed Income", percentage: "25%", color: "bg-palette-3" },
-    { name: "Alternatives", percentage: "10%", color: "bg-palette-4" },
-    { name: "Cash & Equivalents", percentage: "5%", color: "bg-palette-5" },
-];
-
 const topPerformingAssetsData = [
   { symbol: 'AAPL', name: 'Apple Inc.', category: 'Technology', value: '$1.2M', weight: '9.6%', ytdReturn: '+15.2%' },
   { symbol: 'MSFT', name: 'Microsoft Corp.', category: 'Technology', value: '$1.1M', weight: '8.8%', ytdReturn: '+12.5%' },
@@ -70,25 +62,19 @@ export default function AssetAnalyticsPage() {
         ))}
       </div>
 
-      <PlaceholderCard title="Asset Allocation by Type">
-         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-            <div className="h-[400px] md:h-[450px] w-full">
-              <DynamicAssetAllocationDonutChart />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-2xl font-bold text-foreground mb-4">Asset Breakdown</h3>
-              {assetBreakdownData.map((item, index) => (
-                <div key={index} className="flex items-center justify-between text-base hover:bg-primary/10 rounded-md p-1 -m-1 transition-colors duration-150 ease-out">
-                  <div className="flex items-center gap-2">
-                    <span className={`h-3 w-3 rounded-sm ${item.color}`}></span>
-                    <span className="text-muted-foreground">{item.name}</span>
-                  </div>
-                  <span className="font-medium text-foreground">{item.percentage}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-      </PlaceholderCard>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <Card className="col-span-1">
+          <CardHeader>
+            <CardTitle>Asset Allocation by Type</CardTitle>
+          </CardHeader>
+          <CardContent className="min-h-[420px]">
+            <DynamicAssetAllocationDonutChart />
+          </CardContent>
+        </Card>
+        <Card className="col-span-1">
+          <CardContent className="min-h-[420px]" />
+        </Card>
+      </div>
 
       <PlaceholderCard title="Top Performing Assets">
         <Table>
