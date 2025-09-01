@@ -30,12 +30,12 @@ export function PlaceholderCard({ title, value, description, icon, iconClassName
             )}
             {title}
           </CardTitle>
-          {description && !value && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
+          {description && !value && <div className="text-sm text-muted-foreground mt-1">{description}</div>}
         </div>
         {value && (
             <div className="text-right">
                 <div className="text-3xl font-bold text-foreground">{value}</div>
-                {description && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
+                {description && <div className="text-sm text-muted-foreground mt-1">{description}</div>}
             </div>
         )}
         {headerActions && <div>{headerActions}</div>}
