@@ -52,12 +52,12 @@ export const navigationData: Record<ToolbarSectionKey | 'Other', NavItem[]> = {
     { name: 'Files', icon: FileText, href: '/crm/files'},
   ],
   'Analytics': [
-    { name: 'Asset Analytics', icon: BarChart3, href: '/asset-analytics' },
-    { name: 'Client Analytics', icon: Users, href: '/client-analytics' },
-    { name: 'Financial Analytics', icon: TrendingUp, href: '/financial- analytics' },
-    { name: 'Conversion Analytics', icon: Repeat, href: '/conversion-analytics' },
-    { name: 'Compliance Matrix', icon: ShieldAlert, href: '/compliance-matrix'},
-    { name: 'Contribution Matrix', icon: TrendingUp, href: '/contribution-matrix' },
+    { name: 'Asset Analytics', icon: BarChart3, href: '/analytics/asset' },
+    { name: 'Client Analytics', icon: Users, href: '/analytics/client' },
+    { name: 'Financial Analytics', icon: TrendingUp, href: '/analytics/financial' },
+    { name: 'Conversion Analytics', icon: Repeat, href: '/analytics/conversion' },
+    { name: 'Compliance Matrix', icon: ShieldAlert, href: '/analytics/compliance'},
+    { name: 'Contribution Matrix', icon: TrendingUp, href: '/analytics/contribution' },
   ],
   'Resources': [
     { name: 'Quick Links', icon: LinkIcon, href: '/resource-matrix?tab=quick_links' },
