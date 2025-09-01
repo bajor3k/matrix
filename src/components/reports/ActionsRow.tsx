@@ -45,10 +45,12 @@ export default function ActionsRow({
       <div className={`report-actions flex items-center justify-center gap-3 ${className}`}>
         <ReportButtons
           onRun={onRun}
+          filesReady={filesReady}
           running={runState === 'running'}
-          downloadHref={filesReady ? "/api/placeholder" : null} // Example for template download
+          downloadHref={"#"} // Download templates is always available
           excelHref={runState === 'success' ? excelDownloadPath : null}
           onKeyMetrics={runState === 'success' ? onToggleKeyMetrics : undefined}
+          onDownloadClick={() => setModalOpen(true)}
         />
       </div>
 
