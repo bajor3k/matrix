@@ -94,6 +94,19 @@ export default function ReportScaffold({
     });
   };
 
+  const handleModalComplete = (uploadedFiles: File[]) => {
+    const newFiles: (File | null)[] = [null, null, null];
+    uploadedFiles.slice(0, requiredFileCount).forEach((file, index) => {
+      if (file) {
+        newFiles[index] = file;
+      }
+    });
+    setFiles(newFiles);
+    if (uploadedFiles.length > 0) {
+      helpHeaderAutoDismiss();
+    }
+  };
+
   function processApiData(data: any[]) {
     if (!data || data.length === 0) {
       setTableRows([]);
@@ -190,10 +203,9 @@ export default function ReportScaffold({
             onRun={runReport}
             onDownloadExcel={downloadExcel}
             onToggleKeyMetrics={() => setActiveView(p => p === 'key-metrics' ? 'maven' : 'key-metrics')}
-            onToggleMaven={() => setIsMavenOpen(v => !v)}
-            isMavenOpen={isMavenOpen}
-            canOpenMaven={canOpenMaven}
             excelDownloadPath={excelDownloadPath}
+            onModalComplete={handleModalComplete}
+            requiredFileCount={requiredFileCount}
             />
             {error && <div className="text-center text-xs text-rose-400 mt-2">{error}</div>}
             {runState === 'running' && <div className="text-center text-xs text-muted-foreground mt-2">Running report...</div>}

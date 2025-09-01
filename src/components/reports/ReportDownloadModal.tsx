@@ -1,53 +1,65 @@
+
 // src/components/reports/TestFilesModal.tsx
 "use client";
 
 import React, { useRef, useState } from "react";
 import { CheckCircle2, Trash2, Upload } from "lucide-react";
 
-type TestFilesModalProps = {
+type ReportDownloadModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onComplete: (files: { report1: File; report2: File; report3: File }) => void;
+  onComplete: (files: File[]) => void;
+  requiredFileCount?: number;
+  title?: string;
 };
 
 const ACCEPT =
   ".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel";
 
-export default function ReportDownloadModal({ open, onOpenChange, onComplete }: TestFilesModalProps) {
-  const [test1, setTest1] = useState<File | null>(null);
-  const [test2, setTest2] = useState<File | null>(null);
-  const [test3, setTest3] = useState<File | null>(null);
+export default function ReportDownloadModal({
+  open,
+  onOpenChange,
+  onComplete,
+  requiredFileCount = 1,
+  title = "Select Files"
+}: ReportDownloadModalProps) {
+  const [files, setFiles] = useState<(File | null)[]>(Array(requiredFileCount).fill(null));
+  const inputRefs = Array.from({ length: requiredFileCount }, () => useRef<HTMLInputElement>(null));
 
-  const i1 = useRef<HTMLInputElement>(null);
-  const i2 = useRef<HTMLInputElement>(null);
-  const i3 = useRef<HTMLInputElement>(null);
-
-  const allSelected = !!(test1 && test2 && test3);
+  const allSelected = files.every(Boolean);
 
   const pick = (ref: React.RefObject<HTMLInputElement>) => ref.current?.click();
 
   const onPick =
-    (setter: (f: File | null) => void) =>
+    (index: number) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0] || null;
-      setter(file);
+      setFiles(prev => {
+        const newFiles = [...prev];
+        newFiles[index] = file;
+        return newFiles;
+      });
     };
 
-  const clear = (setter: (f: File | null) => void, ref: React.RefObject<HTMLInputElement>) => {
-    setter(null);
+  const clear = (index: number) => {
+    setFiles(prev => {
+        const newFiles = [...prev];
+        newFiles[index] = null;
+        return newFiles;
+    });
+    const ref = inputRefs[index];
     if (ref.current) ref.current.value = "";
   };
   
   const resetAndClose = () => {
-    setTest1(null);
-    setTest2(null);
-    setTest3(null);
+    setFiles(Array(requiredFileCount).fill(null));
     onOpenChange(false);
   }
 
   const done = () => {
-    if (test1 && test2 && test3) {
-      onComplete({ report1: test1, report2: test2, report3: test3 });
+    const validFiles = files.filter(f => f !== null) as File[];
+    if (validFiles.length === requiredFileCount) {
+      onComplete(validFiles);
       resetAndClose();
     }
   };
@@ -61,7 +73,7 @@ export default function ReportDownloadModal({ open, onOpenChange, onComplete }: 
       <div className="relative w-[720px] max-w-[92vw] rounded-2xl border border-border bg-card shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <h2 className="text-foreground tracking-wide">SELECT FILES TO DOWNLOAD</h2>
+          <h2 className="text-foreground tracking-wide">{title.toUpperCase()}</h2>
           <button
             onClick={resetAndClose}
             className="text-muted-foreground hover:text-foreground transition"
@@ -71,37 +83,28 @@ export default function ReportDownloadModal({ open, onOpenChange, onComplete }: 
           </button>
         </div>
 
-        {/* CONTENT — ONLY THE THREE TILES */}
+        {/* CONTENT */}
         <div className="px-5 pt-5 pb-3">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <FileTile
-              label="Test 1"
-              file={test1}
-              onPick={() => pick(i1)}
-              onClear={() => clear(setTest1, i1)}
-            />
-            <FileTile
-              label="Test 2"
-              file={test2}
-              onPick={() => pick(i2)}
-              onClear={() => clear(setTest2, i2)}
-            />
-            <FileTile
-              label="Test 3"
-              file={test3}
-              onPick={() => pick(i3)}
-              onClear={() => clear(setTest3, i3)}
-            />
+          <div className={`grid grid-cols-1 gap-4 md:grid-cols-${requiredFileCount > 1 ? '3' : '1'}`}>
+            {Array.from({ length: requiredFileCount }).map((_, index) => (
+                <FileTile
+                    key={index}
+                    label={`File ${index + 1}`}
+                    file={files[index]}
+                    onPick={() => pick(inputRefs[index])}
+                    onClear={() => clear(index)}
+                />
+            ))}
           </div>
 
           {/* Hidden inputs */}
-          <input ref={i1} type="file" accept={ACCEPT} onChange={onPick(setTest1)} className="hidden" />
-          <input ref={i2} type="file" accept={ACCEPT} onChange={onPick(setTest2)} className="hidden" />
-          <input ref={i3} type="file" accept={ACCEPT} onChange={onPick(setTest3)} className="hidden" />
+          {inputRefs.map((ref, index) => (
+             <input key={index} ref={ref} type="file" accept={ACCEPT} onChange={onPick(index)} className="hidden" />
+          ))}
 
           {/* Progress hint */}
           <div className="mt-4 text-sm text-muted-foreground">
-            {Number(!!test1) + Number(!!test2) + Number(!!test3)}/3 uploaded
+            {files.filter(Boolean).length}/{requiredFileCount} uploaded
           </div>
         </div>
 
