@@ -5,40 +5,40 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%; /* #0c0c0c */
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 258 84% 58%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 10% 3.9%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 7%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 0 0% 7%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 89% 48%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --border: 0 0% 100% / 0.10;
+    --input: 0 0% 14%;
+    --ring: 0 0% 100% / 0.12;
     --radius: 1.5rem;
     --chart-1: 258 84% 58%;
     --chart-2: 256 90% 66%;
     --chart-3: 151 96% 46%;
     --chart-4: 250 95% 85%;
     --chart-5: 252 91% 95%;
-    --chart-orange: 260 50% 40%;
-    --sidebar-background: transparent;
-    --sidebar-foreground: 240 10% 3.9%;
-    --sidebar-primary: 240 4.8% 95.9%;
-    --sidebar-primary-foreground: 240 5.9% 10%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 240 5.9% 90%;
-    --sidebar-ring: 240 5.9% 10%;
+    --chart-orange: 30 90% 50%;
+    --sidebar-background: 0 0% 6%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 0 0% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 100% / 0.10;
+    --sidebar-ring: 0 0% 100% / 0.12;
     --shadow-card-custom: 0 2px 8px 0 rgba(60, 60, 60, 0.08);
     --shadow-card-custom-hover: 0 4px 12px 0 rgba(60, 60, 0, 0.1);
     --header-h: 3.5rem;
@@ -63,29 +63,29 @@
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 4.7%; /* This is #0c0c0c */
+    --card: 240 10% 3.9%; /* #0c0c0c */
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 258 84% 58%; /* Soft purple glow */
+    --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 10%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 7%;
     --muted-foreground: 0 0% 70%;
-    --accent: 0 0% 7%;
+    --accent: 258 84% 58% / 0.1; /* Soft purple glow at 10% opacity */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 89% 48%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 100% / 0.10;
     --input: 0 0% 14%;
-    --ring: 0 0% 100% / 0.12;
+    --ring: 258 84% 58%; /* Ring to match primary accent */
     --chart-1: 258 84% 58%;
     --chart-2: 256 90% 66%;
     --chart-3: 151 96% 46%;
     --chart-4: 250 95% 85%;
     --chart-5: 252 91% 95%;
-    --chart-orange: 260 50% 40%;
+    --chart-orange: 30 90% 50%;
     --sidebar-background: 0 0% 6%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 0 0% 10%;
@@ -94,7 +94,7 @@
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 0 0% 100% / 0.10;
     --sidebar-ring: 0 0% 100% / 0.12;
-    --surface-card: #0c0c0c; /* <— the requested global card color */
+    --surface-card: #0c0c0c;
     --card-border-subtle: rgba(255,255,255,.10);
   }
 }
@@ -129,6 +129,58 @@
   .kpi-value {
     color: var(--kpi-color) !important;
   }
+  
+  .due-box {
+    @apply inline-block px-2 py-0.5 rounded text-xs font-semibold;
+  }
+
+  .due-pulse {
+      animation: pulse 1.5s infinite ease-in-out;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    50% {
+      transform: scale(1.02);
+      box-shadow: 0 0 5px 3px rgba(239, 68, 68, 0);
+    }
+  }
+
+  /* Tag styles for contacts page */
+  .tag-client { @apply bg-blue-500/20 text-blue-300 border-blue-500/50 text-xs px-2 py-0.5 rounded-full border; }
+  .tag-prospect { @apply bg-purple-500/20 text-purple-300 border-purple-500/50 text-xs px-2 py-0.5 rounded-full border; }
+  .tag-lead { @apply bg-yellow-500/20 text-yellow-300 border-yellow-500/50 text-xs px-2 py-0.5 rounded-full border; }
+  .tag-referred { @apply bg-green-500/20 text-green-300 border-green-500/50 text-xs px-2 py-0.5 rounded-full border; }
+  .tag-vip { @apply bg-pink-500/20 text-pink-300 border-pink-500/50 text-xs px-2 py-0.5 rounded-full border; }
+  .tag-new { @apply bg-cyan-500/20 text-cyan-300 border-cyan-500/50 text-xs px-2 py-0.5 rounded-full border; }
+  .tag-default { @apply bg-gray-500/20 text-gray-300 border-gray-500/50 text-xs px-2 py-0.5 rounded-full border; }
+
+  /* Glow animations for compliance badges */
+  @keyframes glow-trading {
+    0%, 100% { box-shadow: 0 0 2px 0px #ef4444; }
+    50% { box-shadow: 0 0 6px 2px #ef4444; }
+  }
+  @keyframes glow-anomaly {
+    0%, 100% { box-shadow: 0 0 2px 0px #A259F7; }
+    50% { box-shadow: 0 0 6px 2px #A259F7; }
+  }
+  @keyframes glow-activity {
+    0%, 100% { box-shadow: 0 0 2px 0px #22c55e; }
+    50% { box-shadow: 0 0 6px 2px #22c55e; }
+  }
+  .animate-glow-trading { animation: glow-trading 2s ease-in-out infinite; }
+  .animate-glow-anomaly { animation: glow-anomaly 2.5s ease-in-out infinite; }
+  .animate-glow-activity { animation: glow-activity 3s ease-in-out infinite; }
+
+  .shadow-white-glow-soft { box-shadow: 0 1px 3px 0 rgba(255, 255, 255, 0.03); }
+  .hover\:shadow-white-glow-hover:hover { box-shadow: 0 2px 8px 0 rgba(255, 255, 255, 0.06); }
+  .details-no-marker::marker { display: none; content: ""; }
+  .details-no-marker summary::-webkit-details-marker { display: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
 
 /* Recharts (SVG) axis/label default textcolor stays neutral */
@@ -139,14 +191,14 @@
 /* -------------------- NAV / DIVIDER TOKENS -------------------- */
 :root {
   /* Light defaults */
-  --nav-divider: rgba(2, 6, 23, .10);        /* faint dark line on light bg (≈ gray-900/10) */
+  --nav-divider: rgba(2, 6, 23, .10);
   --nav-border:  rgba(2, 6, 23, .12);
 }
 
 :root.dark, .dark, [data-theme="dark"] {
   /* Dark replacements */
-  --nav-divider: rgba(255,255,255, .10);     /* faint white line */
-  --nav-border:  rgba(255,255,255, .12);     /* slightly stronger for edges */
+  --nav-divider: rgba(255,255,255, .10);
+  --nav-border:  rgba(255,255,255, .12);
 }
 
 /* Sidebar: correct the faint lines + kill the green edge */
@@ -195,7 +247,7 @@
 [data-theme="dark"] .header {
   background: hsl(var(--background)) !important;
   color: rgba(255,255,255,.70) !important;
-  border-bottom: 1px solid var(--nav-border) !important; /* faint, not harsh white */
+  border-bottom: 1px solid var(--nav-border) !important;
 }
 
 /* Generic separators that appear in navs/menus */
@@ -222,4 +274,50 @@
 [data-theme="dark"] .report-card {
   background-color: var(--surface-card) !important;
   border-color: var(--card-border-subtle) !important;
+}
+
+/* ---------------------------------------------------------- */
+/*  Topbar separator: match the faint divider used projectwide */
+/* ---------------------------------------------------------- */
+
+/* A dedicated token so we can tune the header line separately if we ever need to */
+:root { --topbar-sep: rgba(2, 6, 23, .08); }                 /* light */
+:root.dark, .dark, [data-theme="dark"] { --topbar-sep: rgba(255,255,255,.08); }  /* dark = faint white */
+
+/* Normalize ALL header variants to the same faint separator in dark */
+.dark .topbar,
+.dark header[role="banner"],
+.dark .app-header,
+.dark .site-header,
+.dark .navbar,
+.dark [data-topbar],
+/* common utility combos that tend to carry their own border/shadow */
+.dark .sticky.top-0,
+.dark .fixed.top-0 {
+  /* remove any heavy border/shadow the component brings */
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+
+  /* re-apply a single subtle line, identical to our faint dividers */
+  /* use inset so it survives translucency/backdrop-blur headers too */
+  box-shadow: inset 0 -1px 0 var(--topbar-sep) !important;
+  background: hsl(var(--background)) !important;  /* keep your shell color */
+  color: rgba(255,255,255,.70) !important;        /* same text tone as elsewhere */
+}
+
+/* Some header libraries draw the line with a ::after stripe—turn that off */
+.dark .topbar::after,
+.dark header[role="banner"]::after,
+.dark .navbar::after,
+.dark [data-topbar]::after {
+  content: none !important;
+}
+
+/* If your header has a border utility stuck on it, make sure it inherits the faint value */
+.dark .topbar.border,
+.dark header[role="banner"].border,
+.dark .navbar.border,
+.dark [data-topbar].border {
+  border-bottom: 1px solid var(--topbar-sep) !important;
 }
