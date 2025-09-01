@@ -84,7 +84,7 @@ export default function AssetAnalyticsPage() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <Card className="col-span-1">
           <CardHeader>
-            <CardTitle>Asset Allocation by Type</CardTitle>
+            <CardTitle>Asset Allocation</CardTitle>
           </CardHeader>
           <CardContent className="min-h-[420px]">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
