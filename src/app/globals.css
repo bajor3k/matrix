@@ -321,3 +321,74 @@
 .dark [data-topbar].border {
   border-bottom: 1px solid var(--topbar-sep) !important;
 }
+
+/* -------------------- SIDEBAR HOVER / ACTIVE (fix purple) -------------------- */
+/* New tokens: faint backgrounds for hover/active */
+:root {
+  /* light mode */
+  --sidebar-hover-light: rgba(2, 6, 23, .04);  /* subtle dark on light bg */
+  --sidebar-active-light: rgba(2, 6, 23, .06);
+}
+
+.dark, [data-theme="dark"] {
+  /* dark mode */
+  --sidebar-hover: rgba(255,255,255,.04);     /* faint white/gray */
+  --sidebar-active: rgba(255,255,255,.08);
+}
+
+/* Reset any component that tries to use brand/primary/accent purple */
+.dark .sidebar a,
+.dark .sidebar button,
+.dark .sidebar [role="menuitem"] {
+  background: transparent;                /* baseline */
+  background-image: none !important;      /* kill gradient/brand backgrounds */
+  color: rgba(255,255,255,.72);
+  transition: background-color .12s ease, color .12s ease;
+}
+
+/* HOVER (dark) */
+.dark .sidebar a:hover,
+.dark .sidebar button:hover,
+.dark .sidebar [role="menuitem"]:hover,
+.dark .sidebar .group:hover,
+.dark .sidebar [data-hover="true"] {
+  background: var(--sidebar-hover) !important;
+  color: rgba(255,255,255,.92) !important;
+  background-image: none !important;
+}
+
+/* ACTIVE / SELECTED (dark) */
+.dark .sidebar .active,
+.dark .sidebar a[aria-current="page"],
+.dark .sidebar [data-selected="true"],
+.dark .sidebar [data-state="open"],
+.dark .sidebar .group[data-state="open"],
+.dark .sidebar .group[aria-expanded="true"] {
+  background: var(--sidebar-active) !important;
+  color: rgba(255,255,255,.96) !important;
+  background-image: none !important;
+}
+
+/* Sometimes UI libs add utility classes like bg-primary/10 on active states.
+   Ensure those don't override our dark-gray selection. */
+.dark .sidebar [class*="bg-primary"],
+.dark .sidebar [class*="bg-accent"],
+.dark .sidebar [class*="bg-violet"],
+.dark .sidebar [class*="bg-purple"] {
+  background: var(--sidebar-active) !important;
+  background-image: none !important;
+}
+
+/* Light mode parity (keeps original faint gray highlight) */
+:root .sidebar a:hover,
+:root .sidebar button:hover,
+:root .sidebar [role="menuitem"]:hover {
+  background: var(--sidebar-hover-light) !important;
+}
+
+:root .sidebar .active,
+:root .sidebar a[aria-current="page"],
+:root .sidebar [data-selected="true"],
+:root .sidebar [data-state="open"] {
+  background: var(--sidebar-active-light) !important;
+}
