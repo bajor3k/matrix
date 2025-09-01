@@ -24,21 +24,20 @@ const topMetricCardsData = [
     description: "-3% from last quarter",
     icon: CreditCard,
   },
+  {
+    title: "Average Revenue per Client",
+    value: "$12,450",
+    description: "+5% vs. previous quarter",
+    icon: DollarSign,
+  },
 ];
-
-const averageRevenueData = {
-  title: "Average Revenue per Client",
-  value: "$12,450",
-  description: "+5% vs. previous quarter",
-  icon: DollarSign,
-};
 
 export default function FinancialAnalyticsPage() {
   return (
     <main className="min-h-screen flex-1 p-6 space-y-6 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground">Financial Analytics</h1>
       
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {topMetricCardsData.map((card, index) => (
           <PlaceholderCard
             key={index}
@@ -48,15 +47,6 @@ export default function FinancialAnalyticsPage() {
             icon={card.icon}
           />
         ))}
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <PlaceholderCard
-          title={averageRevenueData.title}
-          value={averageRevenueData.value}
-          description={averageRevenueData.description}
-          icon={averageRevenueData.icon}
-        />
       </div>
 
       <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
