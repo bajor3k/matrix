@@ -24,6 +24,10 @@ const metricCardsData = [
     title: "Client Retention Rate", 
     value: "92%", 
   },
+  {
+    title: "Dummy Metric",
+    value: "1,234",
+  }
 ];
 
 const topClientsByAumData = [
@@ -95,7 +99,7 @@ export default function ClientAnalyticsPage() {
     <main className="min-h-screen flex-1 p-6 space-y-8 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-8">Client Analytics</h1>
       
-      <div className="grid gap-6 md:grid-cols-3 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         {metricCardsData.map((card, index) => (
           <Card key={index} className="rounded-2xl p-4">
             <div className="flex items-start justify-between">
@@ -213,5 +217,3 @@ export default function ClientAnalyticsPage() {
     </main>
   );
 }
-
-    
