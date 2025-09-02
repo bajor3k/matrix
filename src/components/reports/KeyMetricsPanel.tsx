@@ -1,11 +1,9 @@
 
 "use client";
 import React, { useMemo, useEffect, useState } from "react";
-import { Bar, BarChart, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from "lucide-react";
-import { getBabyBluePalette } from "@/lib/palette";
-import { PieAutoColors, BarAutoColors, LineAutoColors } from "@/components/charts/rechartsAuto";
+import { BarBlock, LineBlock, AreaBlock } from "@/components/metrics/PastelCharts";
 
 // Helper to safely parse string to number
 const num = (v: any): number => {
@@ -16,40 +14,14 @@ const num = (v: any): number => {
 
 // Main Component
 export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
-  const BABY_BLUE_PALETTE = getBabyBluePalette();
   const metrics = useMemo(() => {
     const totalFees = rows.reduce((acc, r) => acc + num(r.fee), 0);
     const shortRows = rows.filter(r => r.short);
-    const clearRows = rows.filter(r => !r.short);
     
-    // Sort by fee and get top 6 for bar chart
-    const topFees = [...rows]
-      .sort((a, b) => num(b.fee) - num(a.fee))
-      .slice(0, 6)
-      .map(r => ({ name: r.acct, fee: num(r.fee) }));
-      
-    // Sparkline data - cash/value ratio in buckets
-    const sparkData = [];
-    const bucketSize = Math.ceil(rows.length / 7);
-    if (bucketSize > 0) {
-        for (let i = 0; i < rows.length; i += bucketSize) {
-            const bucket = rows.slice(i, i + bucketSize);
-            const totalCash = bucket.reduce((s, r) => s + num(r.cash), 0);
-            const totalValue = bucket.reduce((s, r) => s + num(r.value), 0);
-            sparkData.push({ idx: i, ratio: totalValue > 0 ? (totalCash / totalValue) * 100 : 0 });
-        }
-    }
-
     return {
       totalFees,
       totalAccounts: rows.length,
       flaggedShort: shortRows.length,
-      donutData: [
-        { name: "Short", value: shortRows.length },
-        { name: "Clear", value: clearRows.length },
-      ],
-      topFees,
-      spark: sparkData,
       shortRows: shortRows.map(r => ({
           accountNumber: r.acct,
           ip: r.ip,
@@ -81,74 +53,10 @@ export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
       </div>
 
       {/* Row 2: Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Donut Chart */}
-        <div className="report-card rounded-2xl lg:col-span-1 p-4">
-          <h3 className="text-sm text-center text-slate-300 mb-2">Short vs. Clear Accounts</h3>
-            <div className="h-64">
-              <ResponsiveContainer>
-                <PieChart>
-                  <Tooltip contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
-                  <PieAutoColors
-                    data={metrics.donutData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius="60%"
-                    outerRadius="80%"
-                    dataKey="value"
-                    stroke="none"
-                    autoCellsCount={metrics.donutData.length}
-                  >
-                  </PieAutoColors>
-                  <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" className="fill-white text-3xl font-bold">
-                    {formatCurrency(metrics.totalFees)}
-                  </text>
-                  <text x="50%" y="58%" textAnchor="middle" dominantBaseline="middle" className="fill-slate-400 text-xs">
-                    {metrics.flaggedShort} short · {metrics.totalAccounts - metrics.flaggedShort} clear
-                  </text>
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-        </div>
-
-        {/* Bar Chart */}
-        <div className="report-card rounded-2xl lg:col-span-1 p-4">
-            <h3 className="text-sm text-slate-300 mb-3">Top 6 Accounts by Advisory Fee</h3>
-            <div className="h-64">
-              <ResponsiveContainer>
-                <BarChart data={metrics.topFees} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
-                  <XAxis dataKey="name" hide />
-                  <YAxis hide />
-                  <Tooltip formatter={(v) => formatCurrency(Number(v))} cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
-                  <BarAutoColors dataKey="fee" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {metrics.topFees.map((t, i) => (
-                 <Badge key={t.name} className="border-none" style={{ backgroundColor: `${BABY_BLUE_PALETTE[(i + 1) % BABY_BLUE_PALETTE.length]}4D`, color: BABY_BLUE_PALETTE[(i + 1) % BABY_BLUE_PALETTE.length]}}>{t.name}: {formatCurrency(t.fee)}</Badge>
-              ))}
-            </div>
-        </div>
-
-
-        <div className="report-card rounded-2xl p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm text-slate-300">Cash / Value Ratio (sparkline)</h3>
-              <Sparkles className="w-4 h-4 text-fuchsia-400" />
-            </div>
-            <div className="h-64">
-              <ResponsiveContainer>
-                <LineChart data={metrics.spark}>
-                  <XAxis dataKey="idx" hide />
-                  <YAxis hide domain={[0, "auto"]} />
-                  <Tooltip formatter={(v) => `${Number(v).toFixed(2)}%`} contentStyle={{ background: "#0f0f13", border: "1px solid #262636" }} />
-                  <LineAutoColors type="monotone" dataKey="ratio" strokeWidth={2} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-            <p className="mt-2 text-xs text-slate-400">Avg ratio across buckets: <span className="text-slate-200">{avg(metrics.spark.map((s) => s.ratio)).toFixed(2)}%</span></p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <BarBlock />
+        <LineBlock />
+        <AreaBlock />
       </div>
 
 

@@ -25,12 +25,6 @@
     --input: 0 0% 89%; /* Light mode input */
     --ring: 258 84% 58%; /* Ring to match primary accent */
     --radius: 1rem;
-    --chart-1: 258 84% 58%;
-    --chart-2: 256 90% 66%;
-    --chart-3: 151 96% 46%;
-    --chart-4: 250 95% 85%;
-    --chart-5: 252 91% 95%;
-    --chart-orange: 30 90% 50%;
     
     --sidebar-background: 0 0% 96%; /* Light mode sidebar */
     --sidebar-foreground: 240 10% 3.9%;
@@ -85,12 +79,7 @@
     --input: 0 0% 14%;
     --ring: 0 0% 18%;
     --radius: 1rem;
-    --chart-1: 258 84% 58%;
-    --chart-2: 256 90% 66%;
-    --chart-3: 151 96% 46%;
-    --chart-4: 250 95% 85%;
-    --chart-5: 252 91% 95%;
-    --chart-orange: 30 90% 50%;
+    
     --sidebar-background: 0 0% 6%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 0 0% 10%;
@@ -295,7 +284,32 @@
   .details-no-marker summary::-webkit-details-marker { display: none; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  /* Utility: fixed height for chart wrappers so Recharts can mount */
+  .chart-card { height: 14rem; } /* ~ h-56 */
+  @media (min-width: 1280px) {
+    .chart-card { height: 16rem; } /* bump on xl screens */
+  }
 }
+
+/* === Chart palette (Light & Dark) === */
+:root, .dark {
+  /* HSL approximations of the provided HEX */
+  --chart-1: 204 79% 77%;  /* #98CEF3 (Baby Blue Eyes) */
+  --chart-2: 207 100% 86%; /* #B9E0FF (Diamond) */
+  --chart-3: 209 84% 90%;  /* #D0E6FB (Water) */
+  --chart-4: 265 91% 92%;  /* #E6D6FD (Pale Lavender) */
+  --chart-5: 274 87% 88%;  /* #E4C5FB (Pale Lavender alt) */
+  --chart-6: 269 91% 83%;  /* #D2ACFB (Mauve) */
+
+  /* Optional hex aliases if you ever need them directly */
+  --chart-1-hex: #98CEF3;
+  --chart-2-hex: #B9E0FF;
+  --chart-3-hex: #D0E6FB;
+  --chart-4-hex: #E6D6FD;
+  --chart-5-hex: #E4C5FB;
+  --chart-6-hex: #D2ACFB;
+}
+
 
 /* Recharts (SVG) axis/label default textcolor stays neutral */
 .recharts-text, .recharts-cartesian-axis-tick-value {
