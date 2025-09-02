@@ -329,6 +329,15 @@
   --chart-6-hex: #D2ACFB;
 }
 
+/* === Global KPI palette (Light & Dark) === */
+/* Use via: color: hsl(var(--kpi-1)); background: hsl(var(--kpi-3)); */
+:root, .dark {
+  --kpi-1: 178 93% 39%; /* #07BEB8 */
+  --kpi-2: 178 58% 52%; /* #3DCCC7 */
+  --kpi-3: 179 59% 63%; /* #68D8D6 */
+  --kpi-4: 184 72% 77%; /* #9CEAEF */
+  --kpi-5: 174 100% 88%; /* #C4FFF9 */
+}
 
 /* Recharts (SVG) axis/label default textcolor stays neutral */
 .recharts-text, .recharts-cartesian-axis-tick-value {
