@@ -310,35 +310,6 @@
  .report-scroll { height: calc(100% - 48px); } /* 48px ≈ card header + padding */
 }
 
-/* === Chart palette (Light & Dark) === */
-:root, .dark {
-  /* HSL approximations of the provided HEX */
-  --chart-1: 204 79% 77%;  /* #98CEF3 (Baby Blue Eyes) */
-  --chart-2: 207 100% 86%; /* #B9E0FF (Diamond) */
-  --chart-3: 209 84% 90%;  /* #D0E6FB (Water) */
-  --chart-4: 265 91% 92%;  /* #E6D6FD (Pale Lavender) */
-  --chart-5: 274 87% 88%;  /* #E4C5FB (Pale Lavender alt) */
-  --chart-6: 269 91% 83%;  /* #D2ACFB (Mauve) */
-
-  /* Optional hex aliases if you ever need them directly */
-  --chart-1-hex: #98CEF3;
-  --chart-2-hex: #B9E0FF;
-  --chart-3-hex: #D0E6FB;
-  --chart-4-hex: #E6D6FD;
-  --chart-5-hex: #E4C5FB;
-  --chart-6-hex: #D2ACFB;
-}
-
-/* === Global KPI palette (Light & Dark) === */
-/* Use via: color: hsl(var(--kpi-1)); background: hsl(var(--kpi-3)); */
-:root, .dark {
-  --kpi-1: 178 93% 39%; /* #07BEB8 */
-  --kpi-2: 178 58% 52%; /* #3DCCC7 */
-  --kpi-3: 179 59% 63%; /* #68D8D6 */
-  --kpi-4: 184 72% 77%; /* #9CEAEF */
-  --kpi-5: 174 100% 88%; /* #C4FFF9 */
-}
-
 /* Recharts (SVG) axis/label default textcolor stays neutral */
 .recharts-text, .recharts-cartesian-axis-tick-value {
   fill: rgba(255,255,255,0.75);
@@ -512,7 +483,42 @@ aside.sidebar { scrollbar-width: none !important; }
   color: hsl(var(--accent-foreground));
 }
     
+/* === Chart palette (Light & Dark) === */
+:root, .dark {
+  /* HSL approximations of the provided HEX */
+  --chart-1: 204 79% 77%;  /* #98CEF3 (Baby Blue Eyes) */
+  --chart-2: 207 100% 86%; /* #B9E0FF (Diamond) */
+  --chart-3: 209 84% 90%;  /* #D0E6FB (Water) */
+  --chart-4: 265 91% 92%;  /* #E6D6FD (Pale Lavender) */
+  --chart-5: 274 87% 88%;  /* #E4C5FB (Pale Lavender alt) */
+  --chart-6: 269 91% 83%;  /* #D2ACFB (Mauve) */
 
+  /* Optional hex aliases if you ever need them directly */
+  --chart-1-hex: #98CEF3;
+  --chart-2-hex: #B9E0FF;
+  --chart-3-hex: #D0E6FB;
+  --chart-4-hex: #E6D6FD;
+  --chart-5-hex: #E4C5FB;
+  --chart-6-hex: #D2ACFB;
+}
+
+/* === Global KPI palette (Light & Dark) — place at END of globals.css === */
+/* HSL triples so components can keep using hsl(var(--token)) */
+:root, .dark {
+  /* KPI base tokens (new) */
+  --kpi-1: 178 93% 39%; /* #07BEB8 */
+  --kpi-2: 178 58% 52%; /* #3DCCC7 */
+  --kpi-3: 179 59% 63%; /* #68D8D6 */
+  --kpi-4: 184 72% 77%; /* #9CEAEF */
+  --kpi-5: 174 100% 88%; /* #C4FFF9 */
+
+  /* Alias existing chart tokens used by KPI widgets */
+  --chart-1: var(--kpi-1);
+  --chart-2: var(--kpi-2);
+  --chart-3: var(--kpi-3);
+  --chart-4: var(--kpi-4);
+  --chart-5: var(--kpi-5);
+}
   
 
 
