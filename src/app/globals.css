@@ -290,12 +290,24 @@
     .chart-card { height: 16rem; } /* bump on xl screens */
   }
 
-  /* Invisible scrollbar utility */
-  .scroll-invisible { overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none; }
-  .scroll-invisible::-webkit-scrollbar { width: 0; height: 0; display: none; }
-
-  /* ~20 rows viewport for report tables (tweak if your row height differs) */
-  .report-table-viewport { max-height: 620px; } /* header ~44 + 20 rows ~28px each */
+  /* ===== Invisible scrollbar ===== */
+ .scroll-invisible { overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none; }
+ .scroll-invisible::-webkit-scrollbar { width: 0; height: 0; display: none; }
+ 
+ /* ===== Reports two-pane sizing ===== */
+ /* Base (mobile): auto height; stack vertically */
+ :root { --report-pane-h: auto; }
+ 
+ /* On xl, fill viewport minus header/controls (~180px). Tune if your header is taller/shorter. */
+ @media (min-width: 1280px) {
+   :root { --report-pane-h: calc(100vh - 180px); }
+ }
+ 
+ /* Apply to each pane (table card + AskMaven) */
+ .report-pane { height: var(--report-pane-h); }
+ 
+ /* Inside a pane, make the scrolling area fill remaining space below the card header */
+ .report-scroll { height: calc(100% - 48px); } /* 48px ≈ card header + padding */
 }
 
 /* === Chart palette (Light & Dark) === */
@@ -479,3 +491,5 @@ hr {
   color: hsl(var(--accent-foreground));
 }
     
+
+  

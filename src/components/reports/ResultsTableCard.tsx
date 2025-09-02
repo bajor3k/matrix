@@ -28,67 +28,69 @@ function StatusPill({ short }: { short: boolean }) {
 }
 
 export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
-  return (
-    <section
-      className="
-        w-full max-w-none rounded-2xl border
-        bg-card text-card-foreground
-        p-3 md:p-4
-        flex flex-col h-full
-      "
-      aria-label="Report rows"
-    >
-      <div className="overflow-auto flex-grow report-table-viewport scroll-invisible">
-        <table className="report-table w-full text-sm">
-          {/* Header */}
-          <thead
-            className="
-              sticky top-0 z-10
-              bg-card
-              text-muted-foreground
-              border-b border-border
-            "
-          >
-            <tr>
-              <th className="py-2.5 pr-4 pl-2 text-left font-semibold">IP</th>
-              <th className="py-2.5 pr-4 text-left font-semibold">Account Number</th>
-              <th className="py-2.5 pr-4 text-left font-semibold">Value</th>
-              <th className="py-2.5 pr-4 text-left font-semibold">Advisory Fees</th>
-              <th className="py-2.5 pr-4 text-left font-semibold">Cash</th>
-              <th className="py-2.5 text-left font-semibold">Status</th>
-            </tr>
-          </thead>
+  const tableEl = (
+     <table className="report-table w-full text-sm">
+        {/* Header */}
+        <thead
+        className="
+            sticky top-0 z-10
+            bg-card
+            text-muted-foreground
+            border-b border-border
+        "
+        >
+        <tr>
+            <th className="py-2.5 pr-4 pl-2 text-left font-semibold">IP</th>
+            <th className="py-2.5 pr-4 text-left font-semibold">Account Number</th>
+            <th className="py-2.5 pr-4 text-left font-semibold">Value</th>
+            <th className="py-2.5 pr-4 text-left font-semibold">Advisory Fees</th>
+            <th className="py-2.5 pr-4 text-left font-semibold">Cash</th>
+            <th className="py-2.5 text-left font-semibold">Status</th>
+        </tr>
+        </thead>
 
-          <tbody>
-            {rows.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="py-8 text-center text-muted-foreground">
-                  No rows to display. Run the report to populate results.
+        <tbody>
+        {rows.length === 0 ? (
+            <tr>
+            <td colSpan={6} className="py-8 text-center text-muted-foreground">
+                No rows to display. Run the report to populate results.
+            </td>
+            </tr>
+        ) : (
+            rows.map((r, i) => (
+            <tr
+                key={i}
+                className="
+                border-b border-border last:border-0
+                hover:bg-muted/50
+                "
+            >
+                <td className="py-2 pr-4 pl-2 text-foreground">{r.ip}</td>
+                <td className="py-2 pr-4 text-foreground">{r.acct}</td>
+                <td className="py-2 pr-4 text-foreground">{r.value}</td>
+                <td className="py-2 pr-4 text-foreground">{r.fee}</td>
+                <td className="py-2 pr-4 text-foreground">{r.cash}</td>
+                <td className="py-2 text-foreground">
+                <StatusPill short={r.short} />
                 </td>
-              </tr>
-            ) : (
-              rows.map((r, i) => (
-                <tr
-                  key={i}
-                  className="
-                    border-b border-border last:border-0
-                    hover:bg-muted/50
-                  "
-                >
-                  <td className="py-2 pr-4 pl-2 text-foreground">{r.ip}</td>
-                  <td className="py-2 pr-4 text-foreground">{r.acct}</td>
-                  <td className="py-2 pr-4 text-foreground">{r.value}</td>
-                  <td className="py-2 pr-4 text-foreground">{r.fee}</td>
-                  <td className="py-2 pr-4 text-foreground">{r.cash}</td>
-                  <td className="py-2 text-foreground">
-                    <StatusPill short={r.short} />
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+            </tr>
+            ))
+        )}
+        </tbody>
+    </table>
+  );
+
+  return (
+    <section className="report-pane rounded-2xl border border-white/10 bg-[#0c0c0c] p-4 overflow-hidden flex flex-col">
+      <div className="text-sm font-semibold opacity-80">Results</div>
+
+      {/* Cap visible rows, invisible scrollbar inside */}
+      <div className="mt-3 flex-1 report-scroll scroll-invisible">
+        {tableEl}
       </div>
     </section>
   );
 }
+
+
+  

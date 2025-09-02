@@ -215,16 +215,16 @@ export default function ReportScaffold({
         </FullBleed>
         
         {runState === 'success' && (
-           <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-4">
+           <div className="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-4 items-start">
             {activeView === 'key-metrics' 
                 ? <KeyMetricsPanel rows={tableRows} /> 
                 : resultsTable
             }
-            <aside className="hidden xl:block xl:sticky xl:top-20 h-full max-h-[calc(100vh-6rem)]">
-              <MavenChat onClose={() => {}} hideHeader={true} />
-            </aside>
+            <MavenChat onClose={() => {}} />
           </div>
         )}
     </ReportsPageShell>
   );
 }
+
+  

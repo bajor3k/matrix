@@ -26,7 +26,7 @@ export function MavenChat({ onClose, hideHeader = false }: { onClose: () => void
   const canSend = input.trim().length > 0 && !chatLoading;
 
   return (
-    <aside className="rounded-2xl border bg-card/90 dark:bg-[#101010] border-border light:border-black/10 flex flex-col h-full">
+    <aside className="report-pane rounded-2xl border border-white/10 bg-[#0c0c0c] p-4 xl:sticky xl:top-20 overflow-hidden flex flex-col">
       {/* Header */}
       {!hideHeader && (
         <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
@@ -43,10 +43,13 @@ export function MavenChat({ onClose, hideHeader = false }: { onClose: () => void
             </button>
         </div>
       )}
+      {hideHeader && (
+          <div className="text-sm font-semibold opacity-80">Ask Maven</div>
+      )}
 
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3 scroll-invisible">
+       <div className="mt-3 flex-1 report-scroll scroll-invisible pr-1 space-y-2">
         {messages.length === 0 && !chatLoading && (
             <div className="flex justify-start">
                 <div className="p-2 rounded-lg bg-neutral-800 text-neutral-200 text-sm">
@@ -82,29 +85,28 @@ export function MavenChat({ onClose, hideHeader = false }: { onClose: () => void
             handleAsk(input);
             setInput('');
         }}
-        className="flex items-center gap-2 border-t border-border/50 px-4 py-3"
+        className="mt-3 flex gap-2"
       >
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask about fees, accounts, status..."
-          className="flex-1 rounded-xl border border-input bg-background px-3 py-2 text-sm
-               placeholder:text-muted-foreground text-foreground"
+          placeholder="Ask about fees, accounts, status…"
+          className="min-w-0 flex-1 rounded-xl border border-white/10 bg-transparent p-3 text-sm outline-none"
         />
 
         <button
           type="submit"
           disabled={!canSend}
           className={cn(
-            "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-            "bg-background border-border text-muted-foreground hover:text-foreground",
-            !canSend && "opacity-50 cursor-not-allowed hover:text-muted-foreground",
+            "shrink-0 rounded-xl border border-white/10 px-3 py-2 text-sm",
+            !canSend && "opacity-50 cursor-not-allowed",
           )}
         >
-          <Send className="h-4 w-4" />
           Ask
         </button>
       </form>
     </aside>
   );
 }
+
+  
