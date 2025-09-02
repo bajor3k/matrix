@@ -112,7 +112,7 @@ export default function FlowsDivergingCard({
       {/* Header */}
       <CardHeader className="p-0 mb-3">
         <div className="flex items-center justify-between gap-3">
-            <CardTitle>{title}</CardTitle>
+            <CardTitle className="text-base font-bold">{title}</CardTitle>
             <div className="flex items-center gap-2">
             {(Object.keys(TF_LABELS) as Timeframe[]).map((k) => (
                 <button
