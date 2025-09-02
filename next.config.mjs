@@ -1,36 +1,11 @@
-
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
     ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
-    ],
-  },
-  async redirects() {
-    return [
-      {
-        source: '/portfolio-matrix',
-        destination: '/asset-analytics',
-        permanent: true,
-      },
-      {
-        source: '/portfolio-matrix/:path*',
-        destination: '/asset-analytics',
-        permanent: true,
-      },
-    ];
   },
 };
 
