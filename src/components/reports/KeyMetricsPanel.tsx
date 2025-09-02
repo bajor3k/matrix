@@ -4,7 +4,7 @@ import React, { useMemo, useEffect, useState } from "react";
 import { Bar, BarChart, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from "lucide-react";
-import { BABY_BLUE_PALETTE } from "@/lib/palette";
+import { getBabyBluePalette } from "@/lib/palette";
 import { PieAutoColors, BarAutoColors, LineAutoColors } from "@/components/charts/rechartsAuto";
 
 // Helper to safely parse string to number
@@ -16,6 +16,7 @@ const num = (v: any): number => {
 
 // Main Component
 export default function KeyMetricsPanel({ rows }: { rows: any[] }) {
+  const BABY_BLUE_PALETTE = getBabyBluePalette();
   const metrics = useMemo(() => {
     const totalFees = rows.reduce((acc, r) => acc + num(r.fee), 0);
     const shortRows = rows.filter(r => r.short);
