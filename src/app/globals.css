@@ -290,7 +290,7 @@
     .chart-card { height: 16rem; } /* bump on xl screens */
   }
 
-  /* ===== Invisible scrollbar ===== */
+ /* ===== Invisible scrollbar ===== */
  .scroll-invisible { overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none; }
  .scroll-invisible::-webkit-scrollbar { width: 0; height: 0; display: none; }
  

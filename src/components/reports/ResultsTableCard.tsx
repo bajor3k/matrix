@@ -27,7 +27,7 @@ function StatusPill({ short }: { short: boolean }) {
   );
 }
 
-export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
+export default function ResultsTableCard({ title = "Results", rows }: { title?: string; rows: TableRow[] }) {
   const tableEl = (
      <table className="report-table w-full text-sm">
         {/* Header */}
@@ -81,16 +81,11 @@ export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
   );
 
   return (
-    <section className="report-pane rounded-2xl border border-white/10 bg-[#0c0c0c] p-4 overflow-hidden flex flex-col">
-      <div className="text-sm font-semibold opacity-80">Results</div>
-
-      {/* Cap visible rows, invisible scrollbar inside */}
+     <section className="report-pane relative z-10 rounded-2xl border border-white/10 bg-[#0c0c0c] p-4 overflow-hidden flex flex-col">
+      <div className="text-sm font-semibold opacity-80">{title}</div>
       <div className="mt-3 flex-1 report-scroll scroll-invisible">
         {tableEl}
       </div>
     </section>
   );
 }
-
-
-  
