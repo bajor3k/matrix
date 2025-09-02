@@ -1,6 +1,6 @@
 // src/app/api/reports/3m-cash/merge/route.ts
 import { type NextRequest, NextResponse } from "next/server";
-import XLSX from "xlsx";
+import * as XLSX from "xlsx";
 
 export const runtime = "nodejs";
 
