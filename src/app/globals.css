@@ -473,15 +473,27 @@ hr {
   display: none !important;
 }
 
-/* Invisible scrollbar for the left nav */
+/* === Invisible scrollbar utility (cross-browser) === */
 .nav-scroll {
-  overflow-y: auto;                 /* scrolling works when hovered */
-  -ms-overflow-style: none;         /* IE/Edge */
-  scrollbar-width: none;            /* Firefox */
+  overflow-y: auto;                  /* scrolling still works */
+  overscroll-behavior: contain;      /* prevent page scroll while over nav */
+  -webkit-overflow-scrolling: touch; /* smooth on iOS */
+  -ms-overflow-style: none;          /* IE/Edge legacy */
+  scrollbar-width: none;             /* Firefox */
 }
-.nav-scroll::-webkit-scrollbar {    /* Chrome/Safari/Opera */
-  width: 0; height: 0; display: none;
+.nav-scroll::-webkit-scrollbar {     /* Chrome/Safari/Edge */
+  width: 0;
+  height: 0;
 }
+.nav-scroll::-webkit-scrollbar-thumb,
+.nav-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* If any global scrollbar styling exists, hard-disable it inside the sidebar */
+aside.sidebar ::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
+aside.sidebar { scrollbar-width: none !important; }
+
 
 /* Ensure any “active/selected” pills use the new accent */
 .nav-item[aria-current="page"],
@@ -493,3 +505,6 @@ hr {
     
 
   
+
+
+    
