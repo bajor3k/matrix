@@ -1,3 +1,4 @@
+
 // src/components/reports/ReportScaffold.tsx
 "use client";
 
@@ -12,7 +13,6 @@ import { saveAs } from "file-saver";
 import ResultsTableCard from "./ResultsTableCard";
 import { MavenLayout } from "./maven/MavenLayout";
 import KeyMetricsPanel from "./KeyMetricsPanel";
-import ReportWorkspace from "./ReportWorkspace";
 import { MavenChat } from "./maven/MavenChat";
 import { FLAGS } from "@/lib/featureFlags";
 import UploadSlot from "@/components/UploadSlot";
@@ -174,6 +174,10 @@ export default function ReportScaffold({
         setError(e?.message || "Failed to download Excel file.");
     }
   }
+
+  const resultsTable = (
+    <ResultsTableCard rows={tableRows} />
+  );
   
   return (
     <ReportsPageShell>
@@ -211,16 +215,15 @@ export default function ReportScaffold({
         </FullBleed>
         
         {runState === 'success' && (
-          <ReportWorkspace
-            isMavenOpen={isMavenOpen}
-            setIsMavenOpen={setIsMavenOpen}
-            left={
-              activeView === 'key-metrics' 
+           <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-4">
+            {activeView === 'key-metrics' 
                 ? <KeyMetricsPanel rows={tableRows} /> 
-                : <ResultsTableCard rows={tableRows} />
+                : resultsTable
             }
-            right={<MavenChat onClose={() => setIsMavenOpen(false)} />}
-          />
+            <aside className="hidden xl:block xl:sticky xl:top-20 h-full max-h-[calc(100vh-6rem)]">
+              <MavenChat onClose={() => {}} hideHeader={true} />
+            </aside>
+          </div>
         )}
     </ReportsPageShell>
   );

@@ -289,6 +289,13 @@
   @media (min-width: 1280px) {
     .chart-card { height: 16rem; } /* bump on xl screens */
   }
+
+  /* Invisible scrollbar utility */
+  .scroll-invisible { overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none; }
+  .scroll-invisible::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+  /* ~20 rows viewport for report tables (tweak if your row height differs) */
+  .report-table-viewport { max-height: 620px; } /* header ~44 + 20 rows ~28px each */
 }
 
 /* === Chart palette (Light & Dark) === */

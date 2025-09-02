@@ -1,3 +1,4 @@
+
 // components/reports/ResultsTableCard.tsx
 import React from "react";
 
@@ -37,7 +38,7 @@ export default function ResultsTableCard({ rows }: { rows: TableRow[] }) {
       "
       aria-label="Report rows"
     >
-      <div className="overflow-auto flex-grow">
+      <div className="overflow-auto flex-grow report-table-viewport scroll-invisible">
         <table className="report-table w-full text-sm">
           {/* Header */}
           <thead

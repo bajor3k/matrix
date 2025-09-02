@@ -1,8 +1,9 @@
+
 'use client';
 import * as React from "react";
 import { Brain, Send, X } from "lucide-react";
 import { askMaven } from "@/lib/askmaven/ask";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils";
 
 type Msg = { role: "user" | "bot"; text: string };
 
@@ -45,7 +46,7 @@ export function MavenChat({ onClose, hideHeader = false }: { onClose: () => void
 
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3">
+      <div className="flex-1 overflow-y-auto p-3 space-y-3 scroll-invisible">
         {messages.length === 0 && !chatLoading && (
             <div className="flex justify-start">
                 <div className="p-2 rounded-lg bg-neutral-800 text-neutral-200 text-sm">
