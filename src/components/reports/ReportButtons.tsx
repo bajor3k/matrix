@@ -1,17 +1,23 @@
-
 "use client";
 
 type Props = {
   onRun: () => Promise<void> | void;
   running?: boolean;
   filesReady?: boolean;
+
+  // NEW:
+  onExcel?: () => void;
+  excelEnabled?: boolean;
+
   downloadHref?: string | null;   // enable when non-null
-  excelHref?: string | null;      // enable when non-null
   onKeyMetrics?: () => void;      // keep null/undefined until ready
   onDownloadClick?: () => void;
 };
-
-export default function ReportButtons({ onRun, running, filesReady, downloadHref, excelHref, onKeyMetrics, onDownloadClick }: Props) {
+export default function ReportButtons({
+  onRun, running, filesReady,
+  onExcel, excelEnabled,
+  downloadHref, onKeyMetrics, onDownloadClick
+}: Props) {
   const pill = "rounded-3xl border border-white/10 px-4 py-2";
   const dis  = "pointer-events-none opacity-30";
   
@@ -38,7 +44,16 @@ export default function ReportButtons({ onRun, running, filesReady, downloadHref
       >
         {running ? "Running…" : "Run Report"}
       </button>
-      <a href={excelHref ?? "#"} className={`${pill} ${!excelHref ? dis : ""}`} download>Excel</a>
+
+      {/* Excel */}
+      <button
+        onClick={onExcel}
+        disabled={!excelEnabled}
+        className={`${pill} disabled:opacity-30`}
+      >
+        Excel
+      </button>
+
       <button onClick={onKeyMetrics} className={`${pill} ${!onKeyMetrics ? dis : ""}`}>Key Metrics</button>
     </div>
   );

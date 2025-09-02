@@ -1,8 +1,7 @@
-
 // src/components/reports/ReportScaffold.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import type { TableRow } from "./ResultsTableCard";
 import ReportsPageShell from "./ReportsPageShell";
 import HelpHeader, { helpHeaderAutoDismiss } from "./HelpHeader";
@@ -15,6 +14,7 @@ import KeyMetricsPanel from "./KeyMetricsPanel";
 import { FLAGS } from "@/lib/featureFlags";
 import UploadSlot from "@/components/UploadSlot";
 import AskMavenShell from "./maven/AskMavenShell";
+import { downloadTableExcel } from "@/lib/downloadTableExcel";
 
 type Props = {
   reportName: string;
@@ -53,8 +53,9 @@ export default function ReportScaffold({
   const [activeView, setActiveView] = React.useState<"maven" | "key-metrics">("maven");
   const [isMavenOpen, setIsMavenOpen] = React.useState(true);
   const [excelDownloadPath, setExcelDownloadPath] = React.useState<string | null>(null);
-
   const [tableRows, setTableRows] = React.useState<TableRow[]>([]);
+  
+  const tableRef = useRef<HTMLTableElement>(null);
 
   const filesReady = files.slice(0, requiredFileCount).every(Boolean);
   const canOpenMaven = runState === 'success';
@@ -125,41 +126,35 @@ export default function ReportScaffold({
       
       const res = await fetch(`${mergeApiPath}?format=json`, { method: "POST", body: fd });
       if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText || "An unknown error occurred.");
+        const errorBody = await res.text();
+        let errorDetails = errorBody;
+        try {
+            const errorJson = JSON.parse(errorBody);
+            errorDetails = errorJson.details || errorJson.error || errorBody;
+        } catch {}
+        throw new Error(errorDetails);
       }
       const rows = await res.json();
       
-      processApiData(rows);
+      processApiData(Array.isArray(rows) ? rows : []);
       setRunState("success");
-      setExcelDownloadPath(`${mergeApiPath}?format=xlsx`);
-      setActiveView("maven");
     } catch (e: any) {
       setError(e?.message || "Failed to run report.");
       setRunState("error");
     }
   }
 
-  async function downloadExcel() {
-    if (!excelDownloadPath) return;
-    
-    const fd = new FormData();
-    files.forEach((file, index) => {
-      if (file) fd.append(`file${String.fromCharCode(65 + index)}`, file);
+  function handleExcelDownload() {
+    if (!tableRef.current) return;
+    downloadTableExcel({
+      table: tableRef.current,
+      fileName: `${reportName.replace(/\s+/g, "_").toLowerCase()}.xlsx`,
+      sheetName: reportName,
     });
-
-    try {
-        const res = await fetch(excelDownloadPath, { method: "POST", body: fd });
-        if (!res.ok) throw new Error(await res.text());
-        const blob = await res.blob();
-        saveAs(blob, `${reportName.replace(/\s+/g, "_").toLowerCase()}_merged.xlsx`);
-    } catch (e: any) {
-        setError(e?.message || "Failed to download Excel file.");
-    }
   }
 
   const resultsTable = (
-    <ResultsTableCard title="Results" rows={tableRows} />
+    <ResultsTableCard ref={tableRef} title="Results" rows={tableRows} />
   );
   
   return (
@@ -187,7 +182,8 @@ export default function ReportScaffold({
               filesReady={filesReady}
               runState={runState}
               onRun={runReport}
-              onDownloadExcel={downloadExcel}
+              onExcel={handleExcelDownload}
+              excelEnabled={tableRows.length > 0}
               onModalComplete={handleModalComplete}
               requiredFileCount={requiredFileCount}
               onToggleKeyMetrics={() => setActiveView(p => p === 'key-metrics' ? 'maven' : 'key-metrics')}
