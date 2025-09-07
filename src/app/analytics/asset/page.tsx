@@ -86,12 +86,12 @@ export default function AssetAnalyticsPage() {
           <CardHeader>
             <CardTitle className="text-base font-bold">Asset Allocation</CardTitle>
           </CardHeader>
-          <CardContent className="min-h-[420px]">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-              <div className="flex justify-center">
+          <CardContent>
+            <div className="flex flex-col lg:flex-row items-center justify-between w-full min-h-[420px]">
+              <div className="w-full lg:w-1/2 flex items-center justify-center h-[320px] max-h-full">
                 <DynamicAssetAllocationDonutChart data={allocationData} />
               </div>
-              <div className="px-1">
+              <div className="w-full lg:w-1/2 flex flex-col justify-center items-start mt-6 lg:mt-0 lg:pl-8">
                 <AllocationLegend
                   items={allocationData.map((d) => ({
                     label: d.label,
