@@ -83,7 +83,7 @@ const accountsWithoutBeneficiaryData: AccountWithoutBeneficiary[] = [
   { id: "awb5", rank: 5, clientName: "Client Xi", age: 69, accountType: "SEP IRA", aumDisplay: "$750K", isHighAum: false },
   { id: "awb6", rank: 6, clientName: "Client Omicron", age: 80, accountType: "Trust Account", aumDisplay: "$1.2M", isHighAum: true },
   { id: "awb7", rank: 7, clientName: "Client Pi", age: 62, accountType: "401(k) Rollover", aumDisplay: "$600K", isHighAum: false },
-  { id: "awb8", rank: 8, clientName: "Client Rho", age: 70, accountType: "IRA", aumDisplay: "$550K", isHighAum: false },
+  { id: "awb8 rank: 8, clientName: "Client Rho", age: 70, accountType: "IRA", aumDisplay: "$550K", isHighAum: false },
   { id: "awb9", rank: 9, clientName: "Client Sigma", age: 67, accountType: "Brokerage", aumDisplay: "$1.1M", isHighAum: true },
   { id: "awb10", rank: 10, clientName: "Client Tau", age: 78, accountType: "Annuity", aumDisplay: "$450K", isHighAum: false },
 ];
@@ -121,7 +121,7 @@ export default function ClientAnalyticsPage() {
             {topClientsByAumData.map((client) => {
               const barWidthPercentage = maxAum > 0 ? (client.aum / maxAum) * 100 : 0;
               return (
-                <div key={client.rank} className="flex items-center justify-between py-2 border-b border-border/20 last:border-b-0">
+                <div key={client.rank} className="flex items-center justify-between py-2 border-b last:border-b-0" style={{ borderColor: 'var(--nav-divider)' }}>
                   <div className="flex items-center">
                     <span className="text-sm font-medium text-muted-foreground w-7 text-right mr-2">{client.rank}.</span>
                     <span className="text-base text-foreground truncate" title={client.name}>{client.name}</span>
