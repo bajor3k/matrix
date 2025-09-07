@@ -121,7 +121,7 @@ export default function ClientAnalyticsPage() {
             {topClientsByAumData.map((client) => {
               const barWidthPercentage = maxAum > 0 ? (client.aum / maxAum) * 100 : 0;
               return (
-                <div key={client.rank} className="flex items-center justify-between py-2 border-b border-border/10 last:border-b-0">
+                <div key={client.rank} className="flex items-center justify-between py-2 border-b border-border/20 last:border-b-0">
                   <div className="flex items-center">
                     <span className="text-sm font-medium text-muted-foreground w-7 text-right mr-2">{client.rank}.</span>
                     <span className="text-base text-foreground truncate" title={client.name}>{client.name}</span>
