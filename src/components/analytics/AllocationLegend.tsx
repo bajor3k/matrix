@@ -9,21 +9,21 @@ type LegendItem = {
 
 export function AllocationLegend({ items }: { items: LegendItem[] }) {
   return (
-    <ul className="space-y-4">
+    <ul className="space-y-3">
       {items.map((item) => (
         <li
           key={item.label}
-          className="flex items-center justify-between rounded-md"
+          className="flex items-center justify-between gap-4 rounded-md"
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 shrink-0">
             <span
-              className="h-3.5 w-3.5 rounded-full"
+              className="h-4 w-4 rounded-full"
               style={{ backgroundColor: item.color }}
             />
-            <span className="text-base text-muted-foreground">{item.label}</span>
+            <span className="text-lg text-muted-foreground truncate" title={item.label}>{item.label}</span>
           </div>
           {item.value && (
-            <span className="text-base font-semibold text-foreground">{item.value}</span>
+            <span className="text-lg font-semibold text-foreground">{item.value}</span>
           )}
         </li>
       ))}
