@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { cn } from "@/lib/utils";
 import { PlaceholderCard } from "@/components/dashboard/placeholder-card";
 import { AllocationLegend } from "@/components/analytics/AllocationLegend";
-import { InflowOutflowGauge } from "@/components/analytics/InflowOutflowGauge";
+import { InflowOutflowBlocks } from "@/components/analytics/InflowOutflowBlocks";
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -61,14 +61,23 @@ const allocationData = [
 ];
 
 const flowsData = [
-    { date: '2025-08-01', inflow: 120000, outflow: 45000 },
-    { date: '2025-08-02', inflow: 25000, outflow: 30000 },
-    { date: '2025-08-03', inflow: 60000, outflow: 8000 },
-    { date: '2025-08-04', inflow: 10000, outflow: 95000 },
-    { date: '2025-08-05', inflow: 85000, outflow: 15000 },
-    { date: '2025-08-06', inflow: 40000, outflow: 50000 },
-    { date: '2025-08-07', inflow: 75000, outflow: 20000 },
+    { date: '2025-08-01', account: 'PZG123456', inflow: 120000, outflow: 0 },
+    { date: '2025-08-01', account: 'PZG998877', inflow: 95000, outflow: 0 },
+    { date: '2025-08-02', account: 'PZG445566', inflow: 0, outflow: 45000 },
+    { date: '2025-08-03', account: 'PZG112233', inflow: 60000, outflow: 0 },
+    { date: '2025-08-04', account: 'PZG778899', inflow: 0, outflow: 95000 },
+    { date: '2025-08-05', account: 'PZG123456', inflow: 75000, outflow: 0 },
+    { date: '2025-08-06', account: 'PZG445566', inflow: 0, outflow: 50000 },
 ];
+
+const formattedFlows = {
+    inflows: flowsData
+        .filter(d => d.inflow > 0)
+        .map(d => ({ account: d.account, amount: d.inflow })),
+    outflows: flowsData
+        .filter(d => d.outflow > 0)
+        .map(d => ({ account: d.account, amount: d.outflow })),
+};
 
 export default function AssetAnalyticsPage() {
   return (
@@ -103,10 +112,11 @@ export default function AssetAnalyticsPage() {
             </div>
           </CardContent>
         </Card>
-        <InflowOutflowGauge
-            title="Inflow v. Outflow"
-            data={flowsData}
-            initialTimeframe="MTD"
+        <InflowOutflowBlocks
+          title="Inflow vs. Outflow"
+          inflows={formattedFlows.inflows}
+          outflows={formattedFlows.outflows}
+          currency="USD"
         />
       </div>
 
