@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { cn } from "@/lib/utils";
 import { PlaceholderCard } from "@/components/dashboard/placeholder-card";
 import { AllocationLegend } from "@/components/analytics/AllocationLegend";
-import FlowsDivergingCard from '@/components/analytics/FlowsDivergingCard';
+import { BattleMeterKPI } from "@/components/analytics/BattleMeterKPI";
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -103,7 +103,7 @@ export default function AssetAnalyticsPage() {
             </div>
           </CardContent>
         </Card>
-        <FlowsDivergingCard
+        <BattleMeterKPI
             title="Inflow v. Outflow"
             data={flowsData}
             initialTimeframe="MTD"
