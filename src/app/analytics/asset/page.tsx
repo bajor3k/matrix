@@ -105,7 +105,7 @@ export default function AssetAnalyticsPage() {
         </Card>
         <InflowOutflowLines
           rows={flowsData}
-          title="Inflow vs. Outflow"
+          title="Inflow v. Outflow"
           currency="USD"
         />
       </div>
