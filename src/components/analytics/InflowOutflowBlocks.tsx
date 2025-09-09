@@ -38,14 +38,14 @@ const findLargest = (data: FlowDataPoint[]) => {
 // TRUE 3D CYLINDER (SVG) — with end caps, side wall, rim + floor shadow
 function CylinderSegment({
   w = 360,
-  h = 72,          // cylinder height
-  depth = 24,      // extrusion depth
+  h = 72,          // cylinder height (ellipse diameter)
+  depth = 22,      // extrusion depth (side wall)
   color = "#7CCAFF",
   colorDark = "#2A6AA1",
   muted = false,
-  capLeft = true,  // show left circular end-cap
-  capRight = true, // show right circular end-cap
-  joinFlat = false, // if true: flatten the meeting edge (no round on that side)
+  capLeft = true,      // show left circular end-cap
+  capRight = true,     // show right circular end-cap
+  joinFlat = false,    // (kept for styling hooks)
   label = "",
   onClick,
 }: {
@@ -58,10 +58,10 @@ function CylinderSegment({
   const faceLight = muted ? "#5A5A5A" : color;
   const faceDark  = muted ? "#2B2B2B" : colorDark;
 
+  // flat seam when cap is false (so halves can touch seamlessly)
   const rxLeft  = capLeft  ? h / 2 : 0;
   const rxRight = capRight ? h / 2 : 0;
 
-  // helper path for rounded rectangle (top face) so we can clip the wall under it
   const roundedPath = (width: number, height: number, rL: number, rR: number, y = 0) => {
     const rLy = Math.min(rL, height / 2), rRy = Math.min(rR, height / 2);
     const rLx = rLy, rRx = rRy;
@@ -113,20 +113,20 @@ function CylinderSegment({
         {/* floor shadow */}
         <ellipse cx={w/2} cy={h + depth + 10} rx={Math.max(24, w*0.45)} ry={7} fill="rgba(0,0,0,0.45)"/>
 
-        {/* side wall (extrusion) clipped under the top face */}
+        {/* side wall (extrusion) */}
         <g clipPath={`url(#clipTop-${id})`}>
           <rect x="0" y="0" width={w} height={h + depth} fill={`url(#wall-${id})`} />
         </g>
 
-        {/* bottom rim/occlusion to give thickness */}
+        {/* bottom rim (thickness) */}
         <path d={roundedPath(w, h, rxLeft, rxRight, depth)} fill={`url(#face-${id})`} opacity="0.95"/>
 
         {/* top face */}
         <path d={roundedPath(w, h, rxLeft, rxRight)} fill={`url(#face-${id})`} />
 
-        {/* end-cap emphasis: slight highlight + shade (sells the cylinder) */}
-        {capLeft  && <ellipse cx={h/2}     cy={(h)/2} rx={h/2} ry={h/2} fill={`url(#capHi-${id})`} />}
-        {capRight && <ellipse cx={w - h/2} cy={(h)/2} rx={h/2} ry={h/2} fill={`url(#capShade-${id})`} />}
+        {/* end-cap nuance */}
+        {capLeft  && <ellipse cx={h/2}     cy={h/2} rx={h/2} ry={h/2} fill={`url(#capHi-${id})`} />}
+        {capRight && <ellipse cx={w - h/2} cy={h/2} rx={h/2} ry={h/2} fill={`url(#capShade-${id})`} />}
       </svg>
 
       {label && (
@@ -155,7 +155,6 @@ export const InflowOutflowBlocks: React.FC<InflowOutflowBlocksProps> = ({
   const netFlow = totalInflow - totalOutflow;
   const grandTotal = totalInflow + totalOutflow;
 
-  // Ensure a minimum width for visibility even if one value is 0
   const minW = 15;
   const inW = grandTotal > 0 ? Math.max(minW, (totalInflow / grandTotal) * 640) : 320;
   const outW = grandTotal > 0 ? Math.max(minW, (totalOutflow / grandTotal) * 640) : 320;
@@ -173,77 +172,81 @@ export const InflowOutflowBlocks: React.FC<InflowOutflowBlocksProps> = ({
     <div className="rounded-2xl border border-border/30 bg-card p-6 shadow-lg">
       <h3 className="text-base font-bold text-foreground mb-6 text-center">{title}</h3>
       
-        {/* VISUAL ROW */}
-        <div
-        className="relative mx-auto mt-2 flex w-full items-center justify-center overflow-hidden rounded-xl bg-black/20 p-6 min-h-[140px]"
-        >
-        {/* dynamic gap: 0 when connected, 24px when split */}
+      {/* VISUAL ROW */}
+      <div className="relative mx-auto mt-2 flex w-full items-center justify-center overflow-hidden rounded-xl bg-black/20 p-6">
+        {/* dynamic gap: 0 when connected, 24 when split */}
         <div className="flex items-center transition-[gap] duration-200" style={{ gap: split ? 24 : 0 }}>
-            {!split ? (
+          {!split ? (
             <>
-                {/* CONNECTED halves: flatten the meeting edges so they touch perfectly */}
-                <CylinderSegment
+              {/* CONNECTED: halves touch; seam is flat by disabling the inner caps */}
+              <CylinderSegment
                 w={inW}
-                color="hsl(var(--chart-1))"
-                colorDark="hsl(204 80% 40%)"
+                h={82}
+                depth={24}
+                color="#7ccaff"
+                colorDark="#2a6aa1"
                 label="Inflows"
                 capLeft
-                capRight={false}  // flat join
-                joinFlat           // remove rounding at the join
+                capRight={false}  // flat seam on the right edge
                 onClick={() => {
-                    setSplit(true);
-                    setSelected("in");
-                    if (maxIn) setInfo({ side: "in", account: maxIn.account, amount: maxIn.amount });
+                  setSplit(true);
+                  setSelected("in");
+                  if (maxIn) setInfo({ side: "in", account: maxIn.account, amount: maxIn.amount });
                 }}
-                />
-                <CylinderSegment
+              />
+              <CylinderSegment
                 w={outW}
-                color="hsl(var(--chart-5))"
-                colorDark="hsl(274 80% 40%)"
+                h={82}
+                depth={24}
+                color="#9b8cff"
+                colorDark="#5b4dd6"
                 label="Outflows"
-                capLeft={false}   // flat join
+                capLeft={false}   // flat seam on the left edge
                 capRight
-                joinFlat
                 onClick={() => {
-                    setSplit(true);
-                    setSelected("out");
-                    if (maxOut) setInfo({ side: "out", account: maxOut.account, amount: maxOut.amount });
+                  setSplit(true);
+                  setSelected("out");
+                  if (maxOut) setInfo({ side: "out", account: maxOut.account, amount: maxOut.amount });
                 }}
-                />
+              />
             </>
-            ) : (
+          ) : (
             <>
-                {/* SPLIT: both ends rounded; the non-selected side is muted gray */}
-                <CylinderSegment
+              {/* SPLIT: both ends rounded; non-selected is muted gray */}
+              <CylinderSegment
                 w={inW}
-                color="hsl(var(--chart-1))"
-                colorDark="hsl(204 80% 40%)"
+                h={82}
+                depth={24}
+                color="#7ccaff"
+                colorDark="#2a6aa1"
                 label="Inflows"
-                capLeft
-                capRight
                 muted={selected === "out"}
-                onClick={() => {
-                    setSelected("in");
-                    if (maxIn) setInfo({ side: "in", account: maxIn.account, amount: maxIn.amount });
-                }}
-                />
-                <CylinderSegment
-                w={outW}
-                color="hsl(var(--chart-5))"
-                colorDark="hsl(274 80% 40%)"
-                label="Outflows"
                 capLeft
                 capRight
-                muted={selected === "in"}
                 onClick={() => {
-                    setSelected("out");
-                    if (maxOut) setInfo({ side: "out", account: maxOut.account, amount: maxOut.amount });
+                  setSelected("in");
+                  if (maxIn) setInfo({ side: "in", account: maxIn.account, amount: maxIn.amount });
                 }}
-                />
+              />
+              <CylinderSegment
+                w={outW}
+                h={82}
+                depth={24}
+                color="#9b8cff"
+                colorDark="#5b4dd6"
+                label="Outflows"
+                muted={selected === "in"}
+                capLeft
+                capRight
+                onClick={() => {
+                  setSelected("out");
+                  if (maxOut) setInfo({ side: "out", account: maxOut.account, amount: maxOut.amount });
+                }}
+              />
             </>
-            )}
+          )}
         </div>
-        </div>
+      </div>
 
       <div className="mt-6 grid grid-cols-3 gap-4 text-center">
         <div>
