@@ -1,3 +1,4 @@
+// @/components/analytics/InflowOutflowLines.tsx
 "use client";
 import * as React from "react";
 import {
@@ -10,7 +11,6 @@ type Row = { date: string; account: string; inflow: number; outflow: number };
 
 const fmt$ = (n: number, c = "USD") =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: c, maximumFractionDigits: 0 }).format(n);
-
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
 
 const largestBy = (rows: Row[], key: "inflow" | "outflow") => {
@@ -25,7 +25,7 @@ export function InflowOutflowLines({
   title = "Inflow vs. Outflow",
   currency = "USD",
 }: { rows: Row[]; title?: string; currency?: string }) {
-  // aggregate by day (numbers only)
+  // 1) aggregate by day (numbers only)
   const data = React.useMemo(() => {
     const by = new Map<string, { date: string; inflow: number; outflow: number }>();
     for (const r of rows) {
@@ -38,8 +38,10 @@ export function InflowOutflowLines({
     return [...by.values()].sort((a, b) => a.date.localeCompare(b.date));
   }, [rows]);
 
+  // guard dataset to avoid 0..0 domains
   const safe = data.length ? data : [{ date: "—", inflow: 0, outflow: 0 }];
 
+  // totals
   const totals = React.useMemo(() => {
     const inflow = sum(safe.map(d => d.inflow));
     const outflow = sum(safe.map(d => d.outflow));
@@ -61,7 +63,7 @@ export function InflowOutflowLines({
     }
   };
 
-  // axis domain so it’s visible
+  // axis domain: 0 .. 1.1×max (visible in light/dark)
   const yMax = Math.max(...safe.map(d => Math.max(d.inflow, d.outflow)), 1);
   const yDomain: [number, number] = [0, Math.ceil(yMax * 1.1)];
 
@@ -79,37 +81,38 @@ export function InflowOutflowLines({
     <div className="rounded-2xl border border-white/10 bg-[#0c0c0c] p-5 text-white">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-lg font-semibold">{title}</h3>
-        
+        <span className="text-xs text-zinc-400">Click a legend to isolate & see top account</span>
       </div>
 
-      {/* IMPORTANT: fixed height */}
-      <div className="h-[280px] w-full rounded-xl bg-black/20 p-2">
+      {/* FIXED HEIGHT – do not remove */}
+      <div className="h-[300px] w-full rounded-xl bg-black/30 p-2">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={safe} margin={{ top: 12, right: 24, left: 8, bottom: 8 }}>
-            <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
-            <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.55)", fontSize: 11 }} axisLine={false} tickLine={false}/>
-            <YAxis domain={yDomain} allowDecimals={false} tick={{ fill: "rgba(255,255,255,0.55)", fontSize: 11 }} axisLine={false} tickLine={false}/>
-            <Tooltip contentStyle={{ background: "#111", border: "1px solid rgba(255,255,255,0.1)" }}
+          <LineChart data={safe} margin={{ top: 12, right: 24, left: 8, bottom: 10 }}>
+            <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
+            <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.7)", fontSize: 11 }} axisLine={false} tickLine={false}/>
+            <YAxis domain={yDomain} allowDecimals={false}
+                   tick={{ fill: "rgba(255,255,255,0.7)", fontSize: 11 }} axisLine={false} tickLine={false}/>
+            <Tooltip contentStyle={{ background: "#111", border: "1px solid rgba(255,255,255,0.15)" }}
                      labelStyle={{ color: "white" }} itemStyle={{ color: "white" }}/>
             <Legend verticalAlign="top" align="right" onClick={onLegendClick}
-                    wrapperStyle={{ color: "rgba(255,255,255,0.8)", fontSize: 12, cursor: "pointer" }}/>
+                    wrapperStyle={{ color: "rgba(255,255,255,0.85)", fontSize: 12, cursor: "pointer" }}/>
 
-            {/* inflows (teal) */}
+            {/* Inflows (teal) + glow underlay */}
             {show.in && (
               <>
-                <Line name="Inflows" type="monotone" dataKey="inflow" stroke="#18A2B8"
+                <Line name="Inflows" type="monotone" dataKey="inflow" stroke="#06B6D4"
                       strokeWidth={3.5} dot={<BadgeDot />} activeDot={{ r: 5 }} connectNulls />
-                <Line type="monotone" dataKey="inflow" stroke="#18A2B8" strokeOpacity={0.22}
+                <Line type="monotone" dataKey="inflow" stroke="#06B6D4" strokeOpacity={0.22}
                       strokeWidth={9} dot={false} connectNulls />
               </>
             )}
 
-            {/* outflows (violet) */}
+            {/* Outflows (violet) + glow underlay */}
             {show.out && (
               <>
-                <Line name="Outflows" type="monotone" dataKey="outflow" stroke="#7C3AED"
+                <Line name="Outflows" type="monotone" dataKey="outflow" stroke="#8B5CF6"
                       strokeWidth={3.5} dot={<BadgeDot />} activeDot={{ r: 5 }} connectNulls />
-                <Line type="monotone" dataKey="outflow" stroke="#7C3AED" strokeOpacity={0.22}
+                <Line type="monotone" dataKey="outflow" stroke="#8B5CF6" strokeOpacity={0.22}
                       strokeWidth={9} dot={false} connectNulls />
               </>
             )}
@@ -117,7 +120,21 @@ export function InflowOutflowLines({
         </ResponsiveContainer>
       </div>
 
-      
+      {/* KPIs */}
+      <div className="mt-4 grid grid-cols-3 gap-3 text-center text-sm">
+        <div className="rounded-lg bg-white/5 p-3">
+          <div className="text-zinc-400">Total Inflows</div>
+          <div className="text-lg font-semibold text-emerald-400">{fmt$(sum(safe.map(d=>d.inflow)), currency)}</div>
+        </div>
+        <div className="rounded-lg bg-white/5 p-3">
+          <div className="text-zinc-400">Net Flow</div>
+          <div className="text-lg font-semibold">{fmt$(sum(safe.map(d=>d.inflow))-sum(safe.map(d=>d.outflow)), currency)}</div>
+        </div>
+        <div className="rounded-lg bg-white/5 p-3">
+          <div className="text-zinc-400">Total Outflows</div>
+          <div className="text-lg font-semibold text-violet-400">{fmt$(sum(safe.map(d=>d.outflow)), currency)}</div>
+        </div>
+      </div>
 
       {/* Modal: largest account when isolating */}
       <Dialog open={!!modal} onOpenChange={(o) => !o && setModal(null)}>
