@@ -7,8 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 
 type Row = { date: string; account: string; inflow: number; outflow: number };
-const fmt$ = (n: number, ccy = "USD") =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: ccy, maximumFractionDigits: 0 }).format(n);
+const fmt$ = (n: number, c = "USD") => new Intl.NumberFormat("en-US", { style: "currency", currency: c, maximumFractionDigits: 0 }).format(n);
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
 
 const largestBy = (rows: Row[], key: "inflow" | "outflow") => {
@@ -24,27 +23,30 @@ export function InflowOutflowLines({
   currency = "USD",
 }: { rows: Row[]; title?: string; currency?: string }) {
 
-  // 1) aggregate by day for the chart
+  // --- aggregate by day (numbers only) ---
   const data = React.useMemo(() => {
-    const byDate = new Map<string, { date: string; inflow: number; outflow: number }>();
+    const by = new Map<string, { date: string; inflow: number; outflow: number }>();
     for (const r of rows) {
       const d = r.date.slice(0, 10);
-      if (!byDate.has(d)) byDate.set(d, { date: d, inflow: 0, outflow: 0 });
-      const v = byDate.get(d)!;
-      v.inflow += +r.inflow || 0;
-      v.outflow += +r.outflow || 0;
+      if (!by.has(d)) by.set(d, { date: d, inflow: 0, outflow: 0 });
+      const v = by.get(d)!;
+      v.inflow += Number(r.inflow) || 0;
+      v.outflow += Number(r.outflow) || 0;
     }
-    return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+    return [...by.values()].sort((a, b) => a.date.localeCompare(b.date));
   }, [rows]);
 
-  // 2) totals for footer
-  const totals = React.useMemo(() => {
-    const inflow = sum(data.map(d => d.inflow));
-    const outflow = sum(data.map(d => d.outflow));
-    return { inflow, outflow, net: inflow - outflow };
-  }, [data]);
+  // guard: if no data, show stub to avoid bad domain
+  const safe = data.length ? data : [{ date: "—", inflow: 0, outflow: 0 }];
 
-  // 3) legend isolate + modal
+  // totals
+  const totals = React.useMemo(() => {
+    const inflow = sum(safe.map(d => d.inflow));
+    const outflow = sum(safe.map(d => d.outflow));
+    return { inflow, outflow, net: inflow - outflow };
+  }, [safe]);
+
+  // legend isolate + modal
   const [modal, setModal] = React.useState<null | { side: "in" | "out"; account: string; amount: number }>(null);
   const [show, setShow] = React.useState<{ in: boolean; out: boolean }>({ in: true, out: true });
   const onLegendClick = (o: any) => {
@@ -59,18 +61,22 @@ export function InflowOutflowLines({
     }
   };
 
-  // 4) last-point badge
-  const lastIdx = data.length - 1;
-  const BadgeDot = ({ cx, cy, payload }: any) =>
-    payload?.index === lastIdx ? (
+  // compute Y domain: 0 .. max*1.1 (avoid squashed lines)
+  const yMax = Math.max(
+    ...safe.map(d => Math.max(d.inflow || 0, d.outflow || 0)),
+    1 // avoid 0..0
+  );
+  const yDomain: [number, number] = [0, Math.ceil(yMax * 1.1)];
+
+  // last-point badge
+  const lastIdx = safe.length - 1;
+  const BadgeDot = ({ cx, cy, index }: any) =>
+    index === lastIdx ? (
       <>
         <circle cx={cx} cy={cy} r={8} fill="#c9fff7" opacity="0.25" />
         <circle cx={cx} cy={cy} r={5} fill="#a7fff1" stroke="black" strokeOpacity="0.15" />
       </>
     ) : null;
-
-  // 5) add index for badge check
-  const indexed = data.map((d, i) => ({ ...d, index: i }));
 
   return (
     <div className="rounded-2xl border border-white/10 bg-[#0c0c0c] p-5 text-white">
@@ -79,13 +85,14 @@ export function InflowOutflowLines({
         <span className="text-xs text-zinc-400">Click a legend to isolate & see top account</span>
       </div>
 
-      {/* IMPORTANT: give the chart a fixed height */}
-      <div className="h-[260px] w-full rounded-xl bg-black/20 p-2">
+      {/* Give the container a real height. If this sits in a hidden tab, render once visible. */}
+      <div className="h-[280px] w-full rounded-xl bg-black/20 p-2">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={indexed} margin={{ top: 12, right: 24, left: 8, bottom: 8 }}>
+          <LineChart data={safe} margin={{ top: 12, right: 24, left: 8, bottom: 8 }}>
             <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
             <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.55)", fontSize: 11 }} axisLine={false} tickLine={false}/>
-            <YAxis tick={{ fill: "rgba(255,255,255,0.55)", fontSize: 11 }} axisLine={false} tickLine={false}/>
+            <YAxis domain={yDomain} allowDecimals={false}
+                   tick={{ fill: "rgba(255,255,255,0.55)", fontSize: 11 }} axisLine={false} tickLine={false}/>
             <Tooltip contentStyle={{ background: "#111", border: "1px solid rgba(255,255,255,0.1)" }}
                      labelStyle={{ color: "white" }} itemStyle={{ color: "white" }}/>
             <Legend verticalAlign="top" align="right" onClick={onLegendClick}
@@ -93,22 +100,25 @@ export function InflowOutflowLines({
 
             {show.in && (
               <>
-                <Line name="Inflows" type="monotone" dataKey="inflow" stroke="#18A2B8" strokeWidth={3.5}
-                      dot={<BadgeDot />} activeDot={{ r: 5 }}/>
-                <Line type="monotone" dataKey="inflow" stroke="#18A2B8" strokeOpacity={0.20} strokeWidth={9} dot={false}/>
+                <Line name="Inflows" type="monotone" dataKey="inflow" stroke="#18A2B8"
+                      strokeWidth={3.5} dot={<BadgeDot />} activeDot={{ r: 5 }} connectNulls />
+                <Line type="monotone" dataKey="inflow" stroke="#18A2B8" strokeOpacity={0.22}
+                      strokeWidth={9} dot={false} connectNulls />
               </>
             )}
             {show.out && (
               <>
-                <Line name="Outflows" type="monotone" dataKey="outflow" stroke="#7C3AED" strokeWidth={3.5}
-                      dot={<BadgeDot />} activeDot={{ r: 5 }}/>
-                <Line type="monotone" dataKey="outflow" stroke="#7C3AED" strokeOpacity={0.20} strokeWidth={9} dot={false}/>
+                <Line name="Outflows" type="monotone" dataKey="outflow" stroke="#7C3AED"
+                      strokeWidth={3.5} dot={<BadgeDot />} activeDot={{ r: 5 }} connectNulls />
+                <Line type="monotone" dataKey="outflow" stroke="#7C3AED" strokeOpacity={0.22}
+                      strokeWidth={9} dot={false} connectNulls />
               </>
             )}
           </LineChart>
         </ResponsiveContainer>
       </div>
 
+      {/* KPIs */}
       <div className="mt-4 grid grid-cols-3 gap-3 text-center text-sm">
         <div className="rounded-lg bg-white/5 p-3">
           <div className="text-zinc-400">Total Inflows</div>
@@ -124,6 +134,7 @@ export function InflowOutflowLines({
         </div>
       </div>
 
+      {/* Modal */}
       <Dialog open={!!modal} onOpenChange={(o) => !o && setModal(null)}>
         <DialogContent className="sm:max-w-md bg-[#0c0c0c] border border-white/10">
           <DialogHeader><DialogTitle>{modal?.side === "in" ? "Largest Inflow" : "Largest Outflow"}</DialogTitle></DialogHeader>
