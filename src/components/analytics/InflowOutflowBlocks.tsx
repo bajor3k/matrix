@@ -55,7 +55,12 @@ function CylinderSegment({
   capLeft?: boolean; capRight?: boolean; joinFlat?: boolean;
   label?: string; onClick?: () => void;
 }) {
-  const id = React.useMemo(() => Math.random().toString(36).slice(2, 9), []);
+  const [id, setId] = React.useState('c');
+  React.useEffect(() => {
+    // This now only runs on the client, after initial hydration
+    setId(Math.random().toString(36).slice(2, 9));
+  }, []);
+
   const faceLight = muted ? "#5A5A5A" : color;
   const faceDark  = muted ? "#2B2B2B" : colorDark;
 
