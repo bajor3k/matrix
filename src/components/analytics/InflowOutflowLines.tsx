@@ -1,3 +1,4 @@
+
 "use client";
 import * as React from "react";
 import {
@@ -19,7 +20,7 @@ const largestBy = (rows: Row[], key: "inflow" | "outflow") => {
 
 export function InflowOutflowLines({
   rows,
-  title = "Inflow vs. Outflow",
+  title = "Inflow v. Outflow",
   currency = "USD",
 }: { rows: Row[]; title?: string; currency?: string }) {
 
@@ -82,6 +83,7 @@ export function InflowOutflowLines({
     <div className="rounded-2xl border border-white/10 bg-[#0c0c0c] p-5 text-white">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-lg font-semibold">{title}</h3>
+        
       </div>
 
       {/* Give the container a real height. If this sits in a hidden tab, render once visible. */}
