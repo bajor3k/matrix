@@ -2,7 +2,6 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -39,8 +38,8 @@ const findLargest = (data: FlowDataPoint[]) => {
 // TRUE 3D CYLINDER (SVG) — with end caps, side wall, rim + floor shadow
 function CylinderSegment({
   w = 360,
-  h = 64,          // cylinder height
-  depth = 18,      // extrusion depth
+  h = 72,          // cylinder height
+  depth = 24,      // extrusion depth
   color = "#7CCAFF",
   colorDark = "#2A6AA1",
   muted = false,
@@ -55,17 +54,12 @@ function CylinderSegment({
   capLeft?: boolean; capRight?: boolean; joinFlat?: boolean;
   label?: string; onClick?: () => void;
 }) {
-  const [id, setId] = React.useState('c');
-  React.useEffect(() => {
-    // This now only runs on the client, after initial hydration
-    setId(Math.random().toString(36).slice(2, 9));
-  }, []);
-
+  const id = React.useId();
   const faceLight = muted ? "#5A5A5A" : color;
   const faceDark  = muted ? "#2B2B2B" : colorDark;
 
-  const rxLeft  = capLeft  ? h / 2 : (joinFlat ? 0 : h / 2);
-  const rxRight = capRight ? h / 2 : (joinFlat ? 0 : h / 2);
+  const rxLeft  = capLeft  ? h / 2 : 0;
+  const rxRight = capRight ? h / 2 : 0;
 
   // helper path for rounded rectangle (top face) so we can clip the wall under it
   const roundedPath = (width: number, height: number, rL: number, rR: number, y = 0) => {
@@ -163,8 +157,8 @@ export const InflowOutflowBlocks: React.FC<InflowOutflowBlocksProps> = ({
 
   // Ensure a minimum width for visibility even if one value is 0
   const minW = 15;
-  const inW = grandTotal > 0 ? Math.max(minW, (totalInflow / grandTotal) * 400) : 200;
-  const outW = grandTotal > 0 ? Math.max(minW, (totalOutflow / grandTotal) * 400) : 200;
+  const inW = grandTotal > 0 ? Math.max(minW, (totalInflow / grandTotal) * 640) : 320;
+  const outW = grandTotal > 0 ? Math.max(minW, (totalOutflow / grandTotal) * 640) : 320;
 
   const maxIn = React.useMemo(() => findLargest(inflows), [inflows]);
   const maxOut = React.useMemo(() => findLargest(outflows), [outflows]);
@@ -181,7 +175,7 @@ export const InflowOutflowBlocks: React.FC<InflowOutflowBlocksProps> = ({
       
         {/* VISUAL ROW */}
         <div
-        className="relative mx-auto mt-2 flex w-full items-center justify-center overflow-hidden rounded-xl bg-black/20 p-6 min-h-[120px]"
+        className="relative mx-auto mt-2 flex w-full items-center justify-center overflow-hidden rounded-xl bg-black/20 p-6 min-h-[140px]"
         >
         {/* dynamic gap: 0 when connected, 24px when split */}
         <div className="flex items-center transition-[gap] duration-200" style={{ gap: split ? 24 : 0 }}>
@@ -190,8 +184,6 @@ export const InflowOutflowBlocks: React.FC<InflowOutflowBlocksProps> = ({
                 {/* CONNECTED halves: flatten the meeting edges so they touch perfectly */}
                 <CylinderSegment
                 w={inW}
-                h={64}
-                depth={18}
                 color="hsl(var(--chart-1))"
                 colorDark="hsl(204 80% 40%)"
                 label="Inflows"
@@ -206,8 +198,6 @@ export const InflowOutflowBlocks: React.FC<InflowOutflowBlocksProps> = ({
                 />
                 <CylinderSegment
                 w={outW}
-                h={64}
-                depth={18}
                 color="hsl(var(--chart-5))"
                 colorDark="hsl(274 80% 40%)"
                 label="Outflows"
@@ -226,8 +216,6 @@ export const InflowOutflowBlocks: React.FC<InflowOutflowBlocksProps> = ({
                 {/* SPLIT: both ends rounded; the non-selected side is muted gray */}
                 <CylinderSegment
                 w={inW}
-                h={64}
-                depth={18}
                 color="hsl(var(--chart-1))"
                 colorDark="hsl(204 80% 40%)"
                 label="Inflows"
@@ -241,8 +229,6 @@ export const InflowOutflowBlocks: React.FC<InflowOutflowBlocksProps> = ({
                 />
                 <CylinderSegment
                 w={outW}
-                h={64}
-                depth={18}
                 color="hsl(var(--chart-5))"
                 colorDark="hsl(274 80% 40%)"
                 label="Outflows"
