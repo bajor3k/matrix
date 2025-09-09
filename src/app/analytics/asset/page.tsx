@@ -67,8 +67,7 @@ const flowsData = [
     { date: '2025-08-03', account: 'PZG112233', inflow: 60000, outflow: 0 },
     { date: '2025-08-04', account: 'PZG778899', inflow: 0, outflow: 95000 },
     { date: '2025-08-05', account: 'PZG123456', inflow: 75000, outflow: 0 },
-    { date: '2025- [running] I have created the new component `src/components/analytics/InflowOutflowLines.tsx` and will now update the `src/app/analytics/asset/page.tsx` to use it.
-08-06', account: 'PZG445566', inflow: 0, outflow: 50000 },
+    { date: '2025-08-06', account: 'PZG445566', inflow: 0, outflow: 50000 },
 ];
 
 export default function AssetAnalyticsPage() {
