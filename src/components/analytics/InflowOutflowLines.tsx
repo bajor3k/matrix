@@ -82,7 +82,6 @@ export function InflowOutflowLines({
     <div className="rounded-2xl border border-white/10 bg-[#0c0c0c] p-5 text-white">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-lg font-semibold">{title}</h3>
-        <span className="text-xs text-zinc-400">Click a legend to isolate & see top account</span>
       </div>
 
       {/* Give the container a real height. If this sits in a hidden tab, render once visible. */}
