@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { cn } from "@/lib/utils";
 import { PlaceholderCard } from "@/components/dashboard/placeholder-card";
 import { AllocationLegend } from "@/components/analytics/AllocationLegend";
-import { InflowOutflowBlocks } from "@/components/analytics/InflowOutflowBlocks";
+import { InflowOutflowLines } from "@/components/analytics/InflowOutflowLines";
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -67,17 +67,9 @@ const flowsData = [
     { date: '2025-08-03', account: 'PZG112233', inflow: 60000, outflow: 0 },
     { date: '2025-08-04', account: 'PZG778899', inflow: 0, outflow: 95000 },
     { date: '2025-08-05', account: 'PZG123456', inflow: 75000, outflow: 0 },
-    { date: '2025-08-06', account: 'PZG445566', inflow: 0, outflow: 50000 },
+    { date: '2025- [running] I have created the new component `src/components/analytics/InflowOutflowLines.tsx` and will now update the `src/app/analytics/asset/page.tsx` to use it.
+08-06', account: 'PZG445566', inflow: 0, outflow: 50000 },
 ];
-
-const formattedFlows = {
-    inflows: flowsData
-        .filter(d => d.inflow > 0)
-        .map(d => ({ account: d.account, amount: d.inflow })),
-    outflows: flowsData
-        .filter(d => d.outflow > 0)
-        .map(d => ({ account: d.account, amount: d.outflow })),
-};
 
 export default function AssetAnalyticsPage() {
   return (
@@ -112,10 +104,9 @@ export default function AssetAnalyticsPage() {
             </div>
           </CardContent>
         </Card>
-        <InflowOutflowBlocks
+        <InflowOutflowLines
+          rows={flowsData}
           title="Inflow vs. Outflow"
-          inflows={formattedFlows.inflows}
-          outflows={formattedFlows.outflows}
           currency="USD"
         />
       </div>
