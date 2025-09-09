@@ -79,6 +79,7 @@ export function InflowOutflowLines({
     <div className="rounded-2xl border border-white/10 bg-[#0c0c0c] p-5 text-white">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-lg font-semibold">{title}</h3>
+        
       </div>
 
       {/* IMPORTANT: fixed height */}
@@ -116,21 +117,7 @@ export function InflowOutflowLines({
         </ResponsiveContainer>
       </div>
 
-      {/* KPIs */}
-      <div className="mt-4 grid grid-cols-3 gap-3 text-center text-sm">
-        <div className="rounded-lg bg-white/5 p-3">
-          <div className="text-zinc-400">Total Inflows</div>
-          <div className="text-lg font-semibold text-emerald-400">{fmt$(totals.inflow, currency)}</div>
-        </div>
-        <div className="rounded-lg bg-white/5 p-3">
-          <div className="text-zinc-400">Net Flow</div>
-          <div className="text-lg font-semibold">{fmt$(totals.net, currency)}</div>
-        </div>
-        <div className="rounded-lg bg-white/5 p-3">
-          <div className="text-zinc-400">Total Outflows</div>
-          <div className="text-lg font-semibold text-violet-400">{fmt$(totals.outflow, currency)}</div>
-        </div>
-      </div>
+      
 
       {/* Modal: largest account when isolating */}
       <Dialog open={!!modal} onOpenChange={(o) => !o && setModal(null)}>
