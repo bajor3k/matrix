@@ -11,7 +11,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { cn } from "@/lib/utils";
 import { PlaceholderCard } from "@/components/dashboard/placeholder-card";
 import { AllocationLegend } from "@/components/analytics/AllocationLegend";
-import { InflowOutflowLines } from "@/components/analytics/InflowOutflowLines";
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -60,16 +59,6 @@ const allocationData = [
   { label: "Cash & Equivalents", value: 5, color: "var(--palette-6)" },
 ];
 
-const flowsData = [
-    { date: '2025-08-01', account: 'PZG123456', inflow: 120000, outflow: 0 },
-    { date: '2025-08-01', account: 'PZG998877', inflow: 95000, outflow: 0 },
-    { date: '2025-08-02', account: 'PZG445566', inflow: 0, outflow: 45000 },
-    { date: '2025-08-03', account: 'PZG112233', inflow: 60000, outflow: 0 },
-    { date: '2025-08-04', account: 'PZG778899', inflow: 0, outflow: 95000 },
-    { date: '2025-08-05', account: 'PZG123456', inflow: 75000, outflow: 0 },
-    { date: '2025-08-06', account: 'PZG445566', inflow: 0, outflow: 50000 },
-];
-
 export default function AssetAnalyticsPage() {
   return (
     <main className="min-h-screen flex-1 p-6 space-y-4 md:p-8">
@@ -81,8 +70,8 @@ export default function AssetAnalyticsPage() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <Card className="col-span-1">
+      <div className="grid grid-cols-1 gap-6">
+        <Card className="col-span-1 xl:col-span-1">
           <CardHeader>
             <CardTitle className="text-base font-bold">Asset Allocation</CardTitle>
           </CardHeader>
@@ -103,11 +92,6 @@ export default function AssetAnalyticsPage() {
             </div>
           </CardContent>
         </Card>
-        <InflowOutflowLines
-          rows={flowsData}
-          title="Inflow v. Outflow"
-          currency="USD"
-        />
       </div>
 
       <PlaceholderCard title="Top Performing Assets">
