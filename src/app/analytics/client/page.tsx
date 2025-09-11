@@ -164,11 +164,9 @@ export default function ClientAnalyticsPage() {
                             {account.clientName}
                           </div>
                         </TooltipTrigger>
-                        {isClient && (
-                          <TooltipContent side="top" className="bg-popover text-popover-foreground">
-                            <p>Tap to initiate beneficiary outreach task</p>
-                          </TooltipContent>
-                        )}
+                        <TooltipContent side="top" className={cn("bg-popover text-popover-foreground", !isClient && "hidden")}>
+                          <p>Tap to initiate beneficiary outreach task</p>
+                        </TooltipContent>
                       </Tooltip>
                     </TableCell>
                     <TableCell className="text-center text-muted-foreground">{account.age}</TableCell>
