@@ -2,6 +2,7 @@
 "use client";
 
 import * as React from 'react';
+import { useTheme } from "next-themes";
 import { PlaceholderCard } from '@/components/dashboard/placeholder-card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -42,7 +43,7 @@ import {
   addMonths, 
   startOfWeek, 
   endOfWeek, 
-  getDay, 
+  getDay, 2
   getDate, 
   getDaysInMonth, 
   startOfMonth, 
@@ -136,6 +137,7 @@ const parseTimeStringToDate = (baseDate: Date, timeString: string): Date => {
 
 
 export default function ClientPortalCalendarPage() {
+  const { theme } = useTheme();
   const { toast } = useToast();
   const [isAddEventDialogOpen, setIsAddEventDialogOpen] = React.useState(false);
   const [isQuickAddEventDialogOpen, setIsQuickAddEventDialogOpen] = React.useState(false);
@@ -339,7 +341,7 @@ export default function ClientPortalCalendarPage() {
 
   return (
     <>
-      <main className="min-h-screen flex-1 p-6 space-y-6 md:p-8">
+      <main className="min-h-screen flex-1 p-6 space-y-6 md:p-8" data-theme={theme ?? "dark"}>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Calendar</h1>
           <div className="flex items-center gap-2">

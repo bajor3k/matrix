@@ -524,6 +524,96 @@ aside.sidebar { scrollbar-width: none !important; }
   --chart-4: var(--kpi-4);
   --chart-5: var(--kpi-5);
 }
+
+/* ===== App Light Theme Tokens (Calendar) ===== */
+:root[data-theme="light"] {
+  --cal-bg: #ffffff;           /* page/card bg */
+  --cal-panel: #f7f7fb;        /* toolbar/side panel */
+  --cal-text: #0b0b0f;         /* primary text */
+  --cal-muted: #6b7280;        /* headers/hints */
+  --cal-grid: #e6e6ea;         /* day grid lines */
+  --cal-accent: #5B21B6;       /* brand purple */
+  --cal-accent-contrast: #ffffff;
+  --cal-today: rgba(91,33,182,0.06); /* very soft purple wash */
+}
+
+/* Square everything; no heavy outlines */
+:root[data-theme="light"] .fc,
+:root[data-theme="light"] .fc * { border-radius: 0 !important; }
+
+:root[data-theme="light"] .fc,
+:root[data-theme="light"] .rbc-calendar {
+  color: var(--cal-text);
+  background: var(--cal-bg);
+}
+
+/* Remove thick outer borders/shadows */
+:root[data-theme="light"] .fc .fc-scrollgrid,
+:root[data-theme="light"] .fc .fc-view-harness,
+:root[data-theme="light"] .rbc-calendar {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Subtle grid lines */
+:root[data-theme="light"] .fc-theme-standard td,
+:root[data-theme="light"] .fc-theme-standard th,
+:root[data-theme="light"] .fc .fc-daygrid-day,
+:root[data-theme="light"] .fc .fc-col-header-cell {
+  border-color: var(--cal-grid) !important;
+  border-width: 1px !important;
+}
+
+/* Headers / toolbar */
+:root[data-theme="light"] .fc .fc-toolbar,
+:root[data-theme="light"] .fc .fc-col-header {
+  background: transparent !important;
+  border: none !important;
+  color: var(--cal-muted);
+}
+
+/* Buttons (Today/prev/next/view pills) */
+:root[data-theme="light"] .fc .fc-button {
+  background: var(--cal-panel) !important;
+  color: var(--cal-text) !important;
+  border: 1px solid var(--cal-grid) !important;
+  box-shadow: none !important;
+}
+:root[data-theme="light"] .fc .fc-button.fc-button-active,
+:root[data-theme="light"] .fc .fc-button:focus {
+  background: var(--cal-accent) !important;
+  color: var(--cal-accent-contrast) !important;
+  border-color: var(--cal-accent) !important;
+}
+
+/* Today state & range selection */
+:root[data-theme="light"] .fc .fc-day-today {
+  background: var(--cal-today) !important;
+  outline: none !important;
+}
+:root[data-theme="light"] .fc .fc-highlight { 
+  background: rgba(0,0,0,0.04) !important; 
+  outline: none !important;
+}
+
+/* Events — clean, no borders */
+:root[data-theme="light"] .fc .fc-event {
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 6px !important; /* keep event pills subtle */
+}
+
+/* ===== react-big-calendar parity ===== */
+:root[data-theme="light"] .rbc-calendar, 
+:root[data-theme="light"] .rbc-calendar * { border-radius: 0 !important; }
+:root[data-theme="light"] .rbc-month-view,
+:root[data-theme="light"] .rbc-time-view,
+:root[data-theme="light"] .rbc-time-content { border: none !important; }
+:root[data-theme="light"] .rbc-month-row + .rbc-month-row { border-top: 1px solid var(--cal-grid) !important; }
+:root[data-theme="light"] .rbc-day-bg + .rbc-day-bg { border-left: 1px solid var(--cal-grid) !important; }
+:root[data-theme="light"] .rbc-header { border-bottom: 1px solid var(--cal-grid) !important; color: var(--cal-muted); }
+:root[data-theme="light"] .rbc-today { background: var(--cal-today) !important; }
+:root[data-theme="light"] .rbc-event { border: none !important; box-shadow: none !important; }
   
 
 
