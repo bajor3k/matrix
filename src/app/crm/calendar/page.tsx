@@ -403,7 +403,7 @@ export default function ClientPortalCalendarPage() {
                       )}
                        <div className="mt-5 space-y-0.5 max-h-[calc(100%-1.75rem)] overflow-y-auto no-scrollbar">
                         {dayEvents.map(event => (
-                          <div key={event.id} className="text-[10px] bg-secondary text-white p-0.5 rounded-md truncate">
+                          <div key={event.id} className="text-xs bg-secondary text-white p-0.5 rounded-md truncate">
                             {event.title}
                           </div>
                         ))}
@@ -435,7 +435,7 @@ export default function ClientPortalCalendarPage() {
                                       <td key={`all-day-${i}`} className="h-10 border-r border-b border-[var(--cal-grid)] hover:bg-muted/20 cursor-pointer p-1 align-top" onClick={() => openQuickAddDialogForDate(weekDates[i].fullDate)}>
                                         <div className="space-y-0.5">
                                           {allDayEvents.map(event => (
-                                            <div key={event.id} className="text-[10px] bg-blue-500/70 text-white p-0.5 rounded truncate">{event.title}</div>
+                                            <div key={event.id} className="text-xs bg-blue-500/70 text-white p-0.5 rounded truncate">{event.title}</div>
                                           ))}
                                         </div>
                                       </td>
@@ -457,7 +457,7 @@ export default function ClientPortalCalendarPage() {
                                           <td key={`${hourLabel}-${dayIndex}`} className="h-16 border-r border-b border-[var(--cal-grid)] hover:bg-muted/20 cursor-pointer p-1 align-top" onClick={() => openQuickAddDialogForDate(weekDates[dayIndex].fullDate, hourIndex)}>
                                             <div className="space-y-0.5">
                                               {slotEvents.map(event => (
-                                                <div key={event.id} className="text-[10px] bg-green-500/70 text-white p-0.5 rounded truncate">{event.title}</div>
+                                                <div key={event.id} className="text-xs bg-green-500/70 text-white p-0.5 rounded truncate">{event.title}</div>
                                               ))}
                                             </div>
                                           </td>
@@ -483,7 +483,7 @@ export default function ClientPortalCalendarPage() {
                         </div>
                         <div className="h-10 flex items-center justify-center text-xs text-[color:var(--cal-muted)] border-b border-[var(--cal-grid)] hover:bg-muted/20 cursor-pointer p-1 align-top" onClick={() => openQuickAddDialogForDate(currentDateForCalendar)}>
                            {getEventsForAllDaySlot(currentDateForCalendar).map(event => (
-                              <div key={event.id} className="text-[10px] bg-blue-500/70 text-white p-0.5 rounded truncate w-full">{event.title}</div>
+                              <div key={event.id} className="text-xs bg-blue-500/70 text-white p-0.5 rounded truncate w-full">{event.title}</div>
                             ))}
                             {getEventsForAllDaySlot(currentDateForCalendar).length === 0 && <span>all-day</span>}
                         </div>
@@ -508,7 +508,7 @@ export default function ClientPortalCalendarPage() {
                               <div key={`slot-${hourIndex}`} className="h-16 border-b border-[var(--cal-grid)] hover:bg-muted/20 cursor-pointer p-1 align-top" onClick={() => openQuickAddDialogForDate(currentDateForCalendar, hourIndex)}>
                                 <div className="space-y-0.5">
                                    {slotEvents.map(event => (
-                                    <div key={event.id} className="text-[10px] bg-green-500/70 text-white p-0.5 rounded truncate">{event.title}</div>
+                                    <div key={event.id} className="text-xs bg-green-500/70 text-white p-0.5 rounded truncate">{event.title}</div>
                                   ))}
                                 </div>
                               </div>
