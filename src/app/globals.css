@@ -50,6 +50,11 @@
     /* Nav dividers */
     --nav-divider: rgba(2, 6, 23, .10);
     --nav-border:  rgba(2, 6, 23, .12);
+
+    /* ---- Minimal calendar skin (dark) ---- */
+    --cal-grid: #2a2a2f;         /* subtle grid line */
+    --cal-bg: #0b0b0f;           /* page/card bg */
+    --cal-muted: #8a8a92;        /* header text */
   }
 
   .dark {
