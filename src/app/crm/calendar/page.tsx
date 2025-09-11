@@ -43,7 +43,7 @@ import {
   addMonths, 
   startOfWeek, 
   endOfWeek, 
-  getDay, 2
+  getDay,
   getDate, 
   getDaysInMonth, 
   startOfMonth, 
@@ -680,3 +680,5 @@ export default function ClientPortalCalendarPage() {
     </>
   );
 }
+
+    
