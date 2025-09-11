@@ -12,8 +12,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Textarea } from '@/components/ui/textarea';
-import { Filter, UserPlus, MoreHorizontal, Tags as TagsIcon, UploadCloud, Trash2 } from 'lucide-react';
+import { Filter, UserPlus, MoreHorizontal, Tags as TagsIcon, UploadCloud, Trash2, Loader2 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+
 
 interface Contact {
   id: string;
@@ -57,7 +59,56 @@ export default function ClientPortalContactsPage() {
   const [activeSort, setActiveSort] = React.useState("Recent");
   const [isAddContactDialogOpen, setIsAddContactDialogOpen] = React.useState(false);
 
+  // State for the new contact form
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [phone, setPhone] = React.useState('');
+  const [tags, setTags] = React.useState('');
+  const [isSaving, setIsSaving] = React.useState(false);
+
+  const { toast } = useToast();
+
   const contactCount = contacts.length;
+
+  const resetForm = () => {
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setPhone('');
+    setTags('');
+  };
+
+  const handleAddPerson = async () => {
+    if (!firstName.trim() || !lastName.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "First Name and Last Name are required.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    await new Promise(resolve => setTimeout(resolve, 700)); // Simulate network delay
+
+    const newContact: Contact = {
+      id: (contacts.length + 1).toString(),
+      name: `${firstName} ${lastName}`,
+      email: email,
+      phone: phone,
+      tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
+    };
+
+    setContacts(prev => [newContact, ...prev]);
+    setIsSaving(false);
+    setIsAddContactDialogOpen(false);
+    resetForm();
+    toast({
+      title: "Contact Added",
+      description: `${newContact.name} has been added to your contacts.`,
+    });
+  };
 
   return (
     <>
@@ -236,7 +287,7 @@ export default function ClientPortalContactsPage() {
               </div>
               <div>
                 <Label htmlFor="firstName-dialog">First Name</Label>
-                <Input id="firstName-dialog" placeholder="First" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
+                <Input id="firstName-dialog" placeholder="First" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
               </div>
               <div>
                 <Label htmlFor="middleName-dialog">Middle</Label>
@@ -244,7 +295,7 @@ export default function ClientPortalContactsPage() {
               </div>
               <div>
                 <Label htmlFor="lastName-dialog">Last Name</Label>
-                <Input id="lastName-dialog" placeholder="Last" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
+                <Input id="lastName-dialog" placeholder="Last" value={lastName} onChange={(e) => setLastName(e.target.value)} className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
               </div>
               <div>
                 <Label htmlFor="suffix-dialog">Suffix</Label>
@@ -298,7 +349,7 @@ export default function ClientPortalContactsPage() {
             <div className="space-y-2">
               <Label>Email Address</Label>
               <div className="flex items-center space-x-2">
-                <Input type="email" id="email-dialog" placeholder="Email" className="flex-grow bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
+                <Input type="email" id="email-dialog" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="flex-grow bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
                 <Select>
                   <SelectTrigger id="emailType-dialog" className="w-[120px] bg-input border-border/50 text-foreground focus:ring-ring">
                     <SelectValue placeholder="Type" />
@@ -316,7 +367,7 @@ export default function ClientPortalContactsPage() {
             <div className="space-y-2">
               <Label>Phone Number</Label>
               <div className="flex items-center space-x-2">
-                <Input type="tel" id="phone-dialog" placeholder="Phone Number" className="flex-grow bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
+                <Input type="tel" id="phone-dialog" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} className="flex-grow bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
                 <Input id="phoneExt-dialog" placeholder="Ext." className="w-[70px] bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
                 <Select>
                   <SelectTrigger id="phoneType-dialog" className="w-[120px] bg-input border-border/50 text-foreground focus:ring-ring">
@@ -334,7 +385,7 @@ export default function ClientPortalContactsPage() {
 
             <div>
               <Label htmlFor="tags-dialog">Tags</Label>
-              <Input id="tags-dialog" placeholder="Add tags (e.g., Prospect, CPA Referral)" className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
+              <Input id="tags-dialog" placeholder="Add tags (e.g., Prospect, CPA Referral)" value={tags} onChange={(e) => setTags(e.target.value)} className="bg-input border-border/50 text-foreground placeholder-muted-foreground focus:ring-ring" />
             </div>
 
             <div>
@@ -347,9 +398,12 @@ export default function ClientPortalContactsPage() {
                 <Button variant="link" className="p-0 h-auto text-primary hover:text-primary/80">Show Additional Fields</Button>
                 <div className="space-x-2">
                      <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
+                        <Button variant="outline" onClick={resetForm}>Cancel</Button>
                     </DialogClose>
-                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">Add Person</Button>
+                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={handleAddPerson} disabled={isSaving}>
+                      {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                      Add Person
+                    </Button>
                 </div>
             </div>
           </DialogFooter>
@@ -358,3 +412,5 @@ export default function ClientPortalContactsPage() {
     </>
   );
 }
+
+    
