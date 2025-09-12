@@ -1,4 +1,3 @@
-
 "use client";
 import * as React from "react";
 import Image from "next/image";
@@ -11,7 +10,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { cn } from "@/lib/utils";
 import { PlaceholderCard } from "@/components/dashboard/placeholder-card";
 import { AllocationLegend } from "@/components/analytics/AllocationLegend";
-import InflowOutflowCard from "@/components/analytics/InflowOutflowCard";
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -23,6 +21,11 @@ const DynamicAssetAllocationDonutChart = dynamic(
     ),
     ssr: false 
   }
+);
+
+const InflowOutflowCard = dynamic(
+  () => import("@/components/analytics/InflowOutflowCard"),
+  { ssr: false }
 );
 
 const metricCardsData = [
