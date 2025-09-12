@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { cn } from "@/lib/utils";
 import { PlaceholderCard } from "@/components/dashboard/placeholder-card";
 import { AllocationLegend } from "@/components/analytics/AllocationLegend";
+import InflowOutflowCard from "@/components/analytics/InflowOutflowCard";
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -92,6 +93,7 @@ export default function AssetAnalyticsPage() {
             </div>
           </CardContent>
         </Card>
+        <InflowOutflowCard />
       </div>
 
       <PlaceholderCard title="Top Performing Assets">
