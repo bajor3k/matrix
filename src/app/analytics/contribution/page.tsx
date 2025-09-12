@@ -99,6 +99,7 @@ const IRA_TYPES_ORDER: AccountType[] = ['Roth IRA', 'Traditional IRA', 'SEP IRA'
 
 export default function ContributionMatrixPage() {
   const [accounts, setAccounts] = React.useState<ContributionAccount[]>([]);
+  const [monthsLeft, setMonthsLeft] = React.useState(0);
 
   React.useEffect(() => {
     const generateRandomAccountNumber = (): string => {
@@ -129,11 +130,10 @@ export default function ContributionMatrixPage() {
       { id: "10", accountName: generateUniqueAccountNumber(), originalAccountName: "Travel Savings IRA", accountType: "Traditional IRA", annualLimit: 7000, amountContributed: 500, dueDate: getFutureDate(180) },
     ];
     setAccounts(initialContributionAccounts);
+    setMonthsLeft(calculateMonthsLeft());
   }, []);
 
 
-  const monthsLeft = calculateMonthsLeft();
-  
   const aggregatedDataByType = React.useMemo(() => {
     if (accounts.length === 0) return [];
     const result: Record<AccountType, { 
