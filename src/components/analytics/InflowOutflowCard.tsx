@@ -4,40 +4,43 @@ import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  ResponsiveContainer,
   LineChart,
-  Line,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
+  Line,
+  Area,
 } from "recharts";
 
 type Point = { label: string; inflow: number; outflow: number };
 
-const fmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+const fmt = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0,
+});
 const short = (n: number) =>
-  n >= 1_000_000 ? `$${(n / 1_000_000).toFixed(1)}M` : n >= 1_000 ? `$${(n / 1_000).toFixed(0)}K` : fmt.format(n);
+  n >= 1_000_000 ? `$${(n / 1_000_000).toFixed(1)}M` :
+  n >= 1_000 ? `$${(n / 1_000).toFixed(0)}K` : fmt.format(n);
 
-// --- MOCK DATA (replace with real series later) ---
+// --- Sample data (swap with real series later) ---
 const DATA_1M: Point[] = [
   { label: "03/01", inflow: 18000, outflow: 9000 },
   { label: "03/05", inflow: 22000, outflow: 8000 },
-  { label: "03/09", inflow: 26000, outflow: 12000 },
-  { label: "03/13", inflow: 30000, outflow: 14000 },
-  { label: "03/17", inflow: 27000, outflow: 11000 },
-  { label: "03/21", inflow: 32000, outflow: 15000 },
-  { label: "03/25", inflow: 34000, outflow: 16000 },
+  { label: "03/09", inflow: 27000, outflow: 10000 },
+  { label: "03/13", inflow: 24500, outflow: 12000 },
+  { label: "03/17", inflow: 30000, outflow: 9500 },
+  { label: "03/21", inflow: 33500, outflow: 15000 },
+  { label: "03/25", inflow: 35000, outflow: 16000 },
   { label: "03/29", inflow: 36000, outflow: 17000 },
 ];
-
 const DATA_QTD: Point[] = [
   { label: "Jan", inflow: 120000, outflow: 80000 },
   { label: "Feb", inflow: 150000, outflow: 90000 },
   { label: "Mar", inflow: 170000, outflow: 100000 },
 ];
-
 const DATA_YTD: Point[] = [
   { label: "Jan", inflow: 120000, outflow: 80000 },
   { label: "Feb", inflow: 150000, outflow: 90000 },
@@ -55,14 +58,12 @@ function totals(rows: Point[]) {
 
 export default function InflowOutflowCard() {
   const [range, setRange] = React.useState<"1M" | "QTD" | "YTD">("1M");
-
-  const data = React.useMemo<Point[]>(() => {
-    if (range === "QTD") return DATA_QTD;
-    if (range === "YTD") return DATA_YTD;
-    return DATA_1M;
-  }, [range]);
-
+  const data = range === "QTD" ? DATA_QTD : range === "YTD" ? DATA_YTD : DATA_1M;
   const t = totals(data);
+
+  // axis styling (subtle, no grid)
+  const AXIS_TICK = "rgba(255,255,255,0.55)";
+  const AXIS_LINE = "rgba(255,255,255,0.15)";
 
   return (
     <Card className="h-full">
@@ -80,18 +81,113 @@ export default function InflowOutflowCard() {
       <CardContent className="space-y-4">
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="label" />
-              <YAxis tickFormatter={short as any} />
-              <Tooltip formatter={(v: number) => fmt.format(v)} />
-              <Legend />
-              <Line type="monotone" dataKey="inflow" name="Inflows" stroke="#3DCCC7" strokeWidth={2} dot={false} />
-              <Line type="monotone" dataKey="outflow" name="Outflows" stroke="#9C27B0" strokeWidth={2} dot={false} />
+            <LineChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 4 }}>
+              {/* defs: gradient fills + soft glow */}
+              <defs>
+                <linearGradient id="inflowFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#3DCCC7" stopOpacity={0.30} />
+                  <stop offset="100%" stopColor="#3DCCC7" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="outflowFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#9C27B0" stopOpacity={0.20} />
+                  <stop offset="100%" stopColor="#9C27B0" stopOpacity={0} />
+                </linearGradient>
+                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              {/* Clean axes (no grid) */}
+              <XAxis
+                dataKey="label"
+                tick={{ fill: AXIS_TICK, fontSize: 12 }}
+                tickMargin={8}
+                axisLine={{ stroke: AXIS_LINE }}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fill: AXIS_TICK, fontSize: 12 }}
+                tickFormatter={short as any}
+                width={56}
+                axisLine={{ stroke: AXIS_LINE }}
+                tickLine={false}
+                domain={[0, "auto"]}
+              />
+
+              <Tooltip
+                cursor={{ stroke: AXIS_LINE }}
+                formatter={(v: number) => fmt.format(v)}
+                labelStyle={{ color: "#fff" }}
+                contentStyle={{ background: "rgba(0,0,0,0.7)", border: "1px solid rgba(255,255,255,0.1)" }}
+              />
+              <Legend wrapperStyle={{ color: AXIS_TICK }} />
+
+              {/* Under-line soft gradients */}
+              <Area
+                type="monotone"
+                dataKey="inflow"
+                fill="url(#inflowFill)"
+                stroke="none"
+                isAnimationActive={false}
+              />
+              <Area
+                type="monotone"
+                dataKey="outflow"
+                fill="url(#outflowFill)"
+                stroke="none"
+                isAnimationActive={false}
+              />
+
+              {/* Glow layer (thicker + low opacity) */}
+              <Line
+                type="monotone"
+                dataKey="inflow"
+                stroke="#3DCCC7"
+                strokeOpacity={0.25}
+                strokeWidth={8}
+                dot={false}
+                isAnimationActive={false}
+                filter="url(#glow)"
+              />
+              <Line
+                type="monotone"
+                dataKey="outflow"
+                stroke="#9C27B0"
+                strokeOpacity={0.20}
+                strokeWidth={8}
+                dot={false}
+                isAnimationActive={false}
+                filter="url(#glow)"
+              />
+
+              {/* Crisp neon lines on top */}
+              <Line
+                type="monotone"
+                dataKey="inflow"
+                name="Inflows"
+                stroke="#3DCCC7"
+                strokeWidth={3}
+                dot={false}
+                isAnimationActive={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="outflow"
+                name="Outflows"
+                stroke="#9C27B0"
+                strokeWidth={3}
+                dot={false}
+                isAnimationActive={false}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
+        {/* Totals row (unchanged) */}
         <div className="grid grid-cols-3 gap-3">
           <Card className="bg-transparent border border-white/10">
             <CardContent className="py-3">
