@@ -1,54 +1,25 @@
-
-"use client";
-
-import { Inter, Roboto_Mono } from 'next/font/google';
+import './globals.css';
+import { fontSans, fontMono } from "./fonts";
 import * as React from 'react';
 import Script from 'next/script';
-import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/auth-context";
 import { NavigationProvider } from '@/contexts/navigation-context';
 import { ThemeProvider } from '@/components/theme-provider';
-import { usePathname } from 'next/navigation';
 import AppShell from '@/components/AppShell';
+import DevTools from '@/components/DevTools';
 
-
-const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
-});
-
-const robotoMono = Roboto_Mono({
-  variable: '--font-roboto-mono',
-  subsets: ['latin'],
-});
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-  const isLandingPage = pathname === '/';
-  const isReportPage = pathname.startsWith('/reports');
-  
-
-  React.useEffect(() => {
-    const runDevExpose = async () => {
-      if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
-        try {
-          await import('@/lib/askmaven/dev-expose');
-        } catch (err) {
-          console.warn("AskMaven dev-expose utility failed to load:", err);
-        }
-      }
-    };
-    runDevExpose();
-  }, []);
+  const isReportPage = false; // This will need to be derived from props or context in a real app
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={`${fontSans.variable} ${fontMono.variable}`} suppressHydrationWarning>
       <head>
         {isReportPage && (
           <>
@@ -60,7 +31,7 @@ export default function RootLayout({
           </>
         )}
       </head>
-      <body className={`${inter.variable} ${robotoMono.variable} antialiased h-screen`}>
+      <body className="antialiased h-screen">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -70,11 +41,7 @@ export default function RootLayout({
           <AuthProvider>
             <NavigationProvider>
               <TooltipProvider delayDuration={0}>
-                {isLandingPage ? (
-                  <>{children}</>
-                ) : (
-                  <AppShell>{children}</AppShell>
-                )}
+                <AppShell>{children}</AppShell>
                 <Toaster />
               </TooltipProvider>
             </NavigationProvider>
@@ -88,6 +55,7 @@ export default function RootLayout({
             <Script src="https://cdn.jsdelivr.net/npm/luckysheet/dist/luckysheet.umd.js" strategy="lazyOnload" />
           </>
         )}
+        <DevTools />
       </body>
     </html>
   );
