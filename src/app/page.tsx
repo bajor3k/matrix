@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 
 export default function RootPage() {
   useEffect(() => {
-    redirect('/crm/home');
+    redirect('/dashboard');
   }, []);
 
   return null; // Render nothing, redirect will handle it
