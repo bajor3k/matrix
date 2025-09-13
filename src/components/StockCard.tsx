@@ -22,10 +22,6 @@ export default function StockCard({ symbol, price, changePct }: Props) {
           <span className="text-sm uppercase tracking-widest text-white/70">
             {symbol}
           </span>
-          {/* Optional left-side status */}
-          <span className={`mt-2 text-xs font-medium ${trendClass}`}>
-            {trendIcon} {isUp ? "Up" : "Down"}
-          </span>
         </div>
 
         {/* Right side price + percent under it */}
