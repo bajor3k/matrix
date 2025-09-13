@@ -11,8 +11,9 @@ export default function StockCard({ symbol, price, up }: Props) {
 
   return (
     <div
-      className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-sm
-                 hover:bg-white/[0.08] transition-colors"
+      className="rounded-2xl border border-white/10 p-4 shadow-sm 
+                 hover:bg-[#121212] transition-colors"
+      style={{ backgroundColor: "#0c0c0c" }}
     >
       <div className="flex items-baseline justify-between">
         <span className="text-sm uppercase tracking-widest text-white/70">
