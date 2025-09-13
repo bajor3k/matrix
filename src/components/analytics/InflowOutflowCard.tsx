@@ -82,7 +82,7 @@ export default function InflowOutflowCard() {
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 4 }}>
-              {/* defs: gradient fills + soft glow */}
+              {/* defs: gradient fills */}
               <defs>
                 <linearGradient id="inflowFill" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#3DCCC7" stopOpacity={0.30} />
@@ -92,13 +92,6 @@ export default function InflowOutflowCard() {
                   <stop offset="0%" stopColor="#9C27B0" stopOpacity={0.20} />
                   <stop offset="100%" stopColor="#9C27B0" stopOpacity={0} />
                 </linearGradient>
-                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="3" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
               </defs>
 
               {/* Clean axes (no grid) */}
@@ -140,28 +133,6 @@ export default function InflowOutflowCard() {
                 fill="url(#outflowFill)"
                 stroke="none"
                 isAnimationActive={false}
-              />
-
-              {/* Glow layer (thicker + low opacity) */}
-              <Line
-                type="monotone"
-                dataKey="inflow"
-                stroke="#3DCCC7"
-                strokeOpacity={0.25}
-                strokeWidth={8}
-                dot={false}
-                isAnimationActive={false}
-                filter="url(#glow)"
-              />
-              <Line
-                type="monotone"
-                dataKey="outflow"
-                stroke="#9C27B0"
-                strokeOpacity={0.20}
-                strokeWidth={8}
-                dot={false}
-                isAnimationActive={false}
-                filter="url(#glow)"
               />
 
               {/* Crisp neon lines on top */}
