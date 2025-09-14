@@ -172,12 +172,12 @@ export default function InflowOutflowCard() {
           <Card className="bg-transparent border-white/10">
             <CardContent className="py-3">
               <div className="text-xs text-muted-foreground">Net Flow</div>
-              <div className={t.net >= 0 ? "text-green-500 text-lg font-semibold" : "text-red-500 text-lg font-semibold"}>
+              <div className="text-foreground text-lg font-semibold">
                 {fmt.format(t.net)}
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-transparent border border-white/10">
+          <Card className="bg-transparent border-white/10">
             <CardContent className="py-3">
               <div className="text-xs text-muted-foreground">Total Outflows</div>
               <div className="text-lg font-semibold">{fmt.format(t.totalOut)}</div>
