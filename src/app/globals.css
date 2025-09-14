@@ -59,7 +59,7 @@
 
   .dark {
     /* page/background tokens (keep as you prefer) */
-    --background: 240 10% 3.9%;        /* page shell */
+    --background: 0 0% 0%;        /* page shell - JET BLACK */
     --foreground: 0 0% 98%;
 
     /* 🔑 card/panel surfaces: set to #0c0c0c */
@@ -85,7 +85,7 @@
     --ring: 0 0% 18%;
     --radius: 1rem;
     
-    --sidebar-background: 0 0% 6%;
+    --sidebar-background: 0 0% 0%; /* sidebar - JET BLACK */
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 0 0% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
