@@ -96,6 +96,15 @@
     --surface-card: #0c0c0c;
     --card-border-subtle: rgba(255,255,255,.10);
 
+    /* Palette and KPI */
+    --palette-1: #98CEF3;
+    --palette-2: #B9E0FF;
+    --palette-3: #D0E6FB;
+    --palette-4: #E6D6FD;
+    --palette-5: #E4C5FB;
+    --palette-6: #D2ACFB;
+    --kpi-color: var(--palette-1);
+    
     /* Nav dividers */
     --nav-divider: rgba(255,255,255, .10);
     --nav-border:  rgba(255,255,255, .12);

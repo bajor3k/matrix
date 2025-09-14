@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -64,6 +65,8 @@ export default function InflowOutflowCard() {
   // axis styling (subtle, no grid)
   const AXIS_TICK = "rgba(255,255,255,0.55)";
   const AXIS_LINE = "rgba(255,255,255,0.15)";
+  const INFLOW_COLOR = "var(--palette-1)";
+  const OUTFLOW_COLOR = "var(--palette-6)";
 
   return (
     <Card className="h-full">
@@ -85,12 +88,12 @@ export default function InflowOutflowCard() {
               {/* defs: gradient fills */}
               <defs>
                 <linearGradient id="inflowFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3DCCC7" stopOpacity={0.30} />
-                  <stop offset="100%" stopColor="#3DCCC7" stopOpacity={0} />
+                  <stop offset="0%" stopColor={INFLOW_COLOR} stopOpacity={0.30} />
+                  <stop offset="100%" stopColor={INFLOW_COLOR} stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="outflowFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#9C27B0" stopOpacity={0.20} />
-                  <stop offset="100%" stopColor="#9C27B0" stopOpacity={0} />
+                  <stop offset="0%" stopColor={OUTFLOW_COLOR} stopOpacity={0.20} />
+                  <stop offset="100%" stopColor={OUTFLOW_COLOR} stopOpacity={0} />
                 </linearGradient>
               </defs>
 
@@ -140,7 +143,7 @@ export default function InflowOutflowCard() {
                 type="monotone"
                 dataKey="inflow"
                 name="Inflows"
-                stroke="#3DCCC7"
+                stroke={INFLOW_COLOR}
                 strokeWidth={3}
                 dot={false}
                 isAnimationActive={false}
@@ -149,7 +152,7 @@ export default function InflowOutflowCard() {
                 type="monotone"
                 dataKey="outflow"
                 name="Outflows"
-                stroke="#9C27B0"
+                stroke={OUTFLOW_COLOR}
                 strokeWidth={3}
                 dot={false}
                 isAnimationActive={false}
@@ -166,7 +169,7 @@ export default function InflowOutflowCard() {
               <div className="text-lg font-semibold">{fmt.format(t.totalIn)}</div>
             </CardContent>
           </Card>
-          <Card className="bg-transparent border border-white/10">
+          <Card className="bg-transparent border-white/10">
             <CardContent className="py-3">
               <div className="text-xs text-muted-foreground">Net Flow</div>
               <div className={t.net >= 0 ? "text-green-500 text-lg font-semibold" : "text-red-500 text-lg font-semibold"}>
