@@ -1,3 +1,4 @@
+
 type Props = {
   symbol: string;
   price: number;
