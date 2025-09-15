@@ -187,7 +187,7 @@ export default function ClientAnalyticsPage() {
         <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2"><Users className="h-5 w-5" />Top Clients Age 65+ with Children as Beneficiaries</h3>
         <div className="space-y-4 mt-2">
           {topClients65PlusWithChildBeneficiariesData.map((client) => (
-            <div key={client.id} className="p-3 rounded-md border border-border/20 hover:bg-muted/10 transition-colors duration-150 ease-out">
+            <div key={client.id} className="p-3 rounded-md hover:bg-muted/10 transition-colors duration-150 ease-out">
               <div className="flex justify-between items-start mb-1">
                 <h4 className={cn("text-md font-semibold text-foreground", client.multipleChildBeneficiaries && "text-green-400")}>
                   {client.clientName} <span className="text-sm font-normal text-muted-foreground">({client.age})</span>
