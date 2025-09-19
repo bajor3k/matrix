@@ -179,16 +179,48 @@ function prettyPeriod(ctx: { stmtType: StmtType; period: string; }) {
   return ctx.period; // annual
 }
 
-/** ---------- VEO RENDER (placeholder) ---------- */
-async function renderVeoClip(scene: any): Promise<Buffer> {
-  // NOTE: Replace with the official Veo-3 SDK/API call.
-  // Pseudocode below uses a text prompt and returns an 8s MP4 buffer.
-  // const veo = new VeoClient({ apiKey: GENAI_API_KEY }).video("veo-3");
-  // const out = await veo.generate({ prompt: scene.veoPrompt, durationSeconds: 8, resolution: "1080p" });
-  // return Buffer.from(await out.arrayBuffer());
+type Scene = {
+  title: string;
+  onScreen?: string;
+  voiceover?: string;
+  veoPrompt: string; // visual description
+};
 
-  // TEMP: return empty MP4 to keep pipeline testable (black frame clip via FFmpeg optional)
-  throw new Error("renderVeoClip not implemented — connect to Veo-3 API here.");
+/** Return an MP4 Buffer for this scene (<=8s). */
+async function renderVeoClip(scene: Scene): Promise<Buffer> {
+  if (GENAI_API_KEY) {
+    // TODO: Replace with the official Veo-3 SDK/API.
+    // Pseudo-call shown for structure only.
+    // const veo = new VeoClient({ apiKey: GENAI_API_KEY }).video("veo-3");
+    // const resp = await veo.generate({
+    //   prompt: scene.veoPrompt,
+    //   durationSeconds: 8,
+    //   resolution: "1080p",
+    //   enableNativeAudio: true
+    // });
+    // return Buffer.from(await resp.arrayBuffer());
+    throw new Error("Veo-3 SDK call not wired yet. Remove this throw when integrated.");
+  }
+
+  // Fallback: ask Cloud Run to create an 8s slate clip, then download it.
+  const outputPath = `gs://${process.env.BUCKET}/_tmp/slates/${Date.now()}-${Math.random().toString(36).slice(2)}.mp4`;
+  const r = await fetch(`${FFMPEG_RUN_URL}/slate`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      text: scene.title || "Video Reports",
+      durationSec: 8,
+      outputPath
+    })
+  });
+  if (!r.ok) throw new Error(`Slate gen failed: ${r.status} ${await r.text()}`);
+
+  // download slate back to buffer for uniform handling
+  const url = await storage.bucket(process.env.BUCKET!).file(outputPath.replace(`gs://${process.env.BUCKET}/`, "")).getSignedUrl({
+    version: "v4", action: "read", expires: Date.now() + 5 * 60 * 1000
+  });
+  const bin = await (await fetch(url[0])).arrayBuffer();
+  return Buffer.from(bin);
 }
 
 /** ---------- STITCH via Cloud Run FFmpeg ---------- */
