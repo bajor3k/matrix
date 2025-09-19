@@ -76,7 +76,7 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', 
   ],
   'Standalone': [
     { 
-      name: 'Video Reports', 
+      name: 'Video Statements', 
       icon: Video, 
       href: '/video-reports',
       children: [
