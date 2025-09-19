@@ -75,7 +75,15 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', 
       { name: 'Settings', icon: Settings, href: '/settings' },
   ],
   'Standalone': [
-    { name: 'Video Reports', icon: Video, href: '/video-reports' },
+    { 
+      name: 'Video Reports', 
+      icon: Video, 
+      href: '/video-reports',
+      children: [
+        { name: 'Monthly', icon: FileStack, href: '/video-reports/monthly'},
+        { name: 'Quarterly', icon: FileStack, href: '/video-reports/quarterly'},
+        { name: 'Annual', icon: FileStack, href: '/video-reports/annual'},
+      ]
+    },
   ]
 };
-

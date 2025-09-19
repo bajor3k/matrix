@@ -1,4 +1,3 @@
-
 // components/Sidebar.tsx
 "use client";
 
@@ -66,11 +65,13 @@ export default function Sidebar({
   const [openReports, setOpenReports] = useState(isReports);
   const [openCRM, setOpenCRM] = useState(isCRM);
   const [openAnalytics, setOpenAnalytics] = useState(isAnalytics);
+  const [openVideoReports, setOpenVideoReports] = useState(isVideoReports);
   const [openResources, setOpenResources] = useState(isResources);
 
   useEffect(() => setOpenReports(isReports), [isReports]);
   useEffect(() => setOpenCRM(isCRM), [isCRM]);
   useEffect(() => setOpenAnalytics(isAnalytics), [isAnalytics]);
+  useEffect(() => setOpenVideoReports(isVideoReports), [isVideoReports]);
   useEffect(() => setOpenResources(isResources), [isResources]);
 
   // When parent asks to open a specific section (after expanding)
@@ -91,33 +92,40 @@ export default function Sidebar({
     open,
     setOpen,
     items,
+    href
   }: {
-    keyName: SectionKey;
-    title: string; icon: any; open: boolean; setOpen: (v: boolean) => void; items: NavItem[];
+    keyName: SectionKey | 'video-reports';
+    title: string; icon: any; open: boolean; setOpen: (v: boolean) => void; items: NavItem[]; href?: string;
   }) => {
     if (!items || items.length === 0) return null;
     function onHeaderClick() {
       if (collapsed) {
         // Request the parent to expand and open THIS section
-        onExpandRequest(keyName);
+        onExpandRequest(keyName as SectionKey);
       } else {
         setOpen(!open);
       }
     }
+
+    const hasChildren = items.some(item => !!item.children);
+
+    const HeaderWrapper = ({children}: {children: React.ReactNode}) => href ? <Link href={href}>{children}</Link> : <>{children}</>;
+
     return (
     <div className="mb-2">
-      <button
-        onClick={onHeaderClick}
+       <div
         className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left font-medium
          hover:bg-accent`}
-        aria-expanded={open}
-      >
-        <span className="flex items-center gap-3">
-          <Icon className="h-5 w-5 shrink-0" />
-          {!collapsed && title}
-        </span>
-        {!collapsed && (open ? <ChevronUp className="h-4 w-4 shrink-0" /> : <ChevronDown className="h-4 w-4 shrink-0" />)}
-      </button>
+         aria-expanded={open}
+       >
+        <HeaderWrapper>
+          <span className="flex items-center gap-3">
+            <Icon className="h-5 w-5 shrink-0" />
+            {!collapsed && title}
+          </span>
+        </HeaderWrapper>
+        {!collapsed && (open ? <ChevronUp className="h-4 w-4 shrink-0 cursor-pointer" onClick={onHeaderClick}/> : <ChevronDown className="h-4 w-4 shrink-0 cursor-pointer" onClick={onHeaderClick}/>)}
+      </div>
       <div className={`overflow-hidden transition-[max-height] duration-200 ease-in-out ${open && !collapsed ? "max-h-[500px]" : "max-h-0"}`}>
         <div className="mt-1 space-y-1 pl-2 pr-1">
           {items.map((it) => (
@@ -136,9 +144,7 @@ export default function Sidebar({
         <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} />
         <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} />
         
-        <div className="mb-2">
-            <Row item={videoReportItem} active={isVideoReports} hiddenLabel={!!collapsed} />
-        </div>
+        <Section keyName="video-reports" title={videoReportItem.name} icon={videoReportItem.icon} open={openVideoReports} setOpen={setOpenVideoReports} items={videoReportItem.children ?? []} href={videoReportItem.href}/>
 
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
       </div>

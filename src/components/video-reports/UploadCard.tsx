@@ -8,10 +8,10 @@ import { useToast } from "@/hooks/use-toast";
 
 type StatementType = "monthly" | "quarterly" | "annual";
 
-export default function UploadCard() {
+export default function UploadCard({ fixedType }: { fixedType?: StatementType }) {
   const { toast } = useToast();
   const [clientName, setClientName] = useState("");
-  const [stmtType, setStmtType] = useState<StatementType>("monthly");
+  const [stmtType, setStmtType] = useState<StatementType>(fixedType ?? "monthly");
   const [month, setMonth] = useState("");        // YYYY-MM
   const [quarter, setQuarter] = useState("Q1");  // Q1..Q4
   const [year, setYear] = useState<string>(new Date().getFullYear().toString());
@@ -29,7 +29,9 @@ export default function UploadCard() {
 
   const resetForm = () => {
     setClientName("");
-    setStmtType("monthly");
+    if (!fixedType) {
+      setStmtType("monthly");
+    }
     setMonth("");
     setQuarter("Q1");
     setYear(new Date().getFullYear().toString());
@@ -131,18 +133,20 @@ export default function UploadCard() {
         </div>
 
         {/* Statement Type */}
-        <div className="flex flex-col">
-          <label className="text-sm text-muted-foreground mb-1">Statement Type</label>
-          <select
-            value={stmtType}
-            onChange={(e) => setStmtType(e.target.value as StatementType)}
-            className="rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-sm outline-none focus:border-white/20 text-foreground appearance-none"
-          >
-            <option value="monthly">Monthly</option>
-            <option value="quarterly">Quarterly</option>
-            <option value="annual">Annual</option>
-          </select>
-        </div>
+        {!fixedType && (
+          <div className="flex flex-col">
+            <label className="text-sm text-muted-foreground mb-1">Statement Type</label>
+            <select
+              value={stmtType}
+              onChange={(e) => setStmtType(e.target.value as StatementType)}
+              className="rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-sm outline-none focus:border-white/20 text-foreground appearance-none"
+            >
+              <option value="monthly">Monthly</option>
+              <option value="quarterly">Quarterly</option>
+              <option value="annual">Annual</option>
+            </select>
+          </div>
+        )}
 
         {/* Period (switches by type) */}
         <div className="flex flex-col">
