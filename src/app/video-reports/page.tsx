@@ -1,5 +1,7 @@
-
 // src/app/video-reports/page.tsx
+"use client";
+
+import UploadCard from "@/components/video-reports/UploadCard";
 
 export default function VideoReportsPage() {
   return (
@@ -7,9 +9,7 @@ export default function VideoReportsPage() {
       <h1 className="text-3xl font-bold tracking-tight text-foreground">
         Video Reports
       </h1>
-      <div className="text-muted-foreground">
-        This page is intentionally blank. Content will be added later.
-      </div>
+      <UploadCard />
     </main>
   );
 }

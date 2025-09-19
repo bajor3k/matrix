@@ -1,6 +1,7 @@
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration (from Firebase Console)
 export const firebaseConfig = {
@@ -23,6 +24,7 @@ if (!getApps().length) {
 
 const auth = getAuth(app);
 const storage = getStorage(app);
+const db = getFirestore(app);
 const googleAuthProvider = new GoogleAuthProvider();
 
 // Add necessary Gmail API scopes (if you need Gmail features)
@@ -30,4 +32,4 @@ googleAuthProvider.addScope('https://www.googleapis.com/auth/gmail.readonly');
 googleAuthProvider.addScope('https://www.googleapis.com/auth/gmail.send');
 // For full access, consider: googleAuthProvider.addScope('https://mail.google.com/');
 
-export { app, auth, storage, googleAuthProvider };
+export { app, auth, storage, db, googleAuthProvider };
