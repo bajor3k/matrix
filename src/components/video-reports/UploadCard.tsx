@@ -1,19 +1,43 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { storage, db, auth } from "@/lib/firebase/config";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
 
+type StatementType = "monthly" | "quarterly" | "annual";
+
 export default function UploadCard() {
   const { toast } = useToast();
-  const [clientId, setClientId] = useState("");
-  const [period, setPeriod] = useState(""); // YYYY-MM (from <input type="month">)
+  const [clientName, setClientName] = useState("");
+  const [stmtType, setStmtType] = useState<StatementType>("monthly");
+  const [month, setMonth] = useState("");        // YYYY-MM
+  const [quarter, setQuarter] = useState("Q1");  // Q1..Q4
+  const [year, setYear] = useState<string>(new Date().getFullYear().toString());
   const [file, setFile] = useState<File | null>(null);
-  const [progress, setProgress] = useState<number>(0);
+  const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // Unified period string for metadata and naming
+  const periodString = useMemo(() => {
+    if (stmtType === "monthly") return month;             // "2025-01"
+    if (stmtType === "quarterly") return `${year}-${quarter}`; // "2025-Q1"
+    return year;                                          // "2025"
+  }, [stmtType, month, quarter, year]);
+
+  const resetForm = () => {
+    setClientName("");
+    setStmtType("monthly");
+    setMonth("");
+    setQuarter("Q1");
+    setYear(new Date().getFullYear().toString());
+    setFile(null);
+    setProgress(0);
+    setIsUploading(false);
+    if (inputRef.current) inputRef.current.value = "";
+  };
 
   function onFilePick(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
@@ -25,23 +49,14 @@ export default function UploadCard() {
     }
     setFile(f);
   }
-  
-  const resetForm = () => {
-    setClientId("");
-    setPeriod("");
-    setFile(null);
-    setProgress(0);
-    setIsUploading(false);
-    if (inputRef.current) inputRef.current.value = "";
-  };
 
   async function onUpload() {
-    if (!clientId.trim()) {
-        toast({ title: "Client ID is required.", variant: "destructive" });
+    if (!clientName.trim()) {
+        toast({ title: "Client Name is required.", variant: "destructive" });
         return;
     }
-    if (!period) {
-        toast({ title: "Period is required.", variant: "destructive" });
+    if (!periodString) {
+        toast({ title: "A valid period is required.", variant: "destructive" });
         return;
     }
     if (!file) {
@@ -56,42 +71,47 @@ export default function UploadCard() {
     }
 
     setIsUploading(true);
-    const yyyyMm = period;
-    const path = `statements/${clientId}/${yyyyMm}/original.pdf`;
-    const storageRef = ref(storage, path);
+    
+    // Storage path example: statements/{clientName-safe}/{stmtType}/{period}/original.pdf
+    const safeClient = clientName.trim().replace(/[^\w\- ]+/g, "").replace(/\s+/g, "-");
+    const path = `statements/${safeClient}/${stmtType}/${periodString}/original.pdf`;
 
     const metadata = {
       customMetadata: {
-        clientId,
-        period: yyyyMm,
-        uploadedBy: user?.uid || "anon",
+        clientName: clientName.trim(),
+        statementType: stmtType,
+        period: periodString,
+        uploadedBy: user.uid,
         source: "ui",
       },
       contentType: "application/pdf",
     };
 
-    const task = uploadBytesResumable(storageRef, file, metadata);
-    task.on("state_changed", (snap) => {
-      setProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100));
-    }, (err) => {
-      console.error(err);
-      toast({ title: "Upload Failed", description: err.message, variant: "destructive"});
-      setIsUploading(false);
-      setProgress(0);
-    }, async () => {
-      const url = await getDownloadURL(task.snapshot.ref);
-      await addDoc(collection(db, "statements"), {
-        clientId,
-        period: yyyyMm,
-        filePath: path,
-        downloadURL: url,
-        status: "queued",
-        createdAt: serverTimestamp(),
-        uploadedBy: user.uid,
-      });
-      resetForm();
-      toast({ title: "Upload Successful", description: "Processing will start automatically." });
-    });
+    const task = uploadBytesResumable(ref(storage, path), file, metadata);
+    task.on(
+      "state_changed",
+      (snap) => setProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
+      (err) => { 
+        console.error(err); 
+        toast({ title: "Upload failed.", description: err.message, variant: "destructive" });
+        setIsUploading(false);
+      },
+      async () => {
+        const url = await getDownloadURL(task.snapshot.ref);
+        await addDoc(collection(db, "statements"), {
+          clientName: clientName.trim(),
+          statementType: stmtType,
+          period: periodString,
+          filePath: path,
+          downloadURL: url,
+          status: "queued", // backend will process → parsed → scripted → rendered
+          createdAt: serverTimestamp(),
+          uploadedBy: user.uid,
+        });
+        toast({ title: "Upload Successful!", description: "Processing will start automatically." });
+        resetForm();
+      }
+    );
   }
 
   return (
@@ -99,39 +119,95 @@ export default function UploadCard() {
       <h2 className="text-xl font-semibold mb-4 text-foreground">Upload Statement (PDF)</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        {/* Client Name */}
         <div className="flex flex-col">
-          <label className="text-sm text-muted-foreground mb-1">Client ID</label>
+          <label className="text-sm text-muted-foreground mb-1">Client Name</label>
           <input
-            value={clientId}
-            onChange={(e) => setClientId(e.target.value)}
-            placeholder="e.g. HH-1023"
+            value={clientName}
+            onChange={(e) => setClientName(e.target.value)}
+            placeholder="e.g. Josh & Taylor Smith"
             className="rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-sm outline-none focus:border-white/20 text-foreground"
           />
         </div>
+
+        {/* Statement Type */}
+        <div className="flex flex-col">
+          <label className="text-sm text-muted-foreground mb-1">Statement Type</label>
+          <select
+            value={stmtType}
+            onChange={(e) => setStmtType(e.target.value as StatementType)}
+            className="rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-sm outline-none focus:border-white/20 text-foreground appearance-none"
+          >
+            <option value="monthly">Monthly</option>
+            <option value="quarterly">Quarterly</option>
+            <option value="annual">Annual</option>
+          </select>
+        </div>
+
+        {/* Period (switches by type) */}
         <div className="flex flex-col">
           <label className="text-sm text-muted-foreground mb-1">Period</label>
-          <input
-            type="month"
-            value={period}
-            onChange={(e) => setPeriod(e.target.value)}
-            className="rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-sm outline-none focus:border-white/20 text-foreground"
-          />
-        </div>
-        <div className="flex flex-col">
-          <label className="text-sm text-muted-foreground mb-1">PDF</label>
-          <input
-            ref={inputRef}
-            type="file"
-            accept="application/pdf"
-            onChange={onFilePick}
-            className="rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-sm text-muted-foreground file:text-foreground file:bg-transparent file:border-0 file:p-0"
-          />
+
+          {stmtType === "monthly" && (
+            <input
+              type="month"
+              value={month}
+              onChange={(e) => setMonth(e.target.value)}
+              className="rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-sm outline-none focus:border-white/20 text-foreground"
+            />
+          )}
+
+          {stmtType === "quarterly" && (
+            <div className="grid grid-cols-2 gap-2">
+              <select
+                value={quarter}
+                onChange={(e) => setQuarter(e.target.value)}
+                className="rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-sm outline-none focus:border-white/20 text-foreground appearance-none"
+              >
+                <option value="Q1">Q1</option>
+                <option value="Q2">Q2</option>
+                <option value="Q3">Q3</option>
+                <option value="Q4">Q4</option>
+              </select>
+              <input
+                type="number"
+                min="2000"
+                max="2100"
+                placeholder="Year"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                className="rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-sm outline-none focus:border-white/20 text-foreground"
+              />
+            </div>
+          )}
+
+          {stmtType === "annual" && (
+            <input
+              type="number"
+              min="2000"
+              max="2100"
+              placeholder="Year"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              className="rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-sm outline-none focus:border-white/20 text-foreground"
+            />
+          )}
         </div>
       </div>
 
-      {file && (
-        <div className="text-sm text-muted-foreground mb-3">Selected: {file.name}</div>
-      )}
+      {/* PDF Picker */}
+      <div className="mb-4">
+        <label className="text-sm text-muted-foreground mb-1 block">PDF</label>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="application/pdf"
+          onChange={onFilePick}
+          className="rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-sm text-muted-foreground file:text-foreground file:bg-transparent file:border-0 file:p-0 w-full"
+        />
+      </div>
+
+      {file && <div className="text-sm text-muted-foreground mb-3">Selected: {file.name}</div>}
 
       {progress > 0 && (
         <div className="w-full h-2 bg-black/40 rounded mb-4 overflow-hidden">
@@ -143,14 +219,14 @@ export default function UploadCard() {
         <button
           onClick={onUpload}
           disabled={isUploading}
-          className="rounded-xl px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="rounded-xl px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
           {isUploading ? "Uploading..." : "Upload"}
         </button>
         <button
           onClick={resetForm}
           disabled={isUploading}
-          className="rounded-xl px-4 py-2 text-sm border border-white/10 text-foreground hover:bg-white/5 disabled:opacity-50"
+          className="rounded-xl px-4 py-2 text-sm border border-white/10 hover:bg-white/5 text-foreground disabled:opacity-50"
         >
           Reset
         </button>
