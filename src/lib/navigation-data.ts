@@ -29,7 +29,8 @@ import {
   BadgeDollarSign,
   FileStack,
   BookOpenText,
-  Settings
+  Settings,
+  Video
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -39,7 +40,7 @@ export const toolbarSections: ToolbarSection[] = [
     { id: 'Resources', title: 'Resources' },
 ];
 
-export const navigationData: Record<ToolbarSectionKey | 'Other', NavItem[]> = {
+export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', NavItem[]> = {
   'Reports': [
     { name: 'Advisory Fees', icon: BadgeDollarSign, href: '/reports/advisory-fees'},
     { name: 'Cash', icon: Wallet, href: '/reports/cash'},
@@ -72,5 +73,9 @@ export const navigationData: Record<ToolbarSectionKey | 'Other', NavItem[]> = {
   ],
   'Other': [
       { name: 'Settings', icon: Settings, href: '/settings' },
+  ],
+  'Standalone': [
+    { name: 'Video Reports', icon: Video, href: '/video-reports' },
   ]
 };
+

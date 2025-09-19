@@ -1,3 +1,4 @@
+
 // components/Sidebar.tsx
 "use client";
 
@@ -9,6 +10,7 @@ import {
   Wallet, Percent, BadgeDollarSign, FlaskConical,
   Settings as SettingsIcon,
   ChevronRight,
+  Video,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
@@ -19,6 +21,7 @@ const reportItems: NavItem[] = navigationData['Reports'];
 const crmItems: NavItem[] = navigationData['CRM'];
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
+const videoReportItem: NavItem = navigationData['Standalone'][0];
 
 
 function Row({ item, active, hiddenLabel }: { item: NavItem; active: boolean; hiddenLabel: boolean }) {
@@ -56,6 +59,7 @@ export default function Sidebar({
     "/analytics/asset", "/analytics/client", "/analytics/financial", 
     "/analytics/conversion", "/analytics/compliance", "/analytics/contribution"
   ].some(p => pathname.startsWith(p)) || pathname.startsWith("/dashboard"), [pathname]);
+  const isVideoReports = useMemo(() => pathname?.startsWith("/video-reports"), [pathname]);
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
 
@@ -131,6 +135,11 @@ export default function Sidebar({
         <Section keyName="reports" title="Reports"   icon={FileStack}  open={openReports}   setOpen={setOpenReports}   items={reportItems} />
         <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} />
         <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} />
+        
+        <div className="mb-2">
+            <Row item={videoReportItem} active={isVideoReports} hiddenLabel={!!collapsed} />
+        </div>
+
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
       </div>
 
