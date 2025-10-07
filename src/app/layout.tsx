@@ -55,7 +55,7 @@ export default function RootLayout({
             <Script src="https://cdn.jsdelivr.net/npm/luckysheet/dist/luckysheet.umd.js" strategy="lazyOnload" />
           </>
         )}
-        <DevTools />
+        {process.env.NODE_ENV === 'development' && <DevTools />}
       </body>
     </html>
   );
