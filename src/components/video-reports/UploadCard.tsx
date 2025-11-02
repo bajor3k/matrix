@@ -1,15 +1,17 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { storage, db, auth } from "@/lib/firebase/config";
+import { storage, db } from "@/lib/firebase/config";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/auth-context";
 
 type StatementType = "monthly" | "quarterly" | "annual";
 
 export default function UploadCard({ fixedType }: { fixedType?: StatementType }) {
   const { toast } = useToast();
+  const { user } = useAuth(); // Use the auth context
   const [clientName, setClientName] = useState("");
   const [stmtType, setStmtType] = useState<StatementType>(fixedType ?? "monthly");
   const [month, setMonth] = useState("");        // YYYY-MM
@@ -66,7 +68,6 @@ export default function UploadCard({ fixedType }: { fixedType?: StatementType })
         return;
     }
 
-    const user = auth.currentUser;
     if (!user) {
         toast({ title: "Authentication required.", description: "Please sign in to upload files.", variant: "destructive" });
         return;
