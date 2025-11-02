@@ -1,3 +1,4 @@
+
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
@@ -8,10 +9,9 @@ export const firebaseConfig = {
   apiKey: "AIzaSyCPR9Oo096XWAjWsJmV1YTilsljf8aIsdw",
   authDomain: "matrix-y2jfw.firebaseapp.com",
   projectId: "matrix-y2jfw",
-  storageBucket: "matrix-y2jfw.appspot.com", // <-- FIXED typo here: should be .appspot.com
+  storageBucket: "matrix-y2jfw.appspot.com",
   messagingSenderId: "222012964348",
   appId: "1:222012964348:web:0941586f00d763acfd8679"
-  // measurementId: "G-XXXXXXXXXX" // Optional, can add if needed
 };
 
 // Initialize Firebase
