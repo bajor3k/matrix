@@ -23,13 +23,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      setIsLoading(false);
-      if (!currentUser) {
+      if (currentUser) {
+        const token = await currentUser.getIdToken();
+        setAccessToken(token);
+      } else {
         setAccessToken(null); // Clear access token on sign out
       }
-      // Note: We get the access token during signInWithPopup, not directly from onAuthStateChanged for external services like Gmail API.
+      setIsLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -41,22 +43,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // This gives you a Google Access Token. You can use it to access the Google API.
       const credential = result.credential as OAuthCredential; // Cast to specific type
       if (credential && credential.accessToken) {
-        setAccessToken(credential.accessToken);
-        setUser(result.user);
-        console.log("Google Sign-In successful, access token obtained.");
+        // The onAuthStateChanged listener will handle setting the user and app-level token.
+        // We can store the google-specific one if we need it for gmail, etc.
+        console.log("Google Sign-In successful, access token for Google services obtained.");
       } else {
         console.error("Google Sign-In succeeded but no access token found in credential.");
-        setAccessToken(null);
       }
     } catch (error: any) {
       console.error("Error during Google Sign-In:", error);
-      setAccessToken(null);
       // Handle specific errors (e.g., popup_closed_by_user, network_error)
       if (error.code === 'auth/popup-closed-by-user') {
         // User closed the popup
       }
     } finally {
-      setIsLoading(false);
+      // Let onAuthStateChanged handle the final loading state
     }
   };
 
@@ -64,20 +64,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       await firebaseSignOut(auth);
-      setUser(null);
-      setAccessToken(null);
-      if (typeof window !== 'undefined' && window.gapi && window.gapi.auth2) {
-        const authInstance = window.gapi.auth2.getAuthInstance();
-        if (authInstance && authInstance.isSignedIn.get()) {
-          authInstance.signOut();
-          authInstance.disconnect(); // Revokes all granted scopes
-          console.log("GAPI client signed out and disconnected.");
-        }
-      }
+      // User and token state will be cleared by onAuthStateChanged listener
     } catch (error) {
       console.error("Error during sign out:", error);
     } finally {
-      setIsLoading(false);
+      // Let onAuthStateChanged handle the final loading state
     }
   };
 

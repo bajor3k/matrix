@@ -3,10 +3,11 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Brain, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Brain, ChevronLeft, ChevronRight, LogIn, LogOut, Loader2 } from 'lucide-react';
 import FullscreenToggle from './chrome/FullscreenToggle';
 import { ThemeToggle } from './theme-toggle';
 import { Button } from './ui/button';
+import { useAuth } from '@/contexts/auth-context';
 
 interface TopToolbarProps {
     onToggleCollapsed: () => void;
@@ -14,6 +15,7 @@ interface TopToolbarProps {
 }
 
 export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
+  const { user, isLoading, signInWithGoogleAndGetGmailToken, signOutGoogle } = useAuth();
 
   return (
     <header className="flex h-full w-full items-center gap-3 px-4">
@@ -42,6 +44,22 @@ export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
       <div className="ml-auto flex items-center gap-2">
         <FullscreenToggle />
         <ThemeToggle />
+         {isLoading ? (
+            <Button variant="outline" size="sm" disabled>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+            </Button>
+        ) : user ? (
+            <Button variant="outline" size="sm" onClick={signOutGoogle}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign Out
+            </Button>
+        ) : (
+            <Button variant="outline" size="sm" onClick={signInWithGoogleAndGetGmailToken}>
+                <LogIn className="mr-2 h-4 w-4" />
+                Sign In
+            </Button>
+        )}
       </div>
     </header>
   );
