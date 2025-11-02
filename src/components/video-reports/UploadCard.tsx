@@ -118,7 +118,10 @@ export default function UploadCard({ fixedType }: { fixedType?: StatementType })
 
   return (
     <div className="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-[#0c0c0c] p-6 shadow-sm">
-      <h2 className="text-xl font-semibold mb-4 text-foreground">Upload Statement (PDF)</h2>
+      <h2 className="text-xl font-semibold text-foreground">Generate AI Video Summary</h2>
+      <p className="text-sm text-muted-foreground mb-4">
+        Upload a client statement (PDF) to automatically generate a personalized video summary.
+      </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         {/* Client Name */}
@@ -201,7 +204,7 @@ export default function UploadCard({ fixedType }: { fixedType?: StatementType })
 
       {/* PDF Picker */}
       <div className="mb-4">
-        <label className="text-sm text-muted-foreground mb-1 block">PDF</label>
+        <label className="text-sm text-muted-foreground mb-1 block">PDF Statement</label>
         <input
           ref={inputRef}
           type="file"
@@ -225,7 +228,7 @@ export default function UploadCard({ fixedType }: { fixedType?: StatementType })
           disabled={isUploading}
           className="rounded-xl px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
-          {isUploading ? "Uploading..." : "Upload"}
+          {isUploading ? "Uploading..." : "Upload & Generate"}
         </button>
         <button
           onClick={resetForm}
