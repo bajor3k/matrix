@@ -5,7 +5,7 @@
 import type { User } from "firebase/auth";
 import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged, type OAuthCredential } from "firebase/auth";
 import * as React from "react";
-import { auth, googleAuthProvider } from "@/lib/firebase/config";
+import { auth, googleAuthProvider } from "@/firebase/config";
 
 interface AuthContextType {
   user: User | null;

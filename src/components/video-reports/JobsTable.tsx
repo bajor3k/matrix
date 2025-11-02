@@ -1,7 +1,8 @@
+
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { db, storage } from "@/lib/firebase/config";
+import { db, storage } from "@/firebase/config";
 import {
   collection, onSnapshot, orderBy, query, where, limit as qLimit, Timestamp
 } from "firebase/firestore";

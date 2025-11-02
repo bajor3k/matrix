@@ -1,7 +1,8 @@
+
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { storage, db } from "@/lib/firebase/config";
+import { storage, db } from "@/firebase/config";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
