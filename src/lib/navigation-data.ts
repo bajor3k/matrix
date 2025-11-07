@@ -1,4 +1,3 @@
-
 import type { NavItem, ToolbarSection, ToolbarSectionKey } from '@/contexts/navigation-context';
 import {
   Home as HomeIcon,
@@ -73,7 +72,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', 
     { name: 'Training', icon: GraduationCap, href: '/resources?tab=training' },
   ],
   'Other': [
-      { name: 'Terminal', icon: Terminal, href: '/terminal' },
       { name: 'Settings', icon: Settings, href: '/settings' },
   ],
   'Standalone': [
@@ -87,5 +85,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', 
         { name: 'Annual', icon: FileStack, href: '/video-reports/annual'},
       ]
     },
+    { name: 'Terminal', icon: Terminal, href: '/terminal' },
   ]
 };

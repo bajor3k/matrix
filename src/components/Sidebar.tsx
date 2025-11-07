@@ -1,4 +1,3 @@
-
 // components/Sidebar.tsx
 "use client";
 
@@ -23,8 +22,8 @@ const crmItems: NavItem[] = navigationData['CRM'];
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
 const videoReportItem: NavItem = navigationData['Standalone'][0];
-const terminalItem: NavItem = navigationData['Other'][0];
-const settingsItem: NavItem = navigationData['Other'][1];
+const terminalItem: NavItem = navigationData['Standalone'][1];
+const settingsItem: NavItem = navigationData['Other'][0];
 
 
 function Row({ item, active, hiddenLabel }: { item: NavItem; active: boolean; hiddenLabel: boolean }) {
@@ -152,20 +151,13 @@ export default function Sidebar({
         <Section keyName="video-reports" title={videoReportItem.name} icon={videoReportItem.icon} open={openVideoReports} setOpen={setOpenVideoReports} items={videoReportItem.children ?? []} href={videoReportItem.href}/>
 
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
+        
+        <Row item={terminalItem} active={pathname === terminalItem.href} hiddenLabel={!!collapsed} />
+
       </div>
 
       {/* footer — pinned at bottom */}
       <div className="mt-auto border-t border-border pt-3">
-        <Link
-          href="/terminal"
-          title="Terminal"
-          data-active={isTerminal}
-          className={`nav-item group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition
-            ${isTerminal ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}`}
-        >
-          <Terminal className="h-5 w-5 shrink-0" />
-          {!collapsed && <span className="truncate">Terminal</span>}
-        </Link>
         <Link
           href="/settings"
           title="Settings"
