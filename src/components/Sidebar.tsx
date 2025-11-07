@@ -63,7 +63,6 @@ export default function Sidebar({
   ].some(p => pathname.startsWith(p)) || pathname.startsWith("/dashboard"), [pathname]);
   const isVideoReports = useMemo(() => pathname?.startsWith("/video-reports"), [pathname]);
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
-  const isTerminal = useMemo(() => pathname === "/terminal", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
 
   const [openReports, setOpenReports] = useState(isReports);
@@ -152,7 +151,9 @@ export default function Sidebar({
 
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
         
-        <Row item={terminalItem} active={pathname === terminalItem.href} hiddenLabel={!!collapsed} />
+        <div className="pl-2 pr-1">
+          <Row item={terminalItem} active={pathname === terminalItem.href} hiddenLabel={!!collapsed} />
+        </div>
 
       </div>
 
