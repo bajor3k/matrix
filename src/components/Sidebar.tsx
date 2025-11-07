@@ -1,3 +1,4 @@
+
 // components/Sidebar.tsx
 "use client";
 
@@ -10,6 +11,7 @@ import {
   Settings as SettingsIcon,
   ChevronRight,
   Video,
+  Terminal,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
@@ -21,6 +23,8 @@ const crmItems: NavItem[] = navigationData['CRM'];
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
 const videoReportItem: NavItem = navigationData['Standalone'][0];
+const terminalItem: NavItem = navigationData['Other'][0];
+const settingsItem: NavItem = navigationData['Other'][1];
 
 
 function Row({ item, active, hiddenLabel }: { item: NavItem; active: boolean; hiddenLabel: boolean }) {
@@ -60,6 +64,7 @@ export default function Sidebar({
   ].some(p => pathname.startsWith(p)) || pathname.startsWith("/dashboard"), [pathname]);
   const isVideoReports = useMemo(() => pathname?.startsWith("/video-reports"), [pathname]);
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
+  const isTerminal = useMemo(() => pathname === "/terminal", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
 
   const [openReports, setOpenReports] = useState(isReports);
@@ -149,8 +154,18 @@ export default function Sidebar({
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
       </div>
 
-      {/* footer — SETTINGS pinned at bottom */}
+      {/* footer — pinned at bottom */}
       <div className="mt-auto border-t border-border pt-3">
+        <Link
+          href="/terminal"
+          title="Terminal"
+          data-active={isTerminal}
+          className={`nav-item group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition
+            ${isTerminal ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}`}
+        >
+          <Terminal className="h-5 w-5 shrink-0" />
+          {!collapsed && <span className="truncate">Terminal</span>}
+        </Link>
         <Link
           href="/settings"
           title="Settings"

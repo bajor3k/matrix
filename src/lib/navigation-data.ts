@@ -30,7 +30,8 @@ import {
   FileStack,
   BookOpenText,
   Settings,
-  Video
+  Video,
+  Terminal,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -72,6 +73,7 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', 
     { name: 'Training', icon: GraduationCap, href: '/resources?tab=training' },
   ],
   'Other': [
+      { name: 'Terminal', icon: Terminal, href: '/terminal' },
       { name: 'Settings', icon: Settings, href: '/settings' },
   ],
   'Standalone': [
