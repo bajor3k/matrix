@@ -74,15 +74,12 @@ export default function TerminalPage() {
       <div className="grid grid-cols-1">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base font-bold flex items-center">
-              <FileText className="mr-2 h-5 w-5" />
-              Documents Used for Response
+            <CardTitle className="text-base font-bold">
+              Documents Used
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="min-h-[150px] rounded-md border border-dashed border-border/50 bg-input/30 p-4 text-center text-muted-foreground flex items-center justify-center">
-              <p>Source documents and evidence will be displayed here.</p>
-            </div>
+            {/* The content will be populated dynamically later */}
           </CardContent>
         </Card>
       </div>
