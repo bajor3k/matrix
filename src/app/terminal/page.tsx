@@ -79,7 +79,7 @@ export default function TerminalPage() {
                     type="button"
                     className="absolute bottom-4 right-4 inline-flex items-center justify-center rounded-lg bg-zinc-200/10 px-4 py-2 text-sm font-medium text-zinc-100 ring-1 ring-inset ring-[#262a33] transition hover:bg-zinc-200/20 focus:outline-none focus:ring-2 focus:ring-[#6B46FF]"
                 >
-                    Send
+                    Generate
                 </button>
             </div>
           </CardContent>
