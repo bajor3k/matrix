@@ -1,3 +1,4 @@
+
 // src/app/terminal/page.tsx
 "use client";
 
@@ -57,7 +58,7 @@ export default function TerminalPage() {
         {/* Email Response Box */}
         <Card className="h-full">
           <CardHeader>
-            <CardTitle className="text-base font-bold">Generated Email Response</CardTitle>
+            <CardTitle className="text-base font-bold">Response</CardTitle>
           </CardHeader>
           <CardContent>
             <Textarea
