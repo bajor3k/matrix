@@ -210,9 +210,9 @@ export default function TerminalPage() {
       </div>
 
        <AlertDialog open={isErrorModalOpen} onOpenChange={setIsErrorModalOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="border-destructive">
           <AlertDialogHeader>
-            <AlertDialogTitle>{errorMessage.title}</AlertDialogTitle>
+            <AlertDialogTitle className="text-destructive">{errorMessage.title}</AlertDialogTitle>
             <AlertDialogDescription>
               {errorMessage.description}
             </AlertDialogDescription>
