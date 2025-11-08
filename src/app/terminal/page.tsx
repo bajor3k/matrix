@@ -105,7 +105,7 @@ export default function TerminalPage() {
             <div className="relative">
               <Textarea
                 placeholder="Ask a question based on the uploaded documents..."
-                className="h-full min-h-[160px] resize-none bg-input/50 pr-28"
+                className="h-full min-h-[320px] resize-none bg-input/50 pr-28"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
               />
@@ -130,7 +130,7 @@ export default function TerminalPage() {
             <div className="relative">
               <Textarea
                 placeholder="The generated response will appear here..."
-                className="h-full min-h-[160px] resize-none bg-input/50 pr-28"
+                className="h-full min-h-[320px] resize-none bg-input/50 pr-28"
                 value={response}
                 onChange={(e) => setResponse(e.target.value)}
               />
