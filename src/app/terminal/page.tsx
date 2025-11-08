@@ -1,4 +1,3 @@
-
 // src/app/terminal/page.tsx
 "use client";
 
@@ -7,7 +6,7 @@ import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Wand2, FileText, UploadCloud, X } from "lucide-react";
+import { Loader2, Wand2, FileText, UploadCloud, X, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { analyzeDocuments, type DocumentInput } from "@/ai/flows/analyze-documents-flow";
 
@@ -81,6 +80,13 @@ export default function TerminalPage() {
     }
   };
 
+  const createMailtoLink = () => {
+    const to = "jbajorek@sanctuarywealth.com";
+    const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
+    const body = encodeURIComponent(response);
+    return `mailto:${to}?subject=${subject}&body=${body}`;
+  };
+
   return (
     <main className="min-h-screen flex-1 p-6 space-y-6 md:p-8">
       <div className="flex items-center justify-between">
@@ -134,14 +140,14 @@ export default function TerminalPage() {
                 value={response}
                 onChange={(e) => setResponse(e.target.value)}
               />
-               <button
-                  type="button"
-                  onClick={handleGenerate}
-                  disabled={isLoading || !question || documents.length === 0}
-                  className="absolute bottom-4 right-4 inline-flex items-center justify-center rounded-lg bg-zinc-200/10 px-4 py-2 text-sm font-medium text-zinc-100 ring-1 ring-inset ring-[#262a33] transition hover:bg-zinc-200/20 focus:outline-none focus:ring-2 focus:ring-[#6B46FF] disabled:opacity-50 disabled:cursor-not-allowed"
+               <a
+                  href={createMailtoLink()}
+                  aria-disabled={!response}
+                  className={`absolute bottom-4 right-4 inline-flex items-center justify-center rounded-lg bg-zinc-200/10 px-4 py-2 text-sm font-medium text-zinc-100 ring-1 ring-inset ring-[#262a33] transition hover:bg-zinc-200/20 focus:outline-none focus:ring-2 focus:ring-[#6B46FF] ${!response ? 'opacity-50 cursor-not-allowed' : ''}`}
                >
-                  Generate
-              </button>
+                  <Mail className="mr-2 h-4 w-4" />
+                  Create Email
+              </a>
             </div>
           </CardContent>
         </Card>
