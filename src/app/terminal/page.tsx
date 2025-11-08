@@ -1,3 +1,4 @@
+
 // src/app/terminal/page.tsx
 "use client";
 
@@ -91,7 +92,7 @@ export default function TerminalPage() {
     <main className="min-h-screen flex-1 p-6 space-y-6 md:p-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">AI Terminal</h1>
-        <Button onClick={handleGenerate} disabled={isLoading || !question || documents.length === 0}>
+        <Button variant="secondary" onClick={handleGenerate} disabled={isLoading || !question || documents.length === 0}>
           {isLoading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
