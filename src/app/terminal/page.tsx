@@ -43,6 +43,17 @@ export default function TerminalPage() {
       return;
     }
 
+    // Validation for account numbers
+    const accountPattern = /(PZG|PT8)\d{6}/i;
+    if (accountPattern.test(question)) {
+      toast({
+        title: "Protected Information Detected",
+        description: "Account numbers cannot be submitted for an AI response. Please remove any sensitive information before proceeding.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
     setResponse("");
 
