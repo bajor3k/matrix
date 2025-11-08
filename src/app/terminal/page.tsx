@@ -95,9 +95,9 @@ export default function TerminalPage() {
         </Button>
       </div>
       
-      <div className="grid grid-cols-1 gap-6 items-start lg:grid-cols-2">
-        {/* Question Box */}
-        <Card className="h-full">
+      <div className="flex flex-col gap-6">
+        {/* Question Card */}
+        <Card>
           <CardHeader>
             <CardTitle className="text-base font-bold">Question</CardTitle>
           </CardHeader>
@@ -105,7 +105,7 @@ export default function TerminalPage() {
             <div className="relative">
               <Textarea
                 placeholder="Ask a question based on the uploaded documents..."
-                className="h-full min-h-[240px] resize-none bg-input/50 pr-28"
+                className="h-full min-h-[160px] resize-none bg-input/50 pr-28"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
               />
@@ -121,16 +121,16 @@ export default function TerminalPage() {
           </CardContent>
         </Card>
 
-        {/* Response Box */}
-        <Card className="h-full">
+        {/* Response Card */}
+        <Card>
           <CardHeader>
             <CardTitle className="text-base font-bold">Response</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="relative">
               <Textarea
-                placeholder="The generated email response will appear here..."
-                className="h-full min-h-[240px] resize-none bg-input/50 pr-28"
+                placeholder="The generated response will appear here..."
+                className="h-full min-h-[160px] resize-none bg-input/50 pr-28"
                 value={response}
                 readOnly
               />
@@ -145,9 +145,8 @@ export default function TerminalPage() {
             </div>
           </CardContent>
         </Card>
-      </div>
 
-      <div className="grid grid-cols-1">
+        {/* Documents Used Card */}
         <Card>
           <CardHeader>
             <CardTitle className="text-base font-bold">Documents Used</CardTitle>
