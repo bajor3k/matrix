@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Wand2, FileText, UploadCloud, X, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { analyzeDocuments, type DocumentInput } from "@/ai/flows/analyze-documents-flow";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 
 export default function TerminalPage() {
@@ -20,6 +20,8 @@ export default function TerminalPage() {
   const { toast } = useToast();
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ title: "", description: "" });
+  const [isSsnModalOpen, setIsSsnModalOpen] = useState(false);
+
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -36,27 +38,7 @@ export default function TerminalPage() {
     setDocuments(prev => prev.filter(f => f.name !== fileName));
   };
   
-  const handleGenerate = async () => {
-    if (!question) {
-      toast({ title: "Question is required", variant: "destructive" });
-      return;
-    }
-    if (documents.length === 0) {
-      toast({ title: "Please upload at least one document to analyze.", variant: "destructive" });
-      return;
-    }
-
-    // Validation for account numbers
-    const accountPattern = /(PZG|PT8)\d{6}/i;
-    if (accountPattern.test(question)) {
-      setErrorMessage({
-        title: "Protected Information Detected",
-        description: "Account numbers cannot be submitted for an AI response. Please remove any sensitive information before proceeding.",
-      });
-      setIsErrorModalOpen(true);
-      return;
-    }
-
+  const proceedWithGeneration = async () => {
     setIsLoading(true);
     setResponse("");
 
@@ -94,6 +76,37 @@ export default function TerminalPage() {
     }
   };
 
+  const handleGenerate = async (bypassSsnCheck = false) => {
+    if (!question) {
+      toast({ title: "Question is required", variant: "destructive" });
+      return;
+    }
+    if (documents.length === 0) {
+      toast({ title: "Please upload at least one document to analyze.", variant: "destructive" });
+      return;
+    }
+
+    // Validation for account numbers
+    const accountPattern = /(PZG|PT8)\d{6}/i;
+    if (accountPattern.test(question)) {
+      setErrorMessage({
+        title: "Protected Information Detected",
+        description: "Account numbers cannot be submitted for an AI response. Please remove any sensitive information before proceeding.",
+      });
+      setIsErrorModalOpen(true);
+      return;
+    }
+    
+    // SSN/EIN validation
+    const ssnEinPattern = /(\d{3}-?\d{2}-?\d{4})|(\d{9})/;
+    if (!bypassSsnCheck && ssnEinPattern.test(question)) {
+      setIsSsnModalOpen(true);
+      return;
+    }
+
+    proceedWithGeneration();
+  };
+
   const createMailtoLink = () => {
     const to = "jbajorek@sanctuarywealth.com";
     const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
@@ -105,7 +118,7 @@ export default function TerminalPage() {
     <main className="min-h-screen flex-1 p-6 space-y-6 md:p-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">AI Terminal</h1>
-        <Button variant="secondary" onClick={handleGenerate} disabled={isLoading || !question || documents.length === 0}>
+        <Button variant="secondary" onClick={() => handleGenerate()} disabled={isLoading || !question || documents.length === 0}>
           {isLoading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
@@ -131,7 +144,7 @@ export default function TerminalPage() {
               />
               <button
                 type="button"
-                onClick={handleGenerate}
+                onClick={() => handleGenerate()}
                 disabled={isLoading || !question || documents.length === 0}
                 className="absolute bottom-4 right-4 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -219,6 +232,26 @@ export default function TerminalPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction onClick={() => setIsErrorModalOpen(false)}>OK</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      
+       <AlertDialog open={isSsnModalOpen} onOpenChange={setIsSsnModalOpen}>
+        <AlertDialogContent className="bg-destructive text-destructive-foreground border-destructive">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Protected Information Detected</AlertDialogTitle>
+            <AlertDialogDescription className="text-destructive-foreground/90">
+              Your question may contain a Social Security Number (SSN) or Employer Identification Number (EIN). These numbers cannot be submitted for an AI response.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsSsnModalOpen(false)}>Go Back & Edit</AlertDialogCancel>
+            <AlertDialogAction onClick={() => {
+              setIsSsnModalOpen(false);
+              handleGenerate(true);
+            }}>
+              Submit Anyway
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
