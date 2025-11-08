@@ -4,18 +4,23 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 
-// Your web app's Firebase configuration (from Firebase Console)
+// Your web app's Firebase configuration, using public environment variables
 export const firebaseConfig = {
-  apiKey: "AIzaSyCPR9Oo096XWAjWsJmV1YTilsljf8aIsdw",
-  authDomain: "matrix-y2jfw.firebaseapp.com",
-  projectId: "matrix-y2jfw",
-  storageBucket: "matrix-y2jfw.appspot.com",
-  messagingSenderId: "222012964348",
-  appId: "1:222012964348:web:0941586f00d763acfd8679"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
-const app: FirebaseApp = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+let app: FirebaseApp;
+if (getApps().length === 0) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApps()[0];
+}
 
 const auth = getAuth(app);
 const storage = getStorage(app);
