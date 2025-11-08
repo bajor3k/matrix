@@ -94,38 +94,8 @@ export default function TerminalPage() {
         </Button>
       </div>
       
-      {/* Top row: Upload and Question */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-        {/* Document Upload */}
-        <Card className="h-full">
-          <CardHeader>
-            <CardTitle className="text-base font-bold">Source Documents</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div {...getRootProps()} className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${isDragActive ? "border-primary bg-primary/10" : "border-border/50 hover:border-primary/50 bg-input/30"}`}>
-              <input {...getInputProps()} />
-              <UploadCloud className="w-10 h-10 text-muted-foreground mb-2" />
-              <p className="text-muted-foreground text-sm">Drag & drop files here, or click to select</p>
-              <p className="text-xs text-muted-foreground/70 mt-1">PDF, TXT, MD supported</p>
-            </div>
-            {documents.length > 0 && (
-              <div className="mt-4 space-y-2">
-                <h4 className="text-sm font-medium text-foreground">Uploaded Files:</h4>
-                <ul className="space-y-1">
-                  {documents.map(file => (
-                    <li key={file.name} className="flex items-center justify-between text-sm text-muted-foreground bg-black/30 p-2 rounded-md">
-                      <span className="truncate pr-2">{file.name}</span>
-                      <button onClick={() => removeDocument(file.name)} className="p-1 rounded-full hover:bg-destructive/20 hover:text-destructive">
-                        <X className="h-3 w-3"/>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
+      {/* Top row: Question */}
+      <div className="grid grid-cols-1 gap-6 items-start">
         {/* Question Box */}
         <Card className="h-full">
           <CardHeader>
@@ -186,9 +156,7 @@ export default function TerminalPage() {
           </CardHeader>
           <CardContent>
             {documents.length === 0 && !isLoading && (
-              <div className="min-h-[150px] rounded-md border border-dashed border-border/50 bg-input/30 p-4 text-center text-muted-foreground flex items-center justify-center">
-                 Source documents and evidence will be displayed here.
-              </div>
+               null
             )}
              {documents.length > 0 && (
                 <ul className="space-y-2">
