@@ -175,7 +175,7 @@ export default function TerminalPage() {
             {documents.length === 0 ? (
               <div
                 {...getRootProps()}
-                className="min-h-[150px] rounded-md border border-dashed border-border/50 bg-input/30 p-4 text-center text-muted-foreground flex flex-col items-center justify-center cursor-pointer hover:border-primary/70 transition-colors"
+                className="min-h-[150px] rounded-md border border-dashed border-border/50 bg-input/30 p-4 text-center text-foreground flex flex-col items-center justify-center cursor-pointer hover:border-primary/70 transition-colors"
               >
                 <input {...getInputProps()} />
                 <UploadCloud className="h-8 w-8 mb-2" />
@@ -210,10 +210,10 @@ export default function TerminalPage() {
       </div>
 
        <AlertDialog open={isErrorModalOpen} onOpenChange={setIsErrorModalOpen}>
-        <AlertDialogContent className="border-destructive">
+        <AlertDialogContent className="bg-destructive text-destructive-foreground border-destructive">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-destructive">{errorMessage.title}</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle>{errorMessage.title}</AlertDialogTitle>
+            <AlertDialogDescription className="text-destructive-foreground/90">
               {errorMessage.description}
             </AlertDialogDescription>
           </AlertDialogHeader>
