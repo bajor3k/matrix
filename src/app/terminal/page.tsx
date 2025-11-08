@@ -1,3 +1,4 @@
+
 // src/app/terminal/page.tsx
 "use client";
 
@@ -94,8 +95,7 @@ export default function TerminalPage() {
         </Button>
       </div>
       
-      {/* Top row: Question */}
-      <div className="grid grid-cols-1 gap-6 items-start">
+      <div className="grid grid-cols-1 gap-6 items-start lg:grid-cols-2">
         {/* Question Box */}
         <Card className="h-full">
           <CardHeader>
@@ -120,12 +120,9 @@ export default function TerminalPage() {
             </div>
           </CardContent>
         </Card>
-      </div>
 
-
-      {/* Middle row: Response */}
-       <div className="grid grid-cols-1">
-        <Card>
+        {/* Response Box */}
+        <Card className="h-full">
           <CardHeader>
             <CardTitle className="text-base font-bold">Response</CardTitle>
           </CardHeader>
@@ -133,13 +130,15 @@ export default function TerminalPage() {
             <div className="relative">
               <Textarea
                 placeholder="The generated email response will appear here..."
-                className="h-96 resize-none bg-input/50 pr-28"
+                className="h-full min-h-[240px] resize-none bg-input/50 pr-28"
                 value={response}
                 readOnly
               />
                <button
                   type="button"
-                  className="absolute bottom-4 right-4 inline-flex items-center justify-center rounded-lg bg-zinc-200/10 px-4 py-2 text-sm font-medium text-zinc-100 ring-1 ring-inset ring-[#262a33] transition hover:bg-zinc-200/20 focus:outline-none focus:ring-2 focus:ring-[#6B46FF]"
+                  onClick={handleGenerate}
+                  disabled={isLoading || !question || documents.length === 0}
+                  className="absolute bottom-4 right-4 inline-flex items-center justify-center rounded-lg bg-zinc-200/10 px-4 py-2 text-sm font-medium text-zinc-100 ring-1 ring-inset ring-[#262a33] transition hover:bg-zinc-200/20 focus:outline-none focus:ring-2 focus:ring-[#6B46FF] disabled:opacity-50 disabled:cursor-not-allowed"
                >
                   Generate
               </button>
@@ -148,24 +147,44 @@ export default function TerminalPage() {
         </Card>
       </div>
 
-       {/* Bottom Row: Documents Used */}
-       <div className="grid grid-cols-1">
+      <div className="grid grid-cols-1">
         <Card>
           <CardHeader>
             <CardTitle className="text-base font-bold">Documents Used</CardTitle>
           </CardHeader>
           <CardContent>
-            {documents.length === 0 && !isLoading && (
-               null
-            )}
-             {documents.length > 0 && (
-                <ul className="space-y-2">
-                    {documents.map(doc => (
-                        <li key={doc.name} className="flex items-center text-sm text-muted-foreground bg-black/30 p-2 rounded-md">
-                           <FileText className="h-4 w-4 mr-2 shrink-0"/> <span className="truncate">{doc.name}</span>
-                        </li>
-                    ))}
-                </ul>
+            {documents.length === 0 ? (
+              <div
+                {...getRootProps()}
+                className="min-h-[150px] rounded-md border border-dashed border-border/50 bg-input/30 p-4 text-center text-muted-foreground flex flex-col items-center justify-center cursor-pointer hover:border-primary/70 transition-colors"
+              >
+                <input {...getInputProps()} />
+                <UploadCloud className="h-8 w-8 mb-2" />
+                {isDragActive ? (
+                  <p>Drop the files here ...</p>
+                ) : (
+                  <p>Drag & drop files here, or click to select</p>
+                )}
+                <p className="text-xs mt-1">PDF, TXT, MD supported</p>
+              </div>
+            ) : (
+              <ul className="space-y-2">
+                {documents.map(doc => (
+                  <li key={doc.name} className="flex items-center justify-between text-sm text-muted-foreground bg-black/30 p-2 rounded-md">
+                    <div className="flex items-center truncate">
+                      <FileText className="h-4 w-4 mr-2 shrink-0"/> 
+                      <span className="truncate">{doc.name}</span>
+                    </div>
+                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeDocument(doc.name)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </li>
+                ))}
+                <li {...getRootProps()} className="flex items-center justify-center text-sm text-muted-foreground bg-black/30 p-2 rounded-md mt-2 cursor-pointer hover:bg-muted/20">
+                   <input {...getInputProps()} />
+                   <UploadCloud className="h-4 w-4 mr-2"/> Add more documents...
+                </li>
+              </ul>
             )}
           </CardContent>
         </Card>
