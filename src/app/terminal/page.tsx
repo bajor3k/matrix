@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Wand2, FileText, UploadCloud, X, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { analyzeDocuments, type DocumentInput } from "@/ai/flows/analyze-documents-flow";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 
 export default function TerminalPage() {
@@ -17,6 +18,8 @@ export default function TerminalPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [documents, setDocuments] = useState<File[]>([]);
   const { toast } = useToast();
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({ title: "", description: "" });
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -46,11 +49,11 @@ export default function TerminalPage() {
     // Validation for account numbers
     const accountPattern = /(PZG|PT8)\d{6}/i;
     if (accountPattern.test(question)) {
-      toast({
+      setErrorMessage({
         title: "Protected Information Detected",
         description: "Account numbers cannot be submitted for an AI response. Please remove any sensitive information before proceeding.",
-        variant: "destructive",
       });
+      setIsErrorModalOpen(true);
       return;
     }
 
@@ -205,6 +208,21 @@ export default function TerminalPage() {
           </CardContent>
         </Card>
       </div>
+
+       <AlertDialog open={isErrorModalOpen} onOpenChange={setIsErrorModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{errorMessage.title}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {errorMessage.description}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setIsErrorModalOpen(false)}>OK</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     </main>
   );
 }
