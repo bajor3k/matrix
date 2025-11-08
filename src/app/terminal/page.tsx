@@ -135,7 +135,7 @@ export default function TerminalPage() {
             <div className="relative">
               <Textarea
                 placeholder="Ask a question based on the uploaded documents..."
-                className="h-96 resize-none bg-input/50 pr-28"
+                className="h-full min-h-[240px] resize-none bg-input/50 pr-28"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
               />
@@ -163,7 +163,7 @@ export default function TerminalPage() {
             <div className="relative">
               <Textarea
                 placeholder="The generated email response will appear here..."
-                className="h-96 resize-none bg-input/50"
+                className="h-96 resize-none bg-input/50 pr-28"
                 value={response}
                 readOnly
               />
@@ -174,6 +174,31 @@ export default function TerminalPage() {
                   Generate
               </button>
             </div>
+          </CardContent>
+        </Card>
+      </div>
+
+       {/* Bottom Row: Documents Used */}
+       <div className="grid grid-cols-1">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base font-bold">Documents Used</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {documents.length === 0 && !isLoading && (
+              <div className="min-h-[150px] rounded-md border border-dashed border-border/50 bg-input/30 p-4 text-center text-muted-foreground flex items-center justify-center">
+                 Source documents and evidence will be displayed here.
+              </div>
+            )}
+             {documents.length > 0 && (
+                <ul className="space-y-2">
+                    {documents.map(doc => (
+                        <li key={doc.name} className="flex items-center text-sm text-muted-foreground bg-black/30 p-2 rounded-md">
+                           <FileText className="h-4 w-4 mr-2 shrink-0"/> <span className="truncate">{doc.name}</span>
+                        </li>
+                    ))}
+                </ul>
+            )}
           </CardContent>
         </Card>
       </div>
