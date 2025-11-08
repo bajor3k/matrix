@@ -42,7 +42,7 @@ export default function TerminalPage() {
         {/* Question Box */}
         <Card className="h-full">
           <CardHeader>
-            <CardTitle className="text-base font-bold">Your Question</CardTitle>
+            <CardTitle className="text-base font-bold">Question</CardTitle>
           </CardHeader>
           <CardContent>
             <Textarea
