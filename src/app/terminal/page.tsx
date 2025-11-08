@@ -1,4 +1,3 @@
-
 // src/app/terminal/page.tsx
 "use client";
 
@@ -176,19 +175,19 @@ export default function TerminalPage() {
             ) : (
               <ul className="space-y-2">
                 {documents.map(doc => (
-                  <li key={doc.name} className="flex items-center justify-between text-sm text-muted-foreground bg-black/30 p-2 rounded-md">
+                  <li key={doc.name} className="flex items-center justify-between text-sm text-foreground bg-black/30 p-2 rounded-md">
                     <div className="flex items-center truncate">
-                      <FileText className="h-4 w-4 mr-2 shrink-0"/> 
+                      <FileText className="h-4 w-4 mr-2 shrink-0 text-muted-foreground"/> 
                       <span className="truncate">{doc.name}</span>
                     </div>
-                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeDocument(doc.name)}>
-                      <X className="h-4 w-4" />
+                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground">
+                      <X className="h-4 w-4" onClick={() => removeDocument(doc.name)} />
                     </Button>
                   </li>
                 ))}
-                <li {...getRootProps()} className="flex items-center justify-center text-sm text-muted-foreground bg-black/30 p-2 rounded-md mt-2 cursor-pointer hover:bg-muted/20">
+                <li {...getRootProps()} className="flex items-center justify-center text-sm text-foreground bg-black/30 p-2 rounded-md mt-2 cursor-pointer hover:bg-muted/20">
                    <input {...getInputProps()} />
-                   <UploadCloud className="h-4 w-4 mr-2"/> Add more documents...
+                   <UploadCloud className="h-4 w-4 mr-2 text-muted-foreground"/> Add more documents...
                 </li>
               </ul>
             )}
