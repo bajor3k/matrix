@@ -22,9 +22,9 @@ const documentAnalysisPrompt = ai.definePrompt({
   name: 'documentAnalysisPrompt',
   input: {schema: AnalyzeDocumentsInputSchema},
   output: {schema: AnalyzeDocumentsOutputSchema},
-  prompt: `You are an expert financial analyst assistant. Your task is to answer a user's question based *only* on the content of the documents provided.
+  prompt: `This is a question from one of my clients whos a financial advisor. review the attached process and procedures and give me a response based on information from that document.
 
-Analyze the following documents to answer the user's question.
+Your task is to answer the user's question based *only* on the content of the documents provided.
 
 User Question:
 "{{question}}"
