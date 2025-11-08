@@ -16,7 +16,6 @@ export default function TerminalPage() {
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [documents, setDocuments] = useState<File[]>([]);
-  const [documentsUsed, setDocumentsUsed] = useState<string[]>([]);
   const { toast } = useToast();
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -46,7 +45,6 @@ export default function TerminalPage() {
 
     setIsLoading(true);
     setResponse("");
-    setDocumentsUsed([]);
 
     try {
       // Convert files to base64 data URIs for the AI flow
@@ -68,7 +66,6 @@ export default function TerminalPage() {
       
       const result = await analyzeDocuments({ question, documents: documentInputs });
       setResponse(result.answer);
-      setDocumentsUsed(documents.map(d => d.name));
 
     } catch (error: any) {
       console.error("Error generating response:", error);
@@ -177,29 +174,6 @@ export default function TerminalPage() {
                   Generate
               </button>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Documents Used Box */}
-      <div className="grid grid-cols-1">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base font-bold">
-              Documents Used
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="min-h-[100px]">
-            {documentsUsed.length > 0 && (
-                <ul className="space-y-2">
-                    {documentsUsed.map((doc, index) => (
-                        <li key={index} className="flex items-center gap-2 p-2 rounded-md bg-black/30 border border-border/30">
-                            <FileText className="h-4 w-4 text-muted-foreground"/>
-                            <span className="text-sm text-foreground">{doc}</span>
-                        </li>
-                    ))}
-                </ul>
-            )}
           </CardContent>
         </Card>
       </div>
