@@ -1,3 +1,4 @@
+
 // src/app/terminal/page.tsx
 "use client";
 
@@ -110,7 +111,17 @@ export default function TerminalPage() {
   const createMailtoLink = () => {
     const to = "jbajorek@sanctuarywealth.com";
     const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
-    const body = encodeURIComponent(response);
+    
+    const documentNames = documents.map(d => d.name).join('\n - ');
+    const bodyContent = `
+${response}
+
+---
+Reminder: Please attach the following documents:
+ - ${documentNames}
+    `;
+    const body = encodeURIComponent(bodyContent.trim());
+
     return `mailto:${to}?subject=${subject}&body=${body}`;
   };
 
