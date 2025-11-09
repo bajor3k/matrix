@@ -251,7 +251,17 @@ Reminder: Please attach the following document:
             <CardTitle className="text-base font-bold">Documents Used</CardTitle>
           </CardHeader>
           <CardContent>
-            {documents.length === 0 ? (
+             {sourceDocument ? (
+               <div className="flex items-center justify-between text-sm text-foreground bg-black/30 p-2 rounded-md">
+                 <div className="flex items-center truncate">
+                   <FileText className="h-4 w-4 mr-2 shrink-0 text-muted-foreground" />
+                   <span className="truncate font-medium">{sourceDocument}</span>
+                 </div>
+                 <Button variant="link" className="text-xs h-auto p-0" onClick={() => setSourceDocument('')}>
+                    Use different documents
+                 </Button>
+               </div>
+             ) : documents.length === 0 ? (
               <div
                 {...getRootProps()}
                 className="min-h-[150px] rounded-md border border-dashed border-border/50 bg-input/30 p-4 text-center text-foreground flex flex-col items-center justify-center cursor-pointer hover:border-primary/70 transition-colors"
