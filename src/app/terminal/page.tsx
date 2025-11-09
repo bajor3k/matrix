@@ -218,7 +218,7 @@ Reminder: Please attach the following document:
                 placeholder="The generated response will appear here..."
                 className="h-full min-h-[320px] resize-none bg-input/50 pr-28"
                 value={response}
-                readOnly
+                onChange={(e) => setResponse(e.target.value)}
               />
                <a
                   href={response ? createMailtoLink() : undefined}
