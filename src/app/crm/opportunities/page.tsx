@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from "@/hooks/use-toast";
+import { isValid, parseISO } from 'date-fns';
 
 interface OpportunityItem {
   id: string;
@@ -364,7 +365,7 @@ export default function ClientPortalOpportunitiesPage() {
                           <p className="text-xs text-muted-foreground mb-1">Re: {opp.contactName}</p>
                           <div className="flex justify-between items-end">
                             <p className="text-sm font-semibold text-foreground">{opp.amountDisplay}</p>
-                            <p className="text-xs text-muted-foreground">{isClient ? new Date(opp.targetCloseDate).toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric'}) : '...'}</p>
+                            <p className="text-xs text-muted-foreground">{isValid(parseISO(opp.targetCloseDate)) ? new Date(opp.targetCloseDate).toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric', timeZone: 'UTC'}) : '...'}</p>
                           </div>
                         </div>
                       </div>
