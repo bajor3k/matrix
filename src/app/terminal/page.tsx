@@ -3,94 +3,34 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Wand2, FileText, UploadCloud, X, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { analyzeDocuments, type DocumentInput } from "@/ai/flows/analyze-documents-flow";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 
 export default function TerminalPage() {
   const [question, setQuestion] = useState("");
   const [response, setResponse] = useState("");
-  const [sourceDocument, setSourceDocument] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [documents, setDocuments] = useState<File[]>([]);
-  const { toast } = useToast();
+  const [isSsnModalOpen, setIsSsnModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ title: "", description: "" });
-  const [isSsnModalOpen, setIsSsnModalOpen] = useState(false);
+
+  const [emailDraft, setEmailDraft] = useState<string>("");
+  const [sources, setSources] = useState<{filename: string; page: string; snippet: string;}[]>([]);
+  const [loading, setLoading] = useState(false);
   const [responseMode, setResponseMode] = useState<"simple" | "bullets" | "standard">("standard");
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      setDocuments(prev => [...prev, ...acceptedFiles]);
-    },
-    accept: {
-      'text/plain': ['.txt'],
-      'text/markdown': ['.md'],
-      'application/pdf': ['.pdf'],
-    }
-  });
-  
-  const removeDocument = (fileName: string) => {
-    setDocuments(prev => prev.filter(f => f.name !== fileName));
-  };
-  
-  const proceedWithGeneration = async (mode: "simple" | "bullets" | "standard") => {
-    setIsLoading(true);
-    setResponse("");
-    setSourceDocument("");
-    setResponseMode(mode);
+  const { toast } = useToast();
 
-    try {
-      // Convert files to base64 data URIs for the AI flow
-      const documentInputs: DocumentInput[] = await Promise.all(
-        documents.map(file => {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-              resolve({
-                name: file.name,
-                content: event.target?.result as string,
-              });
-            };
-            reader.onerror = (error) => reject(error);
-            reader.readAsDataURL(file);
-          });
-        })
-      );
-      
-      const result = await analyzeDocuments({ question, documents: documentInputs });
-      setResponse(result.answer);
-      setSourceDocument(result.sourceDocument);
-
-    } catch (error: any) {
-      console.error("Error generating response:", error);
-      toast({
-        title: "Error Generating Response",
-        description: error.message || "An unexpected error occurred.",
-        variant: "destructive",
-      });
-      setResponse("Failed to generate a response. Please check the console for details.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleGenerate = async (mode: "simple" | "bullets" | "standard", bypassSsnCheck = false) => {
-    if (!question) {
+  async function generate(mode: "simple" | "bullets" | "standard") {
+    if (!question.trim()) {
       toast({ title: "Question is required", variant: "destructive" });
       return;
-    }
-    if (documents.length === 0 && !sourceDocument) {
-      toast({ title: "Please upload at least one document to analyze.", variant: "destructive" });
-      return;
-    }
-
+    };
+    
     // Validation for account numbers
     const accountPattern = /(PZG|PT8)\d{6}/i;
     if (accountPattern.test(question)) {
@@ -104,26 +44,49 @@ export default function TerminalPage() {
     
     // SSN/EIN validation
     const ssnEinPattern = /(\d{3}-?\d{2}-?\d{4})|(\d{9})/;
-    if (!bypassSsnCheck && ssnEinPattern.test(question)) {
+    if (ssnEinPattern.test(question)) {
       setIsSsnModalOpen(true);
       return;
     }
 
-    proceedWithGeneration(mode);
-  };
+    setLoading(true);
+    setResponseMode(mode);
+    setEmailDraft("");
+    setSources([]);
+
+    try {
+      const res = await fetch("http://localhost:8000/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question, mode }),
+      });
+      if (!res.ok) {
+        throw new Error(`The generation service returned an error: ${res.statusText}`);
+      }
+      const data = await res.json();
+      setEmailDraft(data.draft || "");
+      setSources(Array.isArray(data.sources) ? data.sources : []);
+    } catch (e: any) {
+      console.error("API Call failed", e);
+      setEmailDraft("Error contacting the generation service. Is the Python server running?");
+      setSources([]);
+      toast({
+        title: "Service Unavailable",
+        description: e.message || "Please ensure the local Python API server is running.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
 
   const createMailtoLink = () => {
     const to = "jbajorek@sanctuarywealth.com";
     const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
     
-    const bodyContent = `
-${response}
-
----
-Reminder: Please attach the following document:
- - ${sourceDocument}
-    `;
-    const body = encodeURIComponent(bodyContent.trim());
+    // Now uses the generated emailDraft from state
+    const body = encodeURIComponent(emailDraft.trim());
 
     return `mailto:${to}?subject=${subject}&body=${body}`;
   };
@@ -147,26 +110,29 @@ Reminder: Please attach the following document:
               />
             </div>
             <div className="flex justify-end mt-4">
-              <div className="flex items-center gap-2">
+               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => handleGenerate("simple")}
-                  disabled={isLoading}
+                  onClick={() => generate("simple")}
+                  disabled={loading}
                   className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
+                  {loading && responseMode === 'simple' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                   Simple
                 </Button>
                 <Button
-                  onClick={() => handleGenerate("bullets")}
-                  disabled={isLoading}
+                  onClick={() => generate("bullets")}
+                  disabled={loading}
                    className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
+                  {loading && responseMode === 'bullets' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                   Bullet Points
                 </Button>
                 <Button
-                  onClick={() => handleGenerate("standard")}
-                  disabled={isLoading}
+                  onClick={() => generate("standard")}
+                  disabled={loading}
                    className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
+                  {loading && responseMode === 'standard' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                   Standard
                 </Button>
               </div>
@@ -184,13 +150,13 @@ Reminder: Please attach the following document:
               <Textarea
                 placeholder="The generated response will appear here..."
                 className="h-full min-h-[320px] resize-none bg-input/50"
-                value={response}
-                onChange={(e) => setResponse(e.target.value)}
+                value={loading ? "Generating..." : emailDraft}
+                onChange={(e) => setEmailDraft(e.target.value)}
               />
                <a
-                  href={response ? createMailtoLink() : undefined}
-                  aria-disabled={!response}
-                  onClick={(e) => !response && e.preventDefault()}
+                  href={emailDraft ? createMailtoLink() : undefined}
+                  aria-disabled={!emailDraft}
+                  onClick={(e) => !emailDraft && e.preventDefault()}
                   className="mt-4 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                >
                   <Mail className="mr-2 h-4 w-4" />
@@ -206,53 +172,24 @@ Reminder: Please attach the following document:
             <CardTitle className="text-base font-bold">Documents Used</CardTitle>
           </CardHeader>
           <CardContent>
-             {sourceDocument ? (
-                <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm text-foreground bg-black/30 p-2 rounded-md">
-                        <div className="flex items-center truncate">
-                        <FileText className="h-4 w-4 mr-2 shrink-0 text-muted-foreground" />
-                        <span className="truncate font-medium">{sourceDocument}</span>
-                        </div>
-                    </div>
-                    <Button variant="link" className="text-xs h-auto p-0 text-primary" onClick={() => {
-                        setSourceDocument('');
-                        setDocuments([]);
-                    }}>
-                        Use different documents
-                    </Button>
+             {sources.length === 0 ? (
+                <div
+                    className="min-h-[150px] rounded-md border border-dashed border-border/50 bg-input/30 p-4 text-center text-foreground flex flex-col items-center justify-center"
+                >
+                    <FileText className="h-8 w-8 mb-2 text-muted-foreground" />
+                    <p className="text-muted-foreground">Source documents will appear here after generation.</p>
                 </div>
-             ) : documents.length === 0 ? (
-              <div
-                {...getRootProps()}
-                className="min-h-[150px] rounded-md border border-dashed border-border/50 bg-input/30 p-4 text-center text-foreground flex flex-col items-center justify-center cursor-pointer hover:border-primary/70 transition-colors"
-              >
-                <input {...getInputProps()} />
-                <UploadCloud className="h-8 w-8 mb-2 text-muted-foreground" />
-                {isDragActive ? (
-                  <p className="text-muted-foreground">Drop the files here ...</p>
-                ) : (
-                  <p className="text-muted-foreground">Drag & drop files here, or click to select</p>
-                )}
-                <p className="text-xs mt-1 text-muted-foreground">PDF, TXT, MD supported</p>
-              </div>
-            ) : (
-              <ul className="space-y-2">
-                {documents.map(doc => (
-                  <li key={doc.name} className="flex items-center justify-between text-sm text-foreground bg-black/30 p-2 rounded-md">
-                    <div className="flex items-center truncate">
-                      <FileText className="h-4 w-4 mr-2 shrink-0 text-muted-foreground"/> 
-                      <span className="truncate text-foreground">{doc.name}</span>
+             ) : (
+              <div className="space-y-2">
+                {sources.map((s, i) => (
+                  <div key={i} className="flex items-start justify-between rounded-lg border border-[#262a33] bg-[#0e0f12] px-3 py-2">
+                    <div className="text-sm">
+                      <div className="font-medium text-zinc-200">{s.filename} <span className="text-zinc-400">• p.{s.page}</span></div>
+                      <div className="text-xs text-zinc-400 line-clamp-2">{s.snippet}</div>
                     </div>
-                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground">
-                      <X className="h-4 w-4" onClick={() => removeDocument(doc.name)} />
-                    </Button>
-                  </li>
+                  </div>
                 ))}
-                <li {...getRootProps()} className="flex items-center justify-center text-sm text-foreground bg-black/30 p-2 rounded-md mt-2 cursor-pointer hover:bg-muted/20">
-                   <input {...getInputProps()} />
-                   <UploadCloud className="h-4 w-4 mr-2 text-muted-foreground"/> <span className="text-muted-foreground">Add more documents...</span>
-                </li>
-              </ul>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -284,7 +221,7 @@ Reminder: Please attach the following document:
             <AlertDialogCancel onClick={() => setIsSsnModalOpen(false)}>Go Back & Edit</AlertDialogCancel>
             <AlertDialogAction onClick={() => {
               setIsSsnModalOpen(false);
-              handleGenerate(responseMode, true);
+              generate(responseMode);
             }}>
               Submit Anyway
             </AlertDialogAction>
