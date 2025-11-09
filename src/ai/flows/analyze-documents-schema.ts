@@ -17,5 +17,6 @@ export type AnalyzeDocumentsInput = z.infer<typeof AnalyzeDocumentsInputSchema>;
 
 export const AnalyzeDocumentsOutputSchema = z.object({
   answer: z.string().describe('A comprehensive answer to the user\'s question, synthesized from the provided documents.'),
+  sourceDocument: z.string().describe("The name of the single document most relevant to the answer."),
 });
 export type AnalyzeDocumentsOutput = z.infer<typeof AnalyzeDocumentsOutputSchema>;

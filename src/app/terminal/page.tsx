@@ -16,6 +16,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 export default function TerminalPage() {
   const [question, setQuestion] = useState("");
   const [response, setResponse] = useState("");
+  const [sourceDocument, setSourceDocument] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [documents, setDocuments] = useState<File[]>([]);
   const { toast } = useToast();
@@ -42,6 +43,7 @@ export default function TerminalPage() {
   const proceedWithGeneration = async () => {
     setIsLoading(true);
     setResponse("");
+    setSourceDocument("");
 
     try {
       // Convert files to base64 data URIs for the AI flow
@@ -63,6 +65,7 @@ export default function TerminalPage() {
       
       const result = await analyzeDocuments({ question, documents: documentInputs });
       setResponse(result.answer);
+      setSourceDocument(result.sourceDocument);
 
     } catch (error: any) {
       console.error("Error generating response:", error);
@@ -112,13 +115,12 @@ export default function TerminalPage() {
     const to = "jbajorek@sanctuarywealth.com";
     const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
     
-    const documentNames = documents.map(d => d.name).join('\n - ');
     const bodyContent = `
 ${response}
 
 ---
-Reminder: Please attach the following documents:
- - ${documentNames}
+Reminder: Please attach the following document:
+ - ${sourceDocument}
     `;
     const body = encodeURIComponent(bodyContent.trim());
 

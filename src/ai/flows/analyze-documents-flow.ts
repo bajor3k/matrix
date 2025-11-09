@@ -22,9 +22,10 @@ const documentAnalysisPrompt = ai.definePrompt({
   name: 'documentAnalysisPrompt',
   input: {schema: AnalyzeDocumentsInputSchema},
   output: {schema: AnalyzeDocumentsOutputSchema},
-  prompt: `This is a question from one of my clients whos a financial advisor. Review the attached process and procedures and give me a response based on information from that document. Give me only facts and response with a simple, short, and factual based email response.
+  prompt: `Your task is to answer the user's question based *only* on the content of the documents provided.
+Provide a clear, concise, and well-structured answer. If the documents do not contain the information needed to answer the question, state that clearly. Do not use any external knowledge.
 
-Your task is to answer the user's question based *only* on the content of the documents provided.
+After providing the answer, you MUST identify the single most relevant document you used to formulate your response and place its name in the 'sourceDocument' field.
 
 User Question:
 "{{question}}"
@@ -38,8 +39,6 @@ Content:
 {{media url=content}}
 ---
 {{/each}}
-
-Based on your analysis of the documents, provide a clear, concise, and well-structured answer to the user's question. If the documents do not contain the information needed to answer the question, state that clearly. Do not use any external knowledge.
 `,
 });
 
@@ -51,13 +50,13 @@ const analyzeDocumentsFlow = ai.defineFlow(
   },
   async (input) => {
     if (!input.documents || input.documents.length === 0) {
-      return { answer: "No documents were provided for analysis." };
+      return { answer: "No documents were provided for analysis.", sourceDocument: "" };
     }
     
     const {output} = await documentAnalysisPrompt(input);
     
     if (!output) {
-      return { answer: "Could not generate an answer at this time. The model may have returned an empty response." };
+      return { answer: "Could not generate an answer at this time. The model may have returned an empty response.", sourceDocument: "" };
     }
     
     return output;
