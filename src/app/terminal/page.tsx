@@ -149,18 +149,6 @@ Reminder: Please attach the following document:
 
   return (
     <main className="min-h-screen flex-1 p-6 space-y-6 md:p-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">AI Terminal</h1>
-        <Button variant="secondary" onClick={() => handleGenerate()} disabled={isLoading || !question || documents.length === 0}>
-          {isLoading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Wand2 className="mr-2 h-4 w-4" />
-          )}
-          Generate
-        </Button>
-      </div>
-      
       <div className="flex flex-col gap-6">
         {/* Question Card */}
         <Card>
@@ -257,7 +245,7 @@ Reminder: Please attach the following document:
                    <FileText className="h-4 w-4 mr-2 shrink-0 text-muted-foreground" />
                    <span className="truncate font-medium">{sourceDocument}</span>
                  </div>
-                 <Button variant="link" className="text-xs h-auto p-0" onClick={() => setSourceDocument('')}>
+                 <Button variant="link" className="text-xs h-auto p-0 text-primary" onClick={() => setSourceDocument('')}>
                     Use different documents
                  </Button>
                </div>
@@ -267,13 +255,13 @@ Reminder: Please attach the following document:
                 className="min-h-[150px] rounded-md border border-dashed border-border/50 bg-input/30 p-4 text-center text-foreground flex flex-col items-center justify-center cursor-pointer hover:border-primary/70 transition-colors"
               >
                 <input {...getInputProps()} />
-                <UploadCloud className="h-8 w-8 mb-2" />
+                <UploadCloud className="h-8 w-8 mb-2 text-muted-foreground" />
                 {isDragActive ? (
-                  <p>Drop the files here ...</p>
+                  <p className="text-muted-foreground">Drop the files here ...</p>
                 ) : (
-                  <p>Drag & drop files here, or click to select</p>
+                  <p className="text-muted-foreground">Drag & drop files here, or click to select</p>
                 )}
-                <p className="text-xs mt-1">PDF, TXT, MD supported</p>
+                <p className="text-xs mt-1 text-muted-foreground">PDF, TXT, MD supported</p>
               </div>
             ) : (
               <ul className="space-y-2">
@@ -281,7 +269,7 @@ Reminder: Please attach the following document:
                   <li key={doc.name} className="flex items-center justify-between text-sm text-foreground bg-black/30 p-2 rounded-md">
                     <div className="flex items-center truncate">
                       <FileText className="h-4 w-4 mr-2 shrink-0 text-muted-foreground"/> 
-                      <span className="truncate">{doc.name}</span>
+                      <span className="truncate text-foreground">{doc.name}</span>
                     </div>
                     <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground">
                       <X className="h-4 w-4" onClick={() => removeDocument(doc.name)} />
@@ -290,7 +278,7 @@ Reminder: Please attach the following document:
                 ))}
                 <li {...getRootProps()} className="flex items-center justify-center text-sm text-foreground bg-black/30 p-2 rounded-md mt-2 cursor-pointer hover:bg-muted/20">
                    <input {...getInputProps()} />
-                   <UploadCloud className="h-4 w-4 mr-2 text-muted-foreground"/> Add more documents...
+                   <UploadCloud className="h-4 w-4 mr-2 text-muted-foreground"/> <span className="text-muted-foreground">Add more documents...</span>
                 </li>
               </ul>
             )}
