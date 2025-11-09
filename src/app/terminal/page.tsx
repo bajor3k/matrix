@@ -55,7 +55,7 @@ export default function TerminalPage() {
     setSources([]);
 
     try {
-      const res = await fetch("http://localhost:8000/generate", {
+      const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question, mode }),
