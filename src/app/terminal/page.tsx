@@ -2,7 +2,7 @@
 // src/app/terminal/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,7 +23,8 @@ export default function TerminalPage() {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ title: "", description: "" });
   const [isSsnModalOpen, setIsSsnModalOpen] = useState(false);
-
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [responseMode, setResponseMode] = useState<"simple" | "bullets" | "standard">("standard");
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -35,6 +36,25 @@ export default function TerminalPage() {
       'application/pdf': ['.pdf'],
     }
   });
+  
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape") setDropdownOpen(false); }
+    function onClick(e: MouseEvent) {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.relative.inline-block.text-left')) {
+        setDropdownOpen(false);
+      }
+    }
+    if (dropdownOpen) {
+      window.addEventListener("keydown", onKey);
+      window.addEventListener("click", onClick);
+    }
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("click", onClick);
+    };
+  }, [dropdownOpen]);
+
 
   const removeDocument = (fileName: string) => {
     setDocuments(prev => prev.filter(f => f.name !== fileName));
@@ -150,19 +170,51 @@ Reminder: Please attach the following document:
           <CardContent>
             <div className="relative">
               <Textarea
+                id="question"
                 placeholder="Ask a question based on the uploaded documents..."
                 className="h-full min-h-[320px] resize-none bg-input/50 pr-28"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
               />
-              <button
-                type="button"
-                onClick={() => handleGenerate()}
-                disabled={isLoading || !question || documents.length === 0}
-                className="absolute bottom-4 right-4 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Submit
-              </button>
+              <div className="absolute bottom-4 right-4">
+                <div className="relative inline-block text-left">
+                  <button
+                    type="button"
+                    onClick={() => setDropdownOpen((v) => !v)}
+                    className="inline-flex items-center gap-2 rounded-lg bg-zinc-200/10 px-4 py-2 text-sm font-medium text-zinc-100 ring-1 ring-inset ring-[#262a33] hover:bg-zinc-200/20 focus:outline-none focus:ring-2 focus:ring-[#6B46FF]"
+                    aria-haspopup="menu"
+                    aria-expanded={dropdownOpen}
+                  >
+                    Generate
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {dropdownOpen && (
+                    <div className="absolute bottom-full right-0 z-20 mb-2 w-44 overflow-hidden rounded-lg border border-[#262a33] bg-[#111214] shadow-xl">
+                      <button
+                        className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-200/10"
+                        onClick={() => { setResponseMode("simple"); setDropdownOpen(false); handleGenerate(); }}
+                      >
+                        Simple
+                      </button>
+                      <button
+                        className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-200/10"
+                        onClick={() => { setResponseMode("bullets"); setDropdownOpen(false); handleGenerate(); }}
+                      >
+                        Bullet Points
+                      </button>
+                      <button
+                        className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-200/10"
+                        onClick={() => { setResponseMode("standard"); setDropdownOpen(false); handleGenerate(); }}
+                      >
+                        Standard
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -178,12 +230,13 @@ Reminder: Please attach the following document:
                 placeholder="The generated response will appear here..."
                 className="h-full min-h-[320px] resize-none bg-input/50 pr-28"
                 value={response}
-                onChange={(e) => setResponse(e.target.value)}
+                readOnly
               />
                <a
-                  href={createMailtoLink()}
+                  href={response ? createMailtoLink() : undefined}
                   aria-disabled={!response}
-                  className={`absolute bottom-4 right-4 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring ${!response ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  onClick={(e) => !response && e.preventDefault()}
+                  className="absolute bottom-4 right-4 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                >
                   <Mail className="mr-2 h-4 w-4" />
                   Create Email
