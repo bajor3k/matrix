@@ -60,15 +60,13 @@ export default function TerminalPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question, mode }),
       });
-      if (!res.ok) {
-        throw new Error(`The generation service returned an error: ${res.statusText}`);
-      }
       const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || res.statusText);
       setEmailDraft(data.draft || "");
       setSources(Array.isArray(data.sources) ? data.sources : []);
     } catch (e: any) {
       console.error("API Call failed", e);
-      setEmailDraft("Error contacting the generation service. Is the Python server running?");
+      setEmailDraft(`Generation error: ${e.message}`);
       setSources([]);
       toast({
         title: "Service Unavailable",
@@ -232,3 +230,5 @@ export default function TerminalPage() {
     </main>
   );
 }
+
+    

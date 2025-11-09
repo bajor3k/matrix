@@ -1,14 +1,14 @@
 
 import os, re, glob
 from typing import List, Dict
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pdfplumber
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-PDF_FOLDER = r"C:\Users\JoshuaBajorek\Box\Advisor Services\Python"
+PDF_FOLDER = os.environ.get("PDF_FOLDER", r"C:\Users\JoshuaBajorek\Box\Advisor Services\Python")
 TOP_K_DOCS = 3            # how many PDFs to return
 TOP_K_PAGES_PER_DOC = 2   # how many best pages per doc
 
@@ -32,7 +32,12 @@ class GenerateResponse(BaseModel):
     sources: List[Dict[str, str]]  # [{filename, page, snippet}]
 
 def list_pdfs(folder: str) -> List[str]:
-    return sorted(glob.glob(os.path.join(folder, "*.pdf")))
+    if not os.path.isdir(folder):
+        raise HTTPException(status_code=500, detail=f"PDF folder not found: {folder}")
+    files = sorted(glob.glob(os.path.join(folder, "*.pdf")))
+    if not files:
+        raise HTTPException(status_code=500, detail=f"No PDFs found in: {folder}")
+    return files
 
 def extract_pdf_text_by_page(path: str) -> List[str]:
     pages = []
@@ -44,7 +49,8 @@ def extract_pdf_text_by_page(path: str) -> List[str]:
                 text = re.sub(r"\s+", " ", text).strip()
                 pages.append(text)
     except Exception as e:
-        print(f"Error reading {path}: {e}")
+        # skip corrupt PDFs instead of crashing
+        pages.append(f"[Error reading {os.path.basename(path)}: {e}]")
     return pages
 
 def rank_pages(question: str, docs: List[Dict]) -> List[Dict]:
@@ -104,19 +110,22 @@ def build_draft(mode: str, question: str, hits: List[Dict], docs: List[Dict]) ->
 
 @app.get("/health")
 def health():
-    return {"ok": True}
+    return {"ok": True, "pdf_folder": PDF_FOLDER, "pdf_count": len(list_pdfs(PDF_FOLDER))}
 
 @app.post("/generate", response_model=GenerateResponse)
 def generate(req: GenerateRequest):
-    pdf_paths = list_pdfs(PDF_FOLDER)
-    docs = [{"path": p, "filename": os.path.basename(p), "pages": extract_pdf_text_by_page(p)} for p in pdf_paths]
+    if req.mode not in {"simple","bullets","standard"}:
+        raise HTTPException(status_code=400, detail=f"Invalid mode: {req.mode}")
+    if not req.question.strip():
+        raise HTTPException(status_code=400, detail="Question is required")
+        
+    pdf_paths = list_pdfs(PDF_FOLDER)   # raises helpful errors
+    docs = [{"path": p, "filename": os.path.basename(p), "pages": extract_pdf_text_by_page(p)}
+            for p in pdf_paths]
 
     ranked = rank_pages(req.question, docs)
     if not ranked:
-        return {
-            "draft": "No PDFs found or no matching text. Please check the procedures folder.",
-            "sources": []
-        }
+        return {"draft": "No relevant text found in procedures.", "sources": []}
 
     # select top docs by score (aggregate best page score per doc)
     best_by_doc = {}
@@ -147,3 +156,5 @@ def generate(req: GenerateRequest):
     top_hits = ranked[:TOP_K_DOCS * TOP_K_PAGES_PER_DOC]
     draft = build_draft(req.mode, req.question, top_hits, docs)
     return {"draft": draft, "sources": sources}
+
+    
