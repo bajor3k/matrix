@@ -105,7 +105,7 @@ export default function TerminalPage() {
       toast({ title: "Question is required", variant: "destructive" });
       return;
     }
-    if (documents.length === 0) {
+    if (documents.length === 0 && !sourceDocument) {
       toast({ title: "Please upload at least one document to analyze.", variant: "destructive" });
       return;
     }
@@ -160,48 +160,48 @@ Reminder: Please attach the following document:
               <Textarea
                 id="question"
                 placeholder="Ask a question based on the uploaded documents..."
-                className="h-full min-h-[320px] resize-none bg-input/50 pr-28"
+                className="h-full min-h-[320px] resize-none bg-input/50"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
               />
-              <div className="absolute bottom-4 right-4">
-                <div className="relative inline-block text-left">
-                  <button
-                    type="button"
-                    onClick={() => setDropdownOpen((v) => !v)}
-                    className="inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
-                    aria-haspopup="menu"
-                    aria-expanded={dropdownOpen}
-                  >
-                    Generate
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
+            </div>
+            <div className="flex justify-end mt-4">
+              <div className="relative inline-block text-left">
+                <button
+                  type="button"
+                  onClick={() => setDropdownOpen((v) => !v)}
+                  className="inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-haspopup="menu"
+                  aria-expanded={dropdownOpen}
+                >
+                  Generate
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
 
-                  {dropdownOpen && (
-                    <div className="absolute bottom-full right-0 z-20 mb-2 w-44 overflow-hidden rounded-lg border border-[#262a33] bg-[#111214] shadow-xl">
-                      <button
-                        className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-200/10"
-                        onClick={() => { setResponseMode("simple"); setDropdownOpen(false); handleGenerate(); }}
-                      >
-                        Simple
-                      </button>
-                      <button
-                        className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-200/10"
-                        onClick={() => { setResponseMode("bullets"); setDropdownOpen(false); handleGenerate(); }}
-                      >
-                        Bullet Points
-                      </button>
-                      <button
-                        className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-200/10"
-                        onClick={() => { setResponseMode("standard"); setDropdownOpen(false); handleGenerate(); }}
-                      >
-                        Standard
-                      </button>
-                    </div>
-                  )}
-                </div>
+                {dropdownOpen && (
+                  <div className="absolute bottom-full right-0 z-20 mb-2 w-44 overflow-hidden rounded-lg border border-[#262a33] bg-[#111214] shadow-xl">
+                    <button
+                      className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-200/10"
+                      onClick={() => { setResponseMode("simple"); setDropdownOpen(false); handleGenerate(); }}
+                    >
+                      Simple
+                    </button>
+                    <button
+                      className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-200/10"
+                      onClick={() => { setResponseMode("bullets"); setDropdownOpen(false); handleGenerate(); }}
+                    >
+                      Bullet Points
+                    </button>
+                    <button
+                      className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-200/10"
+                      onClick={() => { setResponseMode("standard"); setDropdownOpen(false); handleGenerate(); }}
+                    >
+                      Standard
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
@@ -240,15 +240,20 @@ Reminder: Please attach the following document:
           </CardHeader>
           <CardContent>
              {sourceDocument ? (
-               <div className="flex items-center justify-between text-sm text-foreground bg-black/30 p-2 rounded-md">
-                 <div className="flex items-center truncate">
-                   <FileText className="h-4 w-4 mr-2 shrink-0 text-muted-foreground" />
-                   <span className="truncate font-medium">{sourceDocument}</span>
-                 </div>
-                 <Button variant="link" className="text-xs h-auto p-0 text-primary" onClick={() => setSourceDocument('')}>
-                    Use different documents
-                 </Button>
-               </div>
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm text-foreground bg-black/30 p-2 rounded-md">
+                        <div className="flex items-center truncate">
+                        <FileText className="h-4 w-4 mr-2 shrink-0 text-muted-foreground" />
+                        <span className="truncate font-medium">{sourceDocument}</span>
+                        </div>
+                    </div>
+                    <Button variant="link" className="text-xs h-auto p-0 text-primary" onClick={() => {
+                        setSourceDocument('');
+                        setDocuments([]);
+                    }}>
+                        Use different documents
+                    </Button>
+                </div>
              ) : documents.length === 0 ? (
               <div
                 {...getRootProps()}
