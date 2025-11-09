@@ -10,6 +10,7 @@ import { NavigationProvider } from '@/contexts/navigation-context';
 import { ThemeProvider } from '@/components/theme-provider';
 import AppShell from '@/components/AppShell';
 import DevTools from '@/components/DevTools';
+import VaultGate from "./VaultGate";
 
 
 export default function RootLayout({
@@ -20,23 +21,25 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fontSans.variable} ${fontMono.variable}`} suppressHydrationWarning>
       <head />
-      <body className="antialiased h-screen">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AuthProvider>
-            <NavigationProvider>
-              <TooltipProvider delayDuration={0}>
-                <AppShell>{children}</AppShell>
-                <Toaster />
-              </TooltipProvider>
-            </NavigationProvider>
-          </AuthProvider>
-        </ThemeProvider>
-        {process.env.NODE_ENV === 'development' && <DevTools />}
+      <body className="bg-black text-zinc-100">
+        <VaultGate>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AuthProvider>
+              <NavigationProvider>
+                <TooltipProvider delayDuration={0}>
+                  <AppShell>{children}</AppShell>
+                  <Toaster />
+                </TooltipProvider>
+              </NavigationProvider>
+            </AuthProvider>
+          </ThemeProvider>
+          {process.env.NODE_ENV === 'development' && <DevTools />}
+        </VaultGate>
       </body>
     </html>
   );
