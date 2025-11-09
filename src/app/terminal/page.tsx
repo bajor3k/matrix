@@ -1,4 +1,3 @@
-
 // src/app/terminal/page.tsx
 "use client";
 
@@ -230,5 +229,3 @@ export default function TerminalPage() {
     </main>
   );
 }
-
-    
