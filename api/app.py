@@ -8,7 +8,7 @@ import pdfplumber
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-PDF_FOLDER = os.environ.get("PDF_FOLDER", r"C:\Users\JoshuaBajorek\Box\Advisor Services\Python")
+PDF_FOLDER = os.environ.get("PDF_FOLDER", r"C:\Users\JoshuaBajorek\Desktop\Process_PDF")
 TOP_K_DOCS = 3            # how many PDFs to return
 TOP_K_PAGES_PER_DOC = 2   # how many best pages per doc
 
