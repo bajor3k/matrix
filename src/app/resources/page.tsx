@@ -21,14 +21,6 @@ import {
   Briefcase
 } from 'lucide-react';
 
-const quickLinks = [
-  { name: 'Schwab Advisor Center', href: '#', icon: Building },
-  { name: 'Pershing NetX360', href: '#', icon: Building },
-  { name: 'Sanctuary Portal', href: '#', icon: Building },
-  { name: 'Onboarding Forms', href: '#', icon: FileText },
-  { name: 'Company Intranet', href: '#', icon: Briefcase },
-];
-
 const documents = [
   { name: 'Compliance Manual v3.2.pdf', size: '2.5 MB', lastUpdated: '2024-06-15' },
   { name: 'New Client Onboarding Checklist.pdf', size: '450 KB', lastUpdated: '2024-05-20' },
@@ -59,12 +51,11 @@ const trainingResources = [
 
 function ResourceMatrixContent() {
   const searchParams = useSearchParams();
-  const tab = searchParams.get('tab') || 'quick_links';
+  const tab = searchParams.get('tab') || 'documents';
 
   return (
     <Tabs defaultValue={tab} className="w-full">
-      <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 bg-muted/30">
-        <TabsTrigger value="quick_links"><LinkIcon className="mr-2 h-4 w-4"/>Quick Links</TabsTrigger>
+      <TabsList className="grid w-full grid-cols-2 sm:grid-cols-2 md:grid-cols-4 bg-muted/30">
         <TabsTrigger value="documents"><FileText className="mr-2 h-4 w-4"/>Documents</TabsTrigger>
         <TabsTrigger value="support"><LifeBuoy className="mr-2 h-4 w-4"/>Support</TabsTrigger>
         <TabsTrigger value="tools"><Calculator className="mr-2 h-4 w-4"/>Tools</TabsTrigger>
@@ -72,19 +63,6 @@ function ResourceMatrixContent() {
       </TabsList>
       
       <div className="p-6">
-        <TabsContent value="quick_links">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Quick Links</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {quickLinks.map(link => (
-                <Button key={link.name} variant="outline" className="justify-start text-base p-6 hover:bg-primary/10 hover:border-primary/50" asChild>
-                    <a href={link.href} target="_blank" rel="noopener noreferrer">
-                       <link.icon className="mr-3 h-5 w-5 text-primary"/> {link.name}
-                    </a>
-                </Button>
-            ))}
-          </div>
-        </TabsContent>
-        
         <TabsContent value="documents">
           <h2 className="text-xl font-semibold text-foreground mb-4">Document Library</h2>
           <div className="relative mb-6">
