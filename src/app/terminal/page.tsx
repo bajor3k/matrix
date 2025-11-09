@@ -23,7 +23,6 @@ export default function TerminalPage() {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ title: "", description: "" });
   const [isSsnModalOpen, setIsSsnModalOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [responseMode, setResponseMode] = useState<"simple" | "bullets" | "standard">("standard");
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -37,33 +36,15 @@ export default function TerminalPage() {
     }
   });
   
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) { if (e.key === "Escape") setDropdownOpen(false); }
-    function onClick(e: MouseEvent) {
-      const target = e.target as HTMLElement;
-      if (!target.closest('.relative.inline-block.text-left')) {
-        setDropdownOpen(false);
-      }
-    }
-    if (dropdownOpen) {
-      window.addEventListener("keydown", onKey);
-      window.addEventListener("click", onClick);
-    }
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      window.removeEventListener("click", onClick);
-    };
-  }, [dropdownOpen]);
-
-
   const removeDocument = (fileName: string) => {
     setDocuments(prev => prev.filter(f => f.name !== fileName));
   };
   
-  const proceedWithGeneration = async () => {
+  const proceedWithGeneration = async (mode: "simple" | "bullets" | "standard") => {
     setIsLoading(true);
     setResponse("");
     setSourceDocument("");
+    setResponseMode(mode);
 
     try {
       // Convert files to base64 data URIs for the AI flow
@@ -100,7 +81,7 @@ export default function TerminalPage() {
     }
   };
 
-  const handleGenerate = async (bypassSsnCheck = false) => {
+  const handleGenerate = async (mode: "simple" | "bullets" | "standard", bypassSsnCheck = false) => {
     if (!question) {
       toast({ title: "Question is required", variant: "destructive" });
       return;
@@ -128,7 +109,7 @@ export default function TerminalPage() {
       return;
     }
 
-    proceedWithGeneration();
+    proceedWithGeneration(mode);
   };
 
   const createMailtoLink = () => {
@@ -166,42 +147,28 @@ Reminder: Please attach the following document:
               />
             </div>
             <div className="flex justify-end mt-4">
-              <div className="relative inline-block text-left">
-                <button
-                  type="button"
-                  onClick={() => setDropdownOpen((v) => !v)}
-                  className="inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
-                  aria-haspopup="menu"
-                  aria-expanded={dropdownOpen}
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => handleGenerate("simple")}
+                  disabled={isLoading}
+                  className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
-                  Generate
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-
-                {dropdownOpen && (
-                  <div className="absolute bottom-full right-0 z-20 mb-2 w-44 overflow-hidden rounded-lg border border-[#262a33] bg-[#111214] shadow-xl">
-                    <button
-                      className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-200/10"
-                      onClick={() => { setResponseMode("simple"); setDropdownOpen(false); handleGenerate(); }}
-                    >
-                      Simple
-                    </button>
-                    <button
-                      className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-200/10"
-                      onClick={() => { setResponseMode("bullets"); setDropdownOpen(false); handleGenerate(); }}
-                    >
-                      Bullet Points
-                    </button>
-                    <button
-                      className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-200/10"
-                      onClick={() => { setResponseMode("standard"); setDropdownOpen(false); handleGenerate(); }}
-                    >
-                      Standard
-                    </button>
-                  </div>
-                )}
+                  Simple
+                </Button>
+                <Button
+                  onClick={() => handleGenerate("bullets")}
+                  disabled={isLoading}
+                   className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+                >
+                  Bullet Points
+                </Button>
+                <Button
+                  onClick={() => handleGenerate("standard")}
+                  disabled={isLoading}
+                   className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+                >
+                  Standard
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -317,7 +284,7 @@ Reminder: Please attach the following document:
             <AlertDialogCancel onClick={() => setIsSsnModalOpen(false)}>Go Back & Edit</AlertDialogCancel>
             <AlertDialogAction onClick={() => {
               setIsSsnModalOpen(false);
-              handleGenerate(true);
+              handleGenerate(responseMode, true);
             }}>
               Submit Anyway
             </AlertDialogAction>
