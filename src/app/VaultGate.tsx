@@ -3,29 +3,38 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function VaultGate({ children }: { children: React.ReactNode }) {
-  const [ready, setReady] = useState(false);
+  const [status, setStatus] = useState<"loading" | "unlocked" | "locked">("loading");
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    // /vault should always be allowed
+    // The /vault page is always accessible
     if (pathname === "/vault") {
-      setReady(true);
+      setStatus("unlocked"); // In this context, "unlocked" means "allowed to see this page"
       return;
     }
 
-    const unlocked = typeof window !== "undefined" && localStorage.getItem("vaultUnlocked") === "true";
+    // Check localStorage only on the client
+    const isUnlocked = localStorage.getItem("vaultUnlocked") === "true";
 
-    if (!unlocked) {
+    if (isUnlocked) {
+      setStatus("unlocked");
+    } else {
+      setStatus("locked");
       router.replace("/vault");
-      // Don't set ready to true, let the redirect happen
-      return;
     }
-
-    setReady(true);
   }, [pathname, router]);
 
-  if (!ready) return null; // Or a loading spinner
+  // While loading, render nothing to prevent content flash
+  if (status === "loading") {
+    return null;
+  }
+  
+  // If locked and redirecting, also render nothing.
+  if (status === "locked") {
+    return null;
+  }
 
+  // Only if status is explicitly "unlocked", render the children.
   return <>{children}</>;
 }
