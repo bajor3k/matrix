@@ -5,3 +5,4 @@ scikit-learn
 numpy
 pydantic
 python-multipart
+google-cloud-storage
