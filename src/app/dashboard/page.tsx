@@ -4,10 +4,10 @@ import StockCard from "@/components/StockCard";
 export default function DashboardPage() {
   // TODO: Replace with live API later.
   const stocks = [
-    { symbol: "AAPL",  price: 227.12, changePct:  1.18 },
-    { symbol: "NVDA",  price: 134.55, changePct:  0.74 },
-    { symbol: "TSLA",  price: 218.03, changePct: -0.92 },
-    { symbol: "GOOGL", price: 171.44, changePct:  0.36 },
+    { symbol: "SPX",  price: 5982, changePct:  1.18 },
+    { symbol: "DJI",  price: 134.55, changePct:  0.74 },
+    { symbol: "QQQ",  price: 218.03, changePct: -0.92 },
+    { symbol: "IYM", price: 171.44, changePct:  0.36 },
   ];
 
   return (
