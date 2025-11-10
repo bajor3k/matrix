@@ -64,12 +64,6 @@ let cacheTimestamp: number | null = null;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 async function getDocumentsAsPages(): Promise<z.infer<typeof DocumentSchema>[]> {
-    const now = Date.now();
-    if (cachedDocuments && cacheTimestamp && (now - cacheTimestamp < CACHE_DURATION)) {
-        console.log("Returning cached documents.");
-        return cachedDocuments;
-    }
-    
     console.log("Fetching and parsing documents...");
     try {
         const documents = await Promise.all(
@@ -100,7 +94,7 @@ async function getDocumentsAsPages(): Promise<z.infer<typeof DocumentSchema>[]> 
             })
         );
         cachedDocuments = documents;
-        cacheTimestamp = now;
+        cacheTimestamp = Date.now();
         return documents;
     } catch (error: any) {
         console.error("Error fetching or parsing PDFs:", error);
@@ -131,7 +125,7 @@ If the documents do not contain the information needed to answer the question, s
 
 The user has requested the answer in a specific format: '{{mode}}'.
 
-- If mode is 'simple', provide a concise, 1-3 sentence summary.
+- If mode is 'simple', you MUST provide a concise summary that is NO MORE than 3 sentences long. Be direct and to the point.
 - If mode is 'bullets', lay out the key steps and details using bullet points.
 - If mode is 'detailed', provide a comprehensive, paragraph-based response.
 
