@@ -8,6 +8,8 @@ import pdfplumber
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from google.cloud import storage
+from google.cloud.storage import Bucket
+from google.iam.v1 import iam_policy_pb2
 
 # --- CONFIGURATION ---
 # The user-provided GCS paths for the PDFs to be used as the knowledge base.
@@ -21,7 +23,35 @@ TOP_K_PAGES_PER_DOC = 2   # how many best pages per doc
 
 # --- INITIALIZATION ---
 app = FastAPI()
+
+# Extract bucket name from the first GCS path to make it public
+try:
+    BUCKET_NAME = PDF_PATHS[0].split('/')[2]
+except IndexError:
+    raise ValueError("PDF_PATHS is not configured correctly. Cannot determine bucket name.")
+
+# Initialize storage client
 storage_client = storage.Client()
+
+def make_bucket_public_read(bucket_name: str):
+    """Makes a bucket's contents publicly readable."""
+    try:
+        bucket = storage_client.bucket(bucket_name)
+        policy = bucket.get_iam_policy(requested_policy_version=3)
+        
+        # Add the 'allUsers' member with 'objectViewer' role.
+        policy.bindings.append(
+            {"role": "roles/storage.objectViewer", "members": {"allUsers"}}
+        )
+        
+        bucket.set_iam_policy(policy)
+        print(f"Bucket {bucket_name} is now publicly readable.")
+    except Exception as e:
+        print(f"Warning: Could not make bucket {bucket_name} public. If files are not accessible, this may be the cause. Error: {e}")
+
+# Call on startup
+make_bucket_public_read(BUCKET_NAME)
+
 
 # Allow local Next.js dev
 app.add_middleware(
@@ -67,6 +97,7 @@ def extract_pdf_text_by_page(gcs_path: str) -> List[str]:
                 pages.append(text)
     except Exception as e:
         # Skip corrupt or inaccessible PDFs instead of crashing
+        print(f"Error reading {os.path.basename(gcs_path)}: {e}")
         pages.append(f"[Error reading {os.path.basename(gcs_path)}: {e}]")
     return pages
 
