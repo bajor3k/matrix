@@ -7,18 +7,52 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, FileText, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { generateProceduralEmail } from "@/ai/flows/generate-procedural-email-flow";
+
+type Source = {
+    filename: string;
+    page: string;
+    snippet: string;
+};
 
 export default function Terminal2Page() {
   const [question, setQuestion] = useState("");
   const [emailDraft, setEmailDraft] = useState<string>("");
-  const [sources, setSources] = useState<{filename: string; page: string; snippet: string;}[]>([]);
+  const [sources, setSources] = useState<Source[]>([]);
   const [loading, setLoading] = useState(false);
+  const [responseMode, setResponseMode] = useState<"simple" | "bullets" | "standard">("standard");
 
   const { toast } = useToast();
 
   async function generate(mode: "simple" | "bullets" | "standard") {
-    toast({ title: "Generator Not Connected", description: "This is a UI placeholder and is not connected to a backend.", variant: "destructive" });
+    if (!question.trim()) {
+      toast({ title: "Please enter a question.", variant: "destructive" });
+      return;
+    }
+    setLoading(true);
+    setResponseMode(mode);
+    setEmailDraft("");
+    setSources([]);
+
+    try {
+        const result = await generateProceduralEmail({ question, mode });
+        if (result.draft) {
+            setEmailDraft(result.draft);
+        }
+        if (result.sources) {
+            setSources(result.sources);
+        }
+    } catch (e: any) {
+        console.error("AI generation failed", e);
+        toast({
+            title: "An Error Occurred",
+            description: e.message || "Failed to generate a response from the AI model.",
+            variant: "destructive",
+        });
+        setEmailDraft("Sorry, I was unable to generate a response. Please try again.");
+    } finally {
+        setLoading(false);
+    }
   }
 
   const createMailtoLink = () => {
@@ -40,7 +74,7 @@ export default function Terminal2Page() {
             <div className="relative">
               <Textarea
                 id="question"
-                placeholder="Ask a question based on the uploaded documents..."
+                placeholder="Ask a question based on the procedure documents..."
                 className="h-full min-h-[320px] resize-none bg-input/50"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
@@ -53,7 +87,7 @@ export default function Terminal2Page() {
                   disabled={loading}
                   className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
+                  {loading && responseMode === 'simple' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                   Simple
                 </Button>
                 <Button
@@ -61,7 +95,7 @@ export default function Terminal2Page() {
                   disabled={loading}
                    className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
+                  {loading && responseMode === 'bullets' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                   Bullet Points
                 </Button>
                 <Button
@@ -69,7 +103,7 @@ export default function Terminal2Page() {
                   disabled={loading}
                    className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
+                  {loading && responseMode === 'standard' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                   Standard
                 </Button>
               </div>
@@ -89,11 +123,12 @@ export default function Terminal2Page() {
                 className="h-full min-h-[320px] resize-none bg-input/50"
                 value={loading ? "Generating..." : emailDraft}
                 onChange={(e) => setEmailDraft(e.target.value)}
+                readOnly={loading}
               />
                <a
-                  href={emailDraft ? createMailtoLink() : undefined}
-                  aria-disabled={!emailDraft}
-                  onClick={(e) => !emailDraft && e.preventDefault()}
+                  href={emailDraft && !loading ? createMailtoLink() : undefined}
+                  aria-disabled={!emailDraft || loading}
+                  onClick={(e) => (!emailDraft || loading) && e.preventDefault()}
                   className="mt-4 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                >
                   <Mail className="mr-2 h-4 w-4" />
@@ -109,12 +144,16 @@ export default function Terminal2Page() {
             <CardTitle className="text-base font-bold">Documents Used</CardTitle>
           </CardHeader>
           <CardContent>
-             {sources.length === 0 ? (
+             {sources.length === 0 && !loading ? (
                 <div
                     className="min-h-[150px] rounded-md border border-dashed border-border/50 bg-input/30 p-4 text-center text-foreground flex flex-col items-center justify-center"
                 >
                     <FileText className="h-8 w-8 mb-2 text-muted-foreground" />
                     <p className="text-muted-foreground">Source documents will appear here after generation.</p>
+                </div>
+             ) : loading ? (
+                <div className="min-h-[150px] flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
              ) : (
               <div className="space-y-2">
