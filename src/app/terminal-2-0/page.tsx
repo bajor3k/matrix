@@ -7,10 +7,10 @@ import Script from 'next/script';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, FileText, Mail } from "lucide-react";
+import { Loader2, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { analyzeDocuments } from "@/ai/flows/analyze-documents-flow";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import ConfidenceBadge from "@/components/ConfidenceBadge";
 import ResponseFeedback from "@/components/ResponseFeedback";
 import { type SourceLite } from "@/lib/training";
@@ -29,15 +29,16 @@ export default function Terminal2Page() {
   const [confidence, setConfidence] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
-  const [responseMode, setResponseMode] = useState<"simple" | "bullets" | "detailed">("detailed");
+  const [responseMode, setResponseMode] = useState<"detailed" | "bullets">("detailed");
 
+  const [isSsnModalOpen, setIsSsnModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ title: "", description: "" });
 
   const { toast } = useToast();
 
-  async function generate(payload: { question: string, preferSeed?: string }) {
-    const questionToAsk = payload.preferSeed || payload.question;
+  async function generate(payload?: { question: string, preferSeed?: string }) {
+    const questionToAsk = payload?.preferSeed || payload?.question || question;
     if (!questionToAsk.trim()) {
       toast({ title: "Please enter a question.", variant: "destructive" });
       return;
@@ -53,11 +54,16 @@ export default function Terminal2Page() {
       setIsErrorModalOpen(true);
       return;
     }
+    
+    // SSN/EIN validation
+    const ssnEinPattern = /(\d{3}-?\d{2}-?\d{4})|(\d{9})/;
+    if (ssnEinPattern.test(questionToAsk) && !payload?.preferSeed) { // bypass for regeneration
+      setIsSsnModalOpen(true);
+      return;
+    }
 
     setLoading(true);
-    // If regenerating, we keep the original response mode
-    // If it's a new generation, we use the mode passed from the button click
-    const mode = payload.preferSeed ? responseMode : responseMode;
+    const mode = responseMode;
 
     setEmailDraft("");
     setSources([]);
@@ -104,7 +110,7 @@ export default function Terminal2Page() {
     }
   }
 
-  const handleGenerateClick = (mode: "simple" | "bullets" | "detailed") => {
+  const handleGenerateClick = (mode: "detailed" | "bullets") => {
     setResponseMode(mode);
     generate({ question });
   }
@@ -155,7 +161,7 @@ export default function Terminal2Page() {
             </div>
             <div className="flex justify-end mt-4">
                <div className="flex items-center gap-2">
-                <Button
+                 <Button
                   onClick={() => handleGenerateClick("bullets")}
                   disabled={loading}
                   variant="outline"
@@ -270,6 +276,26 @@ export default function Terminal2Page() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction onClick={() => setIsErrorModalOpen(false)}>OK</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      
+       <AlertDialog open={isSsnModalOpen} onOpenChange={setIsSsnModalOpen}>
+        <AlertDialogContent className="bg-destructive text-destructive-foreground border-destructive">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Protected Information Detected</AlertDialogTitle>
+            <AlertDialogDescription className="text-destructive-foreground/90">
+              Your question may contain a Social Security Number (SSN) or Employer Identification Number (EIN). These numbers cannot be submitted for an AI response.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsSsnModalOpen(false)}>Go Back & Edit</AlertDialogCancel>
+            <AlertDialogAction onClick={() => {
+              setIsSsnModalOpen(false);
+              generate({ question });
+            }}>
+              Submit Anyway
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
