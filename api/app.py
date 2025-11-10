@@ -1,5 +1,5 @@
 
-import os, re, glob, io
+import os, re, io
 from typing import List, Dict
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -44,12 +44,6 @@ class GenerateResponse(BaseModel):
     sources: List[Dict[str, str]]  # [{filename, page, snippet}]
 
 # --- CORE LOGIC ---
-def list_pdfs() -> List[str]:
-    """Returns the hardcoded list of GCS PDF paths."""
-    if not PDF_PATHS:
-        raise HTTPException(status_code=500, detail="No PDF paths configured.")
-    return PDF_PATHS
-
 def extract_pdf_text_by_page(gcs_path: str) -> List[str]:
     """Downloads a PDF from GCS and extracts text from each page."""
     pages = []
@@ -132,7 +126,7 @@ def build_draft(mode: str, question: str, hits: List[Dict], docs: List[Dict]) ->
 # --- API ENDPOINTS ---
 @app.get("/health")
 def health():
-    return {"ok": True, "pdf_source": "GCS", "pdf_count": len(list_pdfs())}
+    return {"ok": True, "pdf_source": "GCS", "pdf_count": len(PDF_PATHS)}
 
 @app.post("/generate", response_model=GenerateResponse)
 def generate(req: GenerateRequest):
@@ -141,7 +135,7 @@ def generate(req: GenerateRequest):
     if not req.question.strip():
         raise HTTPException(status_code=400, detail="Question is required")
         
-    pdf_paths = list_pdfs()
+    pdf_paths = PDF_PATHS
     docs = [{"path": p, "filename": os.path.basename(p), "pages": extract_pdf_text_by_page(p)}
             for p in pdf_paths]
 
