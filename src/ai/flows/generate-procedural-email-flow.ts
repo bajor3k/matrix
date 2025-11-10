@@ -6,6 +6,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import { Storage } from '@google-cloud/storage';
+import pdf from 'pdf-parse';
 
 // Define the GCS paths for the knowledge base PDFs.
 const PDF_PATHS = [
@@ -86,27 +87,26 @@ Instructions:
 `,
 });
 
-// Helper to fetch PDF content from GCS
+// Helper to fetch and parse PDF content from GCS
 async function getDocumentsAsText(): Promise<{ fileName: string; content: string }[]> {
-  const downloadPromises = PDF_PATHS.map(async (gcsPath) => {
+  const downloadAndParsePromises = PDF_PATHS.map(async (gcsPath) => {
     try {
-        const bucketName = gcsPath.split('/')[2];
-        const fileName = gcsPath.substring(gcsPath.lastIndexOf('/') + 1);
-        const file = storage.bucket(bucketName).file(gcsPath.substring(gcsPath.indexOf('/', 5) + 1));
-        
-        // This is a simplified approach. For real PDF parsing, a library like pdf-parse would be needed.
-        // For now, we'll simulate text extraction by returning the path, as the model can't truly read the binary content.
-        // The prompt is engineered to work with this limitation for now.
-        const content = `Content from ${fileName}`; // Placeholder content
-        
-        return { fileName, content };
+      const bucketName = gcsPath.split('/')[2];
+      const fileName = gcsPath.substring(gcsPath.lastIndexOf('/') + 1);
+      const file = storage.bucket(bucketName).file(gcsPath.substring(gcsPath.indexOf('/', 5) + 1));
+      
+      const [fileBuffer] = await file.download();
+      const data = await pdf(fileBuffer);
+
+      return { fileName, content: data.text };
     } catch (error) {
-        console.error(`Failed to process GCS file ${gcsPath}:`, error);
-        return { fileName: gcsPath.substring(gcsPath.lastIndexOf('/') + 1), content: "Error accessing document." };
+      console.error(`Failed to process GCS file ${gcsPath}:`, error);
+      const fileName = gcsPath.substring(gcsPath.lastIndexOf('/') + 1);
+      return { fileName, content: `Error accessing document: ${fileName}` };
     }
   });
 
-  return Promise.all(downloadPromises);
+  return Promise.all(downloadAndParsePromises);
 }
 
 
@@ -118,14 +118,20 @@ const generateProceduralEmailFlow = ai.defineFlow(
     outputSchema: GenerateProceduralEmailOutputSchema,
   },
   async (input) => {
-    // In a real scenario, we'd fetch and parse PDFs here.
-    // For this demonstration, we'll pass simplified text content to the model.
+    // Fetch and parse the PDF content from GCS.
     const documentSnippets = await getDocumentsAsText();
     
+    // Filter out any documents that had errors during processing.
+    const validDocuments = documentSnippets.filter(doc => !doc.content.startsWith('Error'));
+
+    if (validDocuments.length === 0) {
+      return { draft: "Sorry, I was unable to access any of the procedure documents to answer your question.", sources: [] };
+    }
+
     const { output } = await emailGenerationPrompt({
         question: input.question,
         mode: input.mode,
-        documentSnippets: documentSnippets,
+        documentSnippets: validDocuments,
     });
 
     if (!output) {
