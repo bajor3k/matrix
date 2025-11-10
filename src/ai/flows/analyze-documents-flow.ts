@@ -9,11 +9,20 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import pdf from "pdf-parse";
 
-// Use the public download URLs provided
-const PDF_PUBLIC_URLS = [
-    "https://firebasestorage.googleapis.com/v0/b/matrix-y2jfw.firebasestorage.app/o/Advisor%20Services%20Procedure%20Guide.pdf?alt=media&token=7d2e1990-7ffd-4898-ad4a-d9a4271d80bd",
-    "https://firebasestorage.googleapis.com/v0/b/matrix-y2jfw.firebasestorage.app/o/Asset%20Movement%20Grid%20%26%20LOA%20Signature%20Requirements.pdf?alt=media&token=370d46e3-c0e2-4a03-8d3b-98ee43832544",
-    "https://firebasestorage.googleapis.com/v0/b/matrix-y2jfw.firebasestorage.app/o/Asset%20Movement%20Procedure%20Guide%20(3).pdf?alt=media&token=a5a1a06f-0969-4441-8d78-34c17411834f",
+// Define a structure to hold both the URL and a clean name for each document.
+const PDF_SOURCES = [
+    {
+        name: "Advisor Services Procedure Guide",
+        url: "https://firebasestorage.googleapis.com/v0/b/matrix-y2jfw.firebasestorage.app/o/Advisor%20Services%20Procedure%20Guide.pdf?alt=media&token=7d2e1990-7ffd-4898-ad4a-d9a4271d80bd",
+    },
+    {
+        name: "Asset Movement Grid",
+        url: "https://firebasestorage.googleapis.com/v0/b/matrix-y2jfw.firebasestorage.app/o/Asset%20Movement%20Grid%20%26%20LOA%20Signature%20Requirements.pdf?alt=media&token=370d46e3-c0e2-4a03-8d3b-98ee43832544",
+    },
+    {
+        name: "Asset Movement Procedure Guide",
+        url: "https://firebasestorage.googleapis.com/v0/b/matrix-y2jfw.firebasestorage.app/o/Asset%20Movement%20Procedure%20Guide%20(3).pdf?alt=media&token=a5a1a06f-0969-4441-8d78-34c17411834f",
+    },
 ];
 
 const DocumentSchema = z.object({
@@ -40,20 +49,17 @@ export async function analyzeDocuments(input: AnalyzeDocumentsInput): Promise<An
 async function getDocumentsAsText(): Promise<z.infer<typeof DocumentSchema>[]> {
     try {
         const documents = await Promise.all(
-            PDF_PUBLIC_URLS.map(async (url) => {
-                const response = await fetch(url);
+            PDF_SOURCES.map(async (source) => {
+                const response = await fetch(source.url);
                 if (!response.ok) {
-                    throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+                    throw new Error(`Failed to fetch ${source.url}: ${response.statusText}`);
                 }
                 const fileBuffer = await response.arrayBuffer();
                 const data = await pdf(Buffer.from(fileBuffer));
                 
-                const urlParts = url.split('/');
-                const encodedFilename = urlParts[urlParts.length - 1].split('?')[0];
-                const filename = decodeURIComponent(encodedFilename);
-
+                // Use the clean, hardcoded name instead of deriving from the URL.
                 return {
-                    name: filename,
+                    name: source.name,
                     content: data.text,
                 };
             })
