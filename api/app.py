@@ -63,9 +63,10 @@ def extract_pdf_text_by_page(gcs_path: str) -> List[str]:
                 pages.append(text)
     except Exception as e:
         # Skip corrupt or inaccessible PDFs instead of crashing
-        print(f"Error reading {os.path.basename(gcs_path)}: {e}")
+        file_name = gcs_path.split('/')[-1]
+        print(f"Error reading {file_name}: {e}")
         # Raise an HTTPException to give a clearer error to the frontend
-        raise HTTPException(status_code=500, detail=f"Failed to access or read PDF from GCS: {os.path.basename(gcs_path)}. Ensure permissions are correct. Error: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to access or read PDF from GCS: {file_name}. Ensure permissions are correct. Error: {e}")
     return pages
 
 def rank_pages(question: str, docs: List[Dict]) -> List[Dict]:
@@ -136,7 +137,7 @@ def generate(req: GenerateRequest):
         raise HTTPException(status_code=400, detail="Question is required")
         
     pdf_paths = PDF_PATHS
-    docs = [{"path": p, "filename": os.path.basename(p), "pages": extract_pdf_text_by_page(p)}
+    docs = [{"path": p, "filename": p.split('/')[-1], "pages": extract_pdf_text_by_page(p)}
             for p in pdf_paths]
 
     ranked = rank_pages(req.question, docs)
