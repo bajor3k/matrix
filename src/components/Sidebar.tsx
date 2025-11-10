@@ -155,7 +155,7 @@ export default function Sidebar({
 
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
         
-        <div className="mb-2">
+        {/* <div className="mb-2">
           <Link
             href={terminalItem.href}
             title={terminalItem.name}
@@ -167,7 +167,7 @@ export default function Sidebar({
               {!collapsed && terminalItem.name}
             </span>
           </Link>
-        </div>
+        </div> */}
 
         <div className="mb-2">
           <Link
