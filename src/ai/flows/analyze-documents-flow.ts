@@ -38,7 +38,10 @@ export type AnalyzeDocumentsInput = z.infer<typeof AnalyzeDocumentsInputSchema>;
 
 const AnalyzeDocumentsOutputSchema = z.object({
   answer: z.string().describe('A comprehensive answer to the user\'s question, synthesized from the provided documents.'),
-  sourceDocument: z.string().describe("The name of the single document most relevant to the answer."),
+  sourceDocument: z.object({
+      name: z.string().describe("The name of the single document most relevant to the answer."),
+      url: z.string().describe("The public URL of the source document."),
+  }),
 });
 export type AnalyzeDocumentsOutput = z.infer<typeof AnalyzeDocumentsOutputSchema>;
 
@@ -80,7 +83,10 @@ const documentAnalysisPrompt = ai.definePrompt({
       documents: z.array(DocumentSchema),
       mode: z.enum(["simple", "bullets", "detailed"]),
   })},
-  output: {schema: AnalyzeDocumentsOutputSchema},
+  output: {schema: z.object({
+    answer: z.string().describe('A comprehensive answer to the user\'s question, synthesized from the provided documents.'),
+    sourceDocumentName: z.string().describe("The name of the single document most relevant to the answer."),
+  })},
   prompt: `You are an expert financial services operations assistant. Your task is to answer the user's question based *only* on the content of the documents provided.
 If the documents do not contain the information needed to answer the question, state that clearly. Do not use any external knowledge.
 
@@ -90,7 +96,7 @@ The user has requested the answer in a specific format: '{{mode}}'.
 - If mode is 'bullets', lay out the key steps and details using bullet points.
 - If mode is 'detailed', provide a comprehensive, paragraph-based response.
 
-After providing the answer in the requested format, you MUST identify the single most relevant document you used to formulate your response and place its name in the 'sourceDocument' field.
+After providing the answer in the requested format, you MUST identify the single most relevant document you used to formulate your response and place its name in the 'sourceDocumentName' field.
 
 User Question:
 "{{question}}"
@@ -120,16 +126,32 @@ const analyzeDocumentsFlow = ai.defineFlow(
     
     const documents = await getDocumentsAsText();
     
+    const emptyOutput = {
+        answer: "No documents were provided or could be read for analysis.",
+        sourceDocument: { name: "", url: "" },
+    };
+
     if (!documents || documents.length === 0) {
-      return { answer: "No documents were provided or could be read for analysis.", sourceDocument: "" };
+      return emptyOutput;
     }
 
     const {output} = await documentAnalysisPrompt({question: input.question, documents, mode: input.mode});
     
-    if (!output) {
-      return { answer: "Could not generate an answer at this time. The model may have returned an empty response.", sourceDocument: "" };
+    if (!output || !output.sourceDocumentName) {
+      return {
+          answer: output?.answer || "Could not generate an answer at this time. The model may have returned an empty response.",
+          sourceDocument: { name: "", url: "" },
+      };
     }
     
-    return output;
+    const sourceInfo = PDF_SOURCES.find(s => s.name === output.sourceDocumentName);
+
+    return {
+        answer: output.answer,
+        sourceDocument: {
+            name: output.sourceDocumentName,
+            url: sourceInfo?.url || "",
+        },
+    };
   }
 );

@@ -13,7 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescript
 
 type Source = {
     filename: string;
-    page: string; // This will be a placeholder as we aren't getting page-specific data yet
+    url: string;
     snippet: string;
 };
 
@@ -68,11 +68,11 @@ export default function Terminal2Page() {
             setEmailDraft("The AI model could not find a relevant answer in the provided documents.");
         }
         
-        if (result.sourceDocument) {
+        if (result.sourceDocument && result.sourceDocument.name) {
              setSources([{
-                filename: result.sourceDocument,
-                page: '1', // Placeholder
-                snippet: `Content from ${result.sourceDocument} was used to generate the answer.`
+                filename: result.sourceDocument.name,
+                url: result.sourceDocument.url,
+                snippet: `Content from ${result.sourceDocument.name} was used to generate the answer.`
              }]);
         }
 
@@ -95,7 +95,13 @@ export default function Terminal2Page() {
   const createMailtoLink = () => {
     const to = "jbajorek@sanctuarywealth.com";
     const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
-    const body = encodeURIComponent(emailDraft.trim());
+    
+    let bodyContent = emailDraft.trim();
+    if (sources.length > 0 && sources[0].url) {
+        bodyContent += `\n\n---\nSource Document:\n${sources[0].filename}\n${sources[0].url}`;
+    }
+    const body = encodeURIComponent(bodyContent);
+
     return `mailto:${to}?subject=${subject}&body=${body}`;
   };
 
