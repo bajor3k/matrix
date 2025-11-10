@@ -47,6 +47,7 @@ const AnalyzeDocumentsOutputSchema = z.object({
       name: z.string().describe("The name of the single document most relevant to the answer."),
       pageNumber: z.number().describe("The page number within the source document where the information was found."),
       url: z.string().describe("The public URL of the source document."),
+      quote: z.string().describe("The exact quote from the source document used to generate the answer."),
   }),
 });
 export type AnalyzeDocumentsOutput = z.infer<typeof AnalyzeDocumentsOutputSchema>;
@@ -121,6 +122,7 @@ const documentAnalysisPrompt = ai.definePrompt({
     answer: z.string().describe('A comprehensive answer to the user\'s question, synthesized from the provided documents.'),
     sourceDocumentName: z.string().describe("The name of the single document most relevant to the answer."),
     sourcePageNumber: z.number().describe("The page number from the source document where the most relevant information was found."),
+    quote: z.string().describe("The exact, verbatim quote from the source document page that was used to generate the answer. The quote must be directly from the text."),
   })},
   prompt: `You are an expert financial services operations assistant. Your task is to answer the user's question based *only* on the content of the documents provided.
 If the documents do not contain the information needed to answer the question, state that clearly. Do not use any external knowledge.
@@ -132,7 +134,9 @@ The user has requested the answer in a specific format: '{{mode}}'.
 - If mode is 'detailed', provide a comprehensive, paragraph-based response.
 
 After providing the answer, you MUST identify the single most relevant document and the specific page number within that document where you found the information.
-Place the document's name in the 'sourceDocumentName' field and the page number in the 'sourcePageNumber' field.
+Then, you MUST extract the exact verbatim quote from that page which was used to form your answer.
+
+Place the document's name in the 'sourceDocumentName' field, the page number in the 'sourcePageNumber' field, and the exact quote in the 'quote' field.
 
 User Question:
 "{{question}}"
@@ -167,7 +171,7 @@ const analyzeDocumentsFlow = ai.defineFlow(
     
     const emptyOutput = {
         answer: "No documents were provided or could be read for analysis.",
-        sourceDocument: { name: "", pageNumber: 0, url: "" },
+        sourceDocument: { name: "", pageNumber: 0, url: "", quote: "" },
     };
 
     if (!documents || documents.length === 0) {
@@ -179,7 +183,7 @@ const analyzeDocumentsFlow = ai.defineFlow(
     if (!output || !output.sourceDocumentName) {
       return {
           answer: output?.answer || "I am sorry, but this query cannot be completed using the available documentation.",
-          sourceDocument: { name: "", pageNumber: 0, url: "" },
+          sourceDocument: { name: "", pageNumber: 0, url: "", quote: "" },
       };
     }
     
@@ -191,6 +195,7 @@ const analyzeDocumentsFlow = ai.defineFlow(
             name: output.sourceDocumentName,
             pageNumber: output.sourcePageNumber,
             url: sourceInfo?.url || "",
+            quote: output.quote,
         },
     };
   }

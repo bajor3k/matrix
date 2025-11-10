@@ -15,6 +15,7 @@ type Source = {
     filename: string;
     url: string;
     pageNumber?: number;
+    quote?: string;
 };
 
 export default function Terminal2Page() {
@@ -72,6 +73,7 @@ export default function Terminal2Page() {
                 filename: result.sourceDocument.name,
                 pageNumber: result.sourceDocument.pageNumber,
                 url: result.sourceDocument.url,
+                quote: result.sourceDocument.quote,
              }]);
         }
 
@@ -99,7 +101,7 @@ export default function Terminal2Page() {
     if (sources.length > 0 && sources[0].filename) {
         bodyContent += `\n\n---\nSource Document:\n${sources[0].filename}`;
         if (sources[0].pageNumber) {
-          bodyContent += `\nPage: ${sources[0].pageNumber}`;
+          bodyContent += ` (Page: ${sources[0].pageNumber})`;
         }
     }
     const body = encodeURIComponent(bodyContent);
@@ -207,13 +209,18 @@ export default function Terminal2Page() {
              ) : (
               <div className="space-y-2">
                 {sources.map((s, i) => (
-                  <div key={i} className="flex items-start justify-between rounded-lg border border-border bg-muted/30 px-3 py-2">
-                    <div className="text-sm">
+                  <div key={i} className="flex flex-col items-start justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
+                    <div className="text-sm w-full">
                       <div className="font-medium text-foreground">
                         {s.filename}
                         {s.pageNumber && <span className="text-muted-foreground"> • p.{s.pageNumber}</span>}
                       </div>
                     </div>
+                     {s.quote && (
+                        <blockquote className="mt-2 pl-3 border-l-2 border-primary/50 text-sm text-muted-foreground italic">
+                            "{s.quote}"
+                        </blockquote>
+                    )}
                   </div>
                 ))}
               </div>
