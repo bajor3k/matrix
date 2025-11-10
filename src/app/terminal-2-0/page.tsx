@@ -215,7 +215,6 @@ export default function Terminal2Page() {
                         {s.filename}
                         {s.pageNumber && <span className="text-muted-foreground"> • p.{s.pageNumber}</span>}
                       </div>
-                      <div className="text-xs text-muted-foreground line-clamp-2">{s.snippet}</div>
                     </div>
                   </div>
                 ))}
