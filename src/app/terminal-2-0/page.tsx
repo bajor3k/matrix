@@ -156,28 +156,12 @@ export default function Terminal2Page() {
             <div className="flex justify-end mt-4">
                <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => handleGenerateClick("simple")}
+                  onClick={() => handleGenerateClick("detailed")}
                   disabled={loading}
                   className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
-                  {loading && responseMode === 'simple' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
-                  Simple
-                </Button>
-                <Button
-                  onClick={() => handleGenerateClick("bullets")}
-                  disabled={loading}
-                   className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                >
-                  {loading && responseMode === 'bullets' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
-                  Bullet Points
-                </Button>
-                <Button
-                  onClick={() => handleGenerateClick("detailed")}
-                  disabled={loading}
-                   className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                >
-                  {loading && responseMode === 'detailed' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
-                  Detailed
+                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+                  Submit
                 </Button>
               </div>
             </div>
