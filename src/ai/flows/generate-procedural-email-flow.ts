@@ -15,15 +15,9 @@ const PDF_PATHS = [
     "gs://matrix-y2jfw.firebasestorage.app/Asset Movement Procedure Guide (3).pdf",
 ];
 
-// Initialize storage client with API key for authentication
+// Initialize storage client. It will use Application Default Credentials from the environment.
 const storage = new Storage({
-  keyFilename: undefined, // Ensure it doesn't look for a local key file
-  credentials: {
-    // Using the same API key as the genkit AI flows for consistency
-    client_email: 'dummy-email@example.com', // Not used with API key but can't be empty
-    private_key: process.env.GEMINI_API_KEY!,
-  },
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
 });
 
 
@@ -114,6 +108,9 @@ async function getDocumentsAsText(): Promise<{ fileName: string; content: string
     } catch (error: any) {
       console.error(`Failed to process GCS file ${gcsPath}:`, error);
       const errorMessage = error.message || 'An unknown error occurred';
+      if (error.code === 401 || /credential/i.test(errorMessage)) {
+        return { fileName, content: `Error accessing document: ${fileName}. Reason: Authentication failed. Please ensure the environment is configured with valid Google Cloud credentials.` };
+      }
       return { fileName, content: `Error accessing document: ${fileName}. Reason: ${errorMessage}` };
     }
   });
