@@ -97,8 +97,8 @@ export default function Terminal2Page() {
     const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
     
     let bodyContent = emailDraft.trim();
-    if (sources.length > 0 && sources[0].url) {
-        bodyContent += `\n\n---\nSource Document:\n${sources[0].filename}\n${sources[0].url}`;
+    if (sources.length > 0 && sources[0].filename) {
+        bodyContent += `\n\n---\nSource Document:\n${sources[0].filename}`;
     }
     const body = encodeURIComponent(bodyContent);
 
