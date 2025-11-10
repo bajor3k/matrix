@@ -56,13 +56,25 @@ export async function analyzeDocuments(input: AnalyzeDocumentsInput): Promise<An
   return analyzeDocumentsFlow(input);
 }
 
+// Cached documents to avoid re-fetching on every call within a short period.
+let cachedDocuments: z.infer<typeof DocumentSchema>[] | null = null;
+let cacheTimestamp: number | null = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 async function getDocumentsAsPages(): Promise<z.infer<typeof DocumentSchema>[]> {
+    const now = Date.now();
+    if (cachedDocuments && cacheTimestamp && (now - cacheTimestamp < CACHE_DURATION)) {
+        console.log("Returning cached documents.");
+        return cachedDocuments;
+    }
+    
+    console.log("Fetching and parsing documents...");
     try {
         const documents = await Promise.all(
             PDF_SOURCES.map(async (source) => {
                 const response = await fetch(source.url);
                 if (!response.ok) {
-                    throw new Error(`Failed to fetch ${source.url}: ${response.statusText}`);
+                    throw Object.assign(new Error(`Failed to fetch ${source.url}: ${response.statusText}`), { documentName: source.name });
                 }
                 const fileBuffer = await response.arrayBuffer();
                 const data = await pdf(Buffer.from(fileBuffer), {
@@ -85,9 +97,14 @@ async function getDocumentsAsPages(): Promise<z.infer<typeof DocumentSchema>[]> 
                 };
             })
         );
+        cachedDocuments = documents;
+        cacheTimestamp = now;
         return documents;
     } catch (error: any) {
         console.error("Error fetching or parsing PDFs:", error);
+        // Invalidate cache on error
+        cachedDocuments = null;
+        cacheTimestamp = null;
         throw new Error(`Sorry, I was unable to access the procedure documents. Error accessing document: ${error.documentName || 'Unknown Document'}. Reason: ${error.message}`);
     }
 }
@@ -145,6 +162,7 @@ const analyzeDocumentsFlow = ai.defineFlow(
         throw new Error("The AI service is not configured. Please provide a valid GEMINI_API_KEY in the environment variables.");
     }
     
+    // Always fetch documents to ensure consistency, caching is handled inside the function.
     const documents = await getDocumentsAsPages();
     
     const emptyOutput = {
@@ -160,7 +178,7 @@ const analyzeDocumentsFlow = ai.defineFlow(
     
     if (!output || !output.sourceDocumentName) {
       return {
-          answer: output?.answer || "Could not generate an answer at this time. The model may have returned an empty response.",
+          answer: output?.answer || "I am sorry, but this query cannot be completed using the available documentation.",
           sourceDocument: { name: "", pageNumber: 0, url: "" },
       };
     }
