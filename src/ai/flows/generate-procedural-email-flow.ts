@@ -90,21 +90,22 @@ Instructions:
 // Helper to fetch and parse PDF content from GCS
 async function getDocumentsAsText(): Promise<{ fileName: string; content: string }[]> {
   const downloadAndParsePromises = PDF_PATHS.map(async (gcsPath) => {
+    const fileName = gcsPath.substring(gcsPath.lastIndexOf('/') + 1);
     try {
       const [bucketName, ...objectPathParts] = gcsPath.replace('gs://', '').split('/');
       const objectPath = objectPathParts.join('/');
-      const fileName = gcsPath.substring(gcsPath.lastIndexOf('/') + 1);
-
+      
       const file = storage.bucket(bucketName).file(objectPath);
       
       const [fileBuffer] = await file.download();
       const data = await pdf(fileBuffer);
 
       return { fileName, content: data.text };
-    } catch (error) {
+    } catch (error: any) {
       console.error(`Failed to process GCS file ${gcsPath}:`, error);
-      const fileName = gcsPath.substring(gcsPath.lastIndexOf('/') + 1);
-      return { fileName, content: `Error accessing document: ${fileName}` };
+      // Return a more specific error message to help diagnose the issue.
+      const errorMessage = error.message || 'An unknown error occurred';
+      return { fileName, content: `Error accessing document: ${fileName}. Reason: ${errorMessage}` };
     }
   });
 
@@ -123,17 +124,17 @@ const generateProceduralEmailFlow = ai.defineFlow(
     // Fetch and parse the PDF content from GCS.
     const documentSnippets = await getDocumentsAsText();
     
-    // Filter out any documents that had errors during processing.
-    const validDocuments = documentSnippets.filter(doc => !doc.content.startsWith('Error'));
-
-    if (validDocuments.length === 0) {
-      return { draft: "Sorry, I was unable to access any of the procedure documents to answer your question.", sources: [] };
+    // Check if any document failed to load and return a specific error.
+    const failedDoc = documentSnippets.find(doc => doc.content.startsWith('Error'));
+    if (failedDoc) {
+      // The content of the failed doc now contains the specific error message.
+      return { draft: `Sorry, I was unable to access the procedure documents. ${failedDoc.content}`, sources: [] };
     }
 
     const { output } = await emailGenerationPrompt({
         question: input.question,
         mode: input.mode,
-        documentSnippets: validDocuments,
+        documentSnippets: documentSnippets,
     });
 
     if (!output) {
