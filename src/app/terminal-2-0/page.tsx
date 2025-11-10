@@ -145,7 +145,7 @@ export default function Terminal2Page() {
                    className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
                   {loading && responseMode === 'standard' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
-                  Standard
+                  Detailed
                 </Button>
               </div>
             </div>
