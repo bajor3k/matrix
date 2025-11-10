@@ -14,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescript
 type Source = {
     filename: string;
     url: string;
+    pageNumber?: number;
     snippet: string;
 };
 
@@ -54,7 +55,6 @@ export default function Terminal2Page() {
     setLoadingMessage("Analyzing documents and generating response...");
 
     try {
-        // The AI flow now handles fetching and parsing internally.
         const result = await analyzeDocuments({ question, mode });
 
         if (result.answer) {
@@ -71,6 +71,7 @@ export default function Terminal2Page() {
         if (result.sourceDocument && result.sourceDocument.name) {
              setSources([{
                 filename: result.sourceDocument.name,
+                pageNumber: result.sourceDocument.pageNumber,
                 url: result.sourceDocument.url,
                 snippet: `Content from ${result.sourceDocument.name} was used to generate the answer.`
              }]);
@@ -99,6 +100,9 @@ export default function Terminal2Page() {
     let bodyContent = emailDraft.trim();
     if (sources.length > 0 && sources[0].filename) {
         bodyContent += `\n\n---\nSource Document:\n${sources[0].filename}`;
+        if (sources[0].pageNumber) {
+          bodyContent += `\nPage: ${sources[0].pageNumber}`;
+        }
     }
     const body = encodeURIComponent(bodyContent);
 
@@ -207,7 +211,10 @@ export default function Terminal2Page() {
                 {sources.map((s, i) => (
                   <div key={i} className="flex items-start justify-between rounded-lg border border-[#262a33] bg-[#0e0f12] px-3 py-2">
                     <div className="text-sm">
-                      <div className="font-medium text-zinc-200">{s.filename}</div>
+                      <div className="font-medium text-zinc-200">
+                        {s.filename}
+                        {s.pageNumber && <span className="text-zinc-400"> • p.{s.pageNumber}</span>}
+                      </div>
                       <div className="text-xs text-zinc-400 line-clamp-2">{s.snippet}</div>
                     </div>
                   </div>

@@ -25,9 +25,14 @@ const PDF_SOURCES = [
     },
 ];
 
+const DocumentPageSchema = z.object({
+  pageNumber: z.number(),
+  content: z.string(),
+});
+
 const DocumentSchema = z.object({
   name: z.string().describe('The name of the document.'),
-  content: z.string().describe("The full text content of the document."),
+  pages: z.array(DocumentPageSchema).describe("The content of the document, split by page."),
 });
 
 const AnalyzeDocumentsInputSchema = z.object({
@@ -40,6 +45,7 @@ const AnalyzeDocumentsOutputSchema = z.object({
   answer: z.string().describe('A comprehensive answer to the user\'s question, synthesized from the provided documents.'),
   sourceDocument: z.object({
       name: z.string().describe("The name of the single document most relevant to the answer."),
+      pageNumber: z.number().describe("The page number within the source document where the information was found."),
       url: z.string().describe("The public URL of the source document."),
   }),
 });
@@ -50,7 +56,7 @@ export async function analyzeDocuments(input: AnalyzeDocumentsInput): Promise<An
   return analyzeDocumentsFlow(input);
 }
 
-async function getDocumentsAsText(): Promise<z.infer<typeof DocumentSchema>[]> {
+async function getDocumentsAsPages(): Promise<z.infer<typeof DocumentSchema>[]> {
     try {
         const documents = await Promise.all(
             PDF_SOURCES.map(async (source) => {
@@ -59,19 +65,30 @@ async function getDocumentsAsText(): Promise<z.infer<typeof DocumentSchema>[]> {
                     throw new Error(`Failed to fetch ${source.url}: ${response.statusText}`);
                 }
                 const fileBuffer = await response.arrayBuffer();
-                const data = await pdf(Buffer.from(fileBuffer));
+                const data = await pdf(Buffer.from(fileBuffer), {
+                    pagerender: (pageData) => {
+                        // Return text content for each page
+                        return pageData.getTextContent({ normalizeWhitespace: true })
+                            .then(textContent => textContent.items.map(item => item.str).join(' '));
+                    }
+                });
                 
-                // Use the clean, hardcoded name instead of deriving from the URL.
+                const pages = data.text.split(/\f/g).map((pageText, index) => ({
+                    pageNumber: index + 1,
+                    content: pageText.trim(),
+                })).filter(p => p.content);
+
+
                 return {
                     name: source.name,
-                    content: data.text,
+                    pages: pages,
                 };
             })
         );
         return documents;
     } catch (error: any) {
         console.error("Error fetching or parsing PDFs:", error);
-        throw new Error(`Sorry, I was unable to access the procedure documents. ${error.message}`);
+        throw new Error(`Sorry, I was unable to access the procedure documents. Error accessing document: ${error.documentName || 'Unknown Document'}. Reason: ${error.message}`);
     }
 }
 
@@ -86,6 +103,7 @@ const documentAnalysisPrompt = ai.definePrompt({
   output: {schema: z.object({
     answer: z.string().describe('A comprehensive answer to the user\'s question, synthesized from the provided documents.'),
     sourceDocumentName: z.string().describe("The name of the single document most relevant to the answer."),
+    sourcePageNumber: z.number().describe("The page number from the source document where the most relevant information was found."),
   })},
   prompt: `You are an expert financial services operations assistant. Your task is to answer the user's question based *only* on the content of the documents provided.
 If the documents do not contain the information needed to answer the question, state that clearly. Do not use any external knowledge.
@@ -96,7 +114,8 @@ The user has requested the answer in a specific format: '{{mode}}'.
 - If mode is 'bullets', lay out the key steps and details using bullet points.
 - If mode is 'detailed', provide a comprehensive, paragraph-based response.
 
-After providing the answer in the requested format, you MUST identify the single most relevant document you used to formulate your response and place its name in the 'sourceDocumentName' field.
+After providing the answer, you MUST identify the single most relevant document and the specific page number within that document where you found the information.
+Place the document's name in the 'sourceDocumentName' field and the page number in the 'sourcePageNumber' field.
 
 User Question:
 "{{question}}"
@@ -106,8 +125,10 @@ Documents:
 ---
 Document Name: {{name}}
 
-Content:
+{{#each pages}}
+Page: {{pageNumber}}
 {{{content}}}
+{{/each}}
 ---
 {{/each}}
 `,
@@ -124,11 +145,11 @@ const analyzeDocumentsFlow = ai.defineFlow(
         throw new Error("The AI service is not configured. Please provide a valid GEMINI_API_KEY in the environment variables.");
     }
     
-    const documents = await getDocumentsAsText();
+    const documents = await getDocumentsAsPages();
     
     const emptyOutput = {
         answer: "No documents were provided or could be read for analysis.",
-        sourceDocument: { name: "", url: "" },
+        sourceDocument: { name: "", pageNumber: 0, url: "" },
     };
 
     if (!documents || documents.length === 0) {
@@ -140,7 +161,7 @@ const analyzeDocumentsFlow = ai.defineFlow(
     if (!output || !output.sourceDocumentName) {
       return {
           answer: output?.answer || "Could not generate an answer at this time. The model may have returned an empty response.",
-          sourceDocument: { name: "", url: "" },
+          sourceDocument: { name: "", pageNumber: 0, url: "" },
       };
     }
     
@@ -150,6 +171,7 @@ const analyzeDocumentsFlow = ai.defineFlow(
         answer: output.answer,
         sourceDocument: {
             name: output.sourceDocumentName,
+            pageNumber: output.sourcePageNumber,
             url: sourceInfo?.url || "",
         },
     };
