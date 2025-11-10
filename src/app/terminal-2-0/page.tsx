@@ -10,6 +10,7 @@ import { Loader2, FileText, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { analyzeDocuments } from "@/ai/flows/analyze-documents-flow";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import ConfidenceBadge from "@/components/ConfidenceBadge";
 
 type Source = {
     filename: string;
@@ -22,6 +23,7 @@ export default function Terminal2Page() {
   const [question, setQuestion] = useState("");
   const [emailDraft, setEmailDraft] = useState<string>("");
   const [sources, setSources] = useState<Source[]>([]);
+  const [confidence, setConfidence] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [responseMode, setResponseMode] = useState<"simple" | "bullets" | "detailed">("detailed");
@@ -52,6 +54,7 @@ export default function Terminal2Page() {
     setResponseMode(mode);
     setEmailDraft("");
     setSources([]);
+    setConfidence(null);
     setLoadingMessage("Analyzing documents and generating response...");
 
     try {
@@ -76,6 +79,7 @@ export default function Terminal2Page() {
                 quote: result.sourceDocument.quote,
              }]);
         }
+        setConfidence(result.confidence ?? null);
 
     } catch (e: any) {
         console.error("Process failed", e);
@@ -164,8 +168,13 @@ export default function Terminal2Page() {
 
         {/* Response Card */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-start justify-between">
             <CardTitle className="text-base font-bold">Response</CardTitle>
+            {loading ? (
+                <div className="w-36 h-8 rounded animate-pulse bg-muted/50" />
+            ) : (
+                <ConfidenceBadge value={confidence} />
+            )}
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-end">
