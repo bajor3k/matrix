@@ -7,19 +7,30 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, FileText, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { generateProceduralEmail } from "@/ai/flows/generate-procedural-email-flow";
+import { storage } from "@/firebase/config";
+import { ref, getBytes } from "firebase/storage";
+import pdf from "pdf-parse/lib/pdf-parse.js";
+import { analyzeDocuments } from "@/ai/flows/analyze-documents-flow";
 
 type Source = {
     filename: string;
-    page: string;
+    page: string; // This will be a placeholder as we aren't getting page-specific data yet
     snippet: string;
 };
+
+// Define the GCS paths for the knowledge base PDFs.
+const PDF_GCS_PATHS = [
+    "gs://matrix-y2jfw.firebasestorage.app/Advisor Services Procedure Guide.pdf",
+    "gs://matrix-y2jfw.firebasestorage.app/Asset Movement Grid & LOA Signature Requirements.pdf",
+    "gs://matrix-y2jfw.firebasestorage.app/Asset Movement Procedure Guide (3).pdf",
+];
 
 export default function Terminal2Page() {
   const [question, setQuestion] = useState("");
   const [emailDraft, setEmailDraft] = useState<string>("");
   const [sources, setSources] = useState<Source[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
   const [responseMode, setResponseMode] = useState<"simple" | "bullets" | "standard">("standard");
 
   const { toast } = useToast();
@@ -35,9 +46,26 @@ export default function Terminal2Page() {
     setSources([]);
 
     try {
-        const result = await generateProceduralEmail({ question, mode });
-        if (result.draft) {
-            setEmailDraft(result.draft);
+        // Step 1: Fetch and parse PDFs from the client
+        setLoadingMessage("Reading procedure documents...");
+        const documents = await Promise.all(
+            PDF_GCS_PATHS.map(async (path) => {
+                const storageRef = ref(storage, path);
+                const fileBuffer = await getBytes(storageRef);
+                const data = await pdf(fileBuffer);
+                return {
+                    name: path.substring(path.lastIndexOf('/') + 1),
+                    content: data.text,
+                };
+            })
+        );
+        
+        // Step 2: Call the AI flow with the document content
+        setLoadingMessage("Analyzing documents and generating response...");
+        const result = await analyzeDocuments({ question, documents });
+
+        if (result.answer) {
+            setEmailDraft(result.answer);
         } else {
              toast({
                 title: "No Answer Generated",
@@ -45,19 +73,35 @@ export default function Terminal2Page() {
                 variant: "default",
             });
         }
-        if (result.sources) {
-            setSources(result.sources);
+        
+        if (result.sourceDocument) {
+             setSources([{
+                filename: result.sourceDocument,
+                page: '1', // Placeholder
+                snippet: `Content from ${result.sourceDocument} was used to generate the answer.`
+             }]);
         }
+
     } catch (e: any) {
-        console.error("AI generation failed", e);
+        console.error("Process failed", e);
+        const errorMessage = e.message || "An unknown error occurred.";
+        
+        let userFriendlyMessage = "Failed to generate a response.";
+        if (errorMessage.includes("storage/object-not-found")) {
+            userFriendlyMessage = "One of the required PDF documents could not be found in Firebase Storage.";
+        } else if (errorMessage.includes("storage/unauthorized")) {
+             userFriendlyMessage = "You do not have permission to access the PDF documents. Please ensure you are signed in.";
+        }
+
         toast({
             title: "An Error Occurred",
-            description: e.message || "Failed to generate a response from the AI model.",
+            description: userFriendlyMessage,
             variant: "destructive",
         });
-        setEmailDraft("Sorry, I was unable to generate a response. Please try again.");
+        setEmailDraft(`Sorry, I was unable to generate a response. Reason: ${userFriendlyMessage}`);
     } finally {
         setLoading(false);
+        setLoadingMessage("");
     }
   }
 
@@ -69,6 +113,10 @@ export default function Terminal2Page() {
   };
 
   return (
+    <>
+     {/* We need to include this script tag for the pdf-parse library to work correctly in the browser */}
+     <script src="https://cdn.jsdelivr.net/npm/pdf-parse@1.1.1/lib/pdf.min.js" async></script>
+     
     <main className="min-h-screen flex-1 p-6 space-y-6 md:p-8">
       <div className="flex flex-col gap-6">
         {/* Question Card */}
@@ -125,9 +173,9 @@ export default function Terminal2Page() {
           <CardContent>
             <div className="flex flex-col items-end">
               <Textarea
-                placeholder="The generated response will appear here..."
+                placeholder={loading ? loadingMessage : "The generated response will appear here..."}
                 className="h-full min-h-[320px] resize-none bg-input/50"
-                value={loading ? "Generating..." : emailDraft}
+                value={loading ? loadingMessage : emailDraft}
                 onChange={(e) => setEmailDraft(e.target.value)}
                 readOnly={loading}
               />
@@ -166,7 +214,7 @@ export default function Terminal2Page() {
                 {sources.map((s, i) => (
                   <div key={i} className="flex items-start justify-between rounded-lg border border-[#262a33] bg-[#0e0f12] px-3 py-2">
                     <div className="text-sm">
-                      <div className="font-medium text-zinc-200">{s.filename} <span className="text-zinc-400">• p.{s.page}</span></div>
+                      <div className="font-medium text-zinc-200">{s.filename}</div>
                       <div className="text-xs text-zinc-400 line-clamp-2">{s.snippet}</div>
                     </div>
                   </div>
@@ -177,5 +225,6 @@ export default function Terminal2Page() {
         </Card>
       </div>
     </main>
+    </>
   );
 }

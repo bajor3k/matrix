@@ -22,7 +22,7 @@ const documentAnalysisPrompt = ai.definePrompt({
   name: 'documentAnalysisPrompt',
   input: {schema: AnalyzeDocumentsInputSchema},
   output: {schema: AnalyzeDocumentsOutputSchema},
-  prompt: `Your task is to answer the user's question based *only* on the content of the documents provided.
+  prompt: `You are an expert financial services operations assistant. Your task is to answer the user's question based *only* on the content of the documents provided.
 Provide a clear, concise, and well-structured answer. If the documents do not contain the information needed to answer the question, state that clearly. Do not use any external knowledge.
 
 After providing the answer, you MUST identify the single most relevant document you used to formulate your response and place its name in the 'sourceDocument' field.
@@ -53,6 +53,10 @@ const analyzeDocumentsFlow = ai.defineFlow(
       return { answer: "No documents were provided for analysis.", sourceDocument: "" };
     }
     
+    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'YOUR_API_KEY_HERE') {
+        return { answer: "The AI service is not configured. Please provide a valid GEMINI_API_KEY in the environment variables.", sourceDocument: "" };
+    }
+
     const {output} = await documentAnalysisPrompt(input);
     
     if (!output) {

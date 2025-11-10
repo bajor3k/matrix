@@ -5,7 +5,7 @@ import {z} from 'genkit';
 
 export const DocumentInputSchema = z.object({
   name: z.string().describe('The name of the document.'),
-  content: z.string().describe("The content of the document, likely a data URI."),
+  content: z.string().describe("The full text content of the document."),
 });
 export type DocumentInput = z.infer<typeof DocumentInputSchema>;
 
