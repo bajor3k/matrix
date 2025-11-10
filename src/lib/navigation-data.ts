@@ -31,6 +31,7 @@ import {
   Settings,
   Video,
   Terminal,
+  TerminalSquare,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -86,5 +87,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', 
       ]
     },
     { name: 'Terminal', icon: Terminal, href: '/terminal' },
+    { name: 'Terminal 2.0', icon: TerminalSquare, href: '/terminal-2-0' },
   ]
 };
