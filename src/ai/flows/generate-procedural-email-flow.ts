@@ -91,9 +91,11 @@ Instructions:
 async function getDocumentsAsText(): Promise<{ fileName: string; content: string }[]> {
   const downloadAndParsePromises = PDF_PATHS.map(async (gcsPath) => {
     try {
-      const bucketName = gcsPath.split('/')[2];
+      const [bucketName, ...objectPathParts] = gcsPath.replace('gs://', '').split('/');
+      const objectPath = objectPathParts.join('/');
       const fileName = gcsPath.substring(gcsPath.lastIndexOf('/') + 1);
-      const file = storage.bucket(bucketName).file(gcsPath.substring(gcsPath.indexOf('/', 5) + 1));
+
+      const file = storage.bucket(bucketName).file(objectPath);
       
       const [fileBuffer] = await file.download();
       const data = await pdf(fileBuffer);
