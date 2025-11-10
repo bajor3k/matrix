@@ -1,32 +1,35 @@
-
 // src/app/terminal/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Wand2, FileText, UploadCloud, X, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import ConfidenceBadge from "@/components/ConfidenceBadge";
+import ResponseFeedback from "@/components/ResponseFeedback";
 
+type Mode = "simple" | "bullets" | "detailed";
 
 export default function TerminalPage() {
   const [question, setQuestion] = useState("");
-  const [response, setResponse] = useState("");
+  const [mode, setMode] = useState<Mode>("simple");
+  const [emailDraft, setEmailDraft] = useState("");
+  const [sources, setSources] = useState<any[]>([]);
+  const [confidence, setConfidence] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
   const [isSsnModalOpen, setIsSsnModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ title: "", description: "" });
 
-  const [emailDraft, setEmailDraft] = useState<string>("");
-  const [sources, setSources] = useState<{filename: string; page: string; snippet: string;}[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [responseMode, setResponseMode] = useState<"simple" | "bullets" | "standard">("standard");
-
   const { toast } = useToast();
 
-  async function generate(mode: "simple" | "bullets" | "standard") {
-    if (!question.trim()) {
+  async function generate(payload?: any) {
+     if (!question.trim()) {
       toast({ title: "Question is required", variant: "destructive" });
       return;
     };
@@ -49,28 +52,39 @@ export default function TerminalPage() {
       return;
     }
 
-    setLoading(true);
-    setResponseMode(mode);
-    setEmailDraft("");
-    setSources([]);
-
     try {
+      setLoading(true);
+      setError(null);
+      setEmailDraft("");
+      setSources([]);
+      setConfidence(null);
+
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, mode }),
+        body: JSON.stringify({
+          question,
+          mode,
+          docs: payload?.docs,
+          preferSeed: payload?.preferSeed
+        }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || res.statusText);
+
+      const text = await res.text();
+      let data: any = {};
+      try { data = text ? JSON.parse(text) : {}; } catch {}
+
+      if (!res.ok) throw new Error(data?.error || text || `HTTP ${res.status}`);
+
       setEmailDraft(data.draft || "");
       setSources(Array.isArray(data.sources) ? data.sources : []);
+      setConfidence(typeof data.confidence === "number" ? data.confidence : null);
     } catch (e: any) {
-      console.error("API Call failed", e);
-      setEmailDraft(`Generation error: ${e.message}`);
-      setSources([]);
+      setError(e?.message || "Request failed");
+      setConfidence(null);
       toast({
         title: "Service Unavailable",
-        description: e.message || "Please ensure the local Python API server is running.",
+        description: e.message || "Please ensure the API service is running.",
         variant: "destructive",
       });
     } finally {
@@ -78,16 +92,29 @@ export default function TerminalPage() {
     }
   }
 
-
   const createMailtoLink = () => {
     const to = "jbajorek@sanctuarywealth.com";
     const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
     
-    // Now uses the generated emailDraft from state
     const body = encodeURIComponent(emailDraft.trim());
 
     return `mailto:${to}?subject=${subject}&body=${body}`;
   };
+
+  const ModeButton = ({ label, value }: {label: string; value: Mode}) => (
+    <button
+      onClick={() => setMode(value)}
+      className={[
+        "px-3 py-1.5 rounded-md text-xs border transition-colors",
+        mode === value
+          ? "border-white/20 bg-white/5 text-gray-100"
+          : "border-white/10 text-gray-300 hover:border-white/20"
+      ].join(" ")}
+      disabled={loading}
+    >
+      {label}
+    </button>
+  );
 
   return (
     <main className="min-h-screen flex-1 p-6 space-y-6 md:p-8">
@@ -98,50 +125,37 @@ export default function TerminalPage() {
             <CardTitle className="text-base font-bold">Question</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="relative">
-              <Textarea
-                id="question"
-                placeholder="Ask a question based on the uploaded documents..."
-                className="h-full min-h-[320px] resize-none bg-input/50"
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-              />
-            </div>
-            <div className="flex justify-end mt-4">
-               <div className="flex items-center gap-2">
-                <Button
-                  onClick={() => generate("simple")}
-                  disabled={loading}
-                  className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                >
-                  {loading && responseMode === 'simple' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
-                  Simple
-                </Button>
-                <Button
-                  onClick={() => generate("bullets")}
-                  disabled={loading}
-                   className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                >
-                  {loading && responseMode === 'bullets' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
-                  Bullet Points
-                </Button>
-                <Button
-                  onClick={() => generate("standard")}
-                  disabled={loading}
-                   className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                >
-                  {loading && responseMode === 'standard' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
-                  Standard
-                </Button>
-              </div>
+            <Textarea
+              id="question"
+              placeholder="Ask a question based on the uploaded documents..."
+              className="h-full min-h-[120px] resize-none bg-input/50"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+            />
+            <div className="mt-3 flex gap-2">
+              <ModeButton label="Simple" value="simple" />
+              <ModeButton label="Bullet Points" value="bullets" />
+              <ModeButton label="Detailed" value="detailed" />
+              <button
+                onClick={() => generate()}
+                className="ml-auto px-3 py-1.5 rounded-md text-xs bg-white/10 border border-white/20 text-gray-100 hover:bg-white/15 disabled:opacity-50"
+                disabled={loading || !question.trim()}
+              >
+                {loading ? "Generating…" : "Generate"}
+              </button>
             </div>
           </CardContent>
         </Card>
 
         {/* Response Card */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-start justify-between">
             <CardTitle className="text-base font-bold">Response</CardTitle>
+            {loading ? (
+              <div className="w-36 h-8 rounded animate-pulse bg-muted/50" />
+            ) : (
+                <ConfidenceBadge value={confidence ?? undefined} />
+            )}
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-end">
@@ -219,7 +233,7 @@ export default function TerminalPage() {
             <AlertDialogCancel onClick={() => setIsSsnModalOpen(false)}>Go Back & Edit</AlertDialogCancel>
             <AlertDialogAction onClick={() => {
               setIsSsnModalOpen(false);
-              generate(responseMode);
+              generate();
             }}>
               Submit Anyway
             </AlertDialogAction>
