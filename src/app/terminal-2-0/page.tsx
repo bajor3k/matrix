@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, FileText, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { analyzeDocuments } from "@/ai/flows/analyze-documents-flow";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 type Source = {
     filename: string;
@@ -24,6 +25,9 @@ export default function Terminal2Page() {
   const [loadingMessage, setLoadingMessage] = useState("");
   const [responseMode, setResponseMode] = useState<"simple" | "bullets" | "standard">("standard");
 
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({ title: "", description: "" });
+
   const { toast } = useToast();
 
   async function generate(mode: "simple" | "bullets" | "standard") {
@@ -31,6 +35,18 @@ export default function Terminal2Page() {
       toast({ title: "Please enter a question.", variant: "destructive" });
       return;
     }
+
+    // Validation for account numbers
+    const accountPattern = /(PZG|PT8)\d{6}/i;
+    if (accountPattern.test(question)) {
+      setErrorMessage({
+        title: "Protected Information Detected",
+        description: "Account numbers cannot be submitted for an AI response. Please remove any sensitive information before proceeding.",
+      });
+      setIsErrorModalOpen(true);
+      return;
+    }
+
     setLoading(true);
     setResponseMode(mode);
     setEmailDraft("");
@@ -195,6 +211,20 @@ export default function Terminal2Page() {
           </CardContent>
         </Card>
       </div>
+
+       <AlertDialog open={isErrorModalOpen} onOpenChange={setIsErrorModalOpen}>
+        <AlertDialogContent className="bg-destructive text-destructive-foreground border-destructive">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{errorMessage.title}</AlertDialogTitle>
+            <AlertDialogDescription className="text-destructive-foreground/90">
+              {errorMessage.description}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setIsErrorModalOpen(false)}>OK</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </main>
     </>
   );
