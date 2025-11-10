@@ -23,14 +23,14 @@ export default function Terminal2Page() {
   const [sources, setSources] = useState<Source[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
-  const [responseMode, setResponseMode] = useState<"simple" | "bullets" | "standard">("standard");
+  const [responseMode, setResponseMode] = useState<"simple" | "bullets" | "detailed">("detailed");
 
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ title: "", description: "" });
 
   const { toast } = useToast();
 
-  async function generate(mode: "simple" | "bullets" | "standard") {
+  async function generate(mode: "simple" | "bullets" | "detailed") {
     if (!question.trim()) {
       toast({ title: "Please enter a question.", variant: "destructive" });
       return;
@@ -55,7 +55,7 @@ export default function Terminal2Page() {
 
     try {
         // The AI flow now handles fetching and parsing internally.
-        const result = await analyzeDocuments({ question });
+        const result = await analyzeDocuments({ question, mode });
 
         if (result.answer) {
             setEmailDraft(result.answer);
@@ -140,11 +140,11 @@ export default function Terminal2Page() {
                   Bullet Points
                 </Button>
                 <Button
-                  onClick={() => generate("standard")}
+                  onClick={() => generate("detailed")}
                   disabled={loading}
                    className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
-                  {loading && responseMode === 'standard' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+                  {loading && responseMode === 'detailed' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                   Detailed
                 </Button>
               </div>

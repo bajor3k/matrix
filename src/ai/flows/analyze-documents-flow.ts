@@ -32,6 +32,7 @@ const DocumentSchema = z.object({
 
 const AnalyzeDocumentsInputSchema = z.object({
   question: z.string().describe("The user's question about the documents."),
+  mode: z.enum(["simple", "bullets", "detailed"]).describe("The desired format for the answer."),
 });
 export type AnalyzeDocumentsInput = z.infer<typeof AnalyzeDocumentsInputSchema>;
 
@@ -77,12 +78,19 @@ const documentAnalysisPrompt = ai.definePrompt({
   input: {schema: z.object({
       question: z.string(),
       documents: z.array(DocumentSchema),
+      mode: z.enum(["simple", "bullets", "detailed"]),
   })},
   output: {schema: AnalyzeDocumentsOutputSchema},
   prompt: `You are an expert financial services operations assistant. Your task is to answer the user's question based *only* on the content of the documents provided.
-Provide a clear, concise, and well-structured answer. If the documents do not contain the information needed to answer the question, state that clearly. Do not use any external knowledge.
+If the documents do not contain the information needed to answer the question, state that clearly. Do not use any external knowledge.
 
-After providing the answer, you MUST identify the single most relevant document you used to formulate your response and place its name in the 'sourceDocument' field.
+The user has requested the answer in a specific format: '{{mode}}'.
+
+- If mode is 'simple', provide a concise, 1-3 sentence summary.
+- If mode is 'bullets', lay out the key steps and details using bullet points.
+- If mode is 'detailed', provide a comprehensive, paragraph-based response.
+
+After providing the answer in the requested format, you MUST identify the single most relevant document you used to formulate your response and place its name in the 'sourceDocument' field.
 
 User Question:
 "{{question}}"
@@ -116,7 +124,7 @@ const analyzeDocumentsFlow = ai.defineFlow(
       return { answer: "No documents were provided or could be read for analysis.", sourceDocument: "" };
     }
 
-    const {output} = await documentAnalysisPrompt({question: input.question, documents});
+    const {output} = await documentAnalysisPrompt({question: input.question, documents, mode: input.mode});
     
     if (!output) {
       return { answer: "Could not generate an answer at this time. The model may have returned an empty response.", sourceDocument: "" };
