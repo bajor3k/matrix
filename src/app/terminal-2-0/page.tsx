@@ -1,3 +1,4 @@
+
 // src/app/terminal-2-0/page.tsx
 "use client";
 
@@ -11,6 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { analyzeDocuments } from "@/ai/flows/analyze-documents-flow";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import ConfidenceBadge from "@/components/ConfidenceBadge";
+import ResponseFeedback from "@/components/ResponseFeedback";
+import { type SourceLite } from "@/lib/training";
 
 type Source = {
     filename: string;
@@ -33,15 +36,16 @@ export default function Terminal2Page() {
 
   const { toast } = useToast();
 
-  async function generate(mode: "simple" | "bullets" | "detailed") {
-    if (!question.trim()) {
+  async function generate(payload: { question: string, preferSeed?: string }) {
+    const questionToAsk = payload.preferSeed || payload.question;
+    if (!questionToAsk.trim()) {
       toast({ title: "Please enter a question.", variant: "destructive" });
       return;
     }
 
     // Validation for account numbers
     const accountPattern = /(PZG|PT8)\d{6}/i;
-    if (accountPattern.test(question)) {
+    if (accountPattern.test(questionToAsk)) {
       setErrorMessage({
         title: "Protected Information Detected",
         description: "Account numbers cannot be submitted for an AI response. Please remove any sensitive information before proceeding.",
@@ -51,14 +55,17 @@ export default function Terminal2Page() {
     }
 
     setLoading(true);
-    setResponseMode(mode);
+    // If regenerating, we keep the original response mode
+    // If it's a new generation, we use the mode passed from the button click
+    const mode = payload.preferSeed ? responseMode : responseMode;
+
     setEmailDraft("");
     setSources([]);
     setConfidence(null);
     setLoadingMessage("Analyzing documents and generating response...");
 
     try {
-        const result = await analyzeDocuments({ question, mode });
+        const result = await analyzeDocuments({ question: questionToAsk, mode });
 
         if (result.answer) {
             setEmailDraft(result.answer);
@@ -97,6 +104,11 @@ export default function Terminal2Page() {
     }
   }
 
+  const handleGenerateClick = (mode: "simple" | "bullets" | "detailed") => {
+    setResponseMode(mode);
+    generate({ question });
+  }
+
   const createMailtoLink = () => {
     const to = "jbajorek@sanctuarywealth.com";
     const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
@@ -112,6 +124,12 @@ export default function Terminal2Page() {
 
     return `mailto:${to}?subject=${subject}&body=${body}`;
   };
+
+  const liteSources: SourceLite[] = sources.map((s, i) => ({
+    id: s.url || String(i),
+    title: s.filename,
+    page: s.pageNumber,
+  }));
 
   return (
     <>
@@ -138,7 +156,7 @@ export default function Terminal2Page() {
             <div className="flex justify-end mt-4">
                <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => generate("simple")}
+                  onClick={() => handleGenerateClick("simple")}
                   disabled={loading}
                   className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
@@ -146,7 +164,7 @@ export default function Terminal2Page() {
                   Simple
                 </Button>
                 <Button
-                  onClick={() => generate("bullets")}
+                  onClick={() => handleGenerateClick("bullets")}
                   disabled={loading}
                    className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
@@ -154,7 +172,7 @@ export default function Terminal2Page() {
                   Bullet Points
                 </Button>
                 <Button
-                  onClick={() => generate("detailed")}
+                  onClick={() => handleGenerateClick("detailed")}
                   disabled={loading}
                    className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
@@ -195,6 +213,19 @@ export default function Terminal2Page() {
                   Create Email
               </a>
             </div>
+             {!loading && emailDraft && (
+                <ResponseFeedback
+                  question={question}
+                  answer={emailDraft}
+                  confidence={confidence ?? undefined}
+                  sources={liteSources}
+                  uiVariant={responseMode}
+                  model="gemini-1.5-pro"
+                  appVersion="1.0.0"
+                  promptId="doc-analysis-v1"
+                  onRegenerate={(seed) => generate({ question, preferSeed: seed })}
+                />
+            )}
           </CardContent>
         </Card>
 
