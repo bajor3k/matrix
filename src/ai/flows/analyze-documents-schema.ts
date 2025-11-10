@@ -3,6 +3,9 @@
  */
 import {z} from 'genkit';
 
+// This file is currently not used by the active flow but is kept for potential future use
+// if the document input is separated again.
+
 export const DocumentInputSchema = z.object({
   name: z.string().describe('The name of the document.'),
   content: z.string().describe("The full text content of the document."),
