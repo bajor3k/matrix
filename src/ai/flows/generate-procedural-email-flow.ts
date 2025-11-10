@@ -15,7 +15,17 @@ const PDF_PATHS = [
     "gs://matrix-y2jfw.firebasestorage.app/Asset Movement Procedure Guide (3).pdf",
 ];
 
-const storage = new Storage();
+// Initialize storage client with API key for authentication
+const storage = new Storage({
+  keyFilename: undefined, // Ensure it doesn't look for a local key file
+  credentials: {
+    // Using the same API key as the genkit AI flows for consistency
+    client_email: 'dummy-email@example.com', // Not used with API key but can't be empty
+    private_key: process.env.GEMINI_API_KEY!,
+  },
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+});
+
 
 // Define input and output schemas for the flow
 const GenerateProceduralEmailInputSchema = z.object({
@@ -77,7 +87,7 @@ Content:
 
 Instructions:
 1.  Analyze the user's question and the provided document snippets.
-2.  Draft an email body that directly answers the question using only the information from the snippets.
+2.  Draft an email body that directly answers the question using only the information from the snippets. If the information is not present, state that clearly.
 3.  Format the email body according to the specified mode:
     -   **simple**: A very brief, one-sentence summary and a call to action. Example: "We can proceed with the requested action once you confirm."
     -   **bullets**: A concise list of steps or key points. Start with a brief intro. Example: "Below are the steps for your request:\n- Step 1...\n- Step 2..."
@@ -103,7 +113,6 @@ async function getDocumentsAsText(): Promise<{ fileName: string; content: string
       return { fileName, content: data.text };
     } catch (error: any) {
       console.error(`Failed to process GCS file ${gcsPath}:`, error);
-      // Return a more specific error message to help diagnose the issue.
       const errorMessage = error.message || 'An unknown error occurred';
       return { fileName, content: `Error accessing document: ${fileName}. Reason: ${errorMessage}` };
     }
@@ -121,13 +130,16 @@ const generateProceduralEmailFlow = ai.defineFlow(
     outputSchema: GenerateProceduralEmailOutputSchema,
   },
   async (input) => {
+    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'YOUR_API_KEY_HERE') {
+        return { draft: "The AI service is not configured. Please provide a valid GEMINI_API_KEY in the environment variables.", sources: [] };
+    }
+    
     // Fetch and parse the PDF content from GCS.
     const documentSnippets = await getDocumentsAsText();
     
     // Check if any document failed to load and return a specific error.
     const failedDoc = documentSnippets.find(doc => doc.content.startsWith('Error'));
     if (failedDoc) {
-      // The content of the failed doc now contains the specific error message.
       return { draft: `Sorry, I was unable to access the procedure documents. ${failedDoc.content}`, sources: [] };
     }
 
@@ -138,7 +150,7 @@ const generateProceduralEmailFlow = ai.defineFlow(
     });
 
     if (!output) {
-      return { draft: "The AI model could not generate a response. Please try again.", sources: [] };
+      return { draft: "The AI model could not generate a response. This may be due to content safety filters or a temporary issue. Please try again.", sources: [] };
     }
     
     return output;

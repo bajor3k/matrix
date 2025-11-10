@@ -38,6 +38,12 @@ export default function Terminal2Page() {
         const result = await generateProceduralEmail({ question, mode });
         if (result.draft) {
             setEmailDraft(result.draft);
+        } else {
+             toast({
+                title: "No Answer Generated",
+                description: "The AI model could not find a relevant answer in the documents.",
+                variant: "default",
+            });
         }
         if (result.sources) {
             setSources(result.sources);

@@ -36,7 +36,7 @@ Documents:
 Document Name: {{name}}
 
 Content:
-{{media url=content}}
+{{{content}}}
 ---
 {{/each}}
 `,
