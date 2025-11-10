@@ -15,7 +15,6 @@ type Source = {
     filename: string;
     url: string;
     pageNumber?: number;
-    snippet: string;
 };
 
 export default function Terminal2Page() {
@@ -73,7 +72,6 @@ export default function Terminal2Page() {
                 filename: result.sourceDocument.name,
                 pageNumber: result.sourceDocument.pageNumber,
                 url: result.sourceDocument.url,
-                snippet: `Content from ${result.sourceDocument.name} was used to generate the answer.`
              }]);
         }
 
@@ -126,7 +124,7 @@ export default function Terminal2Page() {
               <Textarea
                 id="question"
                 placeholder="Ask a question based on the procedure documents..."
-                className="h-full min-h-[320px] resize-none bg-input/50"
+                className="h-full min-h-[240px] resize-none bg-input/50"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
               />
@@ -171,7 +169,7 @@ export default function Terminal2Page() {
             <div className="flex flex-col items-end">
               <Textarea
                 placeholder={loading ? loadingMessage : "The generated response will appear here..."}
-                className="h-full min-h-[320px] resize-none bg-input/50"
+                className="h-full min-h-[240px] resize-none bg-input/50"
                 value={loading ? loadingMessage : emailDraft}
                 onChange={(e) => setEmailDraft(e.target.value)}
                 readOnly={loading}
