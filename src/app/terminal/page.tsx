@@ -1,3 +1,4 @@
+
 // src/app/terminal/page.tsx
 "use client";
 
