@@ -11,7 +11,7 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 258 84% 58%;
+    --primary: 240 6% 10%; /* Changed from purple to dark gray */
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 95%; /* Light mode secondary */
     --secondary-foreground: 240 10% 3.9%;
@@ -23,7 +23,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89%; /* Light mode border */
     --input: 0 0% 89%; /* Light mode input */
-    --ring: 258 84% 58%; /* Ring to match primary accent */
+    --ring: 240 6% 10%; /* Changed from purple to dark gray */
     --radius: 1rem;
     
     --sidebar-background: 0 0% 96%; /* Light mode sidebar */
@@ -541,8 +541,8 @@ aside.sidebar { scrollbar-width: none !important; }
   --cal-text: #0b0b0f;         /* primary text */
   --cal-muted: #6b7280;        /* headers/hints */
   --cal-grid: #e6e6ea;         /* day grid lines */
-  --cal-accent: #5B21B6;       /* brand purple */
-  --cal-accent-contrast: #ffffff;
+  --cal-accent: hsl(var(--primary));       /* brand color */
+  --cal-accent-contrast: hsl(var(--primary-foreground));
   --cal-today: rgba(91,33,182,0.06); /* very soft purple wash */
 }
 
