@@ -156,9 +156,17 @@ export default function Terminal2Page() {
             <div className="flex justify-end mt-4">
                <div className="flex items-center gap-2">
                 <Button
+                  onClick={() => handleGenerateClick("bullets")}
+                  disabled={loading}
+                  variant="outline"
+                  className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+                >
+                  Bullet Points
+                </Button>
+                <Button
                   onClick={() => handleGenerateClick("detailed")}
                   disabled={loading}
-                  className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+                  className="bg-primary hover:bg-primary/80"
                 >
                   {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                   Submit
