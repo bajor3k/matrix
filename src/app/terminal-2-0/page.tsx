@@ -5,7 +5,7 @@
 import { useState } from "react";
 import Script from 'next/script';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -183,7 +183,7 @@ export default function Terminal2Page() {
         </Card>
 
         {/* Response Card */}
-        <Card>
+        <Card className="flex flex-col">
           <CardHeader className="flex flex-row items-start justify-between">
             <CardTitle className="text-base font-bold">Response</CardTitle>
             {loading ? (
@@ -192,16 +192,18 @@ export default function Terminal2Page() {
                 <ConfidenceBadge value={confidence} />
             )}
           </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-end">
-              <Textarea
-                placeholder={loading ? loadingMessage : "The generated response will appear here..."}
-                className="h-full min-h-[240px] resize-none bg-input/50"
-                value={loading ? loadingMessage : emailDraft}
-                onChange={(e) => setEmailDraft(e.target.value)}
-                readOnly={loading}
-              />
-               <a
+          <CardContent className="flex-grow">
+            <Textarea
+              placeholder={loading ? loadingMessage : "The generated response will appear here..."}
+              className="h-full min-h-[360px] resize-none bg-input/50"
+              value={loading ? loadingMessage : emailDraft}
+              onChange={(e) => setEmailDraft(e.target.value)}
+              readOnly={loading}
+            />
+          </CardContent>
+          <CardFooter className="flex-col items-start gap-4">
+            <div className="flex justify-end w-full">
+              <a
                   href={emailDraft && !loading ? createMailtoLink() : undefined}
                   aria-disabled={!emailDraft || loading}
                   onClick={(e) => (!emailDraft || loading) && e.preventDefault()}
@@ -210,20 +212,20 @@ export default function Terminal2Page() {
                   Create Email
               </a>
             </div>
-             {!loading && emailDraft && (
-                <ResponseFeedback
-                  question={question}
-                  answer={emailDraft}
-                  confidence={confidence ?? undefined}
-                  sources={liteSources}
-                  uiVariant={responseMode}
-                  model="gemini-1.5-pro"
-                  appVersion="1.0.0"
-                  promptId="doc-analysis-v1"
-                  onRegenerate={(seed) => generate({ question, preferSeed: seed })}
-                />
+            {!loading && emailDraft && (
+              <ResponseFeedback
+                question={question}
+                answer={emailDraft}
+                confidence={confidence ?? undefined}
+                sources={liteSources}
+                uiVariant={responseMode}
+                model="gemini-1.5-pro"
+                appVersion="1.0.0"
+                promptId="doc-analysis-v1"
+                onRegenerate={(seed) => generate({ question, preferSeed: seed })}
+              />
             )}
-          </CardContent>
+          </CardFooter>
         </Card>
 
         {/* Documents Used Card */}
