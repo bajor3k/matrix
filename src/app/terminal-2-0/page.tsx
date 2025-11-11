@@ -16,6 +16,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import ConfidenceBadge from "@/components/ConfidenceBadge";
 import ResponseFeedback from "@/components/ResponseFeedback";
 import { type SourceLite } from "@/lib/training";
+import { hasNineDigitSequence } from "@/lib/sensitive";
 
 export const runtime = "nodejs";
 
@@ -99,8 +100,7 @@ export default function Terminal2Page() {
       return;
     }
     
-    const ssnEinPattern = /\b\d{3}-?\d{2}-?\d{4}\b|\b\d{9}\b/;
-    if (ssnEinPattern.test(questionToAsk) && !payload?.preferSeed) {
+    if (hasNineDigitSequence(questionToAsk) && !payload?.preferSeed) {
       setIsSsnModalOpen(true);
       return;
     }
