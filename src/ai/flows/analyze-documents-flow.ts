@@ -37,7 +37,7 @@ const DocumentSchema = z.object({
 
 const AnalyzeDocumentsInputSchema = z.object({
   question: z.string().describe("The user's question about the documents."),
-  mode: z.enum(["simple", "bullets", "detailed"]).describe("The desired format for the answer."),
+  mode: z.enum(["bullets"]).describe("The desired format for the answer."),
 });
 export type AnalyzeDocumentsInput = z.infer<typeof AnalyzeDocumentsInputSchema>;
 
@@ -111,7 +111,7 @@ const documentAnalysisPrompt = ai.definePrompt({
   input: {schema: z.object({
       question: z.string(),
       documents: z.array(DocumentSchema),
-      mode: z.enum(["simple", "bullets", "detailed"]),
+      mode: z.enum(["bullets"]),
   })},
   output: {schema: z.object({
     answer: z.string().describe('A comprehensive answer to the user\'s question, synthesized from the provided documents.'),
@@ -123,11 +123,7 @@ const documentAnalysisPrompt = ai.definePrompt({
   prompt: `You are an expert financial services operations assistant. Your task is to answer the user's question based *only* on the content of the documents provided.
 If the documents do not contain the information needed to answer the question, state that clearly. Do not use any external knowledge.
 
-The user has requested the answer in a specific format: '{{mode}}'.
-
-- If mode is 'simple', you MUST provide a concise summary that is NO MORE than 3 sentences long. Be direct and to the point.
-- If mode is 'bullets', lay out the key steps and details using bullet points.
-- If mode is 'detailed', provide a comprehensive, paragraph-based response.
+You MUST provide a short, factual answer using bullet points to lay out the key steps and details.
 
 After providing the answer, you MUST identify the single most relevant document and the specific page number within that document where you found the information.
 Then, you MUST extract the exact verbatim quote from that page which was used to form your answer.

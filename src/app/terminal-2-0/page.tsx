@@ -180,8 +180,7 @@ export default function Terminal2Page() {
               readOnly={loading}
             />
           </CardContent>
-          <CardFooter className="flex-col items-start gap-4">
-            <div className="flex justify-between items-center w-full">
+          <CardFooter className="flex justify-between items-center w-full">
               {!loading && emailDraft && (
                 <ResponseFeedback
                   question={question}
@@ -208,7 +207,6 @@ export default function Terminal2Page() {
                   <Mail className="mr-2 h-4 w-4" />
                   Create Email
               </a>
-            </div>
           </CardFooter>
         </Card>
 
