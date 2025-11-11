@@ -31,8 +31,7 @@ export default function Terminal2Page() {
   const [confidence, setConfidence] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
-  const [responseMode, setResponseMode] = useState<AnalyzeDocumentsInput['mode']>("detailed");
-
+  
   const [isSsnModalOpen, setIsSsnModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ title: "", description: "" });
@@ -63,7 +62,7 @@ export default function Terminal2Page() {
     }
 
     setLoading(true);
-    const mode = responseMode;
+    const mode: AnalyzeDocumentsInput['mode'] = "bullets"; // Always use bullets mode
 
     setEmailDraft("");
     setSources([]);
@@ -110,8 +109,7 @@ export default function Terminal2Page() {
     }
   }
 
-  const handleGenerateClick = (mode: AnalyzeDocumentsInput['mode']) => {
-    setResponseMode(mode);
+  const handleGenerateClick = () => {
     generate({ question });
   }
 
@@ -119,8 +117,18 @@ export default function Terminal2Page() {
     if (!emailDraft || loading) return undefined;
     const to = "jbajorek@sanctuarywealth.com";
     const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
-    const body = encodeURIComponent(emailDraft.trim());
-    return `mailto:${to}?subject=${subject}&body=${body}`;
+    
+    // This function will be called to open the mail client.
+    const openMail = () => {
+      const body = encodeURIComponent(emailDraft.trim());
+      const mailtoUrl = `mailto:${to}?subject=${subject}&body=${body}`;
+      window.location.href = mailtoUrl;
+    };
+    
+    // We return a function for the `href` to call, to prevent premature execution.
+    // However, for simplicity and standard behavior, we'll return the string.
+    // The onClick handler will handle the logic.
+    return `mailto:${to}?subject=${subject}&body=${encodeURIComponent(emailDraft.trim())}`;
   };
 
   const liteSources: SourceLite[] = sources.map((s, i) => ({
@@ -151,16 +159,8 @@ export default function Terminal2Page() {
             </div>
             <div className="flex justify-end mt-4">
                <div className="flex items-center gap-2">
-                 <Button
-                  onClick={() => handleGenerateClick("bullets")}
-                  disabled={loading}
-                  variant="outline"
-                  className="bg-secondary text-secondary-foreground ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                >
-                  Bullet Points
-                </Button>
                 <Button
-                  onClick={() => handleGenerateClick("detailed")}
+                  onClick={handleGenerateClick}
                   disabled={loading}
                   className="bg-primary hover:bg-primary/80"
                 >
@@ -195,7 +195,11 @@ export default function Terminal2Page() {
               <a
                   href={createMailtoLink()}
                   aria-disabled={!emailDraft || loading}
-                  onClick={(e) => (!emailDraft || loading) && e.preventDefault()}
+                  onClick={(e) => {
+                      if (!emailDraft || loading) {
+                          e.preventDefault();
+                      }
+                  }}
                   className="inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                >
                   <Mail className="mr-2 h-4 w-4" />
@@ -208,7 +212,7 @@ export default function Terminal2Page() {
                 answer={emailDraft}
                 confidence={confidence ?? undefined}
                 sources={liteSources}
-                uiVariant={responseMode}
+                uiVariant={"bullets"}
                 model="gemini-1.5-pro"
                 appVersion="1.0.0"
                 promptId="doc-analysis-v1"
