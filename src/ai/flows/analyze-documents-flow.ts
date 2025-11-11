@@ -187,12 +187,37 @@ async function getDocumentsAsPages(question: string): Promise<z.infer<typeof Doc
   }
 }
 
+function buildEmailInstruction(mode: "simple" | "bullets" | "detailed"): string {
+  switch (mode) {
+    case "simple":
+      return `Write a short email:
+- Subject line
+- 2–4 concise sentences in the body. No lists.`;
+    case "bullets":
+      return `Write an email with bullet-point instructions:
+- Subject line
+- 1-sentence intro
+- Bulleted steps with exact menu paths/forms`;
+    case "detailed":
+      return `Write a detailed email:
+- Subject line
+- Numbered steps with exact paths/fields/forms
+- Notes for caveats/approvals if present`;
+    default:
+      return `Write an email with bullet-point instructions:
+- Subject line
+- 1-sentence intro
+- Bulleted steps with exact menu paths/forms`;
+  }
+}
+
+
 const documentAnalysisPrompt = ai.definePrompt({
   name: 'documentAnalysisPrompt',
   input: {schema: z.object({
       question: z.string(),
       documents: z.array(DocumentSchema),  // already reduced top-K
-      mode: z.enum(["simple","bullets","detailed"]),
+      outputFormat: z.string(),
   })},
   output: {schema: z.object({
     answer: z.string(),
@@ -204,25 +229,7 @@ const documentAnalysisPrompt = ai.definePrompt({
   prompt: `You are an expert financial-services operations assistant. Use only the documents below.
 
 OUTPUT FORMAT:
-{{#if (eq mode "simple")}}
-Write a short email:
-- Subject line
-- 2–4 concise sentences in the body. No lists.
-{{/if}}
-
-{{#if (eq mode "bullets")}}
-Write an email with bullet-point instructions:
-- Subject line
-- 1-sentence intro
-- Bulleted steps with exact menu paths/forms
-{{/if}}
-
-{{#if (eq mode "detailed")}}
-Write a detailed email:
-- Subject line
-- Numbered steps with exact paths/fields/forms
-- Notes for caveats/approvals if present
-{{/if}}
+{{{outputFormat}}}
 
 After the email, determine:
 - sourceDocumentName (the single best doc)
@@ -268,13 +275,13 @@ const analyzeDocumentsFlow = ai.defineFlow(
       };
     }
 
-    // (Optional) inject mode-specific instruction if your prompt template can't branch
-    const mode = input.mode;
+    // Build the instruction text based on the mode
+    const outputFormat = buildEmailInstruction(input.mode);
 
     const { output } = await documentAnalysisPrompt({
       question: input.question,
       documents,
-      mode,
+      outputFormat,
     });
 
     // Guard against empty/invalid model output
