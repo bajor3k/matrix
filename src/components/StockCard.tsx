@@ -9,8 +9,8 @@ export default function StockCard({ symbol, price, changePct }: Props) {
   const isUp = changePct >= 0;
 
   const trendClass = [
-    isUp ? "text-emerald-600" : "text-rose-600",            // light mode
-    isUp ? "dark:text-emerald-400" : "dark:text-rose-400",  // dark mode
+    isUp ? "text-emerald-600" : "text-destructive",            // light mode
+    isUp ? "dark:text-emerald-400" : "dark:text-destructive",  // dark mode
   ].join(" ");
 
   const pctText = `${isUp ? "+" : ""}${changePct.toFixed(2)}%`;

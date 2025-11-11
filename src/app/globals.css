@@ -11,7 +11,7 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 240 6% 10%; /* Changed from purple to dark gray */
+    --primary: 0 0% 9%; /* Changed from purple to dark gray */
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 95%; /* Light mode secondary */
     --secondary-foreground: 240 10% 3.9%;
@@ -19,7 +19,7 @@
     --muted-foreground: 0 0% 45%;
     --accent: 0 0% 95%; /* Light mode accent */
     --accent-foreground: 240 10% 3.9%;
-    --destructive: 0 89% 48%;
+    --destructive: 359 79% 45%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89%; /* Light mode border */
     --input: 0 0% 89%; /* Light mode input */
@@ -78,7 +78,7 @@
     --muted-foreground: 0 0% 70%;
     --accent: 0 0% 12%; /* #1f1f1f */
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 72.2% 50.6%;
+    --destructive: 359 79% 45%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 100% / 0.10;
     --input: 0 0% 14%;
@@ -629,3 +629,4 @@ aside.sidebar { scrollbar-width: none !important; }
     
 
     
+

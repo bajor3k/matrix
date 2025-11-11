@@ -56,7 +56,7 @@ export default function DashboardPage() {
 
   // Your original stock data
   const stocks = [
-    { symbol: "SPX",  price: 5982, changePct:  1.18 },
+    { symbol: "SPY",  price: 687.54, changePct:  -1.18 },
     { symbol: "DJI",  price: 134.55, changePct:  0.74 },
     { symbol: "QQQ",  price: 218.03, changePct: -0.92 },
     { symbol: "IYM", price: 171.44, changePct:  0.36 },
@@ -103,7 +103,7 @@ export default function DashboardPage() {
 
         {/* Economic Calendar (FED) */}
         <Card
-          title="Economic Calendar — FED"
+          title="Economic Calendar"
           className="min-h-[360px]"
         >
           <div className="overflow-x-auto">
@@ -134,7 +134,7 @@ export default function DashboardPage() {
         {/* Earnings — full width */}
         <Card
           title="Earnings Calendar"
-          icon={<Building2 className="h-4 w-4 text-gray-400" />}
+        
           className="lg:col-span-2 min-h-[260px]"
         >
           <div className="overflow-x-auto">
