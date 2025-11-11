@@ -73,19 +73,14 @@ async function getDocumentsAsPages(): Promise<z.infer<typeof DocumentSchema>[]> 
                     throw Object.assign(new Error(`Failed to fetch ${source.url}: ${response.statusText}`), { documentName: source.name });
                 }
                 const fileBuffer = await response.arrayBuffer();
-                const data = await pdf(Buffer.from(fileBuffer), {
-                    pagerender: (pageData) => {
-                        // Return text content for each page
-                        return pageData.getTextContent({ normalizeWhitespace: true })
-                            .then(textContent => textContent.items.map(item => item.str).join(' '));
-                    }
-                });
                 
-                const pages = data.text.split(/\f/g).map((pageText, index) => ({
+                // Use `pdf-parse` with an option to process each page.
+                const data = await pdf(Buffer.from(fileBuffer));
+                
+                const pages = data.text.split(/(?=\f)/g).map((pageText, index) => ({
                     pageNumber: index + 1,
-                    content: pageText.trim(),
+                    content: pageText.replace(/\f/g, '').trim(),
                 })).filter(p => p.content);
-
 
                 return {
                     name: source.name,
