@@ -105,7 +105,6 @@ export default function DashboardPage() {
         {/* Economic Calendar (FED) */}
         <Card
           title="Economic Calendar — FED"
-          icon={<CalendarDays className="h-4 w-4 text-gray-400" />}
           className="min-h-[360px]"
         >
           <div className="overflow-x-auto">
