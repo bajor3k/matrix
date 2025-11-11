@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, FileText, Send, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { analyzeDocuments } from "@/ai/flows/analyze-documents-flow";
+import { analyzeDocuments, type AnalyzeDocumentsInput } from "@/ai/flows/analyze-documents-flow";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import ConfidenceBadge from "@/components/ConfidenceBadge";
 import ResponseFeedback from "@/components/ResponseFeedback";
@@ -31,7 +31,7 @@ export default function Terminal2Page() {
   const [confidence, setConfidence] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
-  const [responseMode, setResponseMode] = useState<"detailed" | "bullets">("detailed");
+  const [responseMode, setResponseMode] = useState<AnalyzeDocumentsInput['mode']>("detailed");
 
   const [isSsnModalOpen, setIsSsnModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -56,7 +56,7 @@ export default function Terminal2Page() {
       return;
     }
     
-    const ssnEinPattern = /(\d{3}-?\d{2}-?\d{4})|(\d{9})/;
+    const ssnEinPattern = /\b\d{3}-?\d{2}-?\d{4}\b|\b\d{9}\b/;
     if (ssnEinPattern.test(questionToAsk) && !payload?.preferSeed) {
       setIsSsnModalOpen(true);
       return;
@@ -110,21 +110,17 @@ export default function Terminal2Page() {
     }
   }
 
-  const handleGenerateClick = (mode: "detailed" | "bullets") => {
+  const handleGenerateClick = (mode: AnalyzeDocumentsInput['mode']) => {
     setResponseMode(mode);
     generate({ question });
   }
 
-  const handleCreateEmail = () => {
-    if (!emailDraft || loading) return;
-
+  const createMailtoLink = () => {
+    if (!emailDraft || loading) return undefined;
     const to = "jbajorek@sanctuarywealth.com";
     const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
     const body = encodeURIComponent(emailDraft.trim());
-    const mailtoLink = `mailto:${to}?subject=${subject}&body=${body}`;
-
-    // Open in a new, small window. This often encourages browsers to open just a compose window.
-    window.open(mailtoLink, '_blank', 'noopener,noreferrer,width=800,height=600');
+    return `mailto:${to}?subject=${subject}&body=${body}`;
   };
 
   const liteSources: SourceLite[] = sources.map((s, i) => ({
@@ -196,15 +192,15 @@ export default function Terminal2Page() {
           </CardContent>
           <CardFooter className="flex-col items-start gap-4">
             <div className="flex justify-end w-full">
-              <Button
-                  onClick={handleCreateEmail}
+              <a
+                  href={createMailtoLink()}
                   aria-disabled={!emailDraft || loading}
-                  disabled={!emailDraft || loading}
-                  className="mt-4 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={(e) => (!emailDraft || loading) && e.preventDefault()}
+                  className="inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                >
                   <Mail className="mr-2 h-4 w-4" />
                   Create Email
-              </Button>
+              </a>
             </div>
             {!loading && emailDraft && (
               <ResponseFeedback
