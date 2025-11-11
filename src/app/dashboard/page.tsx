@@ -83,7 +83,6 @@ export default function DashboardPage() {
         {/* News */}
         <Card
           title="News"
-          icon={<Newspaper className="h-4 w-4 text-gray-400" />}
           className="min-h-[360px]"
         >
           <ul className="space-y-3">
