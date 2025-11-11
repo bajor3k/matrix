@@ -153,7 +153,7 @@ export default function Sidebar({
         
         <Section keyName="video-reports" title={videoReportItem.name} icon={videoReportItem.icon} open={openVideoReports} setOpen={setOpenVideoReports} items={videoReportItem.children ?? []} href={videoReportItem.href}/>
 
-        <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
+        {/* <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} /> */}
         
         {/* <div className="mb-2">
           <Link
