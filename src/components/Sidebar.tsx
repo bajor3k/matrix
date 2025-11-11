@@ -147,7 +147,7 @@ export default function Sidebar({
     <div className="flex h-full w-full flex-col p-3 pt-2">
       {/* sections */}
       <div className="h-[calc(100%-60px)] overflow-y-auto">
-        <Section keyName="reports" title="Reports"   icon={FileStack}  open={openReports}   setOpen={setOpenReports}   items={reportItems} />
+        
         <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} />
         <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} />
         
