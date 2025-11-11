@@ -115,13 +115,16 @@ export default function Terminal2Page() {
     generate({ question });
   }
 
-  const createMailtoLink = () => {
+  const handleCreateEmail = () => {
+    if (!emailDraft || loading) return;
+
     const to = "jbajorek@sanctuarywealth.com";
     const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
-    
     const body = encodeURIComponent(emailDraft.trim());
+    const mailtoLink = `mailto:${to}?subject=${subject}&body=${body}`;
 
-    return `mailto:${to}?subject=${subject}&body=${body}`;
+    // Open in a new, small window. This often encourages browsers to open just a compose window.
+    window.open(mailtoLink, '_blank', 'noopener,noreferrer,width=800,height=600');
   };
 
   const liteSources: SourceLite[] = sources.map((s, i) => ({
@@ -193,15 +196,15 @@ export default function Terminal2Page() {
           </CardContent>
           <CardFooter className="flex-col items-start gap-4">
             <div className="flex justify-end w-full">
-               <a
-                  href={emailDraft && !loading ? createMailtoLink() : undefined}
+              <Button
+                  onClick={handleCreateEmail}
                   aria-disabled={!emailDraft || loading}
-                  onClick={(e) => (!emailDraft || loading) && e.preventDefault()}
+                  disabled={!emailDraft || loading}
                   className="mt-4 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                >
                   <Mail className="mr-2 h-4 w-4" />
                   Create Email
-              </a>
+              </Button>
             </div>
             {!loading && emailDraft && (
               <ResponseFeedback
