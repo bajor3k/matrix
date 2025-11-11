@@ -19,17 +19,17 @@ import { type SourceLite } from "@/lib/training";
 
 export const runtime = "nodejs";
 
-type Source = {
-    filename: string;
-    url: string;
+type SourceDoc = {
+    name?: string;
     pageNumber?: number;
+    url?: string;
     quote?: string;
 };
 
 export default function Terminal2Page() {
   const [question, setQuestion] = useState("");
   const [emailDraft, setEmailDraft] = useState<string>("");
-  const [sources, setSources] = useState<Source[]>([]);
+  const [sourceDocument, setSourceDocument] = useState<SourceDoc | null>(null);
   const [confidence, setConfidence] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
@@ -39,6 +39,48 @@ export default function Terminal2Page() {
   const [errorMessage, setErrorMessage] = useState({ title: "", description: "" });
   
   const { toast } = useToast();
+
+  function splitSubjectBody(draft: string) {
+    // Expect lines like: "Subject: <...>" then body
+    const lines = (draft || "").split(/\r?\n/);
+    const first = lines.findIndex(l => /^subject\s*:/i.test(l));
+    if (first >= 0) {
+      const subjectLine = lines[first].replace(/^subject\s*:\s*/i, "").trim();
+      const body = [...lines.slice(0, first), ...lines.slice(first + 1)].join("\n").trim();
+      return { subject: subjectLine || "Response", body };
+    }
+    // Fallback: synthesize a subject from the question
+    return { subject: (question || "Response").trim(), body: draft.trim() };
+  }
+
+  function buildFooter(src: SourceDoc | null) {
+    if (!src?.name) return "";
+    const page = src.pageNumber ? ` (p. ${src.pageNumber})` : "";
+    return `\n\n—\nSource: ${src.name}${page}`;
+  }
+
+  async function createEmail() {
+    const { subject, body } = splitSubjectBody(emailDraft);
+    const footer = buildFooter(sourceDocument);
+    const finalBody = `${body}${footer}`;
+
+    // 1) Try mailto (Outlook will pick it up). Watch URL length.
+    const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(finalBody)}`;
+    if (mailto.length < 1800) {
+      window.location.href = mailto;
+    }
+
+    // 2) Always copy to clipboard as backup (user can paste into compose).
+    try {
+      await navigator.clipboard.writeText(`${subject}\n\n${finalBody}`);
+      toast({
+        title: "Copied to Clipboard",
+        description: "The email content has been copied to your clipboard.",
+      });
+    } catch (_) {
+      // Ignore clipboard errors
+    }
+  }
 
   async function generate(payload?: { question: string, preferSeed?: string }) {
     const questionToAsk = payload?.preferSeed || payload?.question || question;
@@ -67,7 +109,7 @@ export default function Terminal2Page() {
     const mode: AnalyzeDocumentsInput['mode'] = "bullets"; // Always use bullets mode
 
     setEmailDraft("");
-    setSources([]);
+    setSourceDocument(null);
     setConfidence(null);
     setLoadingMessage("Analyzing documents and generating response...");
 
@@ -86,12 +128,7 @@ export default function Terminal2Page() {
         }
         
         if (result.sourceDocument && result.sourceDocument.name) {
-             setSources([{
-                filename: result.sourceDocument.name,
-                pageNumber: result.sourceDocument.pageNumber,
-                url: result.sourceDocument.url,
-                quote: result.sourceDocument.quote,
-             }]);
+             setSourceDocument(result.sourceDocument);
         }
         setConfidence(result.confidence ?? null);
 
@@ -114,20 +151,12 @@ export default function Terminal2Page() {
   const handleGenerateClick = () => {
     generate({ question });
   }
-
-  const createMailtoLink = () => {
-    if (!emailDraft || loading) return undefined;
-    const to = "jbajorek@sanctuarywealth.com";
-    const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
-    const body = encodeURIComponent(emailDraft.trim());
-    return `mailto:${to}?subject=${subject}&body=${body}`;
-  };
-
-  const liteSources: SourceLite[] = sources.map((s, i) => ({
-    id: s.url || String(i),
-    title: s.filename,
-    page: s.pageNumber,
-  }));
+  
+  const liteSources: SourceLite[] = sourceDocument ? [{
+    id: sourceDocument.url || sourceDocument.name,
+    title: sourceDocument.name,
+    page: sourceDocument.pageNumber,
+  }] : [];
 
   return (
     <>
@@ -182,33 +211,30 @@ export default function Terminal2Page() {
               readOnly={loading}
             />
           </CardContent>
-          <CardFooter className="flex justify-between items-center w-full">
-              {!loading && emailDraft && (
-                <ResponseFeedback
-                  question={question}
-                  answer={emailDraft}
-                  confidence={confidence ?? undefined}
-                  sources={liteSources}
-                  uiVariant={"bullets"}
-                  model="gemini-1.5-pro"
-                  appVersion="1.0.0"
-                  promptId="doc-analysis-v1"
-                  onRegenerate={(seed) => generate({ question, preferSeed: seed })}
-                />
-              )}
-              <a
-                  href={createMailtoLink()}
-                  aria-disabled={!emailDraft || loading}
-                  onClick={(e) => {
-                      if (!emailDraft || loading) {
-                          e.preventDefault();
-                      }
-                  }}
-                  className="inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed ml-auto"
-               >
-                  <Mail className="mr-2 h-4 w-4" />
-                  Create Email
-              </a>
+           <CardFooter className="flex-col items-start gap-4">
+            <div className="flex w-full items-center justify-between">
+                <Button
+                    onClick={createEmail}
+                    disabled={!emailDraft || loading}
+                    variant="outline"
+                >
+                    <Mail className="mr-2 h-4 w-4" />
+                    Create Email
+                </Button>
+                {!loading && emailDraft && (
+                    <ResponseFeedback
+                    question={question}
+                    answer={emailDraft}
+                    confidence={confidence ?? undefined}
+                    sources={liteSources}
+                    uiVariant={"bullets"}
+                    model="gemini-1.5-pro"
+                    appVersion="1.0.0"
+                    promptId="doc-analysis-v1"
+                    onRegenerate={(seed) => generate({ question, preferSeed: seed })}
+                    />
+                )}
+            </div>
           </CardFooter>
         </Card>
 
@@ -217,7 +243,7 @@ export default function Terminal2Page() {
             <CardTitle className="text-base font-bold">Documents Used</CardTitle>
           </CardHeader>
           <CardContent>
-             {sources.length === 0 && !loading ? (
+             {sourceDocument === null && !loading ? (
                 <div
                     className="min-h-[150px] rounded-md border border-dashed border-border/50 bg-input/30 p-4 text-center text-foreground flex flex-col items-center justify-center"
                 >
@@ -230,21 +256,21 @@ export default function Terminal2Page() {
                 </div>
              ) : (
               <div className="space-y-2">
-                {sources.map((s, i) => (
-                  <div key={i} className="flex flex-col items-start justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
+                {sourceDocument && (
+                  <div className="flex flex-col items-start justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
                     <div className="text-sm w-full">
                       <div className="font-medium text-foreground">
-                        {s.filename}
-                        {s.pageNumber && <span className="text-muted-foreground"> • p.{s.pageNumber}</span>}
+                        {sourceDocument.name}
+                        {sourceDocument.pageNumber && <span className="text-muted-foreground"> • p.{sourceDocument.pageNumber}</span>}
                       </div>
                     </div>
-                     {s.quote && (
+                     {sourceDocument.quote && (
                         <blockquote className="mt-2 pl-3 border-l-2 border-primary/50 text-sm text-muted-foreground italic">
-                            "{s.quote}"
+                            "{sourceDocument.quote}"
                         </blockquote>
                     )}
                   </div>
-                ))}
+                )}
               </div>
             )}
           </CardContent>
