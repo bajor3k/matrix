@@ -40,10 +40,10 @@ function Card({
   className?: string;
 }) {
   return (
-    <div className={`rounded-xl border border-white/10 bg-[#0c0c0c] ${className}`}>
-      <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
+    <div className={`rounded-xl border bg-card text-card-foreground ${className}`}>
+      <div className="flex items-center gap-2 border-b border-border px-4 py-3">
         {icon}
-        <h3 className="text-sm font-semibold text-gray-200">{title}</h3>
+        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
       </div>
       <div className="p-4">{children}</div>
     </div>
@@ -89,13 +89,13 @@ export default function DashboardPage() {
             {NEWS_DUMMY.map((n, i) => (
               <li
                 key={i}
-                className="group rounded-lg border border-white/5 bg-black/20 p-3 hover:border-white/10"
+                className="group rounded-lg border border-border bg-background/50 p-3 hover:border-primary/20"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="text-sm text-gray-200 leading-5">{n.title}</div>
-                  <span className="text-[11px] text-gray-400 whitespace-nowrap">{n.time}</span>
+                  <div className="text-sm text-foreground leading-5">{n.title}</div>
+                  <span className="text-[11px] text-muted-foreground whitespace-nowrap">{n.time}</span>
                 </div>
-                <div className="mt-1 text-[12px] text-gray-400">{n.source}</div>
+                <div className="mt-1 text-[12px] text-muted-foreground">{n.source}</div>
               </li>
             ))}
           </ul>
@@ -109,20 +109,20 @@ export default function DashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-gray-400">
+                <tr className="text-muted-foreground">
                   <th className="text-left font-medium pb-2 pr-3">Date</th>
                   <th className="text-left font-medium pb-2 pr-3">Time (ET)</th>
                   <th className="text-left font-medium pb-2">Event</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-border">
                 {fedRows.map((e, i) => (
-                  <tr key={i} className="hover:bg-white/5">
-                    <td className="py-2 pr-3 text-gray-200">{e.date}</td>
-                    <td className="py-2 pr-3 text-gray-300">{e.timeET || "—"}</td>
+                  <tr key={i} className="hover:bg-accent">
+                    <td className="py-2 pr-3 text-foreground">{e.date}</td>
+                    <td className="py-2 pr-3 text-foreground/80">{e.timeET || "—"}</td>
                     <td className="py-2">
-                      <div className="text-gray-200">{e.event}</div>
-                      {e.note && <div className="text-[12px] text-gray-400">{e.note}</div>}
+                      <div className="text-foreground">{e.event}</div>
+                      {e.note && <div className="text-[12px] text-muted-foreground">{e.note}</div>}
                     </td>
                   </tr>
                 ))}
@@ -140,26 +140,26 @@ export default function DashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-gray-400">
+                <tr className="text-muted-foreground">
                   <th className="text-left font-medium pb-2 pr-3">Date</th>
                   <th className="text-left font-medium pb-2 pr-3">Ticker</th>
                   <th className="text-left font-medium pb-2 pr-3">Company</th>
                   <th className="text-left font-medium pb-2">Time</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-border">
                 {EARNINGS_DUMMY.map((r, i) => (
-                  <tr key={i} className="hover:bg-white/5">
-                    <td className="py-2 pr-3 text-gray-200">{r.date}</td>
-                    <td className="py-2 pr-3 text-gray-200">{r.ticker}</td>
-                    <td className="py-2 pr-3 text-gray-300">{r.company}</td>
+                  <tr key={i} className="hover:bg-accent">
+                    <td className="py-2 pr-3 text-foreground">{r.date}</td>
+                    <td className="py-2 pr-3 text-foreground">{r.ticker}</td>
+                    <td className="py-2 pr-3 text-foreground/80">{r.company}</td>
                     <td className="py-2">
                       <span
                         className={[
                           "inline-flex items-center rounded px-2 py-0.5 text-[11px]",
                           r.time === "BMO" ? "bg-emerald-500/10 text-emerald-300" :
                           r.time === "AMC" ? "bg-blue-500/10 text-blue-300" :
-                          "bg-white/10 text-gray-300",
+                          "bg-muted text-muted-foreground",
                         ].join(" ")}
                       >
                         {r.time}
