@@ -173,11 +173,6 @@ export default function DashboardPage() {
             </table>
           </div>
         </Card>
-
-        {/* Blank full-width card for future use */}
-        <div className="lg:col-span-2 rounded-xl border border-dashed border-white/10 bg-[#0e0f12] min-h-[220px] flex items-center justify-center">
-          <span className="text-sm text-gray-500">Reserved — add module later</span>
-        </div>
       </div>
     </main>
   );
