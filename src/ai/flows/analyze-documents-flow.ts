@@ -25,6 +25,104 @@ const PDF_SOURCES = [
     },
 ];
 
+// ---- helpers (add near top of the file) ----
+function chunkText(txt: string, size = 1400, overlap = 180): string[] {
+  const out: string[] = [];
+  let i = 0;
+  while (i < txt.length) {
+    out.push(txt.slice(i, i + size));
+    i += size - overlap;
+  }
+  return out;
+}
+
+function tokenize(s: string) {
+  return (s || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+// simple keyword score (BM25-lite)
+function scoreChunk(qTokens: string[], chunk: string) {
+  const tks = tokenize(chunk);
+  if (!tks.length) return 0;
+  let score = 0;
+  const counts: Record<string, number> = {};
+  for (const t of tks) counts[t] = (counts[t] || 0) + 1;
+  for (const q of qTokens) {
+    if (counts[q]) score += Math.log(1 + counts[q]);
+  }
+  // light length normalization
+  return score / Math.sqrt(tks.length);
+}
+
+type PageChunk = { docName: string; pageApprox?: number; text: string };
+
+// ---- caching (actually used) ----
+let cachedDocuments: Array<{ name: string; raw: string }> | null = null;
+let cacheTimestamp: number | null = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 min
+
+async function fetchAllPdfs(): Promise<Array<{name: string; raw: string}>> {
+  // use cache if fresh
+  if (cachedDocuments && cacheTimestamp && (Date.now() - cacheTimestamp) < CACHE_DURATION) {
+    return cachedDocuments;
+  }
+
+  const docs = await Promise.all(
+    PDF_SOURCES.map(async (source) => {
+      const res = await fetch(source.url, { cache: "no-store" });
+      if (!res.ok) {
+        throw Object.assign(
+          new Error(`Failed to fetch ${source.url}: ${res.status} ${res.statusText}`),
+          { documentName: source.name }
+        );
+      }
+      const buf = Buffer.from(await res.arrayBuffer());
+      const parsed = await pdf(buf); // pdf-parse returns one big text blob
+      const raw = (parsed.text || "").trim();
+      return { name: source.name, raw };
+    })
+  );
+
+  cachedDocuments = docs;
+  cacheTimestamp = Date.now();
+  return docs;
+}
+
+// Build per-doc chunks with approximate page labels
+function buildChunks(docs: Array<{name: string; raw: string}>): PageChunk[] {
+  const chunks: PageChunk[] = [];
+  for (const d of docs) {
+    // try a page-ish split; if it fails, just chunk all
+    const pages = d.raw.split(/\f|\n\s*Page\s+\d+(\s+of\s+\d+)?\s*\n/gi);
+    if (pages.length <= 1) {
+      const cs = chunkText(d.raw);
+      cs.forEach((t, i) => chunks.push({ docName: d.name, pageApprox: i + 1, text: t }));
+    } else {
+      pages.forEach((p, idx) => {
+        chunkText(p).forEach((t) => chunks.push({ docName: d.name, pageApprox: idx + 1, text: t }));
+      });
+    }
+  }
+  return chunks;
+}
+
+// Rank chunks by the question and return top K
+function selectTopK(chunks: PageChunk[], question: string, k = 12): PageChunk[] {
+  const qTokens = tokenize(question);
+  const scored = chunks
+    .map(c => ({ c, s: scoreChunk(qTokens, c.text) }))
+    .filter(x => x.s > 0)                // drop obviously irrelevant
+    .sort((a, b) => b.s - a.s)
+    .slice(0, k)
+    .map(x => x.c);
+  // backstop: if nothing scores > 0, just take first few chunks
+  return scored.length ? scored : chunks.slice(0, Math.min(k, chunks.length));
+}
+
 const DocumentPageSchema = z.object({
   pageNumber: z.number(),
   content: z.string(),
@@ -37,7 +135,7 @@ const DocumentSchema = z.object({
 
 const AnalyzeDocumentsInputSchema = z.object({
   question: z.string().describe("The user's question about the documents."),
-  mode: z.enum(["bullets"]).describe("The desired format for the answer."),
+  mode: z.enum(["simple", "bullets", "detailed"]).describe("The desired format for the answer."),
 });
 export type AnalyzeDocumentsInput = z.infer<typeof AnalyzeDocumentsInputSchema>;
 
@@ -58,82 +156,87 @@ export async function analyzeDocuments(input: AnalyzeDocumentsInput): Promise<An
   return analyzeDocumentsFlow(input);
 }
 
-// Cached documents to avoid re-fetching on every call within a short period.
-let cachedDocuments: z.infer<typeof DocumentSchema>[] | null = null;
-let cacheTimestamp: number | null = null;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+async function getDocumentsAsPages(question: string): Promise<z.infer<typeof DocumentSchema>[]> {
+  try {
+    const fetched = await fetchAllPdfs();
+    const allChunks = buildChunks(fetched);
+    const top = selectTopK(allChunks, question, 12); // keep small for token safety
 
-async function getDocumentsAsPages(): Promise<z.infer<typeof DocumentSchema>[]> {
-    console.log("Fetching and parsing documents...");
-    try {
-        const documents = await Promise.all(
-            PDF_SOURCES.map(async (source) => {
-                const response = await fetch(source.url);
-                if (!response.ok) {
-                    throw Object.assign(new Error(`Failed to fetch ${source.url}: ${response.statusText}`), { documentName: source.name });
-                }
-                const fileBuffer = await response.arrayBuffer();
-                
-                // Use `pdf-parse` with an option to process each page.
-                const data = await pdf(Buffer.from(fileBuffer));
-                
-                const pages = data.text.split(/(?=\f)/g).map((pageText, index) => ({
-                    pageNumber: index + 1,
-                    content: pageText.replace(/\f/g, '').trim(),
-                })).filter(p => p.content);
-
-                return {
-                    name: source.name,
-                    pages: pages,
-                };
-            })
-        );
-        cachedDocuments = documents;
-        cacheTimestamp = Date.now();
-        return documents;
-    } catch (error: any) {
-        console.error("Error fetching or parsing PDFs:", error);
-        // Invalidate cache on error
-        cachedDocuments = null;
-        cacheTimestamp = null;
-        throw new Error(`Sorry, I was unable to access the procedure documents. Error accessing document: ${error.documentName || 'Unknown Document'}. Reason: ${error.message}`);
+    // Convert selected chunks back into the schema you already use
+    // We’ll group chunks by document name and synthesize "pages"
+    const grouped: Record<string, { name: string; pages: Array<{pageNumber: number; content: string}> }> = {};
+    for (const t of top) {
+      if (!grouped[t.docName]) grouped[t.docName] = { name: t.docName, pages: [] };
+      grouped[t.docName].pages.push({
+        pageNumber: t.pageApprox ?? 1,
+        content: t.text,
+      });
     }
-}
+    // Limit pages per doc to keep prompt tight
+    const docs = Object.values(grouped).map(d => ({
+      name: d.name,
+      pages: d.pages.slice(0, 6),
+    }));
 
+    return docs;
+  } catch (error: any) {
+    console.error("Error fetching or parsing PDFs:", error);
+    throw new Error(
+      `Sorry, I couldn't access the procedure documents. Error: ${error.documentName || "Unknown Document"} — ${error.message}`
+    );
+  }
+}
 
 const documentAnalysisPrompt = ai.definePrompt({
   name: 'documentAnalysisPrompt',
   input: {schema: z.object({
       question: z.string(),
-      documents: z.array(DocumentSchema),
-      mode: z.enum(["bullets"]),
+      documents: z.array(DocumentSchema),  // already reduced top-K
+      mode: z.enum(["simple","bullets","detailed"]),
   })},
   output: {schema: z.object({
-    answer: z.string().describe('A comprehensive answer to the user\'s question, synthesized from the provided documents.'),
-    sourceDocumentName: z.string().describe("The name of the single document most relevant to the answer."),
-    sourcePageNumber: z.number().describe("The page number from the source document where the most relevant information was found."),
-    quote: z.string().describe("The exact, verbatim quote from the source document page that was used to generate the answer. The quote must be directly from the text."),
-    confidence: z.number().describe('A score from 0 to 100 representing the confidence in the answer, based on how directly the documents answer the question.'),
+    answer: z.string(),
+    sourceDocumentName: z.string(),
+    sourcePageNumber: z.number(),
+    quote: z.string(),
+    confidence: z.number(),
   })},
-  prompt: `You are an expert financial services operations assistant. Your task is to answer the user's question based *only* on the content of the documents provided.
-If the documents do not contain the information needed to answer the question, state that clearly. Do not use any external knowledge.
+  prompt: `You are an expert financial-services operations assistant. Use only the documents below.
 
-You MUST provide a short, factual answer using bullet points to lay out the key steps and details.
+OUTPUT FORMAT:
+{{#if (eq mode "simple")}}
+Write a short email:
+- Subject line
+- 2–4 concise sentences in the body. No lists.
+{{/if}}
 
-After providing the answer, you MUST identify the single most relevant document and the specific page number within that document where you found the information.
-Then, you MUST extract the exact verbatim quote from that page which was used to form your answer.
-Finally, provide a confidence score (0-100) based on how directly and completely the documents answer the question.
+{{#if (eq mode "bullets")}}
+Write an email with bullet-point instructions:
+- Subject line
+- 1-sentence intro
+- Bulleted steps with exact menu paths/forms
+{{/if}}
 
-Place the document's name in the 'sourceDocumentName' field, the page number in the 'sourcePageNumber' field, the exact quote in the 'quote' field, and your confidence score in the 'confidence' field.
+{{#if (eq mode "detailed")}}
+Write a detailed email:
+- Subject line
+- Numbered steps with exact paths/fields/forms
+- Notes for caveats/approvals if present
+{{/if}}
+
+After the email, determine:
+- sourceDocumentName (the single best doc)
+- sourcePageNumber (page number shown below, or best approximation)
+- quote (verbatim sentence(s) from that page that supports the answer)
+- confidence (0–100)
 
 User Question:
 "{{question}}"
 
-Documents:
+Documents (already filtered to the most relevant chunks):
 {{#each documents}}
 ---
 Document Name: {{name}}
-
 {{#each pages}}
 Page: {{pageNumber}}
 {{{content}}}
@@ -151,43 +254,42 @@ const analyzeDocumentsFlow = ai.defineFlow(
   },
   async (input) => {
     if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'YOUR_API_KEY_HERE') {
-        throw new Error("The AI service is not configured. Please provide a valid GEMINI_API_KEY in the environment variables.");
+      throw new Error("The AI service is not configured. Set GEMINI_API_KEY.");
     }
-    
-    // Always fetch documents to ensure consistency, caching is handled inside the function.
-    const documents = await getDocumentsAsPages();
-    
-    const emptyOutput = {
-        answer: "No documents were provided or could be read for analysis.",
+
+    // Pull ranked pages only
+    const documents = await getDocumentsAsPages(input.question);
+
+    if (!documents.length) {
+      return {
+        answer: "No readable content was found in the procedure documents.",
         sourceDocument: { name: "", pageNumber: 0, url: "", quote: "" },
         confidence: 0,
-    };
-
-    if (!documents || documents.length === 0) {
-      return emptyOutput;
-    }
-
-    const {output} = await documentAnalysisPrompt({question: input.question, documents, mode: input.mode});
-    
-    if (!output || !output.sourceDocumentName) {
-      return {
-          answer: output?.answer || "I am sorry, but this query cannot be completed using the available documentation.",
-          sourceDocument: { name: "", pageNumber: 0, url: "", quote: "" },
-          confidence: output?.confidence ?? 0,
       };
     }
-    
-    const sourceInfo = PDF_SOURCES.find(s => s.name === output.sourceDocumentName);
+
+    // (Optional) inject mode-specific instruction if your prompt template can't branch
+    const mode = input.mode;
+
+    const { output } = await documentAnalysisPrompt({
+      question: input.question,
+      documents,
+      mode,
+    });
+
+    // Guard against empty/invalid model output
+    const bestName = output?.sourceDocumentName || "";
+    const srcMeta = PDF_SOURCES.find(s => s.name === bestName);
 
     return {
-        answer: output.answer,
-        sourceDocument: {
-            name: output.sourceDocumentName,
-            pageNumber: output.sourcePageNumber,
-            url: sourceInfo?.url || "",
-            quote: output.quote,
-        },
-        confidence: output.confidence,
+      answer: output?.answer || "I couldn't form an answer from the provided chunks.",
+      sourceDocument: {
+        name: bestName,
+        pageNumber: Number(output?.sourcePageNumber || 0),
+        url: srcMeta?.url || "",
+        quote: output?.quote || "",
+      },
+      confidence: Number(output?.confidence || 0),
     };
   }
 );

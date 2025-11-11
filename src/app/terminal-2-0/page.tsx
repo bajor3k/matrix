@@ -17,6 +17,8 @@ import ConfidenceBadge from "@/components/ConfidenceBadge";
 import ResponseFeedback from "@/components/ResponseFeedback";
 import { type SourceLite } from "@/lib/training";
 
+export const runtime = "nodejs";
+
 type Source = {
     filename: string;
     url: string;
