@@ -211,8 +211,21 @@ export default function Terminal2Page() {
               readOnly={loading}
             />
           </CardContent>
-           <CardFooter className="flex-col items-start gap-4">
-            <div className="flex w-full items-center justify-between">
+           <CardFooter className="flex items-center justify-between gap-4">
+                <div className="flex-1">
+                    {!loading && emailDraft && (
+                        <ResponseFeedback
+                        question={question}
+                        answer={emailDraft}
+                        confidence={confidence ?? undefined}
+                        sources={liteSources}
+                        uiVariant={"bullets"}
+                        model="gemini-1.5-pro"
+                        promptId="doc-analysis-v1"
+                        onRegenerate={(seed) => generate({ question, preferSeed: seed })}
+                        />
+                    )}
+                </div>
                 <Button
                     onClick={createEmail}
                     disabled={!emailDraft || loading}
@@ -221,20 +234,6 @@ export default function Terminal2Page() {
                     <Mail className="mr-2 h-4 w-4" />
                     Create Email
                 </Button>
-                {!loading && emailDraft && (
-                    <ResponseFeedback
-                    question={question}
-                    answer={emailDraft}
-                    confidence={confidence ?? undefined}
-                    sources={liteSources}
-                    uiVariant={"bullets"}
-                    model="gemini-1.5-pro"
-                    appVersion="1.0.0"
-                    promptId="doc-analysis-v1"
-                    onRegenerate={(seed) => generate({ question, preferSeed: seed })}
-                    />
-                )}
-            </div>
           </CardFooter>
         </Card>
 
