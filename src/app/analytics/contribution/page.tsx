@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import ProgressDonut from "@/components/ui/ProgressDonut";
 import { AccountTypeProgressRing } from "@/components/charts/account-type-progress-ring"; 
 import { useToast } from "@/hooks/use-toast";
+import { downloadTableExcel } from "@/lib/downloadTableExcel";
 
 type AccountType = 'Traditional IRA' | 'Roth IRA' | 'SEP IRA' | 'SIMPLE IRA';
 
@@ -100,6 +101,8 @@ const IRA_TYPES_ORDER: AccountType[] = ['Roth IRA', 'Traditional IRA', 'SEP IRA'
 export default function ContributionMatrixPage() {
   const [accounts, setAccounts] = React.useState<ContributionAccount[]>([]);
   const [monthsLeft, setMonthsLeft] = React.useState(0);
+  const tableRef = React.useRef<HTMLTableElement>(null);
+  const { toast } = useToast();
 
   React.useEffect(() => {
     const generateRandomAccountNumber = (): string => {
@@ -132,6 +135,34 @@ export default function ContributionMatrixPage() {
     setAccounts(initialContributionAccounts);
     setMonthsLeft(calculateMonthsLeft());
   }, []);
+
+  const handleDownload = async () => {
+    if (!tableRef.current) {
+      toast({
+        title: "Error",
+        description: "Could not find the table to export.",
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      await downloadTableExcel({
+        table: tableRef.current,
+        fileName: "ira_contribution_overview",
+        sheetName: "IRA Contributions",
+      });
+      toast({
+        title: "Download Started",
+        description: "Your Excel file is being generated.",
+      });
+    } catch (error) {
+      toast({
+        title: "Download Failed",
+        description: "There was a problem exporting the data to Excel.",
+        variant: "destructive",
+      });
+    }
+  };
 
 
   const aggregatedDataByType = React.useMemo(() => {
@@ -203,7 +234,7 @@ export default function ContributionMatrixPage() {
       </div>
 
       <PlaceholderCard title="IRA Contribution Overview" className="overflow-x-auto">
-        <Table>
+        <Table ref={tableRef}>
           <TableHeader>
             <TableRow>
               <TableHead className="font-bold">Account Number</TableHead>
@@ -273,7 +304,7 @@ export default function ContributionMatrixPage() {
           </TableBody>
         </Table>
         <div className="flex justify-end items-center gap-4 mt-6">
-          <Button variant="outline" className="rounded-md">
+          <Button variant="outline" className="rounded-md" onClick={handleDownload}>
             <Download className="mr-2 h-4 w-4" /> Download Contribution Summary
           </Button>
         </div>
