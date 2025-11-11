@@ -117,18 +117,8 @@ export default function Terminal2Page() {
     if (!emailDraft || loading) return undefined;
     const to = "jbajorek@sanctuarywealth.com";
     const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
-    
-    // This function will be called to open the mail client.
-    const openMail = () => {
-      const body = encodeURIComponent(emailDraft.trim());
-      const mailtoUrl = `mailto:${to}?subject=${subject}&body=${body}`;
-      window.location.href = mailtoUrl;
-    };
-    
-    // We return a function for the `href` to call, to prevent premature execution.
-    // However, for simplicity and standard behavior, we'll return the string.
-    // The onClick handler will handle the logic.
-    return `mailto:${to}?subject=${subject}&body=${encodeURIComponent(emailDraft.trim())}`;
+    const body = encodeURIComponent(emailDraft.trim());
+    return `mailto:${to}?subject=${subject}&body=${body}`;
   };
 
   const liteSources: SourceLite[] = sources.map((s, i) => ({
@@ -191,7 +181,20 @@ export default function Terminal2Page() {
             />
           </CardContent>
           <CardFooter className="flex-col items-start gap-4">
-            <div className="flex justify-end w-full">
+            <div className="flex justify-between items-center w-full">
+              {!loading && emailDraft && (
+                <ResponseFeedback
+                  question={question}
+                  answer={emailDraft}
+                  confidence={confidence ?? undefined}
+                  sources={liteSources}
+                  uiVariant={"bullets"}
+                  model="gemini-1.5-pro"
+                  appVersion="1.0.0"
+                  promptId="doc-analysis-v1"
+                  onRegenerate={(seed) => generate({ question, preferSeed: seed })}
+                />
+              )}
               <a
                   href={createMailtoLink()}
                   aria-disabled={!emailDraft || loading}
@@ -200,25 +203,12 @@ export default function Terminal2Page() {
                           e.preventDefault();
                       }
                   }}
-                  className="inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed ml-auto"
                >
                   <Mail className="mr-2 h-4 w-4" />
                   Create Email
               </a>
             </div>
-            {!loading && emailDraft && (
-              <ResponseFeedback
-                question={question}
-                answer={emailDraft}
-                confidence={confidence ?? undefined}
-                sources={liteSources}
-                uiVariant={"bullets"}
-                model="gemini-1.5-pro"
-                appVersion="1.0.0"
-                promptId="doc-analysis-v1"
-                onRegenerate={(seed) => generate({ question, preferSeed: seed })}
-              />
-            )}
           </CardFooter>
         </Card>
 
