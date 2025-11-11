@@ -1,4 +1,3 @@
-
 // src/app/terminal-2-0/page.tsx
 "use client";
 
@@ -37,8 +36,7 @@ export default function Terminal2Page() {
   const [isSsnModalOpen, setIsSsnModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ title: "", description: "" });
-  const [isComposeModalOpen, setIsComposeModalOpen] = useState(false);
-
+  
   const { toast } = useToast();
 
   async function generate(payload?: { question: string, preferSeed?: string }) {
@@ -117,7 +115,14 @@ export default function Terminal2Page() {
     generate({ question });
   }
 
-  const getEmailSubject = () => `Response regarding: ${question.substring(0, 50)}...`;
+  const createMailtoLink = () => {
+    const to = "jbajorek@sanctuarywealth.com";
+    const subject = encodeURIComponent(`Response regarding: ${question.substring(0, 50)}...`);
+    
+    const body = encodeURIComponent(emailDraft.trim());
+
+    return `mailto:${to}?subject=${subject}&body=${body}`;
+  };
 
   const liteSources: SourceLite[] = sources.map((s, i) => ({
     id: s.url || String(i),
@@ -188,18 +193,15 @@ export default function Terminal2Page() {
           </CardContent>
           <CardFooter className="flex-col items-start gap-4">
             <div className="flex justify-end w-full">
-              <Button
-                  onClick={() => {
-                    if (emailDraft && !loading) {
-                      setIsComposeModalOpen(true);
-                    }
-                  }}
+               <a
+                  href={emailDraft && !loading ? createMailtoLink() : undefined}
                   aria-disabled={!emailDraft || loading}
+                  onClick={(e) => (!emailDraft || loading) && e.preventDefault()}
                   className="mt-4 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border transition hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                >
                   <Mail className="mr-2 h-4 w-4" />
                   Create Email
-              </Button>
+              </a>
             </div>
             {!loading && emailDraft && (
               <ResponseFeedback
@@ -289,44 +291,6 @@ export default function Terminal2Page() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      
-      <Dialog open={isComposeModalOpen} onOpenChange={setIsComposeModalOpen}>
-        <DialogContent className="sm:max-w-2xl bg-card/95 backdrop-blur-sm border-border/50">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-foreground">Compose Email</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="to" className="text-right text-muted-foreground">To</Label>
-              <Input id="to" defaultValue="jbajorek@sanctuarywealth.com" className="col-span-3 bg-input/50" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="subject" className="text-right text-muted-foreground">Subject</Label>
-              <Input id="subject" defaultValue={getEmailSubject()} className="col-span-3 bg-input/50" />
-            </div>
-             <div className="grid grid-cols-1 gap-4">
-                <Label htmlFor="body" className="sr-only">Body</Label>
-                <Textarea
-                    id="body"
-                    defaultValue={emailDraft}
-                    className="col-span-4 min-h-[300px] bg-input/50"
-                />
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-                <Button type="button" variant="secondary">Cancel</Button>
-            </DialogClose>
-            <Button type="submit" onClick={() => {
-                toast({ title: "Email Sent (Simulated)", description: "This is a UI demonstration." });
-                setIsComposeModalOpen(false);
-            }}>
-                <Send className="mr-2 h-4 w-4" />
-                Send
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </main>
     </>
   );
