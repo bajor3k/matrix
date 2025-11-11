@@ -40,7 +40,7 @@ function Card({
   className?: string;
 }) {
   return (
-    <div className={`rounded-xl border border-white/10 bg-[#0e0f12] ${className}`}>
+    <div className={`rounded-xl border border-white/10 bg-[#0c0c0c] ${className}`}>
       <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
         {icon}
         <h3 className="text-sm font-semibold text-gray-200">{title}</h3>
