@@ -64,7 +64,7 @@ export default function DashboardPage() {
 
   return (
     <main className="p-6 space-y-6">
-      <h1 className="text-2xl font-semibold text-gray-100">Welcome Josh</h1>
+      <h1 className="text-2xl font-semibold text-foreground">Welcome Josh</h1>
 
       {/* ----------- YOUR EXISTING KPI ROW - PRESERVED ----------- */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
