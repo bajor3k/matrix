@@ -16,7 +16,7 @@ export default function VaultPage() {
   const [unlocking, setUnlocking] = useState(false);
   const [doorOpen, setDoorOpen] = useState(false);
   const VALID_CODE = useMemo(
-    () => (process.env.NEXT_PUBLIC_VAULT_CODE || "0427").trim(),
+    () => (process.env.NEXT_PUBLIC_VAULT_CODE || "1955").trim(),
     []
   );
 
