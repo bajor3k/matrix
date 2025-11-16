@@ -3,6 +3,7 @@
 "use client";
 
 import { useState } from "react";
+import * as XLSX from "xlsx";
 import ResolveModal from "./ResolveModal";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -51,6 +52,18 @@ export default function MarginNearCallTable() {
     },
   ];
 
+  // -------------------------
+  // DOWNLOAD TO EXCEL
+  // -------------------------
+  const downloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(dummyRows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Margin Risk");
+
+    XLSX.writeFile(workbook, "accounts_close_to_margin_call.xlsx");
+  };
+
+
   return (
     <>
       <Card>
@@ -58,7 +71,7 @@ export default function MarginNearCallTable() {
           <CardTitle className="text-base font-bold">
             Accounts Close to a Margin Call
           </CardTitle>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={downloadExcel}>
             <Download className="mr-2 h-4 w-4" />
             Download
           </Button>
