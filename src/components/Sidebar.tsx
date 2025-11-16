@@ -25,6 +25,7 @@ const resourceItems: NavItem[] = navigationData['Resources'];
 const videoReportItem: NavItem = navigationData['Standalone'][0];
 const terminalItem: NavItem = navigationData['Standalone'][1];
 const terminal2Item: NavItem = navigationData['Standalone'][2];
+const marginItem: NavItem = navigationData['Standalone'][3];
 const settingsItem: NavItem = navigationData['Other'][0];
 
 
@@ -67,6 +68,7 @@ export default function Sidebar({
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
   const isTerminal = useMemo(() => pathname === "/terminal", [pathname]);
   const isTerminal2 = useMemo(() => pathname === "/terminal-2-0", [pathname]);
+  const isMargin = useMemo(() => pathname === "/margin", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
 
   const [openReports, setOpenReports] = useState(isReports);
@@ -179,6 +181,20 @@ export default function Sidebar({
             <span className="flex items-center gap-3">
               <TerminalSquare className="h-5 w-5 shrink-0" />
               {!collapsed && terminal2Item.name}
+            </span>
+          </Link>
+        </div>
+
+        <div className="mb-2">
+          <Link
+            href={marginItem.href}
+            title={marginItem.name}
+            data-active={isMargin}
+            className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left font-medium hover:bg-accent ${isMargin ? 'bg-accent text-accent-foreground' : ''}`}
+          >
+            <span className="flex items-center gap-3">
+              <BadgeDollarSign className="h-5 w-5 shrink-0" />
+              {!collapsed && marginItem.name}
             </span>
           </Link>
         </div>
