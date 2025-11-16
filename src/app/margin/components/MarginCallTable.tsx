@@ -56,7 +56,7 @@ export default function MarginCallTable() {
     <Card>
       <CardHeader className="flex flex-row items-start justify-between">
         <div>
-          <CardTitle className="text-xl font-semibold tracking-tight">
+          <CardTitle className="text-base font-bold">
             Accounts in Margin Call
           </CardTitle>
         </div>
