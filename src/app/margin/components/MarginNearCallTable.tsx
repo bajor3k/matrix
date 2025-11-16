@@ -97,9 +97,10 @@ export default function MarginNearCallTable() {
                   <TableCell>{row.equity}</TableCell>
                   <TableCell>{row.maint}</TableCell>
                   <TableCell
+                    style={parseInt(row.pct) <= 5 ? { color: '#cd191a' } : {}}
                     className={`${
                       parseInt(row.pct) <= 5
-                        ? "text-red-400"
+                        ? ""
                         : parseInt(row.pct) <= 10
                         ? "text-yellow-400"
                         : "text-green-400"
