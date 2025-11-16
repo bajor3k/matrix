@@ -59,9 +59,6 @@ export default function MarginCallTable() {
           <CardTitle className="text-xl font-semibold tracking-tight">
             Accounts in Margin Call
           </CardTitle>
-          <CardDescription className="mt-1 text-sm">
-            Active calls across all accounts
-          </CardDescription>
         </div>
 
         <Button
