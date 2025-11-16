@@ -69,7 +69,7 @@ export default function MarginNearCallTable() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base font-bold">
-            Accounts Close to a Margin Call
+            Accounts at Risk
           </CardTitle>
           <Button variant="outline" size="sm" onClick={downloadExcel}>
             <Download className="mr-2 h-4 w-4" />
