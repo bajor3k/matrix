@@ -45,8 +45,6 @@ export default function MarginCallTable() {
     },
   ];
 
-  const totalActive = activeCalls.length;
-
   const downloadExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(activeCalls);
     const workbook = XLSX.utils.book_new();
@@ -77,10 +75,6 @@ export default function MarginCallTable() {
       </CardHeader>
       
       <CardContent className="pt-0">
-        <p className="text-4xl font-bold mb-4">
-          {totalActive}
-        </p>
-
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
