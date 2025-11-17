@@ -36,7 +36,8 @@ function Row({ item, active, hiddenLabel }: { item: NavItem; active: boolean; hi
       href={item.href}
       title={item.name}
       data-active={active}
-      className={`nav-item flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition w-full
+      className={`nav-item flex items-center gap-3 rounded-xl py-2 text-sm transition w-full
+        ${hiddenLabel ? 'justify-center px-0' : 'px-3'}
         ${active ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}`}
     >
       <Icon className="h-5 w-5 shrink-0" />
@@ -123,12 +124,12 @@ export default function Sidebar({
     return (
     <div className="mb-2">
        <div
-        className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left font-medium
-         hover:bg-accent`}
+        className={`flex w-full items-center justify-between rounded-xl py-2 text-left font-medium
+         hover:bg-accent ${collapsed ? 'px-0 justify-center' : 'px-3'}`}
          aria-expanded={open}
        >
         <HeaderWrapper>
-          <span className="flex items-center gap-3">
+          <span className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
             <Icon className="h-5 w-5 shrink-0" />
             {!collapsed && title}
           </span>
@@ -176,9 +177,9 @@ export default function Sidebar({
             href={terminal2Item.href}
             title={terminal2Item.name}
             data-active={isTerminal2}
-            className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left font-medium hover:bg-accent ${isTerminal2 ? 'bg-accent text-accent-foreground' : ''}`}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium hover:bg-accent ${isTerminal2 ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'justify-between px-3'}`}
           >
-            <span className="flex items-center gap-3">
+            <span className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
               <TerminalSquare className="h-5 w-5 shrink-0" />
               {!collapsed && terminal2Item.name}
             </span>
@@ -190,9 +191,9 @@ export default function Sidebar({
             href={marginItem.href}
             title={marginItem.name}
             data-active={isMargin}
-            className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left font-medium hover:bg-accent ${isMargin ? 'bg-accent text-accent-foreground' : ''}`}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium hover:bg-accent ${isMargin ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'justify-between px-3'}`}
           >
-            <span className="flex items-center gap-3">
+            <span className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
               <BadgeDollarSign className="h-5 w-5 shrink-0" />
               {!collapsed && marginItem.name}
             </span>
@@ -207,7 +208,8 @@ export default function Sidebar({
           href="/settings"
           title="Settings"
           data-active={isSettings}
-          className={`nav-item group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition
+          className={`nav-item group flex items-center gap-3 rounded-xl py-2 text-sm transition
+            ${collapsed ? 'justify-center px-0' : 'px-3'}
             ${isSettings ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}`}
         >
           <SettingsIcon className="h-5 w-5 shrink-0" />
