@@ -9,7 +9,6 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { NavigationProvider } from '@/contexts/navigation-context';
 import { ThemeProvider } from '@/components/theme-provider';
 import AppShell from '@/components/AppShell';
-import DevTools from '@/components/DevTools';
 import VaultGate from "./VaultGate";
 
 
@@ -38,7 +37,7 @@ export default function RootLayout({
               </NavigationProvider>
             </AuthProvider>
           </ThemeProvider>
-          {process.env.NODE_ENV === 'development' && <DevTools />}
+          
         </VaultGate>
       </body>
     </html>
