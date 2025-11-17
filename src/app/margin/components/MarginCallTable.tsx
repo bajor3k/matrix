@@ -22,7 +22,6 @@ export default function MarginCallTable() {
       callAmount: "$2,000",
       equity: "$38,000",
       maint: "$40,000",
-      shortfall: "$2,000",
       deadline: "T+3",
     },
     {
@@ -31,7 +30,6 @@ export default function MarginCallTable() {
       callAmount: "$5,500",
       equity: "$45,000",
       maint: "$50,500",
-      shortfall: "$5,500",
       deadline: "T+1",
     },
     {
@@ -40,7 +38,6 @@ export default function MarginCallTable() {
       callAmount: "$1,250",
       equity: "$28,750",
       maint: "$30,000",
-      shortfall: "$1,250",
       deadline: "T+2",
     },
   ];
@@ -81,7 +78,6 @@ export default function MarginCallTable() {
                 <TableHead>Call Amount</TableHead>
                 <TableHead>Equity</TableHead>
                 <TableHead>Maintenance</TableHead>
-                <TableHead>Shortfall</TableHead>
                 <TableHead>Deadline</TableHead>
                 <TableHead>Fix Options</TableHead>
               </TableRow>
@@ -94,7 +90,6 @@ export default function MarginCallTable() {
                   <TableCell>{row.callAmount}</TableCell>
                   <TableCell>{row.equity}</TableCell>
                   <TableCell>{row.maint}</TableCell>
-                  <TableCell>{row.shortfall}</TableCell>
                   <TableCell>{row.deadline}</TableCell>
                   <TableCell>
                     <Button
