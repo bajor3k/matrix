@@ -87,7 +87,6 @@ export default function MarginNearCallTable() {
                 <TableHead>SMA</TableHead>
                 <TableHead>Debit</TableHead>
                 <TableHead>Largest Risk</TableHead>
-                <TableHead>Fix Options</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -111,15 +110,6 @@ export default function MarginNearCallTable() {
                   <TableCell>{row.sma}</TableCell>
                   <TableCell>{row.debit}</TableCell>
                   <TableCell>{row.risk}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setOpenModal(true)}
-                    >
-                      Resolve
-                    </Button>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
