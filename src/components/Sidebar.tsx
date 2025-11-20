@@ -12,6 +12,7 @@ import {
   Video,
   Terminal,
   TerminalSquare,
+  KanbanSquare,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
@@ -26,6 +27,7 @@ const videoReportItem: NavItem = navigationData['Standalone'][0];
 const terminalItem: NavItem = navigationData['Standalone'][1];
 const terminal2Item: NavItem = navigationData['Standalone'][2];
 const marginItem: NavItem = navigationData['Standalone'][3];
+const projectItem: NavItem = navigationData['Standalone'][4];
 const settingsItem: NavItem = navigationData['Other'][0];
 
 
@@ -70,6 +72,7 @@ export default function Sidebar({
   const isTerminal = useMemo(() => pathname === "/terminal", [pathname]);
   const isTerminal2 = useMemo(() => pathname === "/terminal-2-0", [pathname]);
   const isMargin = useMemo(() => pathname === "/margin", [pathname]);
+  const isProject = useMemo(() => pathname === "/project", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
 
   const [openReports, setOpenReports] = useState(isReports);
@@ -200,6 +203,19 @@ export default function Sidebar({
           </Link>
         </div>
 
+        <div className="mb-2">
+          <Link
+            href={projectItem.href}
+            title={projectItem.name}
+            data-active={isProject}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium hover:bg-accent ${isProject ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'justify-between px-3'}`}
+          >
+            <span className="flex items-center gap-3">
+              <KanbanSquare className="h-5 w-5 shrink-0" />
+              {!collapsed && projectItem.name}
+            </span>
+          </Link>
+        </div>
       </div>
 
       {/* footer — pinned at bottom */}

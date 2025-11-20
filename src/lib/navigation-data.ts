@@ -89,5 +89,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', 
     { name: 'Terminal', icon: Terminal, href: '/terminal' },
     { name: 'Terminal 2.0', icon: TerminalSquare, href: '/terminal-2-0' },
     { name: 'Margin', icon: BadgeDollarSign, href: '/margin' },
+    { name: 'Project', icon: KanbanSquare, href: '/project'},
   ]
 };
