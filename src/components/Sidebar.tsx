@@ -28,6 +28,7 @@ const terminalItem: NavItem = navigationData['Standalone'][1];
 const terminal2Item: NavItem = navigationData['Standalone'][2];
 const marginItem: NavItem = navigationData['Standalone'][3];
 const projectItem: NavItem = navigationData['Standalone'][4];
+const crm2Item: NavItem = navigationData['Standalone'][5];
 const settingsItem: NavItem = navigationData['Other'][0];
 
 
@@ -73,6 +74,7 @@ export default function Sidebar({
   const isTerminal2 = useMemo(() => pathname === "/terminal-2-0", [pathname]);
   const isMargin = useMemo(() => pathname === "/margin", [pathname]);
   const isProject = useMemo(() => pathname === "/project", [pathname]);
+  const isCrm2 = useMemo(() => pathname === "/crm2.0", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
 
   const [openReports, setOpenReports] = useState(isReports);
@@ -132,10 +134,14 @@ export default function Sidebar({
          aria-expanded={open}
        >
         <HeaderWrapper>
-          <span className="flex items-center gap-3">
+          <button
+            className="flex items-center gap-3 w-full"
+            onClick={onHeaderClick}
+            aria-expanded={open}
+          >
             <Icon className="h-5 w-5 shrink-0" />
             {!collapsed && title}
-          </span>
+          </button>
         </HeaderWrapper>
         {!collapsed && (open ? <ChevronUp className="h-4 w-4 shrink-0 cursor-pointer" onClick={onHeaderClick}/> : <ChevronDown className="h-4 w-4 shrink-0 cursor-pointer" onClick={onHeaderClick}/>)}
       </div>
@@ -213,6 +219,20 @@ export default function Sidebar({
             <span className="flex items-center gap-3">
               <KanbanSquare className="h-5 w-5 shrink-0" />
               {!collapsed && projectItem.name}
+            </span>
+          </Link>
+        </div>
+
+        <div className="mb-2">
+          <Link
+            href={crm2Item.href}
+            title={crm2Item.name}
+            data-active={isCrm2}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium hover:bg-accent ${isCrm2 ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'justify-between px-3'}`}
+          >
+            <span className="flex items-center gap-3">
+              <Users className="h-5 w-5 shrink-0" />
+              {!collapsed && crm2Item.name}
             </span>
           </Link>
         </div>
