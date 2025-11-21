@@ -3,8 +3,10 @@
 
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useState } from "react";
-import { GripVertical } from "lucide-react";
+import { GripVertical, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function ProjectPage() {
   const [columns, setColumns] = useState({
@@ -28,6 +30,41 @@ export default function ProjectPage() {
       items: [{ id: "6", content: "Rebalance the Johnson's retirement portfolio" }],
     },
   });
+
+  const [newItemInputs, setNewItemInputs] = useState({
+    todo: '',
+    inprogress: '',
+    done: ''
+  });
+
+  const [isAdding, setIsAdding] = useState({
+    todo: false,
+    inprogress: false,
+    done: false
+  });
+
+  const handleInputChange = (columnId: keyof typeof newItemInputs, value: string) => {
+    setNewItemInputs(prev => ({ ...prev, [columnId]: value }));
+  };
+
+  const handleAddItem = (columnId: keyof typeof columns) => {
+    const content = newItemInputs[columnId].trim();
+    if (content) {
+      const newItem = {
+        id: crypto.randomUUID(),
+        content: content,
+      };
+      setColumns(prev => ({
+        ...prev,
+        [columnId]: {
+          ...prev[columnId],
+          items: [...prev[columnId].items, newItem],
+        },
+      }));
+      handleInputChange(columnId, '');
+      setIsAdding(prev => ({ ...prev, [columnId]: false }));
+    }
+  };
 
   const onDragEnd = (result: any) => {
     if (!result.destination) return;
@@ -79,46 +116,77 @@ export default function ProjectPage() {
           {Object.entries(columns).map(([id, column]) => (
             <div key={id} className="flex flex-col">
               <h2 className="text-lg font-semibold mb-4 px-1">{column.name} ({column.items.length})</h2>
-              <Droppable droppableId={id} key={id}>
-                {(provided, snapshot) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className={cn(
-                        "rounded-xl p-3 bg-card/60 backdrop-blur-sm border border-white/10 transition-colors duration-200 ease-in-out",
-                        "h-[calc(100vh-14rem)] overflow-y-auto scroll-invisible",
-                        snapshot.isDraggingOver ? "bg-primary/10" : ""
-                    )}
-                  >
-                    {column.items.map((item, index) => (
-                      <Draggable
-                        key={item.id}
-                        draggableId={item.id}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={cn(
-                                "p-3 mb-3 rounded-lg shadow-lg border backdrop-blur-sm flex items-start gap-2",
-                                snapshot.isDragging ? "bg-primary/20 border-primary/50" : "bg-muted/50 border-border/30"
-                            )}
-                            style={{
-                              ...provided.draggableProps.style,
-                            }}
-                          >
-                            <GripVertical className="h-5 w-5 text-muted-foreground/50 mt-0.5 shrink-0 cursor-grab" />
-                            <span className="text-sm text-foreground flex-grow">{item.content}</span>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
+              <div
+                className={cn(
+                  "rounded-xl p-3 bg-card/60 backdrop-blur-sm border border-white/10",
+                  "h-[calc(100vh-14rem)] flex flex-col"
                 )}
-              </Droppable>
+              >
+                <Droppable droppableId={id} key={id}>
+                  {(provided, snapshot) => (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      className={cn(
+                          "flex-grow overflow-y-auto scroll-invisible pr-1",
+                          snapshot.isDraggingOver ? "bg-primary/10" : ""
+                      )}
+                    >
+                      {column.items.map((item, index) => (
+                        <Draggable
+                          key={item.id}
+                          draggableId={item.id}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={cn(
+                                  "p-3 mb-3 rounded-lg shadow-lg border backdrop-blur-sm flex items-start gap-2",
+                                  snapshot.isDragging ? "bg-primary/20 border-primary/50" : "bg-muted/50 border-border/30"
+                              )}
+                              style={{
+                                ...provided.draggableProps.style,
+                              }}
+                            >
+                              <GripVertical className="h-5 w-5 text-muted-foreground/50 mt-0.5 shrink-0 cursor-grab" />
+                              <span className="text-sm text-foreground flex-grow">{item.content}</span>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+                <div className="mt-2 pt-2 flex-shrink-0">
+                  {isAdding[id as keyof typeof isAdding] ? (
+                    <div className="space-y-2">
+                      <Textarea
+                        placeholder="Enter a title for this card..."
+                        className="bg-muted/70 border-border/50 text-sm"
+                        value={newItemInputs[id as keyof typeof newItemInputs]}
+                        onChange={(e) => handleInputChange(id as keyof typeof newItemInputs, e.target.value)}
+                        autoFocus
+                      />
+                      <div className="flex items-center gap-2">
+                        <Button size="sm" onClick={() => handleAddItem(id as keyof typeof columns)}>Add Card</Button>
+                        <Button size="sm" variant="ghost" onClick={() => setIsAdding(prev => ({...prev, [id]: false}))}>Cancel</Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      onClick={() => setIsAdding(prev => ({...prev, [id]: true}))}
+                    >
+                      <Plus className="h-4 w-4 mr-2" /> Add a card
+                    </Button>
+                  )}
+                </div>
+              </div>
             </div>
           ))}
         </div>
