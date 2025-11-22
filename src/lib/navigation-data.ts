@@ -76,16 +76,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', 
       { name: 'Settings', icon: Settings, href: '/settings' },
   ],
   'Standalone': [
-    { 
-      name: 'Video Statements', 
-      icon: Video, 
-      href: '/video-reports',
-      children: [
-        { name: 'Monthly', icon: FileStack, href: '/video-reports/monthly'},
-        { name: 'Quarterly', icon: FileStack, href: '/video-reports/quarterly'},
-        { name: 'Annual', icon: FileStack, href: '/video-reports/annual'},
-      ]
-    },
     { name: 'Terminal', icon: Terminal, href: '/terminal' },
     { name: 'Terminal 2.0', icon: TerminalSquare, href: '/terminal-2-0' },
     { name: 'Margin', icon: BadgeDollarSign, href: '/margin' },

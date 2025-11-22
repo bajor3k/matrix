@@ -23,12 +23,11 @@ const reportItems: NavItem[] = navigationData['Reports'];
 const crmItems: NavItem[] = navigationData['CRM'];
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
-const videoReportItem: NavItem = navigationData['Standalone'][0];
-const terminalItem: NavItem = navigationData['Standalone'][1];
-const terminal2Item: NavItem = navigationData['Standalone'][2];
-const marginItem: NavItem = navigationData['Standalone'][3];
-const projectItem: NavItem = navigationData['Standalone'][4];
-const crm2Item: NavItem = navigationData['Standalone'][5];
+const terminalItem: NavItem = navigationData['Standalone'][0];
+const terminal2Item: NavItem = navigationData['Standalone'][1];
+const marginItem: NavItem = navigationData['Standalone'][2];
+const projectItem: NavItem = navigationData['Standalone'][3];
+const crm2Item: NavItem = navigationData['Standalone'][4];
 const settingsItem: NavItem = navigationData['Other'][0];
 
 
@@ -68,7 +67,6 @@ export default function Sidebar({
     "/analytics/asset", "/analytics/client", "/analytics/financial", 
     "/analytics/conversion", "/analytics/compliance", "/analytics/contribution"
   ].some(p => pathname.startsWith(p)) || pathname.startsWith("/dashboard"), [pathname]);
-  const isVideoReports = useMemo(() => pathname?.startsWith("/video-reports"), [pathname]);
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
   const isTerminal = useMemo(() => pathname === "/terminal", [pathname]);
   const isTerminal2 = useMemo(() => pathname === "/terminal-2-0", [pathname]);
@@ -80,13 +78,11 @@ export default function Sidebar({
   const [openReports, setOpenReports] = useState(isReports);
   const [openCRM, setOpenCRM] = useState(isCRM);
   const [openAnalytics, setOpenAnalytics] = useState(isAnalytics);
-  const [openVideoReports, setOpenVideoReports] = useState(isVideoReports);
   const [openResources, setOpenResources] = useState(isResources);
 
   useEffect(() => setOpenReports(isReports), [isReports]);
   useEffect(() => setOpenCRM(isCRM), [isCRM]);
   useEffect(() => setOpenAnalytics(isAnalytics), [isAnalytics]);
-  useEffect(() => setOpenVideoReports(isVideoReports), [isVideoReports]);
   useEffect(() => setOpenResources(isResources), [isResources]);
 
   // When parent asks to open a specific section (after expanding)
@@ -109,7 +105,7 @@ export default function Sidebar({
     items,
     href
   }: {
-    keyName: SectionKey | 'video-reports';
+    keyName: SectionKey;
     title: string; icon: any; open: boolean; setOpen: (v: boolean) => void; items: NavItem[]; href?: string;
   }) => {
     if (!items || items.length === 0) return null;
@@ -163,8 +159,6 @@ export default function Sidebar({
         <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} />
         <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} />
         
-        <Section keyName="video-reports" title={videoReportItem.name} icon={videoReportItem.icon} open={openVideoReports} setOpen={setOpenVideoReports} items={videoReportItem.children ?? []} href={videoReportItem.href}/>
-
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
         
         {/* <div className="mb-2">
