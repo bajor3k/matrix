@@ -68,7 +68,7 @@ export default function Sidebar({
     "/analytics/conversion", "/analytics/compliance", "/analytics/contribution"
   ].some(p => pathname.startsWith(p)) || pathname.startsWith("/dashboard"), [pathname]);
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
-  const isTerminal2 = useMemo(() => pathname === "/terminal-2-0", [pathname]);
+  const isTerminal2 = useMemo(() => pathname === "/terminal", [pathname]);
   const isMargin = useMemo(() => pathname === "/margin", [pathname]);
   const isProject = useMemo(() => pathname === "/project", [pathname]);
   const isCrm2 = useMemo(() => pathname === "/crm2.0", [pathname]);
@@ -122,24 +122,20 @@ export default function Sidebar({
     const HeaderWrapper = ({children}: {children: React.ReactNode}) => href ? <Link href={href}>{children}</Link> : <>{children}</>;
 
     return (
-    <div className="mb-2">
-       <div
-        className={`flex w-full items-center rounded-xl py-2 text-left font-medium
-         hover:bg-accent ${collapsed ? 'px-0 justify-center' : 'px-3 justify-between'}`}
-         aria-expanded={open}
+    <div className="mb-1">
+       <button
+        onClick={onHeaderClick}
+        aria-expanded={open}
+        className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground
+         hover:bg-accent hover:text-accent-foreground ${collapsed ? 'px-0 justify-center' : 'px-3 justify-between'}`}
        >
-        <HeaderWrapper>
-          <button
-            className="flex items-center gap-3 w-full"
-            onClick={onHeaderClick}
-            aria-expanded={open}
-          >
-            <Icon className="h-5 w-5 shrink-0" />
-            {!collapsed && title}
-          </button>
-        </HeaderWrapper>
-        {!collapsed && (open ? <ChevronUp className="h-4 w-4 shrink-0 cursor-pointer" onClick={onHeaderClick}/> : <ChevronDown className="h-4 w-4 shrink-0 cursor-pointer" onClick={onHeaderClick}/>)}
-      </div>
+        <span className="flex items-center gap-3">
+          <Icon className="h-5 w-5 shrink-0" />
+          {!collapsed && title}
+        </span>
+
+        {!collapsed && (open ? <ChevronUp className="h-4 w-4 shrink-0"/> : <ChevronDown className="h-4 w-4 shrink-0"/>)}
+      </button>
       <div className={`overflow-hidden transition-[max-height] duration-200 ease-in-out ${open && !collapsed ? "max-h-[500px]" : "max-h-0"}`}>
         <div className="mt-1 space-y-1 pl-2 pr-1">
           {items.map((it) => (
@@ -160,26 +156,12 @@ export default function Sidebar({
         
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
         
-        {/* <div className="mb-2">
-          <Link
-            href={terminalItem.href}
-            title={terminalItem.name}
-            data-active={isTerminal}
-            className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left font-medium hover:bg-accent ${isTerminal ? 'bg-accent text-accent-foreground' : ''}`}
-          >
-            <span className="flex items-center gap-3">
-              <Terminal className="h-5 w-5 shrink-0" />
-              {!collapsed && terminalItem.name}
-            </span>
-          </Link>
-        </div> */}
-
-        <div className="mb-2">
+        <div className="mb-1">
           <Link
             href={terminal2Item.href}
             title={terminal2Item.name}
             data-active={isTerminal2}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium hover:bg-accent ${isTerminal2 ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'justify-between px-3'}`}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isTerminal2 ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
               <TerminalSquare className="h-5 w-5 shrink-0" />
@@ -188,12 +170,12 @@ export default function Sidebar({
           </Link>
         </div>
 
-        <div className="mb-2">
+        <div className="mb-1">
           <Link
             href={marginItem.href}
             title={marginItem.name}
             data-active={isMargin}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium hover:bg-accent ${isMargin ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'justify-between px-3'}`}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isMargin ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
               <BadgeDollarSign className="h-5 w-5 shrink-0" />
@@ -202,12 +184,12 @@ export default function Sidebar({
           </Link>
         </div>
 
-        <div className="mb-2">
+        <div className="mb-1">
           <Link
             href={projectItem.href}
             title={projectItem.name}
             data-active={isProject}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium hover:bg-accent ${isProject ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'justify-between px-3'}`}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isProject ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
               <KanbanSquare className="h-5 w-5 shrink-0" />
@@ -216,12 +198,12 @@ export default function Sidebar({
           </Link>
         </div>
 
-        <div className="mb-2">
+        <div className="mb-1">
           <Link
             href={crm2Item.href}
             title={crm2Item.name}
             data-active={isCrm2}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium hover:bg-accent ${isCrm2 ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'justify-between px-3'}`}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isCrm2 ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
               <Users className="h-5 w-5 shrink-0" />
