@@ -74,8 +74,6 @@ export default function CRM2() {
 
   return (
     <div className="text-white p-6 md:p-10">
-      <h1 className="text-3xl md:text-4xl font-bold mb-8 md:mb-10">CRM 2.0</h1>
-
       {/* Search Bar */}
       <div className="max-w-2xl mb-8">
         <input
