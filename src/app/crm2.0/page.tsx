@@ -81,7 +81,7 @@ export default function CRM2() {
     "custodians",
     "solo",
     "g#",
-    "crd",
+    "CRD",
   ];
 
   return (
@@ -168,7 +168,6 @@ export default function CRM2() {
                 </div>
             </div>
 
-            {/* Team Members */}
             {h.client_associates?.length > 0 && (
                 <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
                     <h3 className="text-xl font-semibold mb-4">Team Members</h3>
