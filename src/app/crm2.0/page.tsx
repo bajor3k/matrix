@@ -3,6 +3,8 @@
 import { useState } from "react";
 
 export default function CRM2() {
+  const [search, setSearch] = useState("");
+
   // Dummy Partner Firms
   const firms = [
     {
@@ -67,9 +69,22 @@ export default function CRM2() {
     },
   ];
 
+  // ------------------------------
+  // 🔍 REAL-TIME SEARCH FILTERING
+  // ------------------------------
+  const filtered = firms.filter((firm) => {
+    const text = search.toLowerCase();
+
+    return (
+      firm.name.toLowerCase().includes(text) ||
+      firm.phone.toLowerCase().includes(text) ||
+      firm.email.toLowerCase().includes(text) ||
+      firm.tags.some((tag) => tag.toLowerCase().includes(text))
+    );
+  });
+
   const handleClick = (firm: any) => {
     console.log("Clicked firm:", firm);
-    // Later: navigate to firm profile page
   };
 
   return (
@@ -77,6 +92,8 @@ export default function CRM2() {
       {/* Search Bar */}
       <div className="max-w-2xl mb-8">
         <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           placeholder="Search Partner Firms"
           className="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none focus:border-white/20"
         />
@@ -95,7 +112,7 @@ export default function CRM2() {
           </thead>
 
           <tbody>
-            {firms.map((firm, index) => (
+            {filtered.map((firm, index) => (
               <tr
                 key={index}
                 onClick={() => handleClick(firm)}
@@ -118,6 +135,18 @@ export default function CRM2() {
                 </td>
               </tr>
             ))}
+
+            {/* If search returns nothing */}
+            {filtered.length === 0 && (
+              <tr className="border-t border-white/5">
+                <td
+                  colSpan={4}
+                  className="py-6 px-6 text-center text-gray-500"
+                >
+                  No matching firms found.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
