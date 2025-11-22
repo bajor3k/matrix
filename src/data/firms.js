@@ -1,5 +1,11 @@
 export const firmDetails = {
   "Goliath Private Wealth": {
+    firmInfo: {
+      crd: "192830",
+      phone: "555-101-3030",
+      email: "contact@goliathpw.com",
+      address: "12 Oak Ridge Ave, Springfield, IL 62701",
+    },
     advisors: [
       {
         name: "John Miller",
@@ -26,6 +32,12 @@ export const firmDetails = {
   },
 
   "Beacon Financial Group": {
+    firmInfo: {
+      crd: "774411",
+      phone: "555-443-1122",
+      email: "info@beaconfg.com",
+      address: "77 Market Square, Austin, TX 73301",
+    },
     advisors: [
       {
         name: "Alex Johnson",
@@ -46,6 +58,12 @@ export const firmDetails = {
   },
 
   "Summit Advisory Partners": {
+    firmInfo: {
+      crd: "452209",
+      phone: "555-778-9033",
+      email: "team@summitadvisors.com",
+      address: "800 Canyon Rd, Denver, CO 80203",
+    },
     advisors: [
       {
         name: "Michael Davis",
@@ -59,6 +77,12 @@ export const firmDetails = {
   },
 
   "Northstar Capital Management": {
+    firmInfo: {
+      crd: "998100",
+      phone: "555-668-4521",
+      email: "office@northstarcm.com",
+      address: "221 Beacon Blvd, Seattle, WA 98101",
+    },
     advisors: [
       {
         name: "Sarah Miller",
@@ -79,6 +103,12 @@ export const firmDetails = {
   },
 
   "Evergreen Wealth Planning": {
+    firmInfo: {
+      crd: "551109",
+      phone: "555-998-1123",
+      email: "support@evergreenwp.com",
+      address: "940 Evergreen Terrace, Portland, OR 97035",
+    },
     advisors: [
       {
         name: "Lisa Anderson",
@@ -92,6 +122,12 @@ export const firmDetails = {
   },
 
   "Apex Strategic Advisors": {
+    firmInfo: {
+      crd: "128992",
+      phone: "555-491-7782",
+      email: "team@apexsa.com",
+      address: "18 Crestview Dr, Salt Lake City, UT 84044",
+    },
     advisors: [
       {
         name: "David Lee",
@@ -105,6 +141,12 @@ export const firmDetails = {
   },
 
   "Horizon Private Clients": {
+    firmInfo: {
+      crd: "881144",
+      phone: "555-312-4477",
+      email: "info@horizonpc.com",
+      address: "360 Lakeview Blvd, Charlotte, NC 28202",
+    },
     advisors: [
       {
         name: "Anna Kim",
@@ -125,6 +167,12 @@ export const firmDetails = {
   },
 
   "Titanium Wealth Group": {
+    firmInfo: {
+      crd: "301244",
+      phone: "555-889-0044",
+      email: "service@titaniumwg.com",
+      address: "820 Ridge Crest, Dallas, TX 75201",
+    },
     advisors: [
       {
         name: "Tom Parker",
@@ -138,6 +186,12 @@ export const firmDetails = {
   },
 
   "Atlas Financial Network": {
+    firmInfo: {
+      crd: "449002",
+      phone: "555-678-9911",
+      email: "contact@atlasfn.com",
+      address: "4412 Ocean Blvd, San Diego, CA 92037",
+    },
     advisors: [
       {
         name: "Rachel Lee",
@@ -151,6 +205,12 @@ export const firmDetails = {
   },
 
   "Blue Ridge Investment House": {
+    firmInfo: {
+      crd: "220498",
+      phone: "555-890-2233",
+      email: "contact@blueridgeih.com",
+      address: "100 Blue Ridge Pkwy, Asheville, NC 28801",
+    },
     advisors: [
       {
         name: "Kevin Young",

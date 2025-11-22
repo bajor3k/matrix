@@ -21,9 +21,37 @@ export default function FirmProfile() {
 
   return (
     <div className="text-white p-6 md:p-10 space-y-10">
+      {/* Firm Name */}
       <h1 className="text-4xl font-bold">{decoded}</h1>
 
-      {/* Advisors */}
+      {/* FIRM INFO CARD */}
+      {data.firmInfo && (
+        <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
+          <h2 className="text-xl font-semibold mb-3">Firm Information</h2>
+
+          <p className="text-gray-300">
+            <span className="font-semibold text-white">Firm CRD:</span>{" "}
+            {data.firmInfo.crd}
+          </p>
+
+          <p className="text-gray-300 mt-1">
+            <span className="font-semibold text-white">Phone:</span>{" "}
+            {data.firmInfo.phone}
+          </p>
+
+          <p className="text-gray-300 mt-1">
+            <span className="font-semibold text-white">Email:</span>{" "}
+            {data.firmInfo.email}
+          </p>
+
+          <p className="text-gray-300 mt-1">
+            <span className="font-semibold text-white">Address:</span>{" "}
+            {data.firmInfo.address}
+          </p>
+        </div>
+      )}
+
+      {/* ADVISOR CARDS */}
       {data.advisors.map((advisor, i) => (
         <div
           key={i}
@@ -34,6 +62,7 @@ export default function FirmProfile() {
           <p className="text-gray-400">CRD: {advisor.crd}</p>
           <p className="text-gray-400">Firm CRD: {advisor.firmCrd}</p>
 
+          {/* Custodian/Tags */}
           <div className="flex gap-3 mt-4 flex-wrap">
             {advisor.tags.map((tag, j) => (
               <span
@@ -49,7 +78,7 @@ export default function FirmProfile() {
         </div>
       ))}
 
-      {/* Client Associates */}
+      {/* TEAM MEMBERS */}
       {data.associates.length > 0 && (
         <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
           <h3 className="text-xl font-semibold mb-4">Team Members</h3>
