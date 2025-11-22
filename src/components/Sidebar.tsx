@@ -1,3 +1,4 @@
+
 // components/Sidebar.tsx
 "use client";
 
@@ -23,11 +24,10 @@ const reportItems: NavItem[] = navigationData['Reports'];
 const crmItems: NavItem[] = navigationData['CRM'];
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
-const terminalItem: NavItem = navigationData['Standalone'][0];
-const terminal2Item: NavItem = navigationData['Standalone'][1];
-const marginItem: NavItem = navigationData['Standalone'][2];
-const projectItem: NavItem = navigationData['Standalone'][3];
-const crm2Item: NavItem = navigationData['Standalone'][4];
+const terminal2Item: NavItem = navigationData['Standalone'][0];
+const marginItem: NavItem = navigationData['Standalone'][1];
+const projectItem: NavItem = navigationData['Standalone'][2];
+const crm2Item: NavItem = navigationData['Standalone'][3];
 const settingsItem: NavItem = navigationData['Other'][0];
 
 
@@ -68,7 +68,6 @@ export default function Sidebar({
     "/analytics/conversion", "/analytics/compliance", "/analytics/contribution"
   ].some(p => pathname.startsWith(p)) || pathname.startsWith("/dashboard"), [pathname]);
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
-  const isTerminal = useMemo(() => pathname === "/terminal", [pathname]);
   const isTerminal2 = useMemo(() => pathname === "/terminal-2-0", [pathname]);
   const isMargin = useMemo(() => pathname === "/margin", [pathname]);
   const isProject = useMemo(() => pathname === "/project", [pathname]);
