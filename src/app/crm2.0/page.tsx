@@ -109,7 +109,7 @@ export default function CRM2() {
     <div className="text-white p-6 md:p-10">
 
       {/* SEARCH */}
-      <div className="w-full max-w-3xl mx-auto mb-6">
+      <div className="w-full max-w-3xl mx-auto mb-10">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -118,23 +118,6 @@ export default function CRM2() {
         />
       </div>
       
-        {/* Tag Filters */}
-      <div className="flex flex-wrap gap-3 mb-10 justify-center">
-        {tagList.map((tag) => (
-          <button
-            key={tag}
-            onClick={() => toggleTag(tag)}
-            className={`px-4 py-2 rounded-full text-sm transition capitalize 
-              ${activeTags.includes(tag)
-                ? "bg-white text-black font-semibold"
-                : "bg-black/40 border border-white/10 hover:bg-white/20"
-              }`}
-          >
-            {tag}
-          </button>
-        ))}
-      </div>
-
       {loading && (
         <div className="flex justify-center items-center p-10">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
