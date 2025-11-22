@@ -1,7 +1,7 @@
-
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function CRM2() {
   const [search, setSearch] = useState("");
@@ -179,9 +179,13 @@ export default function CRM2() {
             {filtered.map((firm, index) => (
               <tr
                 key={index}
-                className="border-t border-white/5"
+                className="border-t border-white/5 hover:bg-white/5 transition"
               >
-                <td className="py-4 px-6 font-medium">{firm.name}</td>
+                <td className="py-4 px-6 font-medium">
+                  <Link href={`/crm2.0/${encodeURIComponent(firm.name)}`} className="hover:underline">
+                    {firm.name}
+                  </Link>
+                </td>
                 <td className="py-4 px-6 text-gray-300">{firm.phone}</td>
                 <td className="py-4 px-6 text-gray-300">{firm.email}</td>
                 <td className="py-4 px-6">
