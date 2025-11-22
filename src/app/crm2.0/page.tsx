@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { db } from "@/firebase/config";
 import { collection, onSnapshot } from "firebase/firestore";
+import { Loader2 } from "lucide-react";
 
 interface ClientAssociate {
     name: string;
@@ -42,12 +43,27 @@ export default function CRM2() {
   const [households, setHouseholds] = useState<Household[]>([]);
   const [search, setSearch] = useState("");
   const [activeTags, setActiveTags] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [noDataWarning, setNoDataWarning] = useState(false);
 
   useEffect(() => {
+    console.log("PROJECT ID:", process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
     const unsub = onSnapshot(collection(db, "households"), (snap) => {
+      console.log("Loaded documents:", snap.docs.length);
+      console.log("Raw documents:", snap.docs.map(d => d.data()));
+      
       const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Household));
-      console.log("Loaded households:", docs.length);
       setHouseholds(docs);
+      setLoading(false);
+      if (snap.empty) {
+        setNoDataWarning(true);
+      } else {
+        setNoDataWarning(false);
+      }
+    }, (error) => {
+        console.error("Firestore snapshot error:", error);
+        setLoading(false);
+        setNoDataWarning(true);
     });
     return () => unsub();
   }, []);
@@ -119,6 +135,19 @@ export default function CRM2() {
         ))}
       </div>
 
+      {loading && (
+        <div className="flex justify-center items-center p-10">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      )}
+
+      {noDataWarning && !loading && (
+        <div className="text-red-500 text-xl mt-10 p-6 bg-red-500/10 border border-red-500/50 rounded-lg text-center">
+          ⚠ No Firestore data found in /households.
+          <br />  
+          Check your Firebase project ID or Firestore security rules.
+        </div>
+      )}
 
       {/* RESULTS */}
       <div className="max-w-4xl mx-auto mt-10 space-y-10">
