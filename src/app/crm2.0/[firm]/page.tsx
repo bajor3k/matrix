@@ -12,7 +12,7 @@ export default function FirmProfile() {
 
   if (!data) {
     return (
-      <div className="text-white p-10">
+      <div className="text-white p-6 md:p-10">
         <h1 className="text-3xl font-bold mb-4">Firm Not Found</h1>
         <p className="text-gray-400">No dummy data exists for this firm yet.</p>
       </div>
@@ -83,15 +83,28 @@ export default function FirmProfile() {
         <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
           <h3 className="text-xl font-semibold mb-4">Team Members</h3>
 
+          <div className="grid grid-cols-4 font-semibold text-gray-300 pb-3 border-b border-white/10">
+            <div>Name</div>
+            <div>Job Title</div>
+            <div>PIN</div>
+            <div className="text-right">Contact</div>
+          </div>
+
           {data.associates.map((ca, i) => (
             <div
               key={i}
-              className="flex justify-between border-b border-white/5 py-3 last:border-b-0"
+              className="grid grid-cols-4 py-4 border-b border-white/5 last:border-b-0"
             >
-              <div>
-                <p className="font-semibold">{ca.name}</p>
-                <p className="text-gray-400 text-sm">{ca.role}</p>
-              </div>
+              {/* Name */}
+              <div className="font-semibold text-white">{ca.name}</div>
+
+              {/* Job Title */}
+              <div className="text-gray-300">{ca.role}</div>
+
+              {/* PIN */}
+              <div className="text-gray-300">{ca.pin}</div>
+
+              {/* Contact */}
               <div className="text-right">
                 <p>{ca.email}</p>
                 <p>{ca.phone}</p>
