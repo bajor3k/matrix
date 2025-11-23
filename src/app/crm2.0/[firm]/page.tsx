@@ -32,16 +32,16 @@ export default function FirmProfile() {
           <div className="grid grid-cols-4 font-semibold text-gray-300 pb-3 border-b border-white/10">
             <div>Firm CRD</div>
             <div>Phone</div>
-            <div>Email</div>
             <div>Address</div>
+            <div className="text-right">Email</div>
           </div>
           <div
               className="grid grid-cols-4 py-4 border-b border-white/5 last:border-b-0 items-center"
             >
               <div className="text-gray-300">{data.firmInfo.crd}</div>
               <div className="text-gray-300">{data.firmInfo.phone}</div>
-              <div className="text-gray-300 text-sm">{data.firmInfo.email}</div>
               <div className="text-gray-300">{data.firmInfo.address}</div>
+              <div className="text-gray-300 text-sm text-right">{data.firmInfo.email}</div>
             </div>
         </div>
       )}
@@ -53,7 +53,7 @@ export default function FirmProfile() {
           <div className="grid grid-cols-3 font-semibold text-gray-300 pb-3 border-b border-white/10">
             <div>Name</div>
             <div>CRD</div>
-            <div>Email</div>
+            <div className="text-right">Email</div>
           </div>
           {data.advisors.map((advisor, i) => (
             <div
@@ -62,7 +62,7 @@ export default function FirmProfile() {
             >
               <div className="font-semibold text-white">{advisor.name}</div>
               <div className="text-gray-300">{advisor.crd}</div>
-              <div className="text-gray-300 text-sm">{advisor.email}</div>
+              <div className="text-gray-300 text-sm text-right">{advisor.email}</div>
             </div>
           ))}
         </div>
