@@ -3,16 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 
-const tagColors: Record<string, string> = {
-  Pershing: "bg-blue-600/20 text-blue-300 border-blue-500/30",
-  Schwab: "bg-green-600/20 text-green-300 border-green-500/30",
-  Fidelity: "bg-yellow-600/20 text-yellow-300 border-yellow-500/30",
-  Goldman: "bg-red-600/20 text-red-300 border-red-500/30",
-  PAS: "bg-purple-600/20 text-purple-300 border-purple-500/30",
-};
-
 export default function CRM2() {
   const [search, setSearch] = useState("");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
@@ -91,16 +84,23 @@ export default function CRM2() {
     },
   ]);
 
-  // 🔎 Filtering
-  const filtered = firms.filter((firm) => {
-    const text = search.toLowerCase();
-    return (
-      firm.name.toLowerCase().includes(text) ||
-      firm.phone.toLowerCase().includes(text) ||
-      firm.email.toLowerCase().includes(text) ||
-      firm.tags.some((tag) => tag.toLowerCase().includes(text))
-    );
-  });
+  // Tag colors
+  const tagColors: Record<string, string> = {
+    Pershing: "bg-blue-600/20 text-blue-300 border-blue-500/30",
+    Schwab: "bg-green-600/20 text-green-300 border-green-500/30",
+    Fidelity: "bg-yellow-600/20 text-yellow-300 border-yellow-500/30",
+    Goldman: "bg-red-600/20 text-red-300 border-red-500/30",
+    PAS: "bg-purple-600/20 text-purple-300 border-purple-500/30",
+  };
+
+  // TAG FILTER LOGIC
+  const toggleTagFilter = (tag: string) => {
+    if (selectedTag === tag) {
+      setSelectedTag(null);
+    } else {
+      setSelectedTag(tag);
+    }
+  };
 
   // ➕ Open modal for adding
   const openAddModal = () => {
@@ -111,7 +111,6 @@ export default function CRM2() {
 
   // ✏ Open modal for editing
   const openEditModal = (index: number) => {
-    // We need to find the original index in the `firms` array, not the `filtered` array
     const originalIndex = firms.findIndex(f => f.name === filtered[index].name);
     if (originalIndex === -1) return;
 
@@ -149,6 +148,20 @@ export default function CRM2() {
 
     setModalOpen(false);
   };
+
+  // FILTERED FIRMS
+  const filtered = firms.filter((firm) => {
+    const text = search.toLowerCase();
+    const matchesSearch =
+      firm.name.toLowerCase().includes(text) ||
+      firm.phone.toLowerCase().includes(text) ||
+      firm.email.toLowerCase().includes(text);
+
+    const matchesTag =
+      selectedTag === null || firm.tags.includes(selectedTag);
+
+    return matchesSearch && matchesTag;
+  });
 
   return (
     <div className="text-white p-6 md:p-10">
@@ -198,12 +211,22 @@ export default function CRM2() {
                 </td>
                 <td className="py-4 px-6 text-gray-300">{firm.phone}</td>
                 <td className="py-4 px-6 text-gray-300">{firm.email}</td>
+                {/* TAGS - CLICKABLE */}
                 <td className="py-4 px-6">
                   <div className="flex gap-2 flex-wrap">
                     {firm.tags.map((tag, i) => (
                       <span
                         key={i}
-                        className={`px-3 py-1 rounded-full text-sm border ${tagColors[tag] || "bg-white/10 border-white/10"}`}
+                        onClick={() => toggleTagFilter(tag)}
+                        className={`
+                          px-3 py-1 rounded-full text-sm border cursor-pointer transition
+                          ${tagColors[tag] || "bg-white/10 border-white/10"}
+                          ${
+                            selectedTag === tag
+                              ? "ring-2 ring-white/40 scale-105"
+                              : ""
+                          }
+                        `}
                       >
                         {tag}
                       </span>
