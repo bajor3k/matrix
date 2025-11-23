@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useParams } from "next/navigation";
@@ -83,7 +84,7 @@ export default function FirmProfile() {
             <div>Name</div>
             <div>Job Title</div>
             <div>PIN</div>
-            <div className="text-right">Contact</div>
+            <div className="text-right">Email</div>
           </div>
 
           {data.associates.map((ca, i) => (
