@@ -8,6 +8,7 @@ export const firmDetails = {
       address: "12 Oak Ridge Ave, Springfield, IL 62701",
       ip: "GPW",
     },
+    tags: ["Pershing", "PAS"],
     advisors: [
       {
         name: "John Miller",
@@ -42,6 +43,7 @@ export const firmDetails = {
       address: "77 Market Square, Austin, TX 73301",
       ip: "BFG",
     },
+    tags: ["Fidelity"],
     advisors: [
       {
         name: "Alex Johnson",
@@ -70,6 +72,7 @@ export const firmDetails = {
       address: "800 Canyon Rd, Denver, CO 80203",
       ip: "SAP",
     },
+    tags: ["Schwab"],
     advisors: [
       {
         name: "Michael Davis",
@@ -91,6 +94,7 @@ export const firmDetails = {
       address: "221 Beacon Blvd, Seattle, WA 98101",
       ip: "NCM",
     },
+    tags: ["Goldman"],
     advisors: [
       {
         name: "Sarah Miller",
@@ -119,6 +123,7 @@ export const firmDetails = {
       address: "940 Evergreen Terrace, Portland, OR 97035",
       ip: "EWP",
     },
+    tags: ["Pershing"],
     advisors: [
       {
         name: "Lisa Anderson",
@@ -140,6 +145,7 @@ export const firmDetails = {
       address: "18 Crestview Dr, Salt Lake City, UT 84044",
       ip: "ASA",
     },
+    tags: ["PAS"],
     advisors: [
       {
         name: "David Lee",
@@ -161,6 +167,7 @@ export const firmDetails = {
       address: "360 Lakeview Blvd, Charlotte, NC 28202",
       ip: "HPC",
     },
+    tags: ["Fidelity"],
     advisors: [
       {
         name: "Anna Kim",
@@ -189,6 +196,7 @@ export const firmDetails = {
       address: "820 Ridge Crest, Dallas, TX 75201",
       ip: "TWG",
     },
+    tags: ["Schwab"],
     advisors: [
       {
         name: "Tom Parker",
@@ -210,6 +218,7 @@ export const firmDetails = {
       address: "4412 Ocean Blvd, San Diego, CA 92037",
       ip: "AFN",
     },
+    tags: ["Goldman"],
     advisors: [
       {
         name: "Rachel Lee",
@@ -231,6 +240,7 @@ export const firmDetails = {
       address: "100 Blue Ridge Pkwy, Asheville, NC 28801",
       ip: "BRH",
     },
+    tags: ["Pershing"],
     advisors: [
       {
         name: "Kevin Young",

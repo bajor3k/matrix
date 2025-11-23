@@ -254,18 +254,16 @@ export default function FirmProfile() {
       {/* Firm */}
       <h2 className="text-xl font-semibold mb-2">Firm</h2>
       <div className="bg-card p-6 rounded-2xl border border-border mt-1">
-        <div className="grid grid-cols-5 font-semibold text-muted-foreground pb-3 border-b border-border">
+        <div className="grid grid-cols-4 font-semibold text-muted-foreground pb-3 border-b border-border">
           <div>CRD</div>
           <div>Phone</div>
           <div>Address</div>
-          <div>Logo</div>
           <div>Email</div>
         </div>
-        <div className="grid grid-cols-5 py-3">
+        <div className="grid grid-cols-4 py-3">
           <div>{data.firmInfo.crd}</div>
           <div>{data.firmInfo.phone}</div>
           <div className="pr-4">{data.firmInfo.address}</div>
-          <div>Download</div>
           <div>{data.firmInfo.email}</div>
         </div>
       </div>
@@ -287,7 +285,7 @@ export default function FirmProfile() {
 
             {/* Rows */}
             {data.advisors.map((a: any, i: number) => (
-              <div key={i} className="grid grid-cols-7 py-3 border-b border-border/70 last:border-0">
+              <div key={i} className="grid grid-cols-7 py-3 border-b border-border/70 last:border-0 items-center">
                 <div className="font-semibold">{a.name}</div>
                 <div>{a.title || "Financial Advisor"}</div>
                 <div>{a.pin || "0000"}</div>
@@ -320,7 +318,7 @@ export default function FirmProfile() {
 
             {/* Rows */}
             {data.associates.map((ca: any, i: number) => (
-              <div key={i} className="grid grid-cols-7 py-3 border-b border-border/70 last:border-0">
+              <div key={i} className="grid grid-cols-7 py-3 border-b border-border/70 last:border-0 items-center">
                 <div className="font-semibold">{ca.name}</div>
                 <div>{ca.role || "Client Associate"}</div>
                 <div>{ca.pin}</div>
@@ -340,7 +338,7 @@ export default function FirmProfile() {
       )}
 
       {/* CUSTODIAN IDENTIFIERS */}
-      <h2 className="text-xl font-semibold mb-2">Custodian Identifiers</h2>
+      <h2 className="text-xl font-semibold mt-10 mb-2">Custodian Identifiers</h2>
       <div className="bg-card p-6 rounded-2xl border border-border">
 
         {/* Table Header */}
@@ -386,7 +384,7 @@ export default function FirmProfile() {
         ].map((row, idx) => (
           <div
             key={idx}
-            className="grid grid-cols-4 py-3 border-b border-border/70 last:border-0"
+            className="grid grid-cols-4 py-3 border-b border-border/70 last:border-0 items-center"
           >
             <div>{row.custodian}</div>
             <div>{row.type}</div>
@@ -565,6 +563,3 @@ function DeltaPill({
     </span>
   );
 }
-
-
-    
