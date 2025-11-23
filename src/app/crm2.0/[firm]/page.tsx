@@ -252,7 +252,6 @@ export default function FirmProfile() {
       
 
       {/* Firm */}
-      <h2 className="text-xl font-semibold mb-2">Firm</h2>
       <div className="bg-card p-6 rounded-2xl border border-border mt-1">
         <div className="grid grid-cols-4 font-semibold text-muted-foreground pb-3 border-b border-border">
           <div>CRD</div>
@@ -270,9 +269,7 @@ export default function FirmProfile() {
 
       {/* Advisors */}
       {data.advisors && data.advisors.length > 0 && (
-        <>
-          <h2 className="text-xl font-semibold mt-10 mb-2">Advisors</h2>
-          <div className="bg-card p-6 rounded-2xl border border-border mt-1">
+        <div className="bg-card p-6 rounded-2xl border border-border mt-1">
             <div className="grid grid-cols-7 font-semibold text-muted-foreground pb-3 border-b border-border">
               <div>Name</div>
               <div>Title</div>
@@ -297,15 +294,12 @@ export default function FirmProfile() {
                 <div className="text-right font-semibold">{Math.floor(Math.random() * 10) + 1}</div>
               </div>
             ))}
-          </div>
-        </>
+        </div>
       )}
 
       {/* Team Members */}
       {data.associates && data.associates.length > 0 && (
-        <>
-          <h2 className="text-xl font-semibold mt-10 mb-2">Team Members</h2>
-          <div className="bg-card p-6 rounded-2xl border border-border mt-1">
+        <div className="bg-card p-6 rounded-2xl border border-border mt-1">
             <div className="grid grid-cols-7 font-semibold text-muted-foreground pb-3 border-b border-border">
               <div>Name</div>
               <div>Title</div>
@@ -333,12 +327,10 @@ export default function FirmProfile() {
                 <div className="text-right font-semibold">{Math.floor(Math.random() * 8) + 1}</div>
               </div>
             ))}
-          </div>
-        </>
+        </div>
       )}
 
       {/* CUSTODIAN IDENTIFIERS */}
-      <h2 className="text-xl font-semibold mt-10 mb-2">Custodian Identifiers</h2>
       <div className="bg-card p-6 rounded-2xl border border-border">
 
         {/* Table Header */}
@@ -398,7 +390,6 @@ export default function FirmProfile() {
       {/* METRICS SECTION */}
       <section className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Tickets & Calls Metrics</h2>
           <div className="flex gap-2">
             {rangeButtons.map((btn) => (
               <button
