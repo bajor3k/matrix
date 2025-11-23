@@ -82,7 +82,7 @@ export default function FirmProfile() {
 
           <div className="grid grid-cols-4 font-semibold text-gray-300 pb-3 border-b border-white/10">
             <div>Name</div>
-            <div>Job Title</div>
+            <div>Title</div>
             <div>PIN</div>
             <div className="text-right">Email</div>
           </div>
