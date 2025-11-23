@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useParams } from "next/navigation";
@@ -107,7 +108,6 @@ export default function FirmProfile() {
               {/* Contact */}
               <div className="text-right">
                 <p>{ca.email}</p>
-                <p>{ca.phone}</p>
               </div>
             </div>
           ))}

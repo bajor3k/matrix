@@ -1,3 +1,4 @@
+
 export const firmDetails = {
   "Goliath Private Wealth": {
     firmInfo: {
@@ -20,14 +21,12 @@ export const firmDetails = {
         name: "Susan Brown",
         role: "Client Associate",
         email: "susan.brown@goliathpw.com",
-        phone: "555-123-4567",
         pin: "4821",
       },
       {
         name: "James Smith",
         role: "Client Associate",
         email: "james.smith@goliathpw.com",
-        phone: "555-876-5432",
         pin: "9034",
       },
     ],
@@ -54,7 +53,6 @@ export const firmDetails = {
         name: "Emily Brown",
         role: "Client Associate",
         email: "emily.brown@beaconfg.com",
-        phone: "555-456-7890",
         pin: "1122",
       },
     ],
@@ -100,7 +98,6 @@ export const firmDetails = {
         name: "Chris Wilson",
         role: "Client Associate",
         email: "chris.wilson@northstarcm.com",
-        phone: "555-789-0123",
         pin: "3344",
       },
     ],
@@ -165,7 +162,6 @@ export const firmDetails = {
         name: "Mark Taylor",
         role: "Client Associate",
         email: "mark.taylor@horizonpc.com",
-        phone: "555-135-2468",
         pin: "5566",
       },
     ],
@@ -230,7 +226,6 @@ export const firmDetails = {
         name: "Tom Bailey",
         role: "Client Associate",
         email: "tom.bailey@blueridgeih.com",
-        phone: "555-777-8899",
         pin: "7788",
       },
     ],
