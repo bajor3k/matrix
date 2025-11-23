@@ -6,6 +6,7 @@ export const firmDetails = {
       phone: "555-101-3030",
       email: "contact@goliathpw.com",
       address: "12 Oak Ridge Ave, Springfield, IL 62701",
+      ip: "GPW",
     },
     advisors: [
       {
@@ -38,6 +39,7 @@ export const firmDetails = {
       phone: "555-443-1122",
       email: "info@beaconfg.com",
       address: "77 Market Square, Austin, TX 73301",
+      ip: "BFG",
     },
     advisors: [
       {
@@ -64,6 +66,7 @@ export const firmDetails = {
       phone: "555-778-9033",
       email: "team@summitadvisors.com",
       address: "800 Canyon Rd, Denver, CO 80203",
+      ip: "SAP",
     },
     advisors: [
       {
@@ -83,6 +86,7 @@ export const firmDetails = {
       phone: "555-668-4521",
       email: "office@northstarcm.com",
       address: "221 Beacon Blvd, Seattle, WA 98101",
+      ip: "NCM",
     },
     advisors: [
       {
@@ -109,6 +113,7 @@ export const firmDetails = {
       phone: "555-998-1123",
       email: "support@evergreenwp.com",
       address: "940 Evergreen Terrace, Portland, OR 97035",
+      ip: "EWP",
     },
     advisors: [
       {
@@ -128,6 +133,7 @@ export const firmDetails = {
       phone: "555-491-7782",
       email: "team@apexsa.com",
       address: "18 Crestview Dr, Salt Lake City, UT 84044",
+      ip: "ASA",
     },
     advisors: [
       {
@@ -147,6 +153,7 @@ export const firmDetails = {
       phone: "555-312-4477",
       email: "info@horizonpc.com",
       address: "360 Lakeview Blvd, Charlotte, NC 28202",
+      ip: "HPC",
     },
     advisors: [
       {
@@ -173,6 +180,7 @@ export const firmDetails = {
       phone: "555-889-0044",
       email: "service@titaniumwg.com",
       address: "820 Ridge Crest, Dallas, TX 75201",
+      ip: "TWG",
     },
     advisors: [
       {
@@ -192,6 +200,7 @@ export const firmDetails = {
       phone: "555-678-9911",
       email: "contact@atlasfn.com",
       address: "4412 Ocean Blvd, San Diego, CA 92037",
+      ip: "AFN",
     },
     advisors: [
       {
@@ -211,6 +220,7 @@ export const firmDetails = {
       phone: "555-890-2233",
       email: "contact@blueridgeih.com",
       address: "100 Blue Ridge Pkwy, Asheville, NC 28801",
+      ip: "BRH",
     },
     advisors: [
       {

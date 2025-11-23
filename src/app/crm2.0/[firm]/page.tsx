@@ -29,15 +29,16 @@ export default function FirmProfile() {
       {data.firmInfo && (
         <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
           <h2 className="text-xl font-semibold mb-3">Firm</h2>
-          <div className="grid grid-cols-5 font-semibold text-gray-300 pb-3 border-b border-white/10">
+          <div className="grid grid-cols-6 font-semibold text-gray-300 pb-3 border-b border-white/10">
             <div>Firm CRD</div>
             <div>Phone</div>
             <div>Address</div>
             <div>Logo</div>
+            <div>IP</div>
             <div className="text-right">Email</div>
           </div>
           <div
-              className="grid grid-cols-5 py-4 border-b border-white/5 last:border-b-0 items-center"
+              className="grid grid-cols-6 py-4 border-b border-white/5 last:border-b-0 items-center"
             >
               <div className="text-gray-300">{data.firmInfo.crd}</div>
               <div className="text-gray-300">{data.firmInfo.phone}</div>
@@ -55,6 +56,7 @@ export default function FirmProfile() {
                   Download
                 </a>
               </div>
+               <div className="text-gray-300">{data.firmInfo.ip}</div>
               <div className="text-gray-300 text-sm text-right">{data.firmInfo.email}</div>
             </div>
         </div>
