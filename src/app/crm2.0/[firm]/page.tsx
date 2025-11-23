@@ -55,21 +55,20 @@ export default function FirmProfile() {
       {data.advisors && data.advisors.length > 0 && (
         <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
           <h2 className="text-xl font-semibold mb-4">Advisors</h2>
-          <div className="grid grid-cols-3 font-semibold text-gray-300 pb-3 border-b border-white/10">
+          <div className="grid grid-cols-4 font-semibold text-gray-300 pb-3 border-b border-white/10">
             <div>Name</div>
             <div>CRD</div>
+            <div>Email</div>
             <div>Tags</div>
           </div>
           {data.advisors.map((advisor, i) => (
             <div
               key={i}
-              className="grid grid-cols-3 py-4 border-b border-white/5 last:border-b-0 items-center"
+              className="grid grid-cols-4 py-4 border-b border-white/5 last:border-b-0 items-center"
             >
-              <div>
-                <div className="font-semibold text-white">{advisor.name}</div>
-                <div className="text-gray-400 text-sm">{advisor.email}</div>
-              </div>
+              <div className="font-semibold text-white">{advisor.name}</div>
               <div className="text-gray-300">{advisor.crd}</div>
+              <div className="text-gray-300 text-sm">{advisor.email}</div>
               <div>
                 <div className="flex gap-2 flex-wrap">
                   {advisor.tags.map((tag, j) => (
