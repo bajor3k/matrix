@@ -202,7 +202,7 @@ export default function FirmProfile() {
   ];
 
   return (
-    <div className="text-white p-10 space-y-10">
+    <div className="text-white p-10 space-y-6">
       <h1 className="text-4xl font-bold mb-4">{decoded}</h1>
 
       {/* Firm */}
@@ -244,9 +244,9 @@ export default function FirmProfile() {
               >
                 <div className="font-semibold text-white">{advisor.name}</div>
                 <div>{advisor.title || "Financial Advisor"}</div>
-                <div>{advisor.pin || "1129"}</div>
+                <div>{advisor.pin}</div>
                 <div>{advisor.crd}</div>
-                <div>{advisor.ip || "JML"}</div>
+                <div>{advisor.ip}</div>
                 <div>{advisor.email}</div>
               </div>
             ))}
