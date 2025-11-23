@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export default function CRM2() {
   const [search, setSearch] = useState("");
@@ -86,11 +87,11 @@ export default function CRM2() {
 
   // Tag colors
   const tagColors: Record<string, string> = {
-    Pershing: "bg-blue-600/20 text-blue-300 border-blue-500/30",
-    Schwab: "bg-green-600/20 text-green-300 border-green-500/30",
-    Fidelity: "bg-yellow-600/20 text-yellow-300 border-yellow-500/30",
-    Goldman: "bg-red-600/20 text-red-300 border-red-500/30",
-    PAS: "bg-purple-600/20 text-purple-300 border-purple-500/30",
+    Pershing: "bg-blue-600/20 text-blue-400 border-blue-500/30",
+    Schwab: "bg-green-600/20 text-green-400 border-green-500/30",
+    Fidelity: "bg-yellow-600/20 text-yellow-400 border-yellow-500/30",
+    Goldman: "bg-red-600/20 text-red-400 border-red-500/30",
+    PAS: "bg-purple-600/20 text-purple-400 border-purple-500/30",
   };
 
   // TAG FILTER LOGIC
@@ -164,14 +165,14 @@ export default function CRM2() {
   });
 
   return (
-    <div className="text-white p-6 md:p-10">
+    <div className="text-foreground p-6 md:p-10">
       {/* Search Bar */}
       <div className="max-w-2xl mb-8 relative">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search Partner Firms"
-          className="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none focus:border-white/20"
+          className="w-full p-4 rounded-2xl bg-card border border-border outline-none focus:border-ring"
         />
       </div>
 
@@ -179,22 +180,22 @@ export default function CRM2() {
       <div className="flex justify-end mb-4">
         <button
           onClick={openAddModal}
-          className="px-4 py-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition"
+          className="px-4 py-2 rounded-xl bg-card border border-border hover:bg-accent transition"
         >
           + Add Firm
         </button>
       </div>
 
       {/* Table */}
-      <div className="bg-black/40 rounded-2xl border border-white/10 overflow-x-auto">
+      <div className="bg-card rounded-2xl border border-border overflow-x-auto">
         <table className="w-full text-left min-w-[640px]">
-          <thead className="bg-black/30">
+          <thead className="bg-muted/50">
             <tr>
-              <th className="py-4 px-6 text-gray-400">Name</th>
-              <th className="py-4 px-6 text-gray-400">Phone</th>
-              <th className="py-4 px-6 text-gray-400">Email</th>
-              <th className="py-4 px-6 text-gray-400">Tags</th>
-              <th className="py-4 px-6 text-gray-400"></th>
+              <th className="py-4 px-6 text-muted-foreground">Name</th>
+              <th className="py-4 px-6 text-muted-foreground">Phone</th>
+              <th className="py-4 px-6 text-muted-foreground">Email</th>
+              <th className="py-4 px-6 text-muted-foreground">Tags</th>
+              <th className="py-4 px-6 text-muted-foreground"></th>
             </tr>
           </thead>
 
@@ -202,15 +203,15 @@ export default function CRM2() {
             {filtered.map((firm, index) => (
               <tr
                 key={index}
-                className="border-t border-white/5 hover:bg-white/5 transition"
+                className="border-t border-border hover:bg-accent transition"
               >
                 <td className="py-4 px-6 font-medium">
                   <Link href={`/crm2.0/${encodeURIComponent(firm.name)}`} className="hover:underline">
                     {firm.name}
                   </Link>
                 </td>
-                <td className="py-4 px-6 text-gray-300">{firm.phone}</td>
-                <td className="py-4 px-6 text-gray-300">{firm.email}</td>
+                <td className="py-4 px-6 text-muted-foreground">{firm.phone}</td>
+                <td className="py-4 px-6 text-muted-foreground">{firm.email}</td>
                 {/* TAGS - CLICKABLE */}
                 <td className="py-4 px-6">
                   <div className="flex gap-2 flex-wrap">
@@ -218,15 +219,13 @@ export default function CRM2() {
                       <span
                         key={i}
                         onClick={() => toggleTagFilter(tag)}
-                        className={`
-                          px-3 py-1 rounded-full text-sm border cursor-pointer transition
-                          ${tagColors[tag] || "bg-white/10 border-white/10"}
-                          ${
-                            selectedTag === tag
-                              ? "ring-2 ring-white/40 scale-105"
+                        className={cn(
+                          `px-3 py-1 rounded-full text-sm border cursor-pointer transition`,
+                           tagColors[tag] || "bg-muted border-border",
+                           selectedTag === tag
+                              ? "ring-2 ring-ring ring-offset-2 ring-offset-background scale-105"
                               : ""
-                          }
-                        `}
+                        )}
                       >
                         {tag}
                       </span>
@@ -238,7 +237,7 @@ export default function CRM2() {
                 <td className="py-4 px-6 text-right">
                   <button
                     onClick={() => openEditModal(index)}
-                    className="px-3 py-1 rounded-md bg-white/10 border border-white/20 hover:bg-white/20"
+                    className="px-3 py-1 rounded-md bg-card border border-border hover:bg-accent"
                   >
                     Edit
                   </button>
@@ -246,8 +245,8 @@ export default function CRM2() {
               </tr>
             ))}
              {filtered.length === 0 && (
-              <tr className="border-t border-white/5">
-                <td colSpan={5} className="text-center py-8 text-gray-500">
+              <tr className="border-t border-border">
+                <td colSpan={5} className="text-center py-8 text-muted-foreground">
                     No matching firms found.
                 </td>
               </tr>
@@ -259,8 +258,8 @@ export default function CRM2() {
       {/* MODAL */}
       {modalOpen && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-          <div className="bg-black/80 backdrop-blur-md p-6 rounded-2xl border border-white/10 w-full max-w-lg">
-            <h2 className="text-2xl font-semibold mb-4">
+          <div className="bg-popover p-6 rounded-2xl border border-border w-full max-w-lg">
+            <h2 className="text-2xl font-semibold mb-4 text-popover-foreground">
               {editIndex !== null ? "Edit Firm" : "Add Firm"}
             </h2>
 
@@ -271,7 +270,7 @@ export default function CRM2() {
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                className="p-3 bg-black/40 border border-white/10 rounded-xl"
+                className="p-3 bg-background border border-input rounded-xl"
               />
 
               <input
@@ -280,7 +279,7 @@ export default function CRM2() {
                 onChange={(e) =>
                   setFormData({ ...formData, phone: e.target.value })
                 }
-                className="p-3 bg-black/40 border border-white/10 rounded-xl"
+                className="p-3 bg-background border border-input rounded-xl"
               />
 
               <input
@@ -289,7 +288,7 @@ export default function CRM2() {
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                className="p-3 bg-black/40 border border-white/10 rounded-xl"
+                className="p-3 bg-background border border-input rounded-xl"
               />
 
               <select
@@ -301,7 +300,7 @@ export default function CRM2() {
                     tags: Array.from(e.target.selectedOptions, (opt) => opt.value),
                   })
                 }
-                className="p-3 bg-black/40 border border-white/10 rounded-xl"
+                className="p-3 bg-background border border-input rounded-xl"
               >
                 <option value="Pershing">Pershing</option>
                 <option value="Schwab">Schwab</option>
@@ -315,14 +314,14 @@ export default function CRM2() {
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setModalOpen(false)}
-                className="px-4 py-2 rounded-xl bg-white/10 border border-white/20"
+                className="px-4 py-2 rounded-xl bg-secondary text-secondary-foreground border border-border"
               >
                 Cancel
               </button>
 
               <button
                 onClick={saveFirm}
-                className="px-4 py-2 rounded-xl bg-white text-black font-semibold hover:bg-gray-300"
+                className="px-4 py-2 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90"
               >
                 Save
               </button>

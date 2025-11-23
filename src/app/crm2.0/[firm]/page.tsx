@@ -193,9 +193,9 @@ export default function FirmProfile() {
 
   if (!data) {
     return (
-      <div className="text-white p-10">
+      <div className="text-foreground p-10">
         <h1 className="text-3xl font-bold mb-4">Firm Not Found</h1>
-        <p className="text-gray-400">No dummy data exists for this firm yet.</p>
+        <p className="text-muted-foreground">No dummy data exists for this firm yet.</p>
       </div>
     );
   }
@@ -220,13 +220,13 @@ export default function FirmProfile() {
   ];
 
   return (
-    <div className="text-white p-10 space-y-6">
+    <div className="text-foreground p-10 space-y-6">
       <h1 className="text-4xl font-bold mb-4">{decoded}</h1>
 
       {/* Firm */}
       <h2 className="text-xl font-semibold mb-2">Firm</h2>
-      <div className="bg-black/40 p-6 rounded-2xl border border-white/10 mt-1">
-        <div className="grid grid-cols-5 font-semibold text-gray-300 pb-3 border-b border-white/10">
+      <div className="bg-card p-6 rounded-2xl border border-border mt-1">
+        <div className="grid grid-cols-5 font-semibold text-muted-foreground pb-3 border-b border-border">
           <div>CRD</div>
           <div>Phone</div>
           <div>Address</div>
@@ -242,79 +242,81 @@ export default function FirmProfile() {
         </div>
       </div>
 
-      {/* ADVISORS */}
-      <h2 className="text-xl font-semibold mt-10 mb-2">Advisors</h2>
-      <div className="bg-black/40 p-6 rounded-2xl border border-white/10 mt-1">
+      {/* Advisors */}
+      {data.advisors && data.advisors.length > 0 && (
+        <>
+          <h2 className="text-xl font-semibold mb-2">Advisors</h2>
+          <div className="bg-card p-6 rounded-2xl border border-border mt-1">
+            <div className="grid grid-cols-7 font-semibold text-muted-foreground pb-3 border-b border-border">
+              <div>Name</div>
+              <div>Title</div>
+              <div>PIN</div>
+              <div>CRD</div>
+              <div>Email</div>
+              <div className="text-right">Tickets</div>
+              <div className="text-right">Calls</div>
+            </div>
 
-        {/* Table Header */}
-        <div className="grid grid-cols-7 font-semibold text-gray-300 pb-3 border-b border-white/10">
-          <div>Name</div>
-          <div>Title</div>
-          <div>PIN</div>
-          <div>CRD</div>
-          <div>Email</div>
-          <div className="text-right">Tickets</div>
-          <div className="text-right">Calls</div>
-        </div>
+            {/* Rows */}
+            {data.advisors.map((a: any, i: number) => (
+              <div key={i} className="grid grid-cols-7 py-3 border-b border-border/70 last:border-0">
+                <div className="font-semibold">{a.name}</div>
+                <div>{a.title || "Financial Advisor"}</div>
+                <div>{a.pin || "0000"}</div>
+                <div>{a.crd || "0000000"}</div>
+                <div>{a.email}</div>
 
-        {/* Rows */}
-        {data.advisors.map((a: any, i: number) => (
-          <div key={i} className="grid grid-cols-7 py-3 border-b border-white/5">
-            <div className="font-semibold">{a.name}</div>
-            <div>{a.title || "Financial Advisor"}</div>
-            <div>{a.pin || "0000"}</div>
-            <div>{a.crd || "0000000"}</div>
-            <div>{a.email}</div>
-
-            {/* Dummy ticket + call values */}
-            <div className="text-right font-semibold">{Math.floor(Math.random() * 20) + 1}</div>
-            <div className="text-right font-semibold">{Math.floor(Math.random() * 10) + 1}</div>
+                {/* Dummy ticket + call values */}
+                <div className="text-right font-semibold">{Math.floor(Math.random() * 20) + 1}</div>
+                <div className="text-right font-semibold">{Math.floor(Math.random() * 10) + 1}</div>
+              </div>
+            ))}
           </div>
-        ))}
+        </>
+      )}
 
-      </div>
+      {/* Team Members */}
+      {data.associates && data.associates.length > 0 && (
+        <>
+          <h2 className="text-xl font-semibold mb-2">Team Members</h2>
+          <div className="bg-card p-6 rounded-2xl border border-border mt-1">
+            <div className="grid grid-cols-7 font-semibold text-muted-foreground pb-3 border-b border-border">
+              <div>Name</div>
+              <div>Title</div>
+              <div>PIN</div>
+              <div>CRD</div>
+              <div>Email</div>
+              <div className="text-right">Tickets</div>
+              <div className="text-right">Calls</div>
+            </div>
 
-      {/* TEAM MEMBERS */}
-      <h2 className="text-xl font-semibold mt-10 mb-2">Team Members</h2>
-      <div className="bg-black/40 p-6 rounded-2xl border border-white/10 mt-1">
+            {/* Rows */}
+            {data.associates.map((ca: any, i: number) => (
+              <div key={i} className="grid grid-cols-7 py-3 border-b border-border/70 last:border-0">
+                <div className="font-semibold">{ca.name}</div>
+                <div>{ca.role || "Client Associate"}</div>
+                <div>{ca.pin}</div>
 
-        {/* Table Header */}
-        <div className="grid grid-cols-7 font-semibold text-gray-300 pb-3 border-b border-white/10">
-          <div>Name</div>
-          <div>Title</div>
-          <div>PIN</div>
-          <div>CRD</div>
-          <div>Email</div>
-          <div className="text-right">Tickets</div>
-          <div className="text-right">Calls</div>
-        </div>
+                {/* Associates may not have CRD numbers — so placeholder */}
+                <div>{ca.crd || "—"}</div>
 
-        {/* Rows */}
-        {data.associates.map((ca: any, i: number) => (
-          <div key={i} className="grid grid-cols-7 py-3 border-b border-white/5">
-            <div className="font-semibold">{ca.name}</div>
-            <div>{ca.role || "Client Associate"}</div>
-            <div>{ca.pin}</div>
+                <div>{ca.email}</div>
 
-            {/* Associates may not have CRD numbers — so placeholder */}
-            <div>{ca.crd || "—"}</div>
-
-            <div>{ca.email}</div>
-
-            {/* Dummy ticket + call values */}
-            <div className="text-right font-semibold">{Math.floor(Math.random() * 15) + 1}</div>
-            <div className="text-right font-semibold">{Math.floor(Math.random() * 8) + 1}</div>
+                {/* Dummy ticket + call values */}
+                <div className="text-right font-semibold">{Math.floor(Math.random() * 15) + 1}</div>
+                <div className="text-right font-semibold">{Math.floor(Math.random() * 8) + 1}</div>
+              </div>
+            ))}
           </div>
-        ))}
-
-      </div>
+        </>
+      )}
 
       {/* CUSTODIAN IDENTIFIERS */}
-      <h2 className="text-xl font-semibold mt-10 mb-2">Custodian Identifiers</h2>
-      <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
+      <h2 className="text-xl font-semibold mb-2">Custodian Identifiers</h2>
+      <div className="bg-card p-6 rounded-2xl border border-border">
 
         {/* Table Header */}
-        <div className="grid grid-cols-4 font-semibold text-gray-300 pb-3 border-b border-white/10">
+        <div className="grid grid-cols-4 font-semibold text-muted-foreground pb-3 border-b border-border">
           <div>Custodian</div>
           <div>Identifier Type</div>
           <div>Format</div>
@@ -356,7 +358,7 @@ export default function FirmProfile() {
         ].map((row, idx) => (
           <div
             key={idx}
-            className="grid grid-cols-4 py-3 border-b border-white/5 last:border-0"
+            className="grid grid-cols-4 py-3 border-b border-border/70 last:border-0"
           >
             <div>{row.custodian}</div>
             <div>{row.type}</div>
@@ -378,8 +380,8 @@ export default function FirmProfile() {
                 onClick={() => setSelectedRange(btn.key)}
                 className={`px-3 py-1 rounded-full text-sm border ${
                   selectedRange === btn.key
-                    ? "bg-white text-black border-white"
-                    : "bg-black/40 border-white/20 text-gray-300 hover:bg-white/10"
+                    ? "bg-foreground text-background border-foreground"
+                    : "bg-card border-border text-muted-foreground hover:bg-accent"
                 }`}
               >
                 {btn.label}
@@ -389,15 +391,15 @@ export default function FirmProfile() {
         </div>
 
         {/* Firm-level KPIs + Chart */}
-        <div className="bg-black/40 rounded-2xl border border-white/10 p-6">
-          <p className="text-gray-400 mb-4">
+        <div className="bg-card rounded-2xl border border-border p-6">
+          <p className="text-muted-foreground mb-4">
             {rangeData.label} &bull; Firm-wide tickets and calls for this partner.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             {/* Tickets KPI */}
-            <div className="bg-black/40 rounded-xl border border-white/10 p-4">
-              <p className="text-sm text-gray-400 mb-1">Tickets ({rangeData.label})</p>
+            <div className="bg-background rounded-xl border border-border p-4">
+              <p className="text-sm text-muted-foreground mb-1">Tickets ({rangeData.label})</p>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-semibold">
                   {rangeData.totalTickets}
@@ -407,8 +409,8 @@ export default function FirmProfile() {
             </div>
 
             {/* Calls KPI */}
-            <div className="bg-black/40 rounded-xl border border-white/10 p-4">
-              <p className="text-sm text-gray-400 mb-1">Calls ({rangeData.label})</p>
+            <div className="bg-background rounded-xl border border-border p-4">
+              <p className="text-sm text-muted-foreground mb-1">Calls ({rangeData.label})</p>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-semibold">
                   {rangeData.totalCalls}
@@ -422,13 +424,13 @@ export default function FirmProfile() {
           <div className="h-60">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={rangeData.series}>
-                <CartesianGrid stroke="rgba(255,255,255,0.05)" vertical={false} />
-                <XAxis dataKey="label" stroke="#6b7280" />
-                <YAxis stroke="#6b7280" />
+                <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="label" stroke="hsl(var(--muted-foreground))" />
+                <YAxis stroke="hsl(var(--muted-foreground))" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#020617",
-                    border: "1px solid rgba(148,163,184,0.3)",
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
                     borderRadius: "0.75rem",
                     fontSize: "0.75rem",
                   }}
@@ -455,7 +457,7 @@ export default function FirmProfile() {
         </div>
 
         {/* INDIVIDUAL BREAKDOWN */}
-        <div className="bg-black/40 rounded-2xl border border-white/10 p-6">
+        <div className="bg-card rounded-2xl border border-border p-6">
           <h3 className="text-lg font-semibold mb-4">By Individual</h3>
           <div className="grid md:grid-cols-2 gap-4">
             {individualNames.map((name) => {
@@ -463,12 +465,12 @@ export default function FirmProfile() {
               return (
                 <div
                   key={name}
-                  className="bg-black/50 border border-white/10 rounded-xl p-4 flex flex-col gap-3"
+                  className="bg-background border border-border rounded-xl p-4 flex flex-col gap-3"
                 >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-semibold">{name}</p>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-muted-foreground">
                         Tickets: {metric.totalTickets} &nbsp;&bull;&nbsp; Calls:{" "}
                         {metric.totalCalls}
                       </p>
@@ -516,7 +518,7 @@ function DeltaPill({
   const rounded = Math.abs(value).toFixed(1);
   if (type === "flat") {
     return (
-      <span className="px-2 py-0.5 rounded-full text-xs bg-white/5 text-gray-300 border border-white/10">
+      <span className="px-2 py-0.5 rounded-full text-xs bg-muted text-muted-foreground border border-border">
         0.0%
       </span>
     );
@@ -526,8 +528,8 @@ function DeltaPill({
     <span
       className={`px-2 py-0.5 rounded-full text-xs border ${
         isUp
-          ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/40"
-          : "bg-rose-500/10 text-rose-300 border-rose-500/40"
+          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/40"
+          : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/40"
       }`}
     >
       {isUp ? "▲" : "▼"} {rounded}%
