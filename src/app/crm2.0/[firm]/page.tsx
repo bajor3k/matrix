@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useParams } from "next/navigation";
@@ -243,59 +242,72 @@ export default function FirmProfile() {
         </div>
       </div>
 
-      {/* Advisors */}
-      {data.advisors && data.advisors.length > 0 && (
-        <>
-          <h2 className="text-xl font-semibold mt-10 mb-2">Advisors</h2>
-          <div className="bg-black/40 p-6 rounded-2xl border border-white/10 mt-1">
-            <div className="grid grid-cols-6 font-semibold text-gray-300 pb-3 border-b border-white/10">
-              <div>Name</div>
-              <div>Title</div>
-              <div>PIN</div>
-              <div>CRD</div>
-              <div>IP</div>
-              <div>Email</div>
-            </div>
-            {data.advisors.map((advisor: any, i: number) => (
-              <div
-                key={i}
-                className="grid grid-cols-6 py-3 border-b border-white/5"
-              >
-                <div className="font-semibold text-white">{advisor.name}</div>
-                <div>{advisor.title || "Financial Advisor"}</div>
-                <div>{advisor.pin || "1129"}</div>
-                <div>{advisor.crd}</div>
-                <div>{advisor.ip || "JML"}</div>
-                <div>{advisor.email}</div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
+      {/* ADVISORS */}
+      <h2 className="text-xl font-semibold mt-10 mb-2">Advisors</h2>
+      <div className="bg-black/40 p-6 rounded-2xl border border-white/10 mt-1">
 
-      {/* Team Members */}
-      {data.associates && data.associates.length > 0 && (
-        <>
-          <h2 className="text-xl font-semibold mt-10 mb-2">Team Members</h2>
-          <div className="bg-black/40 p-6 rounded-2xl border border-white/10 mt-1">
-            <div className="grid grid-cols-4 font-semibold text-gray-300 pb-3 border-b border-white/10">
-              <div>Name</div>
-              <div>Title</div>
-              <div>PIN</div>
-              <div className="text-right">Email</div>
-            </div>
+        {/* Table Header */}
+        <div className="grid grid-cols-7 font-semibold text-gray-300 pb-3 border-b border-white/10">
+          <div>Name</div>
+          <div>Title</div>
+          <div>PIN</div>
+          <div>CRD</div>
+          <div>Email</div>
+          <div className="text-right">Tickets</div>
+          <div className="text-right">Calls</div>
+        </div>
 
-            {data.associates.map((ca: any, i: number) => (
-              <div key={i} className="grid grid-cols-4 py-3 border-b border-white/5">
-                <div className="font-semibold text-white">{ca.name}</div>
-                <div>{ca.role}</div>
-                <div>{ca.pin}</div>
-                <div className="text-right">{ca.email}</div>
-              </div>
-            ))}
+        {/* Rows */}
+        {data.advisors.map((a: any, i: number) => (
+          <div key={i} className="grid grid-cols-7 py-3 border-b border-white/5">
+            <div className="font-semibold">{a.name}</div>
+            <div>{a.title || "Financial Advisor"}</div>
+            <div>{a.pin || "0000"}</div>
+            <div>{a.crd || "0000000"}</div>
+            <div>{a.email}</div>
+
+            {/* Dummy ticket + call values */}
+            <div className="text-right font-semibold">{Math.floor(Math.random() * 20) + 1}</div>
+            <div className="text-right font-semibold">{Math.floor(Math.random() * 10) + 1}</div>
           </div>
-        </>
-      )}
+        ))}
+
+      </div>
+
+      {/* TEAM MEMBERS */}
+      <h2 className="text-xl font-semibold mt-10 mb-2">Team Members</h2>
+      <div className="bg-black/40 p-6 rounded-2xl border border-white/10 mt-1">
+
+        {/* Table Header */}
+        <div className="grid grid-cols-7 font-semibold text-gray-300 pb-3 border-b border-white/10">
+          <div>Name</div>
+          <div>Title</div>
+          <div>PIN</div>
+          <div>CRD</div>
+          <div>Email</div>
+          <div className="text-right">Tickets</div>
+          <div className="text-right">Calls</div>
+        </div>
+
+        {/* Rows */}
+        {data.associates.map((ca: any, i: number) => (
+          <div key={i} className="grid grid-cols-7 py-3 border-b border-white/5">
+            <div className="font-semibold">{ca.name}</div>
+            <div>{ca.role || "Client Associate"}</div>
+            <div>{ca.pin}</div>
+
+            {/* Associates may not have CRD numbers — so placeholder */}
+            <div>{ca.crd || "—"}</div>
+
+            <div>{ca.email}</div>
+
+            {/* Dummy ticket + call values */}
+            <div className="text-right font-semibold">{Math.floor(Math.random() * 15) + 1}</div>
+            <div className="text-right font-semibold">{Math.floor(Math.random() * 8) + 1}</div>
+          </div>
+        ))}
+
+      </div>
 
       {/* CUSTODIAN IDENTIFIERS */}
       <h2 className="text-xl font-semibold mt-10 mb-2">Custodian Identifiers</h2>
