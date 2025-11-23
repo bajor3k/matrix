@@ -30,7 +30,7 @@ export default function FirmProfile() {
         <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
           <h2 className="text-xl font-semibold mb-3">Firm</h2>
           <div className="grid grid-cols-6 font-semibold text-gray-300 pb-3 border-b border-white/10">
-            <div>Firm CRD</div>
+            <div>CRD</div>
             <div>Phone</div>
             <div>Address</div>
             <div>Logo</div>
@@ -66,7 +66,7 @@ export default function FirmProfile() {
       {data.advisors && data.advisors.length > 0 && (
         <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
           <h2 className="text-xl font-semibold mb-4">Advisors</h2>
-          <div className="grid grid-cols-5 font-semibold text-gray-300 pb-3 border-b border-white/10">
+          <div className="grid grid-cols-6 font-semibold text-gray-300 pb-3 border-b border-white/10">
             <div>Name</div>
             <div>Title</div>
             <div>PIN</div>
