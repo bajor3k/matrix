@@ -13,6 +13,7 @@ import {
   YAxis,
   CartesianGrid,
 } from "recharts";
+import { cn } from "@/lib/utils";
 
 // ---- DUMMY METRICS DATA ----
 
@@ -185,16 +186,24 @@ function randomG() {
   return `G${num}`;
 }
 
+const tagColors: Record<string, string> = {
+  Pershing: "bg-blue-600/20 text-blue-300 border-blue-500/30",
+  Schwab: "bg-green-600/20 text-green-300 border-green-500/30",
+  Fidelity: "bg-yellow-600/20 text-yellow-300 border-yellow-500/30",
+  Goldman: "bg-red-600/20 text-red-300 border-red-500/30",
+  PAS: "bg-purple-600/20 text-purple-300 border-purple-500/30",
+};
+
 export default function FirmProfile() {
   const { firm } = useParams();
   const decoded = decodeURIComponent(firm as string);
-  const data = firmDetails[decoded];
+  const data = firmDetails[decoded as keyof typeof firmDetails];
 
   const [selectedRange, setSelectedRange] = useState<"7D" | "30D" | "90D" | "YTD">("30D");
 
   if (!data) {
     return (
-      <div className="text-foreground p-10">
+      <div className="text-foreground p-6 md:p-10">
         <h1 className="text-3xl font-bold mb-4">Firm Not Found</h1>
         <p className="text-muted-foreground">No dummy data exists for this firm yet.</p>
       </div>
@@ -221,8 +230,26 @@ export default function FirmProfile() {
   ];
 
   return (
-    <div className="text-foreground p-10 space-y-6">
-      <h1 className="text-4xl font-bold mb-10">{decoded}</h1>
+    <div className="text-foreground p-6 md:p-10 space-y-6">
+      <div className="mb-10">
+        <h1 className="text-4xl font-bold">{decoded}</h1>
+        {data.tags && data.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {data.tags.map((tag: string) => (
+              <span
+                key={tag}
+                className={cn(
+                  'px-3 py-1 rounded-full text-sm font-medium border',
+                  tagColors[tag] || 'bg-muted border-border'
+                )}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+      
 
       {/* Firm */}
       <h2 className="text-xl font-semibold mb-2">Firm</h2>
@@ -246,7 +273,7 @@ export default function FirmProfile() {
       {/* Advisors */}
       {data.advisors && data.advisors.length > 0 && (
         <>
-          <h2 className="text-xl font-semibold mb-2">Advisors</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-2">Advisors</h2>
           <div className="bg-card p-6 rounded-2xl border border-border mt-1">
             <div className="grid grid-cols-7 font-semibold text-muted-foreground pb-3 border-b border-border">
               <div>Name</div>
@@ -279,7 +306,7 @@ export default function FirmProfile() {
       {/* Team Members */}
       {data.associates && data.associates.length > 0 && (
         <>
-          <h2 className="text-xl font-semibold mb-2">Team Members</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-2">Team Members</h2>
           <div className="bg-card p-6 rounded-2xl border border-border mt-1">
             <div className="grid grid-cols-7 font-semibold text-muted-foreground pb-3 border-b border-border">
               <div>Name</div>
@@ -462,7 +489,8 @@ export default function FirmProfile() {
           <h3 className="text-lg font-semibold mb-4">By Individual</h3>
           <div className="grid md:grid-cols-2 gap-4">
             {individualNames.map((name) => {
-              const metric = individualMetrics[name][selectedRange];
+              const metric = individualMetrics[name]?.[selectedRange];
+              if (!metric) return null;
               return (
                 <div
                   key={name}
@@ -537,3 +565,5 @@ function DeltaPill({
     </span>
   );
 }
+
+    
