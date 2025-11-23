@@ -61,7 +61,6 @@ export default function FirmProfile() {
           <h2 className="text-2xl font-bold">{advisor.name}</h2>
 
           <p className="text-gray-400">CRD: {advisor.crd}</p>
-          <p className="text-gray-400">Firm CRD: {advisor.firmCrd}</p>
 
           {/* Custodian/Tags */}
           <div className="flex gap-3 mt-4 flex-wrap">

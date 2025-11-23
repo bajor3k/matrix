@@ -11,7 +11,6 @@ export const firmDetails = {
       {
         name: "John Miller",
         crd: "1234567",
-        firmCrd: "98765",
         email: "john.miller@goliathpw.com",
         tags: ["Pershing", "IP01", "4400"],
       },
@@ -43,7 +42,6 @@ export const firmDetails = {
       {
         name: "Alex Johnson",
         crd: "7788991",
-        firmCrd: "54321",
         email: "alex.johnson@beaconfg.com",
         tags: ["Fidelity", "AUS01"],
       },
@@ -69,7 +67,6 @@ export const firmDetails = {
       {
         name: "Michael Davis",
         crd: "9911223",
-        firmCrd: "33221",
         email: "michael.davis@summitadvisors.com",
         tags: ["RIA", "Schwab"],
       },
@@ -88,7 +85,6 @@ export const firmDetails = {
       {
         name: "Sarah Miller",
         crd: "5647382",
-        firmCrd: "91234",
         email: "sarah.miller@northstarcm.com",
         tags: ["Family Office"],
       },
@@ -114,7 +110,6 @@ export const firmDetails = {
       {
         name: "Lisa Anderson",
         crd: "2135467",
-        firmCrd: "84720",
         email: "lisa.anderson@evergreenwp.com",
         tags: ["RIA"],
       },
@@ -133,7 +128,6 @@ export const firmDetails = {
       {
         name: "David Lee",
         crd: "4537821",
-        firmCrd: "11298",
         email: "david.lee@apexsa.com",
         tags: ["Prospect"],
       },
@@ -152,7 +146,6 @@ export const firmDetails = {
       {
         name: "Anna Kim",
         crd: "6758492",
-        firmCrd: "54300",
         email: "anna.kim@horizonpc.com",
         tags: ["VIP"],
       },
@@ -178,7 +171,6 @@ export const firmDetails = {
       {
         name: "Tom Parker",
         crd: "8881113",
-        firmCrd: "66442",
         email: "tom.parker@titaniumwg.com",
         tags: ["RIA"],
       },
@@ -197,7 +189,6 @@ export const firmDetails = {
       {
         name: "Rachel Lee",
         crd: "3216548",
-        firmCrd: "72553",
         email: "rachel.lee@atlasfn.com",
         tags: ["Hybrid"],
       },
@@ -216,7 +207,6 @@ export const firmDetails = {
       {
         name: "Kevin Young",
         crd: "8527413",
-        firmCrd: "99887",
         email: "kevin.young@blueridgeih.com",
         tags: ["RIA"],
       },
