@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useParams } from "next/navigation";
@@ -28,7 +27,7 @@ export default function FirmProfile() {
       {/* FIRM INFO CARD */}
       {data.firmInfo && (
         <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
-          <h2 className="text-xl font-semibold mb-3">Firm Information</h2>
+          <h2 className="text-xl font-semibold mb-3">Firm</h2>
 
           <p className="text-gray-300">
             <span className="font-semibold text-white">Firm CRD:</span>{" "}
