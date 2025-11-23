@@ -166,6 +166,25 @@ function formatDelta(current: number, prev: number | undefined) {
   return { pct, sign: "flat" as const };
 }
 
+function randomIP() {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  return (
+    letters[Math.floor(Math.random() * 26)] +
+    letters[Math.floor(Math.random() * 26)] +
+    letters[Math.floor(Math.random() * 26)]
+  );
+}
+
+function randomMaster() {
+  const n = () => Math.floor(1000 + Math.random() * 9000);
+  return `${n()}-${n()}`;
+}
+
+function randomG() {
+  const num = Math.floor(100000 + Math.random() * 900000);
+  return `G${num}`;
+}
+
 export default function FirmProfile() {
   const { firm } = useParams();
   const decoded = decodeURIComponent(firm as string);
@@ -244,9 +263,9 @@ export default function FirmProfile() {
               >
                 <div className="font-semibold text-white">{advisor.name}</div>
                 <div>{advisor.title || "Financial Advisor"}</div>
-                <div>{advisor.pin}</div>
+                <div>{advisor.pin || "1129"}</div>
                 <div>{advisor.crd}</div>
-                <div>{advisor.ip}</div>
+                <div>{advisor.ip || "JML"}</div>
                 <div>{advisor.email}</div>
               </div>
             ))}
@@ -277,6 +296,64 @@ export default function FirmProfile() {
           </div>
         </>
       )}
+
+      {/* CUSTODIAN IDENTIFIERS */}
+      <h2 className="text-xl font-semibold mt-10 mb-2">Custodian Identifiers</h2>
+      <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
+
+        {/* Table Header */}
+        <div className="grid grid-cols-4 font-semibold text-gray-300 pb-3 border-b border-white/10">
+          <div>Custodian</div>
+          <div>Identifier Type</div>
+          <div>Format</div>
+          <div className="text-right">Value</div>
+        </div>
+
+        {/* Rows */}
+        {[
+          {
+            custodian: "Pershing",
+            type: "IP Code",
+            format: "ABC",
+            value: randomIP(),
+          },
+          {
+            custodian: "Schwab",
+            type: "Master Number",
+            format: "1234-5678",
+            value: randomMaster(),
+          },
+          {
+            custodian: "Fidelity",
+            type: "G Number",
+            format: "G123456",
+            value: randomG(),
+          },
+          {
+            custodian: "PAS",
+            type: "IP Code",
+            format: "ABC",
+            value: randomIP(),
+          },
+          {
+            custodian: "Goldman",
+            type: "IP Code",
+            format: "ABC",
+            value: randomIP(),
+          },
+        ].map((row, idx) => (
+          <div
+            key={idx}
+            className="grid grid-cols-4 py-3 border-b border-white/5 last:border-0"
+          >
+            <div>{row.custodian}</div>
+            <div>{row.type}</div>
+            <div>{row.format}</div>
+            <div className="text-right font-semibold">{row.value}</div>
+          </div>
+        ))}
+
+      </div>
 
       {/* METRICS SECTION */}
       <section className="mt-10 space-y-6">
