@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useParams } from "next/navigation";
@@ -221,7 +222,7 @@ export default function FirmProfile() {
 
   return (
     <div className="text-foreground p-10 space-y-6">
-      <h1 className="text-4xl font-bold mb-4">{decoded}</h1>
+      <h1 className="text-4xl font-bold mb-10">{decoded}</h1>
 
       {/* Firm */}
       <h2 className="text-xl font-semibold mb-2">Firm</h2>
@@ -370,7 +371,7 @@ export default function FirmProfile() {
       </div>
 
       {/* METRICS SECTION */}
-      <section className="mt-10 space-y-6">
+      <section className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">Tickets & Calls Metrics</h2>
           <div className="flex gap-2">
