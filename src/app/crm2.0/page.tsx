@@ -3,16 +3,29 @@
 import { useState } from "react";
 import Link from "next/link";
 
+const tagColors: Record<string, string> = {
+  Pershing: "bg-blue-600/20 text-blue-300 border-blue-500/30",
+  Schwab: "bg-green-600/20 text-green-300 border-green-500/30",
+  Fidelity: "bg-yellow-600/20 text-yellow-300 border-yellow-500/30",
+  Goldman: "bg-red-600/20 text-red-300 border-red-500/30",
+  PAS: "bg-purple-600/20 text-purple-300 border-purple-500/30",
+};
+
 export default function CRM2() {
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    phone: string;
+    email: string;
+    tags: string[];
+  }>({
     name: "",
     phone: "",
     email: "",
-    tags: "",
+    tags: [],
   });
 
   const [firms, setFirms] = useState([
@@ -20,61 +33,61 @@ export default function CRM2() {
       name: "Goliath Private Wealth",
       phone: "555-901-2020",
       email: "info@goliathpw.com",
-      tags: ["RIA", "Multi-Custodian"],
+      tags: ["Pershing", "PAS"],
     },
     {
       name: "Beacon Financial Group",
       phone: "555-443-1122",
       email: "team@beaconfg.com",
-      tags: ["Hybrid", "Boutique"],
+      tags: ["Fidelity"],
     },
     {
       name: "Summit Advisory Partners",
       phone: "555-778-9033",
       email: "contact@summitadvisors.com",
-      tags: ["RIA"],
+      tags: ["Schwab"],
     },
     {
       name: "Northstar Capital Management",
       phone: "555-668-4521",
       email: "hello@northstarcm.com",
-      tags: ["Family Office", "VIP"],
+      tags: ["Goldman"],
     },
     {
       name: "Evergreen Wealth Planning",
       phone: "555-998-1123",
       email: "support@evergreenwp.com",
-      tags: ["RIA", "Lead"],
+      tags: ["Pershing"],
     },
     {
       name: "Apex Strategic Advisors",
       phone: "555-491-7782",
       email: "team@apexsa.com",
-      tags: ["Prospect"],
+      tags: ["PAS"],
     },
     {
       name: "Horizon Private Clients",
       phone: "555-312-4477",
       email: "info@horizonpc.com",
-      tags: ["VIP", "Boutique"],
+      tags: ["Fidelity"],
     },
     {
       name: "Titanium Wealth Group",
       phone: "555-889-0044",
       email: "service@titaniumwg.com",
-      tags: ["RIA"],
+      tags: ["Schwab"],
     },
     {
       name: "Atlas Financial Network",
       phone: "555-678-9911",
       email: "office@atlasfn.com",
-      tags: ["Hybrid"],
+      tags: ["Goldman"],
     },
     {
       name: "Blue Ridge Investment House",
       phone: "555-890-2233",
       email: "contact@blueridgeih.com",
-      tags: ["RIA", "Referred"],
+      tags: ["Pershing"],
     },
   ]);
 
@@ -92,7 +105,7 @@ export default function CRM2() {
   // ➕ Open modal for adding
   const openAddModal = () => {
     setEditIndex(null);
-    setFormData({ name: "", phone: "", email: "", tags: "" });
+    setFormData({ name: "", phone: "", email: "", tags: [] });
     setModalOpen(true);
   };
 
@@ -108,17 +121,14 @@ export default function CRM2() {
       name: firm.name,
       phone: firm.phone,
       email: firm.email,
-      tags: firm.tags.join(", "),
+      tags: firm.tags,
     });
     setModalOpen(true);
   };
 
   // 💾 Save new or edited firm
   const saveFirm = () => {
-    const parsedTags = formData.tags
-      .split(",")
-      .map((t) => t.trim())
-      .filter((t) => t.length > 0);
+    const parsedTags = formData.tags;
 
     if (editIndex !== null) {
       const updated = [...firms];
@@ -193,7 +203,7 @@ export default function CRM2() {
                     {firm.tags.map((tag, i) => (
                       <span
                         key={i}
-                        className="px-3 py-1 rounded-full text-sm bg-black/50 border border-white/10"
+                        className={`px-3 py-1 rounded-full text-sm border ${tagColors[tag] || "bg-white/10 border-white/10"}`}
                       >
                         {tag}
                       </span>
@@ -259,14 +269,23 @@ export default function CRM2() {
                 className="p-3 bg-black/40 border border-white/10 rounded-xl"
               />
 
-              <input
-                placeholder="Tags (comma separated)"
+              <select
+                multiple
                 value={formData.tags}
                 onChange={(e) =>
-                  setFormData({ ...formData, tags: e.target.value })
+                  setFormData({
+                    ...formData,
+                    tags: Array.from(e.target.selectedOptions, (opt) => opt.value),
+                  })
                 }
                 className="p-3 bg-black/40 border border-white/10 rounded-xl"
-              />
+              >
+                <option value="Pershing">Pershing</option>
+                <option value="Schwab">Schwab</option>
+                <option value="Fidelity">Fidelity</option>
+                <option value="Goldman">Goldman</option>
+                <option value="PAS">PAS</option>
+              </select>
             </div>
 
             {/* Modal Actions */}
