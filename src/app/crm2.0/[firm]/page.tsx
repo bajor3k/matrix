@@ -29,26 +29,20 @@ export default function FirmProfile() {
       {data.firmInfo && (
         <div className="bg-black/40 p-6 rounded-2xl border border-white/10">
           <h2 className="text-xl font-semibold mb-3">Firm</h2>
-
-          <p className="text-gray-300">
-            <span className="font-semibold text-white">Firm CRD:</span>{" "}
-            {data.firmInfo.crd}
-          </p>
-
-          <p className="text-gray-300 mt-1">
-            <span className="font-semibold text-white">Phone:</span>{" "}
-            {data.firmInfo.phone}
-          </p>
-
-          <p className="text-gray-300 mt-1">
-            <span className="font-semibold text-white">Email:</span>{" "}
-            {data.firmInfo.email}
-          </p>
-
-          <p className="text-gray-300 mt-1">
-            <span className="font-semibold text-white">Address:</span>{" "}
-            {data.firmInfo.address}
-          </p>
+          <div className="grid grid-cols-4 font-semibold text-gray-300 pb-3 border-b border-white/10">
+            <div>Firm CRD</div>
+            <div>Phone</div>
+            <div>Email</div>
+            <div>Address</div>
+          </div>
+          <div
+              className="grid grid-cols-4 py-4 border-b border-white/5 last:border-b-0 items-center"
+            >
+              <div className="text-gray-300">{data.firmInfo.crd}</div>
+              <div className="text-gray-300">{data.firmInfo.phone}</div>
+              <div className="text-gray-300 text-sm">{data.firmInfo.email}</div>
+              <div className="text-gray-300">{data.firmInfo.address}</div>
+            </div>
         </div>
       )}
 
