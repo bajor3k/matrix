@@ -40,7 +40,11 @@ export default function FirmProfile() {
             >
               <div className="text-gray-300">{data.firmInfo.crd}</div>
               <div className="text-gray-300">{data.firmInfo.phone}</div>
-              <div className="text-gray-300">{data.firmInfo.address}</div>
+              <div className="text-gray-300">
+                {data.firmInfo.address.split(",")[0]}
+                <br />
+                {data.firmInfo.address.split(",").slice(1).join(",").trim()}
+              </div>
                <div>
                 <a 
                   href="https://placehold.co/150x50.png?text=Logo" 
