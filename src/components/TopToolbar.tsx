@@ -44,22 +44,6 @@ export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
       <div className="ml-auto flex items-center gap-2">
         <FullscreenToggle />
         <ThemeToggle />
-         {isLoading ? (
-            <Button variant="outline" size="sm" disabled>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Please wait
-            </Button>
-        ) : user ? (
-            <Button variant="outline" size="sm" onClick={signOutGoogle}>
-                <LogOut className="mr-2 h-4 w-4" />
-                Sign Out
-            </Button>
-        ) : (
-            <Button variant="outline" size="sm" onClick={signInWithGoogleAndGetGmailToken}>
-                <LogIn className="mr-2 h-4 w-4" />
-                Sign In
-            </Button>
-        )}
       </div>
     </header>
   );
