@@ -310,64 +310,6 @@ export default function FirmProfile() {
         </div>
       )}
 
-
-      {/* CUSTODIAN IDENTIFIERS */}
-      <div className="bg-card p-6 rounded-2xl border border-border">
-
-        {/* Table Header */}
-        <div className="grid grid-cols-4 font-semibold text-muted-foreground pb-3 border-b border-border">
-          <div>Custodian</div>
-          <div>Identifier Type</div>
-          <div>Format</div>
-          <div className="text-right">Value</div>
-        </div>
-
-        {/* Rows */}
-        {[
-          {
-            custodian: "Pershing",
-            type: "IP Code",
-            format: "ABC",
-            value: randomIP(),
-          },
-          {
-            custodian: "Schwab",
-            type: "Master Number",
-            format: "1234-5678",
-            value: randomMaster(),
-          },
-          {
-            custodian: "Fidelity",
-            type: "G Number",
-            format: "G123456",
-            value: randomG(),
-          },
-          {
-            custodian: "PAS",
-            type: "IP Code",
-            format: "ABC",
-            value: randomIP(),
-          },
-          {
-            custodian: "Goldman",
-            type: "IP Code",
-            format: "ABC",
-            value: randomIP(),
-          },
-        ].map((row, idx) => (
-          <div
-            key={idx}
-            className="grid grid-cols-4 py-3 border-b border-border/70 last:border-0 items-center"
-          >
-            <div>{row.custodian}</div>
-            <div>{row.type}</div>
-            <div>{row.format}</div>
-            <div className="text-right font-semibold">{row.value}</div>
-          </div>
-        ))}
-
-      </div>
-
     </div>
   );
 }
