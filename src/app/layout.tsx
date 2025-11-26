@@ -2,7 +2,6 @@
 import './globals.css';
 import { fontSans, fontMono } from "./fonts";
 import * as React from 'react';
-import Script from 'next/script';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/auth-context";
