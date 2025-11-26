@@ -94,6 +94,7 @@ export default function CRM2() {
     Goldman: "bg-red-600/20 text-red-400 border-red-500/30",
     PAS: "bg-purple-600/20 text-purple-400 border-purple-500/30",
   };
+  const availableTags = ["Pershing", "Schwab", "Fidelity", "Goldman", "PAS"];
 
   // TAG FILTER LOGIC
   const toggleTagFilter = (tag: string) => {
@@ -149,6 +150,15 @@ export default function CRM2() {
     }
 
     setModalOpen(false);
+  };
+
+  const handleTagToggle = (tag: string) => {
+    setFormData(prev => {
+        const newTags = prev.tags.includes(tag)
+            ? prev.tags.filter(t => t !== tag)
+            : [...prev.tags, tag];
+        return { ...prev, tags: newTags };
+    });
   };
 
   // FILTERED FIRMS
@@ -292,23 +302,25 @@ export default function CRM2() {
                 className="p-3 bg-background border border-input rounded-xl"
               />
 
-              <select
-                multiple
-                value={formData.tags}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    tags: Array.from(e.target.selectedOptions, (opt) => opt.value),
-                  })
-                }
-                className="p-3 bg-background border border-input rounded-xl"
-              >
-                <option value="Pershing">Pershing</option>
-                <option value="Schwab">Schwab</option>
-                <option value="Fidelity">Fidelity</option>
-                <option value="Goldman">Goldman</option>
-                <option value="PAS">PAS</option>
-              </select>
+              <div>
+                <label className="text-sm text-muted-foreground mb-2 block">Custodians</label>
+                <div className="flex flex-wrap gap-2">
+                    {availableTags.map(tag => (
+                        <button
+                            key={tag}
+                            onClick={() => handleTagToggle(tag)}
+                            className={cn(
+                                "px-3 py-1.5 rounded-full text-sm border transition-colors",
+                                formData.tags.includes(tag) 
+                                    ? `${tagColors[tag]} ring-2 ring-ring` 
+                                    : "bg-muted/50 border-border hover:bg-muted"
+                            )}
+                        >
+                            {tag}
+                        </button>
+                    ))}
+                </div>
+              </div>
             </div>
 
             {/* Modal Actions */}
