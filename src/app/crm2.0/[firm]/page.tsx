@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useParams } from "next/navigation";
@@ -252,13 +253,15 @@ export default function FirmProfile() {
 
       {/* Firm */}
       <div className="bg-card p-6 rounded-2xl border border-border mt-1">
-        <div className="grid grid-cols-4 font-semibold text-muted-foreground pb-3 border-b border-border">
+        <div className="grid grid-cols-5 font-semibold text-muted-foreground pb-3 border-b border-border">
+          <div>Logo</div>
           <div>CRD</div>
           <div>Phone</div>
           <div>Address</div>
           <div>Email</div>
         </div>
-        <div className="grid grid-cols-4 py-3">
+        <div className="grid grid-cols-5 py-3">
+          <div></div>
           <div>{data.firmInfo.crd}</div>
           <div>{data.firmInfo.phone}</div>
           <div className="pr-4">{data.firmInfo.address}</div>
