@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -194,7 +195,7 @@ export default function CRM2() {
               <th className="py-4 px-6 text-muted-foreground">Name</th>
               <th className="py-4 px-6 text-muted-foreground">Phone</th>
               <th className="py-4 px-6 text-muted-foreground">Email</th>
-              <th className="py-4 px-6 text-muted-foreground">Tags</th>
+              <th className="py-4 px-6 text-muted-foreground">Custodian</th>
               <th className="py-4 px-6 text-muted-foreground"></th>
             </tr>
           </thead>
