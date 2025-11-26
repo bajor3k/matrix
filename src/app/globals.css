@@ -80,7 +80,7 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 359 79% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 100% / 0.10;
+    --border: 0 0% 100% / 0.08;
     --input: 0 0% 14%;
     --ring: 0 0% 18%;
     --radius: 1rem;
@@ -641,6 +641,8 @@ aside.sidebar { scrollbar-width: none !important; }
     
 
     
+
+
 
 
 
