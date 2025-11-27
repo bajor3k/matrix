@@ -12,9 +12,14 @@ import { ChevronRight } from "lucide-react";
 
 export default function CrmFooterSection({ firm, custodians }: { firm: any, custodians: string[] }) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const miscFileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleCardClick = () => {
     fileInputRef.current?.click();
+  };
+  
+  const handleMiscCardClick = () => {
+    miscFileInputRef.current?.click();
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,12 +79,21 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
       </Card>
 
       {/* Column 3 — Misc Documents */}
-      <Card className="bg-card border border-border/10 rounded-xl">
-        <CardHeader>
-          <CardTitle>Misc Documents</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          {/* Content intentionally removed */}
+      <Card 
+        className="bg-card border border-border/10 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
+        onClick={handleMiscCardClick}
+      >
+        <CardContent className="flex flex-col items-center justify-center h-full p-6">
+           <input
+            type="file"
+            ref={miscFileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <div className="flex items-center text-foreground">
+             <h2 className="text-xl font-semibold">Misc Documents</h2>
+             <ChevronRight className="ml-2 h-6 w-6" />
+          </div>
         </CardContent>
       </Card>
 
