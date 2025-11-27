@@ -15,6 +15,28 @@ const tagColors: Record<string, string> = {
   PAS: "bg-purple-600/20 text-purple-300 border-purple-500/30",
 };
 
+function parseAddress(fullAddress: string) {
+  if (!fullAddress) {
+    return { street: "", city: "", state: "", zip: "" };
+  }
+  const parts = fullAddress.split(",");
+  if (parts.length < 3) {
+    // Return the original string in the street field if parsing fails
+    return { street: fullAddress, city: "", state: "", zip: "" };
+  }
+  const [street, city, rest] = parts;
+  const stateZip = rest ? rest.trim().split(" ") : ["", ""];
+  const state = stateZip[0] || "";
+  const zip = stateZip.slice(1).join(" ") || ""; // Join remaining parts for zip
+  
+  return {
+    street: street.trim(),
+    city: city.trim(),
+    state: state,
+    zip: zip,
+  };
+}
+
 export default function FirmProfile() {
   const { firm } = useParams();
   const decoded = decodeURIComponent(firm as string);
@@ -54,17 +76,30 @@ export default function FirmProfile() {
 
       {/* Firm */}
       <div className="bg-card p-6 rounded-2xl border border-border mt-1">
-        <div className="grid grid-cols-5 font-semibold text-muted-foreground pb-3 border-b border-border">
+        <div className="grid grid-cols-8 font-semibold text-muted-foreground pb-3 border-b border-border">
           <div>CRD</div>
           <div>Phone</div>
-          <div>Address</div>
+          <div>Street</div>
+          <div>City</div>
+          <div>State</div>
+          <div>Zip</div>
           <div>Email</div>
           <div>Logo</div>
         </div>
-        <div className="grid grid-cols-5 py-3">
+        <div className="grid grid-cols-8 py-3">
           <div>{data.firmInfo.crd}</div>
           <div>{data.firmInfo.phone}</div>
-          <div className="pr-4">{data.firmInfo.address}</div>
+           {(() => {
+            const { street, city, state, zip } = parseAddress(data.firmInfo.address ?? "");
+            return (
+              <>
+                <div className="pr-4">{street}</div>
+                <div>{city}</div>
+                <div>{state}</div>
+                <div>{zip}</div>
+              </>
+            );
+          })()}
           <div>{data.firmInfo.email}</div>
           <div></div>
         </div>
