@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { firmDetails } from "@/data/firms";
 import { cn } from "@/lib/utils";
-import { CustodianBar } from "@/components/CustodianBar";
 import {
   Card,
   CardHeader,
@@ -126,7 +125,6 @@ export default function FirmProfile() {
         </div>
       </div>
 
-      {/* NEW CLEAN TEAM CARD (duplicate) */}
       <Card className="mt-6">
         <CardContent className="p-0">
           <Table>
@@ -163,21 +161,6 @@ export default function FirmProfile() {
         </CardContent>
       </Card>
 
-
-      {/* Dynamic custodian card section */}
-      <div className="mt-10 space-y-3">
-        {(data.custodians || []).map((cust: keyof typeof data.codes) => {
-          const values = (data.codes as any)?.[cust] ?? [];
-          if (values.length === 0) return null;
-          return (
-            <CustodianBar
-              key={cust as string}
-              custodian={cust as string}
-              values={values}
-            />
-          );
-        })}
-      </div>
 
       <CrmFooterSection
         firm={data}
