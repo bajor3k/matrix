@@ -9,6 +9,11 @@ export const firmDetails = {
       ip: "GPW",
     },
     tags: ["Pershing", "PAS"],
+    custodians: ["Pershing", "PAS"],
+    codes: {
+      Pershing: ["1129", "4821", "9034"],
+      PAS: ["1129"],
+    },
     advisors: [
       {
         name: "John Miller",
@@ -44,6 +49,10 @@ export const firmDetails = {
       ip: "BFG",
     },
     tags: ["Fidelity"],
+    custodians: ["Fidelity"],
+    codes: {
+      Fidelity: ["G123456", "G987654"],
+    },
     advisors: [
       {
         name: "Alex Johnson",
@@ -73,6 +82,10 @@ export const firmDetails = {
       ip: "SAP",
     },
     tags: ["Schwab"],
+    custodians: ["Schwab"],
+    codes: {
+      Schwab: ["1234-5678", "8765-4321"],
+    },
     advisors: [
       {
         name: "Michael Davis",
@@ -95,6 +108,10 @@ export const firmDetails = {
       ip: "NCM",
     },
     tags: ["Goldman"],
+    custodians: ["Goldman"],
+    codes: {
+      Goldman: ["GS-XYZ-01", "GS-ABC-02"],
+    },
     advisors: [
       {
         name: "Sarah Miller",
@@ -124,6 +141,10 @@ export const firmDetails = {
       ip: "EWP",
     },
     tags: ["Pershing"],
+    custodians: ["Pershing"],
+    codes: {
+      Pershing: ["5543"],
+    },
     advisors: [
       {
         name: "Lisa Anderson",
@@ -146,6 +167,10 @@ export const firmDetails = {
       ip: "ASA",
     },
     tags: ["PAS"],
+    custodians: ["PAS"],
+    codes: {
+      PAS: ["9876"],
+    },
     advisors: [
       {
         name: "David Lee",
@@ -167,7 +192,12 @@ export const firmDetails = {
       address: "360 Lakeview Blvd, Charlotte, NC 28202",
       ip: "HPC",
     },
-    tags: ["Fidelity"],
+    tags: ["Fidelity", "Schwab"],
+    custodians: ["Fidelity", "Schwab"],
+    codes: {
+      Fidelity: ["G223344"],
+      Schwab: ["9876-5432"],
+    },
     advisors: [
       {
         name: "Anna Kim",
@@ -197,6 +227,10 @@ export const firmDetails = {
       ip: "TWG",
     },
     tags: ["Schwab"],
+    custodians: ["Schwab"],
+    codes: {
+      Schwab: ["4343-0001"],
+    },
     advisors: [
       {
         name: "Tom Parker",
@@ -219,6 +253,10 @@ export const firmDetails = {
       ip: "AFN",
     },
     tags: ["Goldman"],
+    custodians: ["Goldman"],
+    codes: {
+      Goldman: ["GS-RLE-01"],
+    },
     advisors: [
       {
         name: "Rachel Lee",
@@ -241,6 +279,10 @@ export const firmDetails = {
       ip: "BRH",
     },
     tags: ["Pershing"],
+    custodians: ["Pershing"],
+    codes: {
+      Pershing: ["2323", "7788"],
+    },
     advisors: [
       {
         name: "Kevin Young",

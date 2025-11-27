@@ -4,155 +4,10 @@
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { firmDetails } from "@/data/firms";
-import {
-  LineChart,
-  Line,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-} from "recharts";
 import { cn } from "@/lib/utils";
+import { CustodianCard } from "@/components/CustodianCard";
+import { custodianFieldMap } from "@/config/custodianFieldMap";
 
-// ---- DUMMY METRICS DATA ----
-
-// One generic dummy metrics template used for all firms.
-// You can customize these numbers later if you want firm-specific behavior.
-const DEFAULT_METRICS = {
-  firm: {
-    "7D": {
-      label: "Last 7 Days",
-      totalTickets: 18,
-      totalCalls: 7,
-      prevTickets: 14,
-      prevCalls: 5,
-      series: [
-        { label: "D1", tickets: 2, calls: 1 },
-        { label: "D2", tickets: 3, calls: 1 },
-        { label: "D3", tickets: 4, calls: 2 },
-        { label: "D4", tickets: 3, calls: 1 },
-        { label: "D5", tickets: 2, calls: 1 },
-        { label: "D6", tickets: 2, calls: 0 },
-        { label: "D7", tickets: 2, calls: 1 },
-      ],
-    },
-    "30D": {
-      label: "Last 30 Days",
-      totalTickets: 60,
-      totalCalls: 24,
-      prevTickets: 48,
-      prevCalls: 20,
-      series: [
-        { label: "W1", tickets: 12, calls: 4 },
-        { label: "W2", tickets: 16, calls: 6 },
-        { label: "W3", tickets: 14, calls: 5 },
-        { label: "W4", tickets: 18, calls: 9 },
-      ],
-    },
-    "90D": {
-      label: "Last 90 Days",
-      totalTickets: 170,
-      totalCalls: 70,
-      prevTickets: 150,
-      prevCalls: 60,
-      series: [
-        { label: "M1", tickets: 55, calls: 22 },
-        { label: "M2", tickets: 60, calls: 23 },
-        { label: "M3", tickets: 55, calls: 25 },
-      ],
-    },
-    YTD: {
-      label: "Year to Date",
-      totalTickets: 420,
-      totalCalls: 180,
-      prevTickets: 380,
-      prevCalls: 160,
-      series: [
-        { label: "Q1", tickets: 120, calls: 50 },
-        { label: "Q2", tickets: 140, calls: 60 },
-        { label: "Q3", tickets: 160, calls: 70 },
-      ],
-    },
-  },
-
-  // Advisor + CA metrics – keyed by display name.
-  // Every person gets the same pattern for now (dummy).
-  individuals: (names: string[]) => {
-    const base = {
-      "7D": {
-        totalTickets: 6,
-        totalCalls: 3,
-        series: [
-          { label: "D1", tickets: 1, calls: 0 },
-          { label: "D2", tickets: 1, calls: 1 },
-          { label: "D3", tickets: 1, calls: 0 },
-          { label: "D4", tickets: 1, calls: 1 },
-          { label: "D5", tickets: 1, calls: 0 },
-          { label: "D6", tickets: 1, calls: 1 },
-          { label: "D7", tickets: 0, calls: 0 },
-        ],
-      },
-      "30D": {
-        totalTickets: 20,
-        totalCalls: 8,
-        series: [
-          { label: "W1", tickets: 5, calls: 2 },
-          { label: "W2", tickets: 4, calls: 2 },
-          { label: "W3", tickets: 5, calls: 2 },
-          { label: "W4", tickets: 6, calls: 2 },
-        ],
-      },
-      "90D": {
-        totalTickets: 55,
-        totalCalls: 22,
-        series: [
-          { label: "M1", tickets: 18, calls: 7 },
-          { label: "M2", tickets: 20, calls: 8 },
-          { label: "M3", tickets: 17, calls: 7 },
-        ],
-      },
-      YTD: {
-        totalTickets: 130,
-        totalCalls: 55,
-        series: [
-          { label: "Q1", tickets: 40, calls: 16 },
-          { label: "Q2", tickets: 45, calls: 18 },
-          { label: "Q3", tickets: 45, calls: 21 },
-        ],
-      },
-    };
-
-    const map: Record<string, typeof base> = {};
-    names.forEach((n, idx) => {
-      // Slightly change totals per person so they don't all look identical
-      const bump = idx * 2;
-      map[n] = {
-        "7D": {
-          ...base["7D"],
-          totalTickets: base["7D"].totalTickets + bump,
-          totalCalls: base["7D"].totalCalls + Math.floor(bump / 2),
-        },
-        "30D": {
-          ...base["30D"],
-          totalTickets: base["30D"].totalTickets + bump * 2,
-          totalCalls: base["30D"].totalCalls + bump,
-        },
-        "90D": {
-          ...base["90D"],
-          totalTickets: base["90D"].totalTickets + bump * 3,
-          totalCalls: base["90D"].totalCalls + bump,
-        },
-        YTD: {
-          ...base["YTD"],
-          totalTickets: base["YTD"].totalTickets + bump * 4,
-          totalCalls: base["YTD"].totalCalls + bump * 2,
-        },
-      };
-    });
-    return map;
-  },
-};
 
 // Neon-ish colors for Recharts lines
 const ticketColor = "#facc15"; // yellow
@@ -210,24 +65,6 @@ export default function FirmProfile() {
     );
   }
 
-  // Build list of all individuals (advisors + team members)
-  const advisorNames = (data.advisors || []).map((a: any) => a.name);
-  const associateNames = (data.associates || []).map((a: any) => a.name);
-  const individualNames = [...advisorNames, ...associateNames];
-
-  const firmMetrics = DEFAULT_METRICS.firm;
-  const individualMetrics = DEFAULT_METRICS.individuals(individualNames);
-
-  const rangeData = firmMetrics[selectedRange];
-  const ticketDelta = formatDelta(rangeData.totalTickets, rangeData.prevTickets);
-  const callDelta = formatDelta(rangeData.totalCalls, rangeData.prevCalls);
-
-  const rangeButtons: { key: "7D" | "30D" | "90D" | "YTD"; label: string }[] = [
-    { key: "7D", label: "7D" },
-    { key: "30D", label: "30D" },
-    { key: "90D", label: "90D" },
-    { key: "YTD", label: "YTD" },
-  ];
 
   return (
     <div className="text-foreground p-6 md:p-10 space-y-6">
@@ -309,6 +146,26 @@ export default function FirmProfile() {
           ))}
         </div>
       )}
+
+        {/* Dynamic custodian card section */}
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {(data.custodians || []).map((c: keyof typeof custodianFieldMap) => {
+                const field = custodianFieldMap[c];
+                if (!field) return null;
+
+                const values = (data.codes as any)?.[c] ?? [];
+                if (values.length === 0) return null;
+
+                return (
+                <CustodianCard
+                    key={c}
+                    custodian={c}
+                    label={field.label}
+                    values={values}
+                />
+                );
+            })}
+        </div>
 
     </div>
   );
