@@ -5,41 +5,7 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { firmDetails } from "@/data/firms";
 import { cn } from "@/lib/utils";
-import { CustodianCard } from "@/components/CustodianCard";
-import { custodianFieldMap } from "@/config/custodianFieldMap";
-
-
-// Neon-ish colors for Recharts lines
-const ticketColor = "#facc15"; // yellow
-const callColor = "#38bdf8"; // blue
-
-// Simple % change helper
-function formatDelta(current: number, prev: number | undefined) {
-  if (!prev || prev === 0) return { pct: 0, sign: "flat" as const };
-  const pct = ((current - prev) / prev) * 100;
-  if (pct > 0) return { pct, sign: "up" as const };
-  if (pct < 0) return { pct, sign: "down" as const };
-  return { pct, sign: "flat" as const };
-}
-
-function randomIP() {
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  return (
-    letters[Math.floor(Math.random() * 26)] +
-    letters[Math.floor(Math.random() * 26)] +
-    letters[Math.floor(Math.random() * 26)]
-  );
-}
-
-function randomMaster() {
-  const n = () => Math.floor(1000 + Math.random() * 9000);
-  return `${n()}-${n()}`;
-}
-
-function randomG() {
-  const num = Math.floor(100000 + Math.random() * 900000);
-  return `G${num}`;
-}
+import { CustodianBar } from "@/components/CustodianBar";
 
 const tagColors: Record<string, string> = {
   Pershing: "bg-blue-600/20 text-blue-300 border-blue-500/30",
@@ -53,8 +19,6 @@ export default function FirmProfile() {
   const { firm } = useParams();
   const decoded = decodeURIComponent(firm as string);
   const data = firmDetails[decoded as keyof typeof firmDetails];
-
-  const [selectedRange, setSelectedRange] = useState<"7D" | "30D" | "90D" | "YTD">("30D");
 
   if (!data) {
     return (
@@ -147,56 +111,21 @@ export default function FirmProfile() {
         </div>
       )}
 
-        {/* Dynamic custodian card section */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {(data.custodians || []).map((c: keyof typeof custodianFieldMap) => {
-                const field = custodianFieldMap[c];
-                if (!field) return null;
-
-                const values = (data.codes as any)?.[c] ?? [];
-                if (values.length === 0) return null;
-
-                return (
-                <CustodianCard
-                    key={c}
-                    custodian={c}
-                    label={field.label}
-                    values={values}
-                />
-                );
-            })}
-        </div>
+      {/* Dynamic custodian card section */}
+      <div className="mt-10 space-y-3">
+        {(data.custodians || []).map((cust: keyof typeof data.codes) => {
+          const values = (data.codes as any)?.[cust] ?? [];
+          if (values.length === 0) return null;
+          return (
+            <CustodianBar
+              key={cust as string}
+              custodian={cust as string}
+              values={values}
+            />
+          );
+        })}
+      </div>
 
     </div>
-  );
-}
-
-// Small pill component for % change
-function DeltaPill({
-  type,
-  value,
-}: {
-  type: "up" | "down" | "flat";
-  value: number;
-}) {
-  const rounded = Math.abs(value).toFixed(1);
-  if (type === "flat") {
-    return (
-      <span className="px-2 py-0.5 rounded-full text-xs bg-muted text-muted-foreground border border-border">
-        0.0%
-      </span>
-    );
-  }
-  const isUp = type === "up";
-  return (
-    <span
-      className={`px-2 py-0.5 rounded-full text-xs border ${
-        isUp
-          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/40"
-          : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/40"
-      }`}
-    >
-      {isUp ? "▲" : "▼"} {rounded}%
-    </span>
   );
 }
