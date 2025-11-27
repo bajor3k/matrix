@@ -8,15 +8,27 @@ import {
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
-import { CustodianCard } from "@/components/CustodianCard";
+import { cn } from "@/lib/utils";
+
 
 export default function CrmFooterSection({ firm, custodians }: { firm: any, custodians: string[] }) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const miscFileInputRef = React.useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const [activeCustodian, setActiveCustodian] = React.useState<string | null>(null);
+
+  // When modal opens, set the first custodian as active
+  React.useEffect(() => {
+    if (isModalOpen && custodians && custodians.length > 0) {
+      setActiveCustodian(custodians[0]);
+    } else if (!isModalOpen) {
+      setActiveCustodian(null);
+    }
+  }, [isModalOpen, custodians]);
 
   const handleCardClick = () => {
     fileInputRef.current?.click();
@@ -34,22 +46,6 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
     }
   };
   
-  // Determine label for the codes column
-  function getCustodianLabel(cust: string) {
-    if (cust === "Pershing" || cust === "PAS") return "IP Codes";
-    if (cust === "Fidelity") return "G Numbers";
-    if (cust === "Schwab") return "Masters";
-    if (cust === "Goldman" || cust === "Goldman Sachs") return "Rep Codes";
-    return "Codes";
-  }
-
-  // Extract codes for each custodian
-  const codesByCustodian = custodians.map((c) => ({
-    name: c,
-    label: getCustodianLabel(c),
-    codes: firm?.codes?.[c] || [], // expects something like firm.codes.Pershing = ["1129", "4821"]
-  }));
-
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
@@ -108,19 +104,46 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
       </div>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-md bg-black border-border/50">
+        <DialogContent className="sm:max-w-lg bg-background border-border/50">
           <DialogHeader>
             <DialogTitle>Custodian Codes</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            {codesByCustodian.map(custodian => (
-              <CustodianCard
-                key={custodian.name}
-                custodian={custodian.name}
-                label={custodian.label}
-                values={custodian.codes}
-              />
-            ))}
+             <div className="flex gap-2 mb-4 overflow-x-auto">
+                {custodians.map((name) => (
+                  <Button
+                    key={name}
+                    onClick={() => setActiveCustodian(name)}
+                    variant={activeCustodian === name ? 'default' : 'outline'}
+                    size="sm"
+                    className={cn(
+                      "transition-colors",
+                      activeCustodian === name
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-transparent border-border text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    )}
+                  >
+                    {name}
+                  </Button>
+                ))}
+            </div>
+
+            <div className="bg-muted/50 p-4 rounded-xl border border-border/50 min-h-[100px]">
+                {activeCustodian && (
+                    <>
+                        <p className="font-semibold mb-2">{activeCustodian}</p>
+                        {(firm?.codes?.[activeCustodian] || []).length > 0 ? (
+                             firm.codes[activeCustodian].map((code: string, index: number) => (
+                                <p key={index} className="text-sm text-foreground/80">
+                                • {code}
+                                </p>
+                            ))
+                        ) : (
+                             <p className="text-sm text-muted-foreground italic">No codes available for this custodian.</p>
+                        )}
+                    </>
+                )}
+            </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
