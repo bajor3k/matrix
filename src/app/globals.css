@@ -56,6 +56,7 @@
     --cal-grid: #2a2a2f;
     --cal-bg: #0b0b0f;
     --cal-muted: #8a8a92;
+    --topbar-sep: rgba(2, 6, 23, 0.08); /* light mode */
   }
 
   .dark {
@@ -93,6 +94,7 @@
 
     --nav-divider: rgba(255,255,255,.10);
     --nav-border: rgba(255,255,255,.12);
+    --topbar-sep: rgba(255, 255, 255, 0.08); /* dark mode */
   }
 }
 
@@ -175,6 +177,20 @@
   ) {
     background-color: #0c0c0c;
   }
+
+  /* UNIVERSAL TOP NAV FIX — applies to any header/topbar */
+  :where(
+    header,
+    .topbar,
+    .navbar,
+    .app-header,
+    header[role="banner"],
+    [data-topbar]
+  ) {
+    border-bottom: 1px solid var(--topbar-sep) !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
 }
 
 /* ======================================================================== */
@@ -212,5 +228,6 @@
 
 /* — I keep all your exact sidebar, nav, topbar, calendar, chart, KPI, etc.  
    (no changes needed, no impact on borders or tables) — */
+
 
 
