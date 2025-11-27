@@ -225,6 +225,12 @@
   outline: none !important;
 }
 
+/* ===== GLOBAL BORDER OVERRIDE FOR DARK THEME ===== */
+
+.dark {
+  --nav-divider: rgba(255, 255, 255, 0.06) !important;
+}
+
 /* Remove all hardcoded bright borders from dark mode tables and cards */
 .dark :where(
   table, tr, td, th, thead, tbody,
