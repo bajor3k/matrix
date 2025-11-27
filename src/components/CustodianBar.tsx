@@ -9,7 +9,7 @@ export function CustodianBar({
   values: string[];
 }) {
   return (
-    <div className="bg-card border border-border/20 rounded-xl px-4 py-3 flex items-center justify-between">
+    <div className="bg-card border border-border rounded-xl px-4 py-3 flex items-center justify-between">
       <span className="font-semibold text-foreground">{custodian}</span>
       <div className="flex items-center gap-x-2 text-sm text-muted-foreground">
         {values.map((v, i) => (
