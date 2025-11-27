@@ -6,6 +6,21 @@ import { useState } from "react";
 import { firmDetails } from "@/data/firms";
 import { cn } from "@/lib/utils";
 import { CustodianBar } from "@/components/CustodianBar";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
+
 
 const tagColors: Record<string, string> = {
   Pershing: "bg-blue-600/20 text-blue-300 border-blue-500/30",
@@ -50,6 +65,11 @@ export default function FirmProfile() {
       </div>
     );
   }
+  
+  const teamMembers = [
+    ...(data.advisors || []).map(a => ({ ...a, title: a.title || "Financial Advisor" })),
+    ...(data.associates || []).map(a => ({ ...a, title: a.role || "Client Associate" }))
+  ];
 
 
   return (
@@ -145,6 +165,48 @@ export default function FirmProfile() {
           ))}
         </div>
       )}
+
+      {/* NEW CLEAN TEAM CARD (duplicate) */}
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>Team Members</CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Title</TableHead>
+                <TableHead>PIN</TableHead>
+                <TableHead>CRD</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead className="text-right">Tickets</TableHead>
+                <TableHead className="text-right">Calls</TableHead>
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {teamMembers.map((member: any) => (
+                <TableRow key={member.pin || member.email}>
+                  <TableCell className="font-semibold">{member.name}</TableCell>
+                  <TableCell>{member.title}</TableCell>
+                  <TableCell>{member.pin || "—"}</TableCell>
+                  <TableCell>{member.crd || "—"}</TableCell>
+                  <TableCell>{member.email}</TableCell>
+                  <TableCell className="text-right">
+                    {member.tickets ?? Math.floor(Math.random() * 20) +1}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {member.calls ?? Math.floor(Math.random() * 10) + 1}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
 
       {/* Dynamic custodian card section */}
       <div className="mt-10 space-y-3">
