@@ -92,7 +92,7 @@
     --surface-card: #0c0c0c;
     --card-border-subtle: rgba(255,255,255,.10);
 
-    --nav-divider: rgba(255,255,255,.10);
+    --nav-divider: rgba(255,255,255,.06);
     --nav-border: rgba(255,255,255,.12);
     --topbar-sep: rgba(255, 255, 255, 0.08); /* dark mode */
   }
