@@ -155,8 +155,7 @@
   }
 
   :where(
-    .bg-card, .surface-card, [data-card="true"], .panel, .card,
-    .ant-card, .MuiCard-root, .chakra-card, .mantine-Card-root
+    .bg-card, .surface-card, .card, .ant-card, .MuiCard-root
   ).rounded-none {
     border-radius: var(--card-radius);
   }
@@ -176,20 +175,6 @@
     section[data-surface="card"], article[data-surface="card"]
   ) {
     background-color: #0c0c0c;
-  }
-
-  /* UNIVERSAL TOP NAV FIX — applies to any header/topbar */
-  :where(
-    header,
-    .topbar,
-    .navbar,
-    .app-header,
-    header[role="banner"],
-    [data-topbar]
-  ) {
-    border-bottom: 1px solid var(--topbar-sep) !important;
-    box-shadow: none !important;
-    outline: none !important;
   }
 }
 
@@ -230,4 +215,28 @@
    (no changes needed, no impact on borders or tables) — */
 
 
+/* ===== Topbar Divider — Match Sidebar Globally ===== */
 
+/* Light mode faint divider */
+:root {
+  --topbar-border: rgba(2, 6, 23, 0.12); /* same as sidebar-light border */
+}
+
+/* Dark mode faint divider */
+.dark {
+  --topbar-border: rgba(255, 255, 255, 0.12); /* same as sidebar dark border */
+}
+
+/* Apply to all headers and topbars globally */
+:where(
+  header,
+  .topbar,
+  .app-header,
+  .navbar,
+  header[role="banner"],
+  [data-topbar]
+) {
+  border-bottom: 1px solid var(--topbar-border) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
