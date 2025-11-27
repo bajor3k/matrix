@@ -1,4 +1,5 @@
 // src/components/CustodianBar.tsx
+import * as React from "react";
 
 export function CustodianBar({
   custodian,
