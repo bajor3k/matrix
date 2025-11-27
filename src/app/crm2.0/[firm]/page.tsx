@@ -20,6 +20,7 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
+import CrmFooterSection from "@/components/crm/CrmFooterSection";
 
 
 const tagColors: Record<string, string> = {
@@ -177,6 +178,11 @@ export default function FirmProfile() {
           );
         })}
       </div>
+
+      <CrmFooterSection
+        firm={data}
+        custodians={data?.custodians || []}
+      />
 
     </div>
   );
