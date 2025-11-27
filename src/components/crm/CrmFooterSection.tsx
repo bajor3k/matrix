@@ -31,19 +31,7 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
           <CardTitle>Custodian Codes</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {codesByCustodian.map(({ name, label, codes }) => (
-            <div key={name}>
-              <p className="font-semibold">{name}</p>
-              <p className="text-sm opacity-70">{label}</p>
-              <div className="mt-1 flex flex-wrap gap-x-3 text-sm">
-                {codes.length > 0 ? (
-                  codes.map((c: string) => <span key={c}>{c}</span>)
-                ) : (
-                  <span className="opacity-50">No codes</span>
-                )}
-              </div>
-            </div>
-          ))}
+          {/* Content intentionally removed */}
         </CardContent>
       </Card>
 
@@ -53,10 +41,7 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
           <CardTitle>{firm?.firmInfo?.ip} Documents</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
-          <p>ADV</p>
-          <p>Advisory Agreement</p>
-          <p>Fee Schedule</p>
-          <p>Investment Policy Statement</p>
+          {/* Content intentionally removed */}
         </CardContent>
       </Card>
 
@@ -66,10 +51,7 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
           <CardTitle>Misc Documents</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
-          <p>Compliance Docs</p>
-          <p>Policies</p>
-          <p>Training Materials</p>
-          <p>Workflows</p>
+          {/* Content intentionally removed */}
         </CardContent>
       </Card>
 
