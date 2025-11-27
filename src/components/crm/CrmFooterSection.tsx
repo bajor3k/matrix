@@ -11,6 +11,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
+import { CustodianCard } from "@/components/CustodianCard";
 
 export default function CrmFooterSection({ firm, custodians }: { firm: any, custodians: string[] }) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -111,10 +112,19 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
           <DialogHeader>
             <DialogTitle>Custodian Codes</DialogTitle>
             <DialogDescription>
-              A placeholder for displaying custodian-specific codes.
+              A list of custodian-specific codes for this firm.
             </DialogDescription>
           </DialogHeader>
-          {/* Modal content can be added here */}
+          <div className="space-y-4 py-4">
+            {codesByCustodian.map(custodian => (
+              <CustodianCard
+                key={custodian.name}
+                custodian={custodian.name}
+                label={custodian.label}
+                values={custodian.codes}
+              />
+            ))}
+          </div>
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="secondary">
