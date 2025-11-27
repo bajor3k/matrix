@@ -104,11 +104,6 @@
 
   html { height: 100%; }
 
-  /* FIX: Only apply border color to CARD ELEMENTS — NOT EVERYTHING */
-  :where(.card, .panel, .bg-card, .surface-card, [data-card="true"]) {
-    @apply border-border;
-  }
-
   body {
     @apply bg-background text-foreground;
     min-height: 100vh;
@@ -239,4 +234,51 @@
   [role="row"], [role="cell"], [role="gridcell"]
 ) {
   border-color: var(--nav-divider) !important;
+}
+
+/* ============================
+   UNIVERSAL CARD BORDER RESET
+   Applies to EVERY card globally
+============================ */
+:root {
+  --card-border-global-light: rgba(0,0,0,0.08);
+}
+.dark {
+  --card-border-global-dark: rgba(255,255,255,0.08);
+}
+
+/* All cards use the same subtle border */
+:where(
+  .bg-card,
+  .surface-card,
+  .card,
+  .panel,
+  [data-card="true"],
+  .shadcn-card,
+  .ant-card, .ant-card-bordered,
+  .MuiCard-root, .MuiPaper-root.MuiCard-root,
+  .chakra-card,
+  .mantine-Card-root,
+  section[data-surface="card"],
+  article[data-surface="card"]
+) {
+  border: 1px solid var(--card-border-global-light) !important;
+}
+
+/* DARK THEME OVERRIDE */
+.dark :where(
+  .bg-card,
+  .surface-card,
+  .card,
+  .panel,
+  [data-card="true"],
+  .shadcn-card,
+  .ant-card, .ant-card-bordered,
+  .MuiCard-root, .MuiPaper-root.MuiCard-root,
+  .chakra-card,
+  .mantine-Card-root,
+  section[data-surface="card"],
+  article[data-surface="card"]
+) {
+  border: 1px solid var(--card-border-global-dark) !important;
 }
