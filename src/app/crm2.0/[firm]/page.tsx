@@ -168,11 +168,7 @@ export default function FirmProfile() {
 
       {/* NEW CLEAN TEAM CARD (duplicate) */}
       <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>Team Members</CardTitle>
-        </CardHeader>
-
-        <CardContent>
+        <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
