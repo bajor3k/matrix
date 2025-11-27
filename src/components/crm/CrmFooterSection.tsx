@@ -111,9 +111,6 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
         <DialogContent className="sm:max-w-md bg-black border-border/50">
           <DialogHeader>
             <DialogTitle>Custodian Codes</DialogTitle>
-            <DialogDescription>
-              A list of custodian-specific codes for this firm.
-            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             {codesByCustodian.map(custodian => (
