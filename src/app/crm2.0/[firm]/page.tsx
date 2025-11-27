@@ -125,47 +125,6 @@ export default function FirmProfile() {
         </div>
       </div>
 
-      {/* Combined Team Card */}
-      {(data.advisors?.length > 0 || data.associates?.length > 0) && (
-        <div className="bg-card p-6 rounded-2xl border border-border mt-1">
-          <div className="grid grid-cols-7 font-semibold text-muted-foreground pb-3 border-b border-border">
-            <div>Name</div>
-            <div>Title</div>
-            <div>PIN</div>
-            <div>CRD</div>
-            <div>Email</div>
-            <div className="text-right">Tickets</div>
-            <div className="text-right">Calls</div>
-          </div>
-
-          {/* Advisor Rows */}
-          {data.advisors.map((a: any, i: number) => (
-            <div key={`adv-${i}`} className="grid grid-cols-7 py-3 border-b border-border/70 items-center">
-              <div className="font-semibold">{a.name}</div>
-              <div>{a.title || "Financial Advisor"}</div>
-              <div>{a.pin || "0000"}</div>
-              <div>{a.crd || "0000000"}</div>
-              <div>{a.email}</div>
-              <div className="text-right font-semibold">{Math.floor(Math.random() * 20) + 1}</div>
-              <div className="text-right font-semibold">{Math.floor(Math.random() * 10) + 1}</div>
-            </div>
-          ))}
-
-          {/* Associate Rows */}
-          {data.associates.map((ca: any, i: number) => (
-            <div key={`assoc-${i}`} className="grid grid-cols-7 py-3 border-b border-border/70 last:border-0 items-center">
-              <div className="font-semibold">{ca.name}</div>
-              <div>{ca.role || "Client Associate"}</div>
-              <div>{ca.pin}</div>
-              <div>{ca.crd || "—"}</div>
-              <div>{ca.email}</div>
-              <div className="text-right font-semibold">{Math.floor(Math.random() * 15) + 1}</div>
-              <div className="text-right font-semibold">{Math.floor(Math.random() * 8) + 1}</div>
-            </div>
-          ))}
-        </div>
-      )}
-
       {/* NEW CLEAN TEAM CARD (duplicate) */}
       <Card className="mt-6">
         <CardContent className="p-0">
