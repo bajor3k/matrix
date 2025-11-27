@@ -8,11 +8,14 @@ import {
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 
 export default function CrmFooterSection({ firm, custodians }: { firm: any, custodians: string[] }) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const miscFileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const handleCardClick = () => {
     fileInputRef.current?.click();
@@ -47,56 +50,80 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
   }));
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
 
-      {/* Column 1 — Custodian Codes */}
-      <Card className="bg-card border border-border/10 rounded-xl">
-        <CardContent className="flex flex-col items-center justify-center h-full p-6">
-          <div className="flex items-center text-foreground">
-             <h2 className="text-xl font-semibold">Custodian Codes</h2>
-             <ChevronRight className="ml-2 h-6 w-6" />
-          </div>
-        </CardContent>
-      </Card>
+        {/* Column 1 — Custodian Codes */}
+        <Card 
+          className="bg-card border border-border/10 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
+          onClick={() => setIsModalOpen(true)}
+        >
+          <CardContent className="flex flex-col items-center justify-center h-full p-6">
+            <div className="flex items-center text-foreground">
+              <h2 className="text-xl font-semibold">Custodian Codes</h2>
+              <ChevronRight className="ml-2 h-6 w-6" />
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Column 2 — Firm Documents */}
-      <Card 
-        className="bg-card border border-border/10 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
-        onClick={handleCardClick}
-      >
-        <CardContent className="flex flex-col items-center justify-center h-full p-6">
-           <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            className="hidden"
-          />
-          <div className="flex items-center text-foreground">
-             <h2 className="text-xl font-semibold">{firm?.firmInfo?.ip} Documents</h2>
-             <ChevronRight className="ml-2 h-6 w-6" />
-          </div>
-        </CardContent>
-      </Card>
+        {/* Column 2 — Firm Documents */}
+        <Card 
+          className="bg-card border border-border/10 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
+          onClick={handleCardClick}
+        >
+          <CardContent className="flex flex-col items-center justify-center h-full p-6">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <div className="flex items-center text-foreground">
+              <h2 className="text-xl font-semibold">{firm?.firmInfo?.ip} Documents</h2>
+              <ChevronRight className="ml-2 h-6 w-6" />
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Column 3 — Misc Documents */}
-      <Card 
-        className="bg-card border border-border/10 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
-        onClick={handleMiscCardClick}
-      >
-        <CardContent className="flex flex-col items-center justify-center h-full p-6">
-           <input
-            type="file"
-            ref={miscFileInputRef}
-            onChange={handleFileChange}
-            className="hidden"
-          />
-          <div className="flex items-center text-foreground">
-             <h2 className="text-xl font-semibold">Misc Documents</h2>
-             <ChevronRight className="ml-2 h-6 w-6" />
-          </div>
-        </CardContent>
-      </Card>
+        {/* Column 3 — Misc Documents */}
+        <Card 
+          className="bg-card border border-border/10 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
+          onClick={handleMiscCardClick}
+        >
+          <CardContent className="flex flex-col items-center justify-center h-full p-6">
+            <input
+              type="file"
+              ref={miscFileInputRef}
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <div className="flex items-center text-foreground">
+              <h2 className="text-xl font-semibold">Misc Documents</h2>
+              <ChevronRight className="ml-2 h-6 w-6" />
+            </div>
+          </CardContent>
+        </Card>
 
-    </div>
+      </div>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-md bg-black border-border/50">
+          <DialogHeader>
+            <DialogTitle>Custodian Codes</DialogTitle>
+            <DialogDescription>
+              A placeholder for displaying custodian-specific codes.
+            </DialogDescription>
+          </DialogHeader>
+          {/* Modal content can be added here */}
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
