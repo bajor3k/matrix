@@ -52,11 +52,6 @@
 
     --nav-divider: rgba(2, 6, 23, .10);
     --nav-border: rgba(2, 6, 23, .12);
-
-    --cal-grid: #2a2a2f;
-    --cal-bg: #0b0b0f;
-    --cal-muted: #8a8a92;
-    --topbar-sep: rgba(2, 6, 23, 0.08); /* light mode */
   }
 
   .dark {
@@ -94,7 +89,6 @@
 
     --nav-divider: rgba(255,255,255,.06);
     --nav-border: rgba(255,255,255,.12);
-    --topbar-sep: rgba(255, 255, 255, 0.08); /* dark mode */
   }
 }
 
@@ -113,16 +107,6 @@
   /* FIX: Only apply border color to CARD ELEMENTS — NOT EVERYTHING */
   :where(.card, .panel, .bg-card, .surface-card, [data-card="true"]) {
     @apply border-border;
-  }
-
-  /* FIX: Remove borders from tables globally */
-  table, table * {
-    border-color: transparent !important;
-  }
-
-  /* FIX: Dark mode subtle dividers for tables */
-  .dark table, .dark table * {
-    border-color: rgba(255,255,255,0.06) !important;
   }
 
   body {
