@@ -1,11 +1,30 @@
+
+"use client";
+
+import * as React from "react";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
+import { ChevronRight } from "lucide-react";
 
 export default function CrmFooterSection({ firm, custodians }: { firm: any, custodians: string[] }) {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleCardClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      console.log("Selected file:", file.name);
+      // You can add file upload logic here
+    }
+  };
+  
   // Determine label for the codes column
   function getCustodianLabel(cust: string) {
     if (cust === "Pershing" || cust === "PAS") return "IP Codes";
@@ -36,12 +55,21 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
       </Card>
 
       {/* Column 2 — Firm Documents */}
-      <Card className="bg-card border border-border/10 rounded-xl">
-        <CardHeader>
-          <CardTitle>{firm?.firmInfo?.ip} Documents</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          {/* Content intentionally removed */}
+      <Card 
+        className="bg-card border border-border/10 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
+        onClick={handleCardClick}
+      >
+        <CardContent className="flex flex-col items-center justify-center h-full p-6">
+           <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <div className="flex items-center text-foreground">
+             <h2 className="text-xl font-semibold">{firm?.firmInfo?.ip} Documents</h2>
+             <ChevronRight className="ml-2 h-6 w-6" />
+          </div>
         </CardContent>
       </Card>
 
