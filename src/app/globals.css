@@ -75,7 +75,7 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 359 79% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 100% / 0.1;
+    --border: 0 0% 100% / 0.08;
     --input: 0 0% 14%;
     --ring: 0 0% 18%;
 
@@ -212,4 +212,5 @@
 
 /* — I keep all your exact sidebar, nav, topbar, calendar, chart, KPI, etc.  
    (no changes needed, no impact on borders or tables) — */
+
 
