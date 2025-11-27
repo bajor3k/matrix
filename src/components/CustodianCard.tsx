@@ -9,7 +9,7 @@ export function CustodianCard({
   values: string[];
 }) {
   return (
-    <div className="bg-card border border-border/20 rounded-xl p-5 space-y-2">
+    <div className="bg-card border border-border rounded-xl p-5 space-y-2">
       <h3 className="text-lg font-semibold text-foreground">{custodian}</h3>
 
       <div className="text-sm text-muted-foreground">
