@@ -51,11 +51,11 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
 
       {/* Column 1 — Custodian Codes */}
       <Card className="bg-card border border-border/10 rounded-xl">
-        <CardHeader>
-          <CardTitle>Custodian Codes</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Content intentionally removed */}
+        <CardContent className="flex flex-col items-center justify-center h-full p-6">
+          <div className="flex items-center text-foreground">
+             <h2 className="text-xl font-semibold">Custodian Codes</h2>
+             <ChevronRight className="ml-2 h-6 w-6" />
+          </div>
         </CardContent>
       </Card>
 
