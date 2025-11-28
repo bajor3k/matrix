@@ -183,7 +183,7 @@ export default function Terminal2Page() {
                 <Button
                   onClick={handleGenerateClick}
                   disabled={loading}
-                  className="bg-primary hover:bg-primary/80"
+                  className="px-5 py-2 rounded-full bg-black text-white hover:bg-neutral-900 transition-colors duration-150"
                 >
                   {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                   Submit
@@ -229,7 +229,7 @@ export default function Terminal2Page() {
                 <Button
                     onClick={createEmail}
                     disabled={!emailDraft || loading}
-                    variant="outline"
+                    className="px-5 py-2 rounded-full bg-black text-white hover:bg-neutral-900 transition-colors duration-150 flex items-center gap-2"
                 >
                     <Mail className="mr-2 h-4 w-4" />
                     Create Email
