@@ -38,14 +38,6 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
     miscFileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      console.log("Selected file:", file.name);
-      // You can add file upload logic here
-    }
-  };
-  
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
@@ -134,7 +126,7 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
                         <p className="font-semibold mb-2">{activeCustodian}</p>
                         {(firm?.codes?.[activeCustodian] || []).length > 0 ? (
                              firm.codes[activeCustodian].map((code: string, index: number) => (
-                                <p key={index} className="text-sm text-foreground/80">
+                                <p key={`${activeCustodian}-${code}-${index}`} className="text-sm text-foreground/80">
                                 • {code}
                                 </p>
                             ))
@@ -157,3 +149,11 @@ export default function CrmFooterSection({ firm, custodians }: { firm: any, cust
     </>
   );
 }
+
+// Dummy handler, you can implement actual file upload logic here
+const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  if (event.target.files && event.target.files.length > 0) {
+    const file = event.target.files[0];
+    console.log("Selected file:", file.name);
+  }
+};
