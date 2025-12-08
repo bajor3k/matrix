@@ -33,6 +33,7 @@ import {
   Video,
   Terminal,
   TerminalSquare,
+  Newspaper,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -71,5 +72,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', 
     { name: 'Margin', icon: BadgeDollarSign, href: '/margin' },
     { name: 'Project', icon: KanbanSquare, href: '/project'},
     { name: 'CRM', icon: Users, href: '/crm2.0' },
+    { name: 'News', icon: Newspaper, href: '/news' },
   ]
 };
