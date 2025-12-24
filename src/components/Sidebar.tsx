@@ -15,6 +15,7 @@ import {
   TerminalSquare,
   KanbanSquare,
   Newspaper,
+  Mail,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
@@ -25,10 +26,11 @@ const reportItems: NavItem[] = navigationData['Reports'];
 const crmItems: NavItem[] = navigationData['CRM'];
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
-const terminal2Item: NavItem = navigationData['Standalone'][0];
-const marginItem: NavItem = navigationData['Standalone'][1];
-const crm2Item: NavItem = navigationData['Standalone'][2];
-const newsItem: NavItem = navigationData['Standalone'][3];
+const terminal2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'Terminal')!;
+const marginItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Margin')!;
+const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'CRM')!;
+const newsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'News')!;
+const mailItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Mail')!;
 const settingsItem: NavItem = navigationData['Other'][0];
 
 
@@ -73,6 +75,7 @@ export default function Sidebar({
   const isMargin = useMemo(() => pathname === "/margin", [pathname]);
   const isCrm2 = useMemo(() => pathname === "/crm2.0", [pathname]);
   const isNews = useMemo(() => pathname === "/news", [pathname]);
+  const isMail = useMemo(() => pathname === "/crm/email", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
 
   const [openReports, setOpenReports] = useState(isReports);
@@ -157,6 +160,20 @@ export default function Sidebar({
         
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
         
+        <div className="mb-1">
+          <Link
+            href={mailItem.href}
+            title={mailItem.name}
+            data-active={isMail}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isMail ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
+          >
+            <span className="flex items-center gap-3">
+              <Mail className="h-5 w-5 shrink-0" />
+              {!collapsed && mailItem.name}
+            </span>
+          </Link>
+        </div>
+
         <div className="mb-1">
           <Link
             href={terminal2Item.href}
