@@ -20,15 +20,15 @@ import {
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
 
-export type SectionKey = "reports" | "crm" | "analytics" | "resources";
+export type SectionKey = "reports" | "crm" | "analytics" | "resources" | "mail";
 
 const reportItems: NavItem[] = navigationData['Reports'];
 const crmItems: NavItem[] = navigationData['CRM'];
+const mailItems: NavItem[] = navigationData['Mail'];
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
 const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'CRM')!;
 const newsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'News')!;
-const mailItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Mail')!;
 const settingsItem: NavItem = navigationData['Other'][0];
 
 
@@ -64,23 +64,25 @@ export default function Sidebar({
 
   const isReports = useMemo(() => pathname?.startsWith("/reports"), [pathname]);
   const isCRM = useMemo(() => pathname?.startsWith("/crm"), [pathname]);
+  const isMail = useMemo(() => pathname?.startsWith("/mail"), [pathname]);
   const isAnalytics = useMemo(() => [
     "/analytics/asset", "/analytics/client", "/analytics/financial", 
     "/analytics/conversion", "/analytics/compliance", "/analytics/contribution"
   ].some(p => pathname.startsWith(p)) || pathname.startsWith("/dashboard"), [pathname]);
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
-  const isCrm2 = useMemo(() => pathname === "/crm2.0", [pathname]);
+  const isCrm2 = useMemo(() => pathname === "/CRM", [pathname]);
   const isNews = useMemo(() => pathname === "/news", [pathname]);
-  const isMail = useMemo(() => pathname === "/crm/email", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
 
   const [openReports, setOpenReports] = useState(isReports);
   const [openCRM, setOpenCRM] = useState(isCRM);
+  const [openMail, setOpenMail] = useState(isMail);
   const [openAnalytics, setOpenAnalytics] = useState(isAnalytics);
   const [openResources, setOpenResources] = useState(isResources);
 
   useEffect(() => setOpenReports(isReports), [isReports]);
   useEffect(() => setOpenCRM(isCRM), [isCRM]);
+  useEffect(() => setOpenMail(isMail), [isMail]);
   useEffect(() => setOpenAnalytics(isAnalytics), [isAnalytics]);
   useEffect(() => setOpenResources(isResources), [isResources]);
 
@@ -89,6 +91,7 @@ export default function Sidebar({
     if (!forceOpen) return;
     setOpenReports(forceOpen === "reports");
     setOpenCRM(forceOpen === "crm");
+    setOpenMail(forceOpen === "mail");
     setOpenAnalytics(forceOpen === "analytics");
     setOpenResources(forceOpen === "resources");
     onForceOpenHandled?.();
@@ -152,24 +155,11 @@ export default function Sidebar({
       <div className="h-[calc(100%-60px)] overflow-y-auto">
         
         {/* <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} /> */}
+        <Section keyName="mail" title="Mail" icon={Mail} open={openMail} setOpen={setOpenMail} items={mailItems} />
         <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} />
         
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
         
-        <div className="mb-1">
-          <Link
-            href={mailItem.href}
-            title={mailItem.name}
-            data-active={isMail}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isMail ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
-          >
-            <span className="flex items-center gap-3">
-              <Mail className="h-5 w-5 shrink-0" />
-              {!collapsed && mailItem.name}
-            </span>
-          </Link>
-        </div>
-
         <div className="mb-1">
           <Link
             href={crm2Item.href}

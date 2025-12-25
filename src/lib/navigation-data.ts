@@ -34,6 +34,12 @@ import {
   Terminal,
   TerminalSquare,
   Newspaper,
+  Inbox,
+  Send,
+  Trash2,
+  Archive,
+  AlertOctagon,
+  UploadCloud,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -43,7 +49,7 @@ export const toolbarSections: ToolbarSection[] = [
     { id: 'Resources', title: 'Resources' },
 ];
 
-export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', NavItem[]> = {
+export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' | 'Mail', NavItem[]> = {
   'Reports': [
     { name: 'Advisory Fees', icon: BadgeDollarSign, href: '/reports/advisory-fees'},
     { name: 'Cash', icon: Wallet, href: '/reports/cash'},
@@ -64,12 +70,48 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', 
     { name: 'Tools', icon: Calculator, href: '/resources?tab=tools' },
     { name: 'Training', icon: GraduationCap, href: '/resources?tab=training' },
   ],
+  'Mail': [
+    {
+      name: 'Inbox',
+      href: '/mail/inbox',
+      icon: Inbox
+    },
+    {
+      name: 'Drafts',
+      href: '/mail/drafts',
+      icon: FileText
+    },
+    {
+      name: 'Sent Items',
+      href: '/mail/sentitems',
+      icon: Send
+    },
+    {
+      name: 'Deleted Items',
+      href: '/mail/deleteditems',
+      icon: Trash2
+    },
+    {
+      name: 'Archive',
+      href: '/mail/archive',
+      icon: Archive
+    },
+    {
+      name: 'Junk Email',
+      href: '/mail/junkemail',
+      icon: AlertOctagon
+    },
+    {
+      name: 'Outbox',
+      href: '/mail/outbox',
+      icon: UploadCloud
+    },
+  ],
   'Other': [
       { name: 'Settings', icon: Settings, href: '/settings' },
   ],
   'Standalone': [
     { name: 'CRM', icon: Users, href: '/CRM' },
     { name: 'News', icon: Newspaper, href: '/news' },
-    { name: 'Mail', icon: Mail, href: '/crm/email' },
   ]
 };
