@@ -4,15 +4,17 @@ import React, { useEffect, useState } from 'react';
 import { PublicClientApplication, InteractionRequiredAuthError } from '@azure/msal-browser';
 import { Client } from '@microsoft/microsoft-graph-client';
 import { useParams } from 'next/navigation';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle, Search, RefreshCw, MoreVertical, Reply, Archive, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 
-// 1. DEFINE CONFIG OUTSIDE
+// --- AUTH CONFIGURATION ---
 const msalConfig = {
   auth: {
-    clientId: "e.g. a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890", // <--- Ensure your ID is here
+    // 🟢 YOUR REAL AZURE ID IS NOW HERE:
+    clientId: "6fb55bec-40a9-406b-9f9b-5a607939f74f", 
     authority: "https://login.microsoftonline.com/common",
-    redirectUri: "http://localhost:3000/mail/inbox",
+    // Ensure this matches EXACTLY what you put in Azure:
+    redirectUri: "http://localhost:3000/mail/inbox", 
   },
   cache: {
     cacheLocation: "sessionStorage",
@@ -20,14 +22,25 @@ const msalConfig = {
   }
 };
 
-// 2. INITIALIZE INSTANCE OUTSIDE (This fixes the error)
+// Initialize MSAL outside component to prevent "Interaction in progress" errors
 const msalInstance = new PublicClientApplication(msalConfig);
+
+type Email = {
+  id: string;
+  subject: string;
+  sender: { emailAddress: { name: string; address: string } };
+  bodyPreview: string;
+  body: { content: string; contentType: string };
+  receivedDateTime: string;
+  isRead: boolean;
+};
 
 export default function RealOutlookPage() {
   const params = useParams();
   const folderName = params?.folder as string || 'inbox';
   
-  const [emails, setEmails] = useState<any[]>([]); // simplified type for brevity
+  const [emails, setEmails] = useState<Email[]>([]);
+  const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,12 +48,10 @@ export default function RealOutlookPage() {
     setLoading(true);
     setError(null);
     try {
-      // Initialize only if not already initialized
       if (!msalInstance.getActiveAccount()) {
          await msalInstance.initialize();
       }
       
-      // ... rest of your login logic (same as before) ...
       let account = msalInstance.getAllAccounts()[0];
       if (!account) {
         const loginResponse = await msalInstance.loginPopup({
@@ -48,11 +59,7 @@ export default function RealOutlookPage() {
         });
         account = loginResponse.account;
       }
-      
-      // Set active account to prevent further "interaction" errors
-      if (account) {
-        msalInstance.setActiveAccount(account); 
-      }
+      msalInstance.setActiveAccount(account); 
 
       const tokenResponse = await msalInstance.acquireTokenSilent({
         account: account,
@@ -72,26 +79,32 @@ export default function RealOutlookPage() {
         authProvider: (done) => done(null, tokenResponse.accessToken)
       });
 
-      const graphFolderId = folderName === 'sent' ? 'sentitems' : 
-                            folderName === 'trash' ? 'deleteditems' :
-                            folderName === 'junk' ? 'junkemail' :
+      // Map URL params to Graph API folder IDs
+      const graphFolderId = folderName === 'sentitems' ? 'sentitems' : 
+                            folderName === 'deleteditems' ? 'deleteditems' : 
+                            folderName === 'junkemail' ? 'junkemail' :
                             folderName;
 
+      // Fetch emails WITH full body
       const response = await graphClient
         .api(`/me/mailFolders/${graphFolderId}/messages`)
-        .top(20)
-        .select('id,subject,sender,bodyPreview,receivedDateTime')
+        .top(15)
+        .select('id,subject,sender,bodyPreview,receivedDateTime,isRead,body')
         .orderby('receivedDateTime DESC')
         .get();
 
       setEmails(response.value);
+      if (response.value.length > 0) {
+        setSelectedEmail(response.value[0]); // Auto-select first email
+      }
     } catch (err: any) {
       console.error(err);
-      // Clean up error message
       if (err.errorCode === "interaction_in_progress") {
-         setError("Login popup is already open. Please check your other windows.");
+         setError("Login popup is open in another window. Close it or refresh.");
+      } else if (err.message?.includes("unauthorized_client")) {
+         setError("Client ID Error: Ensure your Azure App is set to 'Multitenant + Personal'.");
       } else {
-         setError(err.message || "Failed to connect to Outlook.");
+         setError(err.message || "Failed to connect.");
       }
     } finally {
       setLoading(false);
@@ -102,58 +115,110 @@ export default function RealOutlookPage() {
     loginAndFetch();
   }, [folderName]);
 
-  // ... Render logic stays the same ...
-  if (loading) return <div className="flex h-full w-full items-center justify-center text-muted-foreground"><Loader2 className="animate-spin mr-2"/> Connecting...</div>;
-  if (error) return <div className="p-10 text-center text-red-500">{error} <br/><button onClick={() => window.location.reload()} className="mt-4 underline">Refresh Page</button></div>;
+  // --- RENDER ---
+  if (loading) return <div className="flex h-full items-center justify-center text-muted-foreground"><Loader2 className="animate-spin mr-2 h-5 w-5"/> Loading Outlook...</div>;
+  
+  if (error) return (
+    <div className="flex h-full flex-col items-center justify-center gap-4 p-6">
+      <div className="bg-red-50 text-red-600 p-4 rounded-lg flex items-center gap-3 max-w-md border border-red-100">
+        <AlertCircle className="w-5 h-5 shrink-0"/>
+        <p className="text-sm font-medium">{error}</p>
+      </div>
+      <button onClick={() => window.location.reload()} className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm">Retry</button>
+    </div>
+  );
 
   return (
-    // ... Paste your previous return (render) code here ...
-     <div className="h-full flex flex-col bg-background">
-      <header className="px-6 py-4 border-b flex justify-between items-center bg-card/50 backdrop-blur">
-        <div>
-          <h1 className="text-xl font-bold capitalize tracking-tight">{folderName.replace('items', '')}</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">Connected via Microsoft Graph API</p>
+    <div className="flex h-full w-full bg-background divide-x divide-border overflow-hidden">
+      
+      {/* 1. EMAIL LIST (Middle Column) */}
+      <div className="w-[400px] flex flex-col bg-card/50">
+        {/* Toolbar */}
+        <div className="p-3 border-b flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
+            <input 
+              placeholder="Search" 
+              className="w-full pl-8 pr-3 py-1.5 text-sm bg-muted/50 rounded-md outline-none focus:ring-1 focus:ring-primary"
+            />
+          </div>
+          <button onClick={() => loginAndFetch()} className="p-2 hover:bg-muted rounded"><RefreshCw className="w-4 h-4 text-muted-foreground"/></button>
         </div>
-        <div className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
-          ● Live Connection
-        </div>
-      </header>
 
-      <div className="flex-1 overflow-y-auto">
-        {emails.length === 0 ? (
-          <div className="p-10 text-center text-muted-foreground">Folder is empty.</div>
-        ) : (
-          <div className="divide-y divide-border">
-            {emails.map((email) => (
-              <div key={email.id} className="group flex flex-col sm:flex-row gap-3 sm:items-center p-4 hover:bg-muted/50 transition-colors cursor-pointer">
-                
-                <div className="sm:w-1/4 min-w-[150px] flex items-center gap-3 overflow-hidden">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
-                    {email.sender?.emailAddress?.name?.charAt(0) || "?"}
-                  </div>
-                  <div className="truncate font-medium text-sm text-foreground">
-                    {email.sender?.emailAddress?.name || "Unknown"}
-                  </div>
-                </div>
-
-                <div className="flex-1 min-w-0 pr-4">
-                  <div className="font-semibold text-sm text-foreground truncate mb-0.5">
-                    {email.subject || "No Subject"}
-                  </div>
-                  <div className="text-xs text-muted-foreground truncate">
-                    {email.bodyPreview}
-                  </div>
-                </div>
-
-                <div className="text-xs text-muted-foreground whitespace-nowrap sm:w-[120px] text-right flex items-center justify-end gap-1">
-                   {format(new Date(email.receivedDateTime), 'MMM d, h:mm a')}
-                </div>
-
+        {/* List */}
+        <div className="flex-1 overflow-y-auto">
+          {emails.map((email) => (
+            <div 
+              key={email.id}
+              onClick={() => setSelectedEmail(email)}
+              className={`
+                p-4 border-b cursor-pointer transition-colors flex flex-col gap-1
+                ${selectedEmail?.id === email.id ? 'bg-accent/50 border-l-4 border-l-primary' : 'hover:bg-muted/30 border-l-4 border-l-transparent'}
+                ${!email.isRead ? 'font-semibold' : ''}
+              `}
+            >
+              <div className="flex justify-between items-baseline">
+                <span className="truncate text-sm font-medium text-foreground">{email.sender?.emailAddress?.name}</span>
+                <span className="text-[10px] text-muted-foreground whitespace-nowrap ml-2">
+                  {format(new Date(email.receivedDateTime), 'h:mm a')}
+                </span>
               </div>
-            ))}
+              <div className="text-sm truncate text-foreground/90">{email.subject || "No Subject"}</div>
+              <div className="text-xs text-muted-foreground line-clamp-2 font-normal">
+                {email.bodyPreview}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 2. READING PANE (Right Column) */}
+      <div className="flex-1 flex flex-col bg-background min-w-0">
+        {selectedEmail ? (
+          <>
+            {/* Header */}
+            <div className="p-6 border-b">
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-xl font-bold text-foreground">{selectedEmail.subject}</h2>
+                <div className="flex gap-1 text-muted-foreground">
+                   <button className="p-2 hover:bg-muted rounded"><Reply className="w-4 h-4"/></button>
+                   <button className="p-2 hover:bg-muted rounded"><Archive className="w-4 h-4"/></button>
+                   <button className="p-2 hover:bg-muted rounded hover:text-red-500"><Trash2 className="w-4 h-4"/></button>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                  {selectedEmail.sender?.emailAddress?.name?.slice(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <div className="text-sm font-semibold">{selectedEmail.sender?.emailAddress?.name}</div>
+                  <div className="text-xs text-muted-foreground">{selectedEmail.sender?.emailAddress?.address}</div>
+                </div>
+                <div className="ml-auto text-xs text-muted-foreground">
+                  {format(new Date(selectedEmail.receivedDateTime), 'PPP p')}
+                </div>
+              </div>
+            </div>
+
+            {/* Email Body */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* We render HTML directly to simulate Outlook. In prod, use DOMPurify. */}
+              <div 
+                className="prose prose-sm max-w-none dark:prose-invert"
+                dangerouslySetInnerHTML={{ __html: selectedEmail.body?.content || selectedEmail.bodyPreview }} 
+              />
+            </div>
+          </>
+        ) : (
+          <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground">
+            <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-4">
+              <MoreVertical className="w-8 h-8 opacity-50"/>
+            </div>
+            <p>Select an item to read</p>
           </div>
         )}
       </div>
+
     </div>
   );
 }
