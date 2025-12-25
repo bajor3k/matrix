@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 // --- CONFIGURATION (YOU WILL UPDATE THIS IN STEP 4) ---
 const msalConfig = {
   auth: {
-    clientId: "YOUR_CLIENT_ID_GOES_HERE", // <--- WE WILL GET THIS NEXT
+    clientId: "e.g. a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890", // <--- PASTE YOUR ID HERE
     authority: "https://login.microsoftonline.com/common",
     redirectUri: "http://localhost:3000/mail/inbox", // Must match Azure exactly
   },
@@ -72,9 +72,10 @@ export default function RealOutlookPage() {
       });
 
       // 4. Fetch Emails
-      // Map 'sent' to 'sentitems' because Microsoft is picky
+      // Map folder names to what Microsoft Graph API expects
       const graphFolderId = folderName === 'sent' ? 'sentitems' : 
-                            folderName === 'trash' ? 'deleteditems' : 
+                            folderName === 'trash' ? 'deleteditems' :
+                            folderName === 'junk' ? 'junkemail' :
                             folderName;
 
       const response = await graphClient
