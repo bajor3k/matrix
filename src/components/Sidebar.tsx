@@ -26,7 +26,6 @@ const reportItems: NavItem[] = navigationData['Reports'];
 const crmItems: NavItem[] = navigationData['CRM'];
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
-const terminal2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'Terminal')!;
 const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'CRM')!;
 const newsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'News')!;
 const mailItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Mail')!;
@@ -70,7 +69,6 @@ export default function Sidebar({
     "/analytics/conversion", "/analytics/compliance", "/analytics/contribution"
   ].some(p => pathname.startsWith(p)) || pathname.startsWith("/dashboard"), [pathname]);
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
-  const isTerminal2 = useMemo(() => pathname === "/terminal", [pathname]);
   const isCrm2 = useMemo(() => pathname === "/crm2.0", [pathname]);
   const isNews = useMemo(() => pathname === "/news", [pathname]);
   const isMail = useMemo(() => pathname === "/crm/email", [pathname]);
@@ -168,20 +166,6 @@ export default function Sidebar({
             <span className="flex items-center gap-3">
               <Mail className="h-5 w-5 shrink-0" />
               {!collapsed && mailItem.name}
-            </span>
-          </Link>
-        </div>
-
-        <div className="mb-1">
-          <Link
-            href={terminal2Item.href}
-            title={terminal2Item.name}
-            data-active={isTerminal2}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isTerminal2 ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
-          >
-            <span className="flex items-center gap-3">
-              <TerminalSquare className="h-5 w-5 shrink-0" />
-              {!collapsed && terminal2Item.name}
             </span>
           </Link>
         </div>
