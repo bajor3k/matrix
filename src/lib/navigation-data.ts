@@ -68,7 +68,7 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', 
       { name: 'Settings', icon: Settings, href: '/settings' },
   ],
   'Standalone': [
-    { name: 'CRM', icon: Users, href: '/crm2.0' },
+    { name: 'CRM', icon: Users, href: '/CRM' },
     { name: 'News', icon: Newspaper, href: '/news' },
     { name: 'Mail', icon: Mail, href: '/crm/email' },
   ]
