@@ -69,7 +69,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone', 
   ],
   'Standalone': [
     { name: 'Terminal', icon: TerminalSquare, href: '/terminal-2-0' },
-    { name: 'Margin', icon: BadgeDollarSign, href: '/margin' },
     { name: 'CRM', icon: Users, href: '/crm2.0' },
     { name: 'News', icon: Newspaper, href: '/news' },
     { name: 'Mail', icon: Mail, href: '/crm/email' },
