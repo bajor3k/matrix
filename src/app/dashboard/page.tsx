@@ -207,11 +207,10 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Holiday Section */}
+              {/* Holiday Section - Softer Border */}
               {nextHoliday && (
                 <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50 dark:border-white/10">
                   <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
-                    {/* Icon Removed Here */}
                     <span className="text-muted-foreground">Next Holiday:</span>
                     <span className="font-medium text-foreground">{nextHoliday.eventName}</span>
                     <span className="text-muted-foreground mx-1">•</span>
@@ -301,7 +300,7 @@ export default function DashboardPage() {
                           href={f.filingUrl} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-xs text-primary hover:underline hover:text-primary/80 font-medium"
+                          className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium"
                         >
                           View
                         </a>
