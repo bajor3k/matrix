@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
@@ -140,8 +141,9 @@ export default function CalendarPage() {
                 <div 
                   key={index}
                   className={cn(
-                    "min-h-[120px] p-3 border-[0.5px] border-border/40 relative transition-all hover:bg-muted/5 cursor-pointer group",
-                    dayObj.isCurrentMonth ? "bg-background" : "bg-gray-50/50 dark:bg-muted/5" 
+                    // Updated Border: dark:border-white/5 is extremely subtle
+                    "min-h-[120px] p-3 border-[0.5px] border-gray-200 dark:border-white/5 relative transition-all hover:bg-muted/5 cursor-pointer group",
+                    dayObj.isCurrentMonth ? "bg-background" : "bg-gray-50/50 dark:bg-white/5" 
                   )}
                   onClick={() => dayObj.fullDate && openQuickAddDialogForDate(dayObj.fullDate)}
                 >
@@ -152,8 +154,8 @@ export default function CalendarPage() {
                       isCurrentDay 
                         ? "bg-orange-400 text-white shadow-sm" 
                         : dayObj.isCurrentMonth 
-                          ? "text-gray-900 dark:text-foreground/70 group-hover:text-black dark:group-hover:text-foreground" // Darker for light mode
-                          : "text-gray-400 dark:text-muted-foreground/50" // Readable gray for off-month
+                          ? "text-gray-900 dark:text-foreground/70 group-hover:text-black dark:group-hover:text-foreground" 
+                          : "text-gray-400 dark:text-muted-foreground/30" 
                     )}>
                       {dayObj.day}
                     </span>
