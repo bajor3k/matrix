@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -113,6 +114,7 @@ export default function DashboardPage() {
   const [filings, setFilings] = useState<SecFiling[]>([]);
   const [ipos, setIpos] = useState<IpoEvent[]>([]);
   const [usaSpending, setUsaSpending] = useState<UsaSpendingData | null>(null);
+  const [isSpendingModalOpen, setIsSpendingModalOpen] = useState(false);
 
 
   // Fetch All Data on Mount
@@ -182,6 +184,12 @@ export default function DashboardPage() {
     { symbol: "QQQ",  price: 218.03, changePct: -0.92 },
     { symbol: "IYM", price: 171.44, changePct:  0.36 },
   ];
+  
+  const sortedSpendingData = useMemo(() => {
+    if (!usaSpending?.data) return [];
+    return [...usaSpending.data].sort((a,b) => new Date(b.actionDate).getTime() - new Date(a.actionDate).getTime());
+  }, [usaSpending]);
+
 
   return (
     <main className="p-6 space-y-6">
@@ -330,97 +338,151 @@ export default function DashboardPage() {
             </table>
           </div>
         </Card>
-
-        {/* IPO Calendar */}
-        <Card title="IPO Calendar" className="min-h-[260px]">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-muted-foreground border-b border-border">
-                  <th className="text-left font-medium pb-2 pr-3 pl-2">Date</th>
-                  <th className="text-left font-medium pb-2 pr-3">Ticker</th>
-                  <th className="text-left font-medium pb-2 pr-3">Company</th>
-                  <th className="text-left font-medium pb-2 pr-3">Price Range</th>
-                  <th className="text-left font-medium pb-2">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {ipos.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="py-4 text-center text-muted-foreground text-xs">
-                      No upcoming IPOs found.
-                    </td>
-                  </tr>
-                ) : (
-                  ipos.map((ipo, i) => (
-                    <tr key={i} className="hover:bg-accent/50 transition-colors">
-                      <td className="py-2.5 pl-2 text-foreground text-xs">{ipo.date}</td>
-                      <td className="py-2.5 font-semibold text-blue-600 dark:text-blue-400 text-xs">{ipo.symbol || "—"}</td>
-                      <td className="py-2.5 text-foreground/90 text-xs truncate max-w-[200px]" title={ipo.name}>
-                        {ipo.name}
-                      </td>
-                      <td className="py-2.5 text-muted-foreground text-xs">{ipo.price || "TBD"}</td>
-                      <td className="py-2.5">
-                        <Badge 
-                          variant="outline" 
-                          className={`text-[10px] font-normal border-none px-2 py-0.5 ${
-                            ipo.status === 'priced' ? 'bg-emerald-500/10 text-emerald-500' :
-                            ipo.status === 'expected' ? 'bg-blue-500/10 text-blue-500' :
-                            ipo.status === 'withdrawn' ? 'bg-red-500/10 text-red-500' :
-                            'bg-muted text-muted-foreground'
-                          }`}
-                        >
-                          {ipo.status}
-                        </Badge>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </Card>
-
-        {/* USA Spending Card */}
-        <Card title="USA Spending" className="min-h-[260px]">
-          <div className="overflow-y-auto h-[260px]">
-            <table className="w-full text-sm usa-spending-table">
-              <thead className="sticky top-0 bg-card">
-                <tr className="text-muted-foreground border-b border-border">
-                  <th className="text-left font-medium pb-2 pr-3 pl-2">Agency</th>
-                  <th className="text-left font-medium pb-2 pr-3">Date</th>
-                  <th className="text-right font-medium pb-2 pr-3">Amount</th>
-                  <th className="text-left font-medium pb-2">Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                {!usaSpending || usaSpending.data.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="py-4 text-center text-muted-foreground text-xs">
-                      {usaSpending === null ? 'Loading data...' : 'No recent contracts found.'}
-                    </td>
-                  </tr>
-                ) : (
-                  usaSpending.data.slice(0, 100).sort((a,b) => new Date(b.actionDate).getTime() - new Date(a.actionDate).getTime()).map((item, i) => (
-                    <tr key={i} className="hover:bg-accent/50 transition-colors">
-                      <td className="py-2.5 pl-2 text-foreground text-xs truncate max-w-[150px]" title={item.awardingAgencyName}>
-                        {item.awardingAgencyName}
-                      </td>
-                      <td className="py-2.5 text-muted-foreground text-xs">{item.actionDate}</td>
-                      <td className="py-2.5 text-right font-mono font-semibold text-emerald-400">
-                        ${item.totalValue.toLocaleString()}
-                      </td>
-                      <td className="py-2.5 text-muted-foreground text-xs truncate max-w-[150px]" title={item.awardDescription}>
-                        {item.awardDescription || "N/A"}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </Card>
       </div>
+
+       {/* Bottom Row */}
+      <div className="bottom-row">
+        {/* IPO Calendar */}
+        <div className="card ipo-card">
+          <Card title="IPO Calendar">
+            <div className="table-container">
+                <table className="w-full text-sm">
+                <thead>
+                    <tr className="text-muted-foreground border-b border-border">
+                    <th className="text-left font-medium pb-2 pr-3 pl-2">Date</th>
+                    <th className="text-left font-medium pb-2 pr-3">Ticker</th>
+                    <th className="text-left font-medium pb-2 pr-3">Company</th>
+                    <th className="text-left font-medium pb-2 pr-3">Price Range</th>
+                    <th className="text-left font-medium pb-2">Status</th>
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                    {ipos.length === 0 ? (
+                    <tr>
+                        <td colSpan={5} className="py-4 text-center text-muted-foreground text-xs">
+                        No upcoming IPOs found.
+                        </td>
+                    </tr>
+                    ) : (
+                    ipos.map((ipo, i) => (
+                        <tr key={i} className="hover:bg-accent/50 transition-colors">
+                        <td className="py-2.5 pl-2 text-foreground text-xs">{ipo.date}</td>
+                        <td className="py-2.5 font-semibold text-blue-600 dark:text-blue-400 text-xs">{ipo.symbol || "—"}</td>
+                        <td className="py-2.5 text-foreground/90 text-xs truncate max-w-[200px]" title={ipo.name}>
+                            {ipo.name}
+                        </td>
+                        <td className="py-2.5 text-muted-foreground text-xs">{ipo.price || "TBD"}</td>
+                        <td className="py-2.5">
+                            <Badge 
+                            variant="outline" 
+                            className={`text-[10px] font-normal border-none px-2 py-0.5 ${
+                                ipo.status === 'priced' ? 'bg-emerald-500/10 text-emerald-500' :
+                                ipo.status === 'expected' ? 'bg-blue-500/10 text-blue-500' :
+                                ipo.status === 'withdrawn' ? 'bg-red-500/10 text-red-500' :
+                                'bg-muted text-muted-foreground'
+                            }`}
+                            >
+                            {ipo.status}
+                            </Badge>
+                        </td>
+                        </tr>
+                    ))
+                    )}
+                </tbody>
+                </table>
+            </div>
+          </Card>
+        </div>
+
+        {/* USA Spending */}
+        <div className="card usa-spending-card">
+            <Card title="USA Spending">
+                <div className="table-container">
+                    <table className="w-full text-sm usa-spending-table">
+                    <thead>
+                        <tr className="text-muted-foreground border-b border-border">
+                        <th className="text-left font-medium pb-2 pr-3 pl-2">Agency</th>
+                        <th className="text-left font-medium pb-2 pr-3">Date</th>
+                        <th className="text-right font-medium pb-2 pr-3">Amount</th>
+                        <th className="text-left font-medium pb-2">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                        {!usaSpending || usaSpending.data.length === 0 ? (
+                        <tr>
+                            <td colSpan={4} className="py-4 text-center text-muted-foreground text-xs">
+                            {usaSpending === null ? 'Loading data...' : 'No recent contracts found.'}
+                            </td>
+                        </tr>
+                        ) : (
+                        sortedSpendingData.slice(0, 5).map((item, i) => (
+                            <tr key={i} className="hover:bg-accent/50 transition-colors">
+                            <td className="py-2.5 pl-2 text-foreground text-xs truncate max-w-[150px]" title={item.awardingAgencyName}>
+                                {item.awardingAgencyName}
+                            </td>
+                            <td className="py-2.5 text-muted-foreground text-xs">{item.actionDate}</td>
+                            <td className="py-2.5 text-right font-mono font-semibold text-emerald-400">
+                                ${item.totalValue.toLocaleString()}
+                            </td>
+                            <td className="py-2.5 text-muted-foreground text-xs truncate max-w-[150px]" title={item.awardDescription}>
+                                {item.awardDescription || "N/A"}
+                            </td>
+                            </tr>
+                        ))
+                        )}
+                    </tbody>
+                    </table>
+                </div>
+                {sortedSpendingData.length > 5 && (
+                  <div style={{ textAlign: 'center', padding: '10px', borderTop: '1px solid #333' }}>
+                      <button id="btn-see-more" className="view-btn text-primary hover:underline text-sm font-medium" onClick={() => setIsSpendingModalOpen(true)}>
+                          See More
+                      </button>
+                  </div>
+                )}
+            </Card>
+        </div>
+      </div>
+      
+      {isSpendingModalOpen && (
+        <div id="modal-spending" className="modal-overlay" style={{ display: 'block' }}>
+            <div className="modal-content">
+                <div className="modal-header">
+                    <h3>All Government Contracts</h3>
+                    <span className="close-btn" onClick={() => setIsSpendingModalOpen(false)}>&times;</span>
+                </div>
+                <div className="modal-body">
+                    <table className="w-full text-sm usa-spending-table">
+                        <thead>
+                            <tr className="text-muted-foreground border-b border-border">
+                                <th className="text-left font-medium pb-2 pr-3 pl-2">Agency</th>
+                                <th className="text-left font-medium pb-2 pr-3">Date</th>
+                                <th className="text-right font-medium pb-2 pr-3">Amount</th>
+                                <th className="text-left font-medium pb-2">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border">
+                          {sortedSpendingData.map((item, i) => (
+                              <tr key={i} className="hover:bg-accent/50 transition-colors">
+                              <td className="py-2.5 pl-2 text-foreground text-xs" title={item.awardingAgencyName}>
+                                  {item.awardingAgencyName}
+                              </td>
+                              <td className="py-2.5 text-muted-foreground text-xs">{item.actionDate}</td>
+                              <td className="py-2.5 text-right font-mono font-semibold text-emerald-400">
+                                  ${item.totalValue.toLocaleString()}
+                              </td>
+                              <td className="py-2.5 text-muted-foreground text-xs" title={item.awardDescription}>
+                                  {item.awardDescription || "N/A"}
+                              </td>
+                              </tr>
+                          ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+      )}
     </main>
   );
 }
+
