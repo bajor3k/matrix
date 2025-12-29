@@ -330,7 +330,7 @@
     gap: 1.5rem; /* Matches Tailwind's `gap-6` */
 }
   
-.ipo-card, .usa-spending-card {
+.ipo-card {
     width: 100%;
     min-height: 260px; /* Consistent height */
 }
@@ -339,12 +339,6 @@
     .bottom-row {
         grid-template-columns: 1fr;
     }
-}
-
-/* Hide scrollbar on the main dashboard card */
-.usa-spending-card .table-container {
-    overflow: hidden;
-    max-height: auto;
 }
 
 /* Modal Overlay (Dark background behind popup) */
@@ -399,3 +393,44 @@
 }
 
 .close-btn:hover { color: #fff; }
+
+/* 1. Ensure the card acts as a vertical stack */
+.usa-spending-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 350px; /* Match your other cards' height */
+    height: 100%;
+}
+
+/* 2. The Table Area: Grows to fill empty space */
+.usa-spending-card .table-container {
+    flex-grow: 1;      /* Expands to push the footer down */
+    overflow: hidden;  /* Prevents scrolling here */
+    display: flex;     /* Helps align content if empty */
+    flex-direction: column;
+}
+
+/* 3. The Footer ("See More"): Pinned to the bottom */
+#usa-spending-footer {
+    margin-top: auto;  /* Critical: Pushes this section to the very bottom */
+    padding: 15px;
+    border-top: 1px solid #333; /* Optional: Separator line */
+    background-color: #000;     /* Match card bg */
+    text-align: center;
+}
+
+/* 4. Style the button to look cleaner */
+#btn-see-more {
+    width: 100%;       /* Optional: Makes the button fill the width */
+    padding: 8px;
+    cursor: pointer;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+#btn-see-more:hover {
+    background-color: #333;
+}

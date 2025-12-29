@@ -343,9 +343,11 @@ export default function DashboardPage() {
        {/* Bottom Row */}
       <div className="bottom-row">
         {/* IPO Calendar */}
-        <div className="card ipo-card">
-          <Card title="IPO Calendar">
-            <div className="table-container">
+        <div className="rounded-xl border bg-card text-card-foreground ipo-card">
+            <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+              <h3 className="text-sm font-semibold text-foreground">IPO Calendar</h3>
+            </div>
+            <div className="p-4 table-container">
                 <table className="w-full text-sm">
                 <thead>
                     <tr className="text-muted-foreground border-b border-border">
@@ -391,56 +393,54 @@ export default function DashboardPage() {
                 </tbody>
                 </table>
             </div>
-          </Card>
         </div>
 
         {/* USA Spending */}
-        <div className="card usa-spending-card">
-            <Card title="USA Spending">
-                <div className="table-container">
-                    <table className="w-full text-sm usa-spending-table">
-                    <thead>
-                        <tr className="text-muted-foreground border-b border-border">
-                        <th className="text-left font-medium pb-2 pr-3 pl-2">Agency</th>
-                        <th className="text-left font-medium pb-2 pr-3">Date</th>
-                        <th className="text-right font-medium pb-2 pr-3">Amount</th>
-                        <th className="text-left font-medium pb-2">Description</th>
+        <div className="rounded-xl border bg-card text-card-foreground card usa-spending-card">
+            <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+              <h3 className="text-sm font-semibold text-foreground">USA Spending</h3>
+            </div>
+            <div className="p-4 table-container">
+                <table className="w-full text-sm usa-spending-table">
+                <thead>
+                    <tr className="text-muted-foreground border-b border-border">
+                    <th className="text-left font-medium pb-2 pr-3 pl-2">Agency</th>
+                    <th className="text-left font-medium pb-2 pr-3">Date</th>
+                    <th className="text-right font-medium pb-2 pr-3">Amount</th>
+                    <th className="text-left font-medium pb-2">Description</th>
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                    {!usaSpending || usaSpending.data.length === 0 ? (
+                    <tr>
+                        <td colSpan={4} className="py-4 text-center text-muted-foreground text-xs">
+                        {usaSpending === null ? 'Loading data...' : 'No recent contracts found.'}
+                        </td>
+                    </tr>
+                    ) : (
+                    sortedSpendingData.slice(0, 5).map((item, i) => (
+                        <tr key={i} className="hover:bg-accent/50 transition-colors">
+                        <td className="py-2.5 pl-2 text-foreground text-xs truncate max-w-[150px]" title={item.awardingAgencyName}>
+                            {item.awardingAgencyName}
+                        </td>
+                        <td className="py-2.5 text-muted-foreground text-xs">{item.actionDate}</td>
+                        <td className="py-2.5 text-right font-mono font-semibold text-emerald-400">
+                            ${item.totalValue.toLocaleString()}
+                        </td>
+                        <td className="py-2.5 text-muted-foreground text-xs truncate max-w-[150px]" title={item.awardDescription}>
+                            {item.awardDescription || "N/A"}
+                        </td>
                         </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                        {!usaSpending || usaSpending.data.length === 0 ? (
-                        <tr>
-                            <td colSpan={4} className="py-4 text-center text-muted-foreground text-xs">
-                            {usaSpending === null ? 'Loading data...' : 'No recent contracts found.'}
-                            </td>
-                        </tr>
-                        ) : (
-                        sortedSpendingData.slice(0, 5).map((item, i) => (
-                            <tr key={i} className="hover:bg-accent/50 transition-colors">
-                            <td className="py-2.5 pl-2 text-foreground text-xs truncate max-w-[150px]" title={item.awardingAgencyName}>
-                                {item.awardingAgencyName}
-                            </td>
-                            <td className="py-2.5 text-muted-foreground text-xs">{item.actionDate}</td>
-                            <td className="py-2.5 text-right font-mono font-semibold text-emerald-400">
-                                ${item.totalValue.toLocaleString()}
-                            </td>
-                            <td className="py-2.5 text-muted-foreground text-xs truncate max-w-[150px]" title={item.awardDescription}>
-                                {item.awardDescription || "N/A"}
-                            </td>
-                            </tr>
-                        ))
-                        )}
-                    </tbody>
-                    </table>
-                </div>
-                {sortedSpendingData.length > 5 && (
-                  <div style={{ textAlign: 'center', padding: '10px', borderTop: '1px solid #333' }}>
-                      <button id="btn-see-more" className="view-btn text-primary hover:underline text-sm font-medium" onClick={() => setIsSpendingModalOpen(true)}>
-                          See More
-                      </button>
-                  </div>
-                )}
-            </Card>
+                    ))
+                    )}
+                </tbody>
+                </table>
+            </div>
+            <div id="usa-spending-footer" style={{ display: sortedSpendingData.length > 5 ? 'block' : 'none' }}>
+                <button id="btn-see-more" onClick={() => setIsSpendingModalOpen(true)}>
+                    See More
+                </button>
+            </div>
         </div>
       </div>
       
@@ -485,4 +485,3 @@ export default function DashboardPage() {
     </main>
   );
 }
-
