@@ -220,8 +220,8 @@ export default function DashboardPage() {
           </ul>
         </Card>
 
-        {/* Economic Calendar */}
-        <Card title="Economic Calendar" className="min-h-[360px]">
+        {/* SEC Filings (formerly Economic Calendar) */}
+        <Card title="SEC Filings" className="min-h-[360px]">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
