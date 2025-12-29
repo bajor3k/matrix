@@ -29,6 +29,7 @@ const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
 const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'CRM')!;
 const newsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'News')!;
+const ticketItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Ticket')!;
 const settingsItem: NavItem = navigationData['Other'][0];
 
 
@@ -72,6 +73,7 @@ export default function Sidebar({
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
   const isCrm2 = useMemo(() => pathname === "/CRM", [pathname]);
   const isNews = useMemo(() => pathname === "/news", [pathname]);
+  const isTicket = useMemo(() => pathname === "/ticket", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
 
   const [openReports, setOpenReports] = useState(isReports);
@@ -187,6 +189,21 @@ export default function Sidebar({
             </span>
           </Link>
         </div>
+
+        <div className="mb-1">
+          <Link
+            href={ticketItem.href}
+            title={ticketItem.name}
+            data-active={isTicket}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isTicket ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
+          >
+            <span className="flex items-center gap-3">
+              <KanbanSquare className="h-5 w-5 shrink-0" />
+              {!collapsed && ticketItem.name}
+            </span>
+          </Link>
+        </div>
+
       </div>
 
       {/* footer — pinned at bottom */}
