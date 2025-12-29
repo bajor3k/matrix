@@ -44,6 +44,15 @@ interface SecFiling {
   filingUrl: string;
 }
 
+interface IpoEvent {
+  date: string;
+  symbol: string;
+  name: string;
+  status: string;
+  price: string;
+  exchange: string;
+}
+
 type FedEvent = { date: string; timeET?: string; event: string; note?: string };
 type Earning = { date: string; ticker: string; company: string; time: "BMO" | "AMC" | "TBD" };
 
@@ -52,13 +61,6 @@ const FED_DATES_DUMMY: FedEvent[] = [
   { date: "2025-11-20", timeET: "2:00 PM", event: "FOMC Minutes", note: "October meeting minutes release" },
   { date: "2025-12-11", timeET: "2:00 PM", event: "FOMC Rate Decision", note: "Press conference 2:30 PM" },
   { date: "2026-01-08", timeET: "8:30 AM", event: "Fed Chair Remarks", note: "Prepared remarks at policy forum" },
-];
-
-const EARNINGS_DUMMY: Earning[] = [
-  { date: "2025-11-19", ticker: "NVDA", company: "NVIDIA", time: "AMC" },
-  { date: "2025-11-20", ticker: "AAPL", company: "Apple", time: "BMO" },
-  { date: "2025-11-20", ticker: "MSFT", company: "Microsoft", time: "AMC" },
-  { date: "2025-11-21", ticker: "AMZN", company: "Amazon", time: "TBD" },
 ];
 
 /* ----------------------- Helpers ----------------------- */
@@ -100,6 +102,7 @@ export default function DashboardPage() {
   const [nextHoliday, setNextHoliday] = useState<MarketHoliday | null>(null);
   const [news, setNews] = useState<MarketNews[]>([]);
   const [filings, setFilings] = useState<SecFiling[]>([]);
+  const [ipos, setIpos] = useState<IpoEvent[]>([]);
 
   // Fetch All Data on Mount
   useEffect(() => {
@@ -142,6 +145,18 @@ export default function DashboardPage() {
         }
       })
       .catch((err) => console.error("Filings fetch error", err));
+
+    // 5. IPO Calendar
+    fetch("/api/external/ipo-calendar")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          // Sort by date (nearest first) and take top 10
+          const sorted = data.sort((a: IpoEvent, b: IpoEvent) => a.date.localeCompare(b.date));
+          setIpos(sorted.slice(0, 10));
+        }
+      })
+      .catch((err) => console.error("IPO fetch error", err));
   }, []);
 
   const stocks = [
@@ -297,26 +312,46 @@ export default function DashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-muted-foreground">
-                  <th className="text-left font-medium pb-2 pr-3">Date</th>
+                <tr className="text-muted-foreground border-b border-border">
+                  <th className="text-left font-medium pb-2 pr-3 pl-2">Date</th>
                   <th className="text-left font-medium pb-2 pr-3">Ticker</th>
                   <th className="text-left font-medium pb-2 pr-3">Company</th>
+                  <th className="text-left font-medium pb-2 pr-3">Price Range</th>
                   <th className="text-left font-medium pb-2">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {EARNINGS_DUMMY.map((r, i) => (
-                  <tr key={i} className="hover:bg-accent">
-                    <td className="py-2 pr-3 text-foreground">{r.date}</td>
-                    <td className="py-2 pr-3 text-foreground">{r.ticker}</td>
-                    <td className="py-2 pr-3 text-foreground/80">{r.company}</td>
-                    <td className="py-2">
-                      <span className="inline-flex items-center rounded px-2 py-0.5 text-[11px] bg-muted text-muted-foreground">
-                        {r.time}
-                      </span>
+                {ipos.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-4 text-center text-muted-foreground text-xs">
+                      No upcoming IPOs found.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  ipos.map((ipo, i) => (
+                    <tr key={i} className="hover:bg-accent/50 transition-colors">
+                      <td className="py-2.5 pl-2 text-foreground text-xs">{ipo.date}</td>
+                      <td className="py-2.5 font-semibold text-primary text-xs">{ipo.symbol || "—"}</td>
+                      <td className="py-2.5 text-foreground/90 text-xs truncate max-w-[200px]" title={ipo.name}>
+                        {ipo.name}
+                      </td>
+                      <td className="py-2.5 text-muted-foreground text-xs">{ipo.price || "TBD"}</td>
+                      <td className="py-2.5">
+                        <Badge 
+                          variant="outline" 
+                          className={`text-[10px] font-normal border-none px-2 py-0.5 ${
+                            ipo.status === 'priced' ? 'bg-emerald-500/10 text-emerald-500' :
+                            ipo.status === 'expected' ? 'bg-blue-500/10 text-blue-500' :
+                            ipo.status === 'withdrawn' ? 'bg-red-500/10 text-red-500' :
+                            'bg-muted text-muted-foreground'
+                          }`}
+                        >
+                          {ipo.status}
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
