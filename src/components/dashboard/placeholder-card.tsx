@@ -21,7 +21,8 @@ export function PlaceholderCard({ title, value, description, icon, iconClassName
   return (
     <Card className={cn("flex flex-col", className)}>
       <CardHeader className={cn(
-        "flex flex-row items-start justify-between p-4 pb-2"
+        "flex flex-row items-start justify-between p-4",
+        children ? "pb-2" : "pb-4"
       )}>
         <div className="flex-1">
           <CardTitle className="text-base font-bold text-foreground flex items-center gap-2">

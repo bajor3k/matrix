@@ -32,22 +32,26 @@ export default function ConversionAnalyticsPage() {
     {
       title: "Total Non-Managed Accounts",
       value: "245",
-      icon: Users
+      icon: Users,
+      iconClassName: "text-[hsl(var(--chart-1))]",
     },
     {
       title: "Total AUM in Non-Managed",
-      value: "$82,000,000",
-      icon: DollarSign
+      value: "$82M",
+      icon: DollarSign,
+      iconClassName: "text-[hsl(var(--chart-2))]",
     },
     {
       title: "Estimated Lost Revenue (YTD)",
-      value: "$162,000",
-      icon: TrendingDown
+      value: "$162K",
+      icon: TrendingDown,
+      iconClassName: "text-[hsl(var(--chart-5))]",
     },
     {
       title: "Conversion Rate (est.)",
       value: "5.2%",
-      icon: TrendingUp
+      icon: TrendingUp,
+      iconClassName: "text-[hsl(var(--chart-3))]",
     },
   ];
 
@@ -78,6 +82,7 @@ export default function ConversionAnalyticsPage() {
             title={card.title}
             value={card.value}
             icon={card.icon}
+            iconClassName={card.iconClassName}
           />
         ))}
       </div>

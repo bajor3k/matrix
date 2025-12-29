@@ -15,18 +15,26 @@ const metricCardsData = [
   { 
     title: "Total Active Clients", 
     value: "238", 
+    icon: Users,
+    iconClassName: "text-[hsl(var(--chart-1))]",
   },
   { 
     title: "Average AUM per Client", 
     value: "$51,872", 
+    icon: DollarSign,
+    iconClassName: "text-[hsl(var(--chart-2))]",
   },
   { 
     title: "Client Retention Rate", 
     value: "92%", 
+    icon: TrendingUp,
+    iconClassName: "text-[hsl(var(--chart-3))]",
   },
   {
     title: "Dummy Metric",
     value: "1,234",
+    icon: AlertTriangle,
+    iconClassName: "text-[hsl(var(--chart-4))]",
   }
 ];
 
@@ -101,16 +109,7 @@ export default function ClientAnalyticsPage() {
       
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         {metricCardsData.map((card, index) => (
-          <Card key={index} className="rounded-2xl p-4">
-            <div className="flex items-start justify-between">
-                <div>
-                    <p className="text-sm font-semibold text-zinc-200">{card.title}</p>
-                </div>
-                <div className="text-right">
-                    <div className="text-3xl font-bold leading-none text-white">{card.value}</div>
-                </div>
-            </div>
-          </Card>
+          <PlaceholderCard key={index} title={card.title} value={card.value} icon={card.icon} iconClassName={card.iconClassName}/>
         ))}
       </div>
 

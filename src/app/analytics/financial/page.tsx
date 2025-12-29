@@ -10,21 +10,25 @@ const topMetricCardsData = [
     title: "Total Revenue",
     value: "$2.3M",
     icon: DollarSign,
+    iconClassName: "text-[hsl(var(--chart-1))]",
   },
   {
     title: "Net Profit Margin",
     value: "18.5%",
     icon: TrendingUp,
+    iconClassName: "text-[hsl(var(--chart-3))]",
   },
   {
     title: "Operational Costs",
     value: "$850K",
     icon: CreditCard,
+    iconClassName: "text-[hsl(var(--chart-5))]",
   },
   {
     title: "Average Revenue per Client",
     value: "$12,450",
     icon: DollarSign,
+    iconClassName: "text-[hsl(var(--chart-2))]",
   },
 ];
 
@@ -41,6 +45,7 @@ export default function FinancialAnalyticsPage() {
             value={card.value}
             description={card.description}
             icon={card.icon}
+            iconClassName={card.iconClassName}
           />
         ))}
       </div>

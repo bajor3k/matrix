@@ -47,6 +47,13 @@
     --palette-4: #E6D6FD;
     --palette-5: #E4C5FB;
     --palette-6: #D2ACFB;
+    
+    --chart-1: 212 92% 51%; /* Blue */
+    --chart-2: 265 89% 60%; /* Purple */
+    --chart-3: 142 71% 45%; /* Green */
+    --chart-4: 45 100% 51%; /* Yellow */
+    --chart-5: 0 84% 60%; /* Red */
+    --chart-orange: 35 100% 58%; /* Orange */
 
     --kpi-color: var(--palette-1);
 

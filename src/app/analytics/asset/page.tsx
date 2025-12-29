@@ -32,18 +32,26 @@ const metricCardsData = [
     {
       title: "Total AUM",
       value: "$12.5B",
+      icon: DollarSign,
+      iconClassName: "text-[hsl(var(--chart-1))]",
     },
     {
       title: "YTD Return",
       value: "+8.7%",
+      icon: TrendingUp,
+      iconClassName: "text-[hsl(var(--chart-3))]",
     },
     {
       title: "Inflows (MTD)",
       value: "$350K",
+      icon: ArrowUpCircle,
+      iconClassName: "text-[hsl(var(--chart-2))]",
     },
     {
       title: "Outflows (MTD)",
       value: "$120K",
+      icon: ArrowDownCircle,
+      iconClassName: "text-[hsl(var(--chart-5))]",
     },
   ];
 
@@ -70,7 +78,7 @@ export default function AssetAnalyticsPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metricCardsData.map((card, index) => (
-          <PlaceholderCard key={index} title={card.title} value={card.value} />
+          <PlaceholderCard key={index} title={card.title} value={card.value} icon={card.icon} iconClassName={card.iconClassName} />
         ))}
       </div>
 

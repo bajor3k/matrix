@@ -20,10 +20,10 @@ interface FlaggedActivity {
 }
 
 const summaryCardsData = [
-  { title: "Total Flagged Accounts", value: "12", icon: ShieldAlert, iconClassName: "text-red-400" },
-  { title: "Excessive Trading", value: "3", icon: RepeatIcon, iconClassName: "text-red-400" },
-  { title: "No Activity", value: "4", icon: UserX, iconClassName: "text-green-400" },
-  { title: "Trade Frequency Anomalies", value: "5", icon: Activity, iconClassName: "text-purple-400" },
+  { title: "Total Flagged Accounts", value: "12", icon: ShieldAlert, iconClassName: "text-[hsl(var(--chart-1))]" },
+  { title: "Excessive Trading", value: "3", icon: RepeatIcon, iconClassName: "text-[hsl(var(--chart-5))]" },
+  { title: "No Activity", value: "4", icon: UserX, iconClassName: "text-[hsl(var(--chart-3))]" },
+  { title: "Trade Frequency Anomalies", value: "5", icon: Activity, iconClassName: "text-[hsl(var(--chart-2))]" },
 ];
 
 const getFlagBadgeClassName = (flag: FlaggedActivity["complianceFlag"]): string => {

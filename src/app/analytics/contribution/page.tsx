@@ -172,11 +172,13 @@ export default function ContributionMatrixPage() {
       totalOpportunity: number; 
       totalLimit: number;
       totalContributed: number;
+      icon: any; // Add icon to the type
+      iconClassName: string;
     }> = {
-      "Traditional IRA": { totalRemaining: 0, totalOpportunity: 0, totalLimit: 0, totalContributed: 0 },
-      "Roth IRA": { totalRemaining: 0, totalOpportunity: 0, totalLimit: 0, totalContributed: 0 },
-      "SEP IRA": { totalRemaining: 0, totalOpportunity: 0, totalLimit: 0, totalContributed: 0 },
-      "SIMPLE IRA": { totalRemaining: 0, totalOpportunity: 0, totalLimit: 0, totalContributed: 0 },
+      "Roth IRA": { totalRemaining: 0, totalOpportunity: 0, totalLimit: 0, totalContributed: 0, icon: PieChart, iconClassName: "text-[hsl(var(--chart-2))]" },
+      "Traditional IRA": { totalRemaining: 0, totalOpportunity: 0, totalLimit: 0, totalContributed: 0, icon: PieChart, iconClassName: "text-[hsl(var(--chart-1))]" },
+      "SEP IRA": { totalRemaining: 0, totalOpportunity: 0, totalLimit: 0, totalContributed: 0, icon: PieChart, iconClassName: "text-[hsl(var(--chart-3))]" },
+      "SIMPLE IRA": { totalRemaining: 0, totalOpportunity: 0, totalLimit: 0, totalContributed: 0, icon: PieChart, iconClassName: "text-[hsl(var(--chart-orange))]" },
     };
 
     accounts.forEach(acc => {
@@ -227,6 +229,8 @@ export default function ContributionMatrixPage() {
                 </span>
               </>
             }
+            icon={item.icon}
+            iconClassName={item.iconClassName}
             className="text-center"
           >
           </PlaceholderCard>
