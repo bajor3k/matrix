@@ -264,7 +264,7 @@ export default function DashboardPage() {
           </ul>
         </Card>
 
-        {/* SEC Filings (formerly Economic Calendar) */}
+        {/* SEC Filings */}
         <Card title="SEC Filings" className="min-h-[360px]">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -300,7 +300,7 @@ export default function DashboardPage() {
                           href={f.filingUrl} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                          className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium sec-filings-table action-col view-btn"
                         >
                           View
                         </a>
@@ -313,8 +313,8 @@ export default function DashboardPage() {
           </div>
         </Card>
 
-        {/* IPO Calendar (formerly Earnings Calendar) */}
-        <Card title="IPO Calendar" className="lg:col-span-2 min-h-[260px]">
+        {/* IPO Calendar */}
+        <Card title="IPO Calendar" className="min-h-[260px]">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -362,6 +362,14 @@ export default function DashboardPage() {
             </table>
           </div>
         </Card>
+
+        {/* USA Spending Card */}
+        <Card title="USA Spending" className="min-h-[260px]">
+          <div className="p-4">
+             <p className="text-muted-foreground">Data loading...</p>
+          </div>
+        </Card>
+
       </div>
     </main>
   );
