@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -198,7 +197,7 @@ export default function DashboardPage() {
 
               {/* Holiday Section */}
               {nextHoliday && (
-                <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50">
+                <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50 dark:border-white/10">
                   <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
                     {/* Icon Removed Here */}
                     <span className="text-muted-foreground">Next Holiday:</span>
