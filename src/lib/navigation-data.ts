@@ -40,6 +40,8 @@ import {
   Archive,
   AlertOctagon,
   UploadCloud,
+  Cloud,
+  Globe,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -102,11 +104,9 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
     { name: 'Contribution Matrix', icon: TrendingUp, href: '/analytics/contribution' },
   ],
   'Resources': [
-    { name: 'Quick Links', icon: LinkIcon, href: '/resources?tab=quick_links' },
-    { name: 'Documents', icon: FileText, href: '/resources?tab=documents' },
-    { name: 'Support', icon: LifeBuoy, href: '/resources?tab=support' },
-    { name: 'Tools', icon: Calculator, href: '/resources?tab=tools' },
-    { name: 'Training', icon: GraduationCap, href: '/resources?tab=training' },
+    { name: 'OneDrive', icon: Cloud, href: '/resources' },
+    { name: 'Procedures', icon: FileText, href: '/resources' },
+    { name: 'External', icon: Globe, href: '/resources' },
   ],
   'Other': [
       { name: 'Settings', icon: Settings, href: '/settings' },
@@ -115,7 +115,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
     { name: 'Calendar', icon: CalendarDays, href: '/calendar' },
     { name: 'CRM', icon: Users, href: '/CRM' },
     { name: 'Research', icon: FlaskConical, href: '/research' },
-    { name: 'News', icon: Newspaper, href: '/news' },
     { name: 'Alerts', icon: AlertOctagon, href: '/alerts' },
     { name: 'Ticket', icon: KanbanSquare, href: '/ticket' },
   ]

@@ -1,4 +1,3 @@
-
 // components/Sidebar.tsx
 "use client";
 
@@ -34,7 +33,6 @@ const resourceItems: NavItem[] = navigationData['Resources'];
 const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'CRM')!;
 const researchItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Research')!;
 const calendarItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Calendar')!;
-const newsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'News')!;
 const alertsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Alerts')!;
 const ticketItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Ticket')!;
 const settingsItem: NavItem = navigationData['Other'][0];
@@ -81,7 +79,6 @@ export default function Sidebar({
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
   const isCrm2 = useMemo(() => pathname === "/CRM", [pathname]);
   const isResearch = useMemo(() => pathname === "/research", [pathname]);
-  const isNews = useMemo(() => pathname === "/news", [pathname]);
   const isAlerts = useMemo(() => pathname === "/alerts", [pathname]);
   const isTicket = useMemo(() => pathname === "/ticket", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
@@ -215,20 +212,6 @@ export default function Sidebar({
             <span className="flex items-center gap-3">
               <Users className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-5))]" />
               {!collapsed && crm2Item.name}
-            </span>
-          </Link>
-        </div>
-
-        <div className="mb-1">
-          <Link
-            href={newsItem.href}
-            title={newsItem.name}
-            data-active={isNews}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isNews ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
-          >
-            <span className="flex items-center gap-3">
-              <Newspaper className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-6))]" />
-              {!collapsed && newsItem.name}
             </span>
           </Link>
         </div>
