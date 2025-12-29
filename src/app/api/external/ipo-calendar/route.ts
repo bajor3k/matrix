@@ -7,17 +7,22 @@ export async function GET() {
   }
 
   try {
-    // Calculate Date Range (Next 3 Months)
     const today = new Date();
-    const threeMonthsLater = new Date();
-    threeMonthsLater.setMonth(today.getMonth() + 3);
+    
+    // 1. Look BACK 6 months (to show recent IPOs)
+    const fromDateObj = new Date();
+    fromDateObj.setMonth(today.getMonth() - 6);
+    
+    // 2. Look FORWARD 6 months
+    const toDateObj = new Date();
+    toDateObj.setMonth(today.getMonth() + 6);
 
-    const fromDate = today.toISOString().split('T')[0];
-    const toDate = threeMonthsLater.toISOString().split('T')[0];
+    const fromDate = fromDateObj.toISOString().split('T')[0];
+    const toDate = toDateObj.toISOString().split('T')[0];
 
     const res = await fetch(
       `https://finnhub.io/api/v1/calendar/ipo?from=${fromDate}&to=${toDate}&token=${apiKey}`,
-      { next: { revalidate: 3600 } } // Cache for 1 hour
+      { next: { revalidate: 3600 } }
     );
     
     if (!res.ok) {
