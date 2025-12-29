@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
-import { CalendarDays, Newspaper, Building2, Clock, Calendar } from "lucide-react";
+import { CalendarDays, Clock, Calendar } from "lucide-react";
 import StockCard from "@/components/StockCard";
 // Alias the UI Card to avoid conflict with your local Card component below
 import { Card as UiCard, CardContent } from "@/components/ui/card"; 
@@ -12,7 +12,7 @@ interface MarketStatus {
   isOpen: boolean;
   session: string | null;
   holiday: string | null;
-  t: number; // Unix timestamp
+  t: number;
 }
 
 interface MarketHoliday {
@@ -21,17 +21,21 @@ interface MarketHoliday {
   tradingHour: string;
 }
 
-type NewsItem = { title: string; source: string; time: string };
+interface MarketNews {
+  id: number;
+  category: string;
+  datetime: number;
+  headline: string;
+  image: string;
+  source: string;
+  url: string;
+  summary: string;
+}
+
 type FedEvent = { date: string; timeET?: string; event: string; note?: string };
 type Earning = { date: string; ticker: string; company: string; time: "BMO" | "AMC" | "TBD" };
 
-/* ----------------------- Dummy Data ----------------------- */
-const NEWS_DUMMY: NewsItem[] = [
-  { title: "SEC updates guidance on custody rule proposals", source: "Bloomberg", time: "12m ago" },
-  { title: "Treasuries steady ahead of FOMC minutes", source: "WSJ", time: "38m ago" },
-  { title: "Large-cap tech mixed as yields edge higher", source: "Reuters", time: "1h ago" },
-];
-
+/* ----------------------- Dummy Data (Static) ----------------------- */
 const FED_DATES_DUMMY: FedEvent[] = [
   { date: "2025-11-20", timeET: "2:00 PM", event: "FOMC Minutes", note: "October meeting minutes release" },
   { date: "2025-12-11", timeET: "2:00 PM", event: "FOMC Rate Decision", note: "Press conference 2:30 PM" },
@@ -44,6 +48,16 @@ const EARNINGS_DUMMY: Earning[] = [
   { date: "2025-11-20", ticker: "MSFT", company: "Microsoft", time: "AMC" },
   { date: "2025-11-21", ticker: "AMZN", company: "Amazon", time: "TBD" },
 ];
+
+/* ----------------------- Helpers ----------------------- */
+function timeAgo(unixTimestamp: number) {
+  const seconds = Math.floor((new Date().getTime() - unixTimestamp * 1000) / 1000);
+  let interval = seconds / 3600;
+  if (interval > 1) return Math.floor(interval) + "h ago";
+  interval = seconds / 60;
+  if (interval > 1) return Math.floor(interval) + "m ago";
+  return Math.floor(seconds) + "s ago";
+}
 
 /* ----------------------- Card Shell ----------------------- */
 function Card({
@@ -69,37 +83,42 @@ function Card({
 export default function DashboardPage() {
   const fedRows = useMemo(() => FED_DATES_DUMMY, []);
   
-  // Market Status State
+  // State
   const [marketData, setMarketData] = useState<MarketStatus | null>(null);
   const [nextHoliday, setNextHoliday] = useState<MarketHoliday | null>(null);
+  const [news, setNews] = useState<MarketNews[]>([]);
 
-  // Fetch Market Status & Holidays on Mount
+  // Fetch All Data on Mount
   useEffect(() => {
-    // Fetch Status
+    // 1. Market Status
     fetch("/api/external/market-status")
       .then((res) => res.json())
-      .then((data) => {
-        if (!data.error) setMarketData(data);
-      })
-      .catch((err) => console.error("Failed to load market status", err));
+      .then((data) => !data.error && setMarketData(data))
+      .catch((err) => console.error("Status fetch error", err));
 
-    // Fetch Holidays
+    // 2. Market Holidays
     fetch("/api/external/market-holiday")
       .then((res) => res.json())
       .then((json) => {
         if (json.data && Array.isArray(json.data)) {
           const todayStr = new Date().toISOString().split('T')[0];
-          // Find first holiday that is today or in the future
           const upcoming = json.data
             .filter((h: MarketHoliday) => h.atDate >= todayStr)
             .sort((a: MarketHoliday, b: MarketHoliday) => a.atDate.localeCompare(b.atDate));
-          
-          if (upcoming.length > 0) {
-            setNextHoliday(upcoming[0]);
-          }
+          if (upcoming.length > 0) setNextHoliday(upcoming[0]);
         }
       })
-      .catch((err) => console.error("Failed to load holidays", err));
+      .catch((err) => console.error("Holiday fetch error", err));
+
+    // 3. Market News
+    fetch("/api/external/market-news")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setNews(data.slice(0, 5)); // Keep top 5 stories
+        }
+      })
+      .catch((err) => console.error("News fetch error", err));
   }, []);
 
   const stocks = [
@@ -112,7 +131,7 @@ export default function DashboardPage() {
   return (
     <main className="p-6 space-y-6">
       
-      {/* Header Section with Market Status */}
+      {/* Header Section */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold text-foreground">Welcome Josh</h1>
 
@@ -120,7 +139,6 @@ export default function DashboardPage() {
         {marketData && (
           <UiCard className="border-none shadow-none bg-transparent">
             <CardContent className="p-0 flex items-center gap-6 text-sm">
-              {/* Status Section */}
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-full">
                   <span className="relative flex h-2.5 w-2.5">
@@ -137,8 +155,6 @@ export default function DashboardPage() {
                           : "Closed")}
                   </span>
                 </div>
-                
-                {/* Time Display */}
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Clock className="h-4 w-4" />
                   <span className="font-mono">
@@ -147,7 +163,6 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Holiday Section */}
               {nextHoliday && (
                 <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50">
                   <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
@@ -166,46 +181,47 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* ----------- KPI ROW ----------- */}
+      {/* KPI ROW */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stocks.map((s) => (
-          <StockCard
-            key={s.symbol}
-            symbol={s.symbol}
-            price={s.price}
-            changePct={s.changePct}
-          />
+          <StockCard key={s.symbol} symbol={s.symbol} price={s.price} changePct={s.changePct} />
         ))}
       </section>
 
-      {/* ---------------- Cards Grid ---------------- */}
+      {/* Main Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* News */}
-        <Card
-          title="Market News"
-          className="min-h-[360px]"
-        >
+        {/* Market News */}
+        <Card title="Market News" className="min-h-[360px]">
           <ul className="space-y-3">
-            {NEWS_DUMMY.map((n, i) => (
-              <li
-                key={i}
-                className="group rounded-lg border border-border bg-background/50 p-3 hover:border-primary/20"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="text-sm text-foreground leading-5">{n.title}</div>
-                  <span className="text-[11px] text-muted-foreground whitespace-nowrap">{n.time}</span>
-                </div>
-                <div className="mt-1 text-[12px] text-muted-foreground">{n.source}</div>
-              </li>
-            ))}
+            {news.length === 0 ? (
+              <li className="text-muted-foreground text-sm">Loading news...</li>
+            ) : (
+              news.map((n) => (
+                <li
+                  key={n.id}
+                  className="group rounded-lg border border-border bg-background/50 p-3 hover:border-primary/20 transition-colors"
+                >
+                  <a href={n.url} target="_blank" rel="noopener noreferrer" className="block">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="text-sm text-foreground leading-5 font-medium group-hover:text-primary transition-colors">
+                        {n.headline}
+                      </div>
+                      <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                        {timeAgo(n.datetime)}
+                      </span>
+                    </div>
+                    <div className="mt-1.5 flex items-center justify-between">
+                      <div className="text-[11px] text-muted-foreground font-semibold">{n.source}</div>
+                    </div>
+                  </a>
+                </li>
+              ))
+            )}
           </ul>
         </Card>
 
-        {/* Economic Calendar (FED) */}
-        <Card
-          title="Economic Calendar"
-          className="min-h-[360px]"
-        >
+        {/* Economic Calendar */}
+        <Card title="Economic Calendar" className="min-h-[360px]">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -231,12 +247,8 @@ export default function DashboardPage() {
           </div>
         </Card>
 
-        {/* Earnings — full width */}
-        <Card
-          title="Earnings Calendar"
-        
-          className="lg:col-span-2 min-h-[260px]"
-        >
+        {/* Earnings */}
+        <Card title="Earnings Calendar" className="lg:col-span-2 min-h-[260px]">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
