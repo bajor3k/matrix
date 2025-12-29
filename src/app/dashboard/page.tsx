@@ -1,18 +1,25 @@
-// src/app/dashboard/page.tsx
 "use client";
 
-import { useMemo } from "react";
-import { Newspaper } from "lucide-react";
+import { useMemo, useEffect, useState } from "react";
+import { CalendarDays, Newspaper, Building2, Clock, Calendar } from "lucide-react";
 import StockCard from "@/components/StockCard";
-import { Card, CardContent } from "@/components/ui/card";
+// Alias the UI Card to avoid conflict with your local Card component below
+import { Card as UiCard, CardContent } from "@/components/ui/card"; 
 import { Badge } from "@/components/ui/badge";
-import { Clock, Calendar } from "lucide-react";
 
-/* ----------------------- Dummy Data ----------------------- */
+/* ----------------------- Types ----------------------- */
+interface MarketStatus {
+  isOpen: boolean;
+  session: string | null;
+  holiday: string | null;
+  t: number; // Unix timestamp
+}
+
 type NewsItem = { title: string; source: string; time: string };
 type FedEvent = { date: string; timeET?: string; event: string; note?: string };
 type Earning = { date: string; ticker: string; company: string; time: "BMO" | "AMC" | "TBD" };
 
+/* ----------------------- Dummy Data ----------------------- */
 const NEWS_DUMMY: NewsItem[] = [
   { title: "SEC updates guidance on custody rule proposals", source: "Bloomberg", time: "12m ago" },
   { title: "Treasuries steady ahead of FOMC minutes", source: "WSJ", time: "38m ago" },
@@ -33,7 +40,7 @@ const EARNINGS_DUMMY: Earning[] = [
 ];
 
 /* ----------------------- Card Shell ----------------------- */
-function CustomCard({
+function Card({
   title, icon, children, className = "",
 }: {
   title: string;
@@ -55,8 +62,20 @@ function CustomCard({
 /* ----------------------- Page ----------------------- */
 export default function DashboardPage() {
   const fedRows = useMemo(() => FED_DATES_DUMMY, []);
+  
+  // Market Status State
+  const [marketData, setMarketData] = useState<MarketStatus | null>(null);
 
-  // Your original stock data
+  // Fetch Market Status on Mount
+  useEffect(() => {
+    fetch("/api/external/market-status")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.error) setMarketData(data);
+      })
+      .catch((err) => console.error("Failed to load market status", err));
+  }, []);
+
   const stocks = [
     { symbol: "SPY",  price: 687.54, changePct:  -1.18 },
     { symbol: "DJI",  price: 134.55, changePct:  0.74 },
@@ -66,38 +85,58 @@ export default function DashboardPage() {
 
   return (
     <main className="p-6 space-y-6">
-      <div className="flex flex-row items-center justify-between w-full">
+      
+      {/* Header Section with Market Status */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold text-foreground">Welcome Josh</h1>
-        <Card className="border-none shadow-none bg-transparent">
-          <CardContent className="p-0 flex items-center gap-6 text-sm">
-            {/* Market Status Section */}
-            <div className="flex items-center gap-2">
-              {/* Market Open Pill - Border Removed */}
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-full">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                </span>
-                <span className="font-medium text-muted-foreground">Market Open</span>
-              </div>
-              
-            </div>
 
-            {/* Holiday Section - Border Removed */}
-            <div className="hidden md:flex items-center gap-2 pl-6 border-l">
-              <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
-                <span className="text-muted-foreground">Next Holiday:</span>
-                <span>New Year's Day</span>
-                <span className="text-muted-foreground mx-1">•</span>
-                <span>Jan 1</span>
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Market Status Component */}
+        {marketData && (
+          <UiCard className="border-none shadow-none bg-transparent">
+            <CardContent className="p-0 flex items-center gap-6 text-sm">
+              {/* Status Section */}
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-full">
+                  <span className="relative flex h-2.5 w-2.5">
+                    {marketData.isOpen && (
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    )}
+                    <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${marketData.isOpen ? 'bg-emerald-500' : 'bg-gray-400'}`}></span>
+                  </span>
+                  <span className="font-medium text-muted-foreground">
+                    {marketData.isOpen 
+                      ? "Market Open" 
+                      : (marketData.session 
+                          ? marketData.session.replace("-", " ").replace(/\b\w/g, c => c.toUpperCase()) 
+                          : "Closed")}
+                  </span>
+                </div>
+                
+                {/* Time Display */}
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <Clock className="h-4 w-4" />
+                  <span className="font-mono">
+                    {new Date(marketData.t * 1000).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZone: "America/New_York" })} EST
+                  </span>
+                </div>
+              </div>
+
+              {/* Holiday Section (Only shows if there is a holiday) */}
+              {marketData.holiday && (
+                <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50">
+                  <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
+                    <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="text-muted-foreground">Holiday:</span>
+                    <span>{marketData.holiday}</span>
+                  </Badge>
+                </div>
+              )}
+            </CardContent>
+          </UiCard>
+        )}
       </div>
 
-
-      {/* ----------- YOUR EXISTING KPI ROW - PRESERVED ----------- */}
+      {/* ----------- KPI ROW ----------- */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stocks.map((s) => (
           <StockCard
@@ -109,10 +148,10 @@ export default function DashboardPage() {
         ))}
       </section>
 
-      {/* ---------------- New Cards Grid ---------------- */}
+      {/* ---------------- Cards Grid ---------------- */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* News */}
-        <CustomCard
+        <Card
           title="News"
           className="min-h-[360px]"
         >
@@ -130,10 +169,10 @@ export default function DashboardPage() {
               </li>
             ))}
           </ul>
-        </CustomCard>
+        </Card>
 
         {/* Economic Calendar (FED) */}
-        <CustomCard
+        <Card
           title="Economic Calendar"
           className="min-h-[360px]"
         >
@@ -160,10 +199,10 @@ export default function DashboardPage() {
               </tbody>
             </table>
           </div>
-        </CustomCard>
+        </Card>
 
         {/* Earnings — full width */}
-        <CustomCard
+        <Card
           title="Earnings Calendar"
         
           className="lg:col-span-2 min-h-[260px]"
@@ -201,7 +240,7 @@ export default function DashboardPage() {
               </tbody>
             </table>
           </div>
-        </CustomCard>
+        </Card>
       </div>
     </main>
   );
