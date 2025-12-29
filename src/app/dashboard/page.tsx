@@ -72,22 +72,25 @@ export default function DashboardPage() {
           <CardContent className="p-0 flex items-center gap-6 text-sm">
             {/* Market Status Section */}
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 border rounded-full">
+              {/* Market Open Pill - Border Removed */}
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-full">
                 <span className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                 </span>
                 <span className="font-medium text-muted-foreground">Market Open</span>
               </div>
+              
+              {/* 24-Hour Time Display */}
               <div className="flex items-center gap-1.5 text-muted-foreground">
                 <Clock className="h-4 w-4" />
                 <span className="font-mono">14:35 EST</span>
               </div>
             </div>
 
-            {/* Holiday Section */}
+            {/* Holiday Section - Border Removed */}
             <div className="hidden md:flex items-center gap-2 pl-6 border-l">
-              <Badge variant="outline" className="gap-1.5 font-normal py-1">
+              <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
                 <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
                 <span className="text-muted-foreground">Next Holiday:</span>
                 <span>New Year's Day</span>
