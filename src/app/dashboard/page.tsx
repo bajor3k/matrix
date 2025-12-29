@@ -182,7 +182,7 @@ export default function DashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* News */}
         <Card
-          title="News"
+          title="Market News"
           className="min-h-[360px]"
         >
           <ul className="space-y-3">
