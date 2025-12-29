@@ -246,7 +246,6 @@ export default function ContributionMatrixPage() {
               <TableHead className="font-bold text-right">Annual Limit</TableHead>
               <TableHead className="font-bold text-right w-40">Contributed</TableHead>
               <TableHead className="font-bold text-right">Remaining</TableHead>
-              <TableHead className="font-bold min-w-[96px] w-[96px] text-right">Progress (%)</TableHead>
               <TableHead className="font-bold text-right whitespace-nowrap">Monthly to Max-Out</TableHead>
               <TableHead className="font-bold text-center whitespace-nowrap">Due Date</TableHead>
             </TableRow>
@@ -280,11 +279,6 @@ export default function ContributionMatrixPage() {
                     <span>${account.amountContributed.toLocaleString()}</span>
                   </TableCell>
                   <TableCell className="text-right whitespace-nowrap">${remaining.toLocaleString()}</TableCell>
-                  <TableCell className="w-[96px] align-middle">
-                     <div className="flex justify-end">
-                       <ProgressDonut percent={progressPercent} size={40} strokeWidth={6} />
-                     </div>
-                  </TableCell>
                   <TableCell className="text-right whitespace-nowrap">
                     {monthlyToMax > 0 && progressPercent < 100 ? `$${monthlyToMax.toFixed(2)}/mo` : (progressPercent >= 100 ? "Maxed Out" : "N/A")}
                   </TableCell>
