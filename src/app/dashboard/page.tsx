@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -291,8 +292,8 @@ export default function DashboardPage() {
           </div>
         </Card>
 
-        {/* Earnings */}
-        <Card title="Earnings Calendar" className="lg:col-span-2 min-h-[260px]">
+        {/* IPO Calendar (formerly Earnings Calendar) */}
+        <Card title="IPO Calendar" className="lg:col-span-2 min-h-[260px]">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -300,7 +301,7 @@ export default function DashboardPage() {
                   <th className="text-left font-medium pb-2 pr-3">Date</th>
                   <th className="text-left font-medium pb-2 pr-3">Ticker</th>
                   <th className="text-left font-medium pb-2 pr-3">Company</th>
-                  <th className="text-left font-medium pb-2">Time</th>
+                  <th className="text-left font-medium pb-2">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -310,14 +311,7 @@ export default function DashboardPage() {
                     <td className="py-2 pr-3 text-foreground">{r.ticker}</td>
                     <td className="py-2 pr-3 text-foreground/80">{r.company}</td>
                     <td className="py-2">
-                      <span
-                        className={[
-                          "inline-flex items-center rounded px-2 py-0.5 text-[11px]",
-                          r.time === "BMO" ? "bg-emerald-500/10 text-emerald-300" :
-                          r.time === "AMC" ? "bg-blue-500/10 text-blue-300" :
-                          "bg-muted text-muted-foreground",
-                        ].join(" ")}
-                      >
+                      <span className="inline-flex items-center rounded px-2 py-0.5 text-[11px] bg-muted text-muted-foreground">
                         {r.time}
                       </span>
                     </td>
