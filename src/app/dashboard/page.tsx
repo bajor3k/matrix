@@ -81,11 +81,6 @@ export default function DashboardPage() {
                 <span className="font-medium text-muted-foreground">Market Open</span>
               </div>
               
-              {/* 24-Hour Time Display */}
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Clock className="h-4 w-4" />
-                <span className="font-mono">14:35 EST</span>
-              </div>
             </div>
 
             {/* Holiday Section - Border Removed */}
