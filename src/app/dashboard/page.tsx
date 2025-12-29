@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -176,6 +177,7 @@ export default function DashboardPage() {
         {marketData && (
           <UiCard className="border-none shadow-none bg-transparent">
             <CardContent className="p-0 flex items-center gap-6 text-sm">
+              {/* Status Section - Time Removed */}
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-full">
                   <span className="relative flex h-2.5 w-2.5">
@@ -192,14 +194,9 @@ export default function DashboardPage() {
                           : "Closed")}
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span className="font-mono">
-                    {new Date(marketData.t * 1000).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZone: "America/New_York" })} EST
-                  </span>
-                </div>
               </div>
 
+              {/* Holiday Section (Unchanged) */}
               {nextHoliday && (
                 <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50">
                   <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
