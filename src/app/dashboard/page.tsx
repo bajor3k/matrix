@@ -52,6 +52,16 @@ interface IpoEvent {
   exchange: string;
 }
 
+interface UsaSpendingData {
+  symbol: string;
+  data: {
+    awardingAgencyName: string;
+    actionDate: string;
+    totalValue: number;
+    awardDescription: string;
+  }[];
+}
+
 type FedEvent = { date: string; timeET?: string; event: string; note?: string };
 type Earning = { date: string; ticker: string; company: string; time: "BMO" | "AMC" | "TBD" };
 
@@ -102,6 +112,8 @@ export default function DashboardPage() {
   const [news, setNews] = useState<MarketNews[]>([]);
   const [filings, setFilings] = useState<SecFiling[]>([]);
   const [ipos, setIpos] = useState<IpoEvent[]>([]);
+  const [usaSpending, setUsaSpending] = useState<UsaSpendingData | null>(null);
+
 
   // Fetch All Data on Mount
   useEffect(() => {
@@ -156,6 +168,12 @@ export default function DashboardPage() {
         }
       })
       .catch((err) => console.error("IPO fetch error", err));
+
+    // 6. USA Spending
+    fetch("/api/external/usa-spending?symbol=LMT")
+      .then((res) => res.json())
+      .then((data) => !data.error && setUsaSpending(data))
+      .catch((err) => console.error("USA Spending fetch error", err));
   }, []);
 
   const stocks = [
@@ -295,12 +313,12 @@ export default function DashboardPage() {
                       <td className="py-2.5 text-muted-foreground text-xs">
                         {f.filedDate.split(' ')[0]}
                       </td>
-                      <td className="py-2.5 pr-2 text-right">
+                      <td className="py-2.5 pr-2 text-right sec-filings-table action-col">
                         <a 
                           href={f.filingUrl} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium sec-filings-table action-col view-btn"
+                          className="text-xs view-btn"
                         >
                           View
                         </a>
@@ -365,11 +383,43 @@ export default function DashboardPage() {
 
         {/* USA Spending Card */}
         <Card title="USA Spending" className="min-h-[260px]">
-          <div className="p-4">
-             <p className="text-muted-foreground">Data loading...</p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm usa-spending-table">
+              <thead>
+                <tr className="text-muted-foreground border-b border-border">
+                  <th className="text-left font-medium pb-2 pr-3 pl-2">Agency</th>
+                  <th className="text-left font-medium pb-2 pr-3">Date</th>
+                  <th className="text-right font-medium pb-2 pr-3">Amount</th>
+                  <th className="text-left font-medium pb-2">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {!usaSpending || usaSpending.data.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-4 text-center text-muted-foreground text-xs">
+                      {usaSpending === null ? 'Loading data...' : 'No recent contracts found.'}
+                    </td>
+                  </tr>
+                ) : (
+                  usaSpending.data.slice(0, 5).map((item, i) => (
+                    <tr key={i} className="hover:bg-accent/50 transition-colors">
+                      <td className="py-2.5 pl-2 text-foreground text-xs truncate max-w-[150px]" title={item.awardingAgencyName}>
+                        {item.awardingAgencyName}
+                      </td>
+                      <td className="py-2.5 text-muted-foreground text-xs">{item.actionDate}</td>
+                      <td className="py-2.5 text-right font-mono font-semibold text-emerald-400">
+                        ${item.totalValue.toLocaleString()}
+                      </td>
+                      <td className="py-2.5 text-muted-foreground text-xs truncate max-w-[150px]" title={item.awardDescription}>
+                        {item.awardDescription || "N/A"}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </Card>
-
       </div>
     </main>
   );

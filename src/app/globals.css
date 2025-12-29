@@ -297,3 +297,28 @@
 ) {
   border: 1px solid var(--card-border-global-dark) !important;
 }
+
+/* Custom styling for specific tables */
+.sec-filings-table .action-col a.view-btn {
+    color: #3B82F6; /* blue-500 */
+    opacity: 1;
+    font-weight: 500;
+    cursor: pointer;
+}
+.dark .sec-filings-table .action-col a.view-btn {
+    color: #60A5FA; /* blue-400 */
+}
+.sec-filings-table .action-col a.view-btn:hover {
+    text-decoration: underline;
+}
+
+.usa-spending-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}
+.usa-spending-table td:nth-child(3) {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+}
