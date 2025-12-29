@@ -15,6 +15,12 @@ interface MarketStatus {
   t: number; // Unix timestamp
 }
 
+interface MarketHoliday {
+  eventName: string;
+  atDate: string;
+  tradingHour: string;
+}
+
 type NewsItem = { title: string; source: string; time: string };
 type FedEvent = { date: string; timeET?: string; event: string; note?: string };
 type Earning = { date: string; ticker: string; company: string; time: "BMO" | "AMC" | "TBD" };
@@ -65,15 +71,35 @@ export default function DashboardPage() {
   
   // Market Status State
   const [marketData, setMarketData] = useState<MarketStatus | null>(null);
+  const [nextHoliday, setNextHoliday] = useState<MarketHoliday | null>(null);
 
-  // Fetch Market Status on Mount
+  // Fetch Market Status & Holidays on Mount
   useEffect(() => {
+    // Fetch Status
     fetch("/api/external/market-status")
       .then((res) => res.json())
       .then((data) => {
         if (!data.error) setMarketData(data);
       })
       .catch((err) => console.error("Failed to load market status", err));
+
+    // Fetch Holidays
+    fetch("/api/external/market-holiday")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.data && Array.isArray(json.data)) {
+          const todayStr = new Date().toISOString().split('T')[0];
+          // Find first holiday that is today or in the future
+          const upcoming = json.data
+            .filter((h: MarketHoliday) => h.atDate >= todayStr)
+            .sort((a: MarketHoliday, b: MarketHoliday) => a.atDate.localeCompare(b.atDate));
+          
+          if (upcoming.length > 0) {
+            setNextHoliday(upcoming[0]);
+          }
+        }
+      })
+      .catch((err) => console.error("Failed to load holidays", err));
   }, []);
 
   const stocks = [
@@ -121,13 +147,17 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Holiday Section (Only shows if there is a holiday) */}
-              {marketData.holiday && (
+              {/* Holiday Section */}
+              {nextHoliday && (
                 <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50">
                   <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
                     <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                    <span className="text-muted-foreground">Holiday:</span>
-                    <span>{marketData.holiday}</span>
+                    <span className="text-muted-foreground">Next Holiday:</span>
+                    <span className="font-medium text-foreground">{nextHoliday.eventName}</span>
+                    <span className="text-muted-foreground mx-1">•</span>
+                    <span className="text-muted-foreground">
+                      {new Date(nextHoliday.atDate + 'T00:00:00').toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </span>
                   </Badge>
                 </div>
               )}
