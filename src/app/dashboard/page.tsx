@@ -400,7 +400,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-2 border-b border-border px-4 py-3">
               <h3 className="text-sm font-semibold text-foreground">USA Spending</h3>
             </div>
-            <div className="p-4 table-container">
+            <div className="table-container">
                 <table className="w-full text-sm usa-spending-table">
                 <thead>
                     <tr className="text-muted-foreground border-b border-border">
