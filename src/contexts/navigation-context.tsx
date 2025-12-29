@@ -10,9 +10,10 @@ export interface NavItem {
   icon: LucideIcon;
   href: string;
   hasNewAlerts?: boolean;
+  children?: NavItem[]; // Add this line
 }
 
-export type ToolbarSectionKey = 'Reports' | 'CRM' | 'Analytics' | 'Resources';
+export type ToolbarSectionKey = 'Reports' | 'CRM' | 'Analytics' | 'Resources' | 'Mail' | 'Calendar';
 
 export interface ToolbarSection {
   id: ToolbarSectionKey;

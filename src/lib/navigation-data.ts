@@ -49,27 +49,12 @@ export const toolbarSections: ToolbarSection[] = [
     { id: 'Resources', title: 'Resources' },
 ];
 
-export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' | 'Mail', NavItem[]> = {
+export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' | 'Mail' | 'Calendar', NavItem[]> = {
   'Reports': [
     { name: 'Advisory Fees', icon: BadgeDollarSign, href: '/reports/advisory-fees'},
     { name: 'Cash', icon: Wallet, href: '/reports/cash'},
   ],
   'CRM': [],
-  'Analytics': [
-    { name: 'Asset Analytics', icon: BarChart3, href: '/analytics/asset' },
-    { name: 'Client Analytics', icon: Users, href: '/analytics/client' },
-    { name: 'Financial Analytics', icon: TrendingUp, href: '/analytics/financial' },
-    { name: 'Conversion Analytics', icon: Repeat, href: '/analytics/conversion' },
-    { name: 'Compliance Matrix', icon: ShieldAlert, href: '/analytics/compliance'},
-    { name: 'Contribution Matrix', icon: TrendingUp, href: '/analytics/contribution' },
-  ],
-  'Resources': [
-    { name: 'Quick Links', icon: LinkIcon, href: '/resources?tab=quick_links' },
-    { name: 'Documents', icon: FileText, href: '/resources?tab=documents' },
-    { name: 'Support', icon: LifeBuoy, href: '/resources?tab=support' },
-    { name: 'Tools', icon: Calculator, href: '/resources?tab=tools' },
-    { name: 'Training', icon: GraduationCap, href: '/resources?tab=training' },
-  ],
   'Mail': [
     {
       name: 'Inbox',
@@ -106,6 +91,24 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
       href: '/mail/outbox',
       icon: UploadCloud
     },
+  ],
+  'Calendar': [
+    { name: 'My Calendar', icon: CalendarDays, href: '/calendar' },
+  ],
+  'Analytics': [
+    { name: 'Asset Analytics', icon: BarChart3, href: '/analytics/asset' },
+    { name: 'Client Analytics', icon: Users, href: '/analytics/client' },
+    { name: 'Financial Analytics', icon: TrendingUp, href: '/analytics/financial' },
+    { name: 'Conversion Analytics', icon: Repeat, href: '/analytics/conversion' },
+    { name: 'Compliance Matrix', icon: ShieldAlert, href: '/analytics/compliance'},
+    { name: 'Contribution Matrix', icon: TrendingUp, href: '/analytics/contribution' },
+  ],
+  'Resources': [
+    { name: 'Quick Links', icon: LinkIcon, href: '/resources?tab=quick_links' },
+    { name: 'Documents', icon: FileText, href: '/resources?tab=documents' },
+    { name: 'Support', icon: LifeBuoy, href: '/resources?tab=support' },
+    { name: 'Tools', icon: Calculator, href: '/resources?tab=tools' },
+    { name: 'Training', icon: GraduationCap, href: '/resources?tab=training' },
   ],
   'Other': [
       { name: 'Settings', icon: Settings, href: '/settings' },

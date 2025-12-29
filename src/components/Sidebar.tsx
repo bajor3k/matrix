@@ -1,4 +1,3 @@
-
 // components/Sidebar.tsx
 "use client";
 
@@ -17,16 +16,18 @@ import {
   Newspaper,
   Mail,
   AlertOctagon,
+  CalendarDays,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
 import { cn } from "@/lib/utils";
 
-export type SectionKey = "reports" | "crm" | "analytics" | "resources" | "mail";
+export type SectionKey = "reports" | "crm" | "analytics" | "resources" | "mail" | "calendar";
 
 const reportItems: NavItem[] = navigationData['Reports'];
 const crmItems: NavItem[] = navigationData['CRM'];
 const mailItems: NavItem[] = navigationData['Mail'];
+const calendarItems: NavItem[] = navigationData['Calendar'];
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
 const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'CRM')!;
@@ -70,6 +71,7 @@ export default function Sidebar({
   const isReports = useMemo(() => pathname?.startsWith("/reports"), [pathname]);
   const isCRM = useMemo(() => pathname?.startsWith("/crm"), [pathname]);
   const isMail = useMemo(() => pathname?.startsWith("/mail"), [pathname]);
+  const isCalendar = useMemo(() => pathname?.startsWith("/calendar"), [pathname]);
   const isAnalytics = useMemo(() => [
     "/analytics/asset", "/analytics/client", "/analytics/financial", 
     "/analytics/conversion", "/analytics/compliance", "/analytics/contribution"
@@ -85,12 +87,14 @@ export default function Sidebar({
   const [openReports, setOpenReports] = useState(isReports);
   const [openCRM, setOpenCRM] = useState(isCRM);
   const [openMail, setOpenMail] = useState(isMail);
+  const [openCalendar, setOpenCalendar] = useState(isCalendar);
   const [openAnalytics, setOpenAnalytics] = useState(isAnalytics);
   const [openResources, setOpenResources] = useState(isResources);
 
   useEffect(() => setOpenReports(isReports), [isReports]);
   useEffect(() => setOpenCRM(isCRM), [isCRM]);
   useEffect(() => setOpenMail(isMail), [isMail]);
+  useEffect(() => setOpenCalendar(isCalendar), [isCalendar]);
   useEffect(() => setOpenAnalytics(isAnalytics), [isAnalytics]);
   useEffect(() => setOpenResources(isResources), [isResources]);
 
@@ -100,6 +104,7 @@ export default function Sidebar({
     setOpenReports(forceOpen === "reports");
     setOpenCRM(forceOpen === "crm");
     setOpenMail(forceOpen === "mail");
+    setOpenCalendar(forceOpen === "calendar");
     setOpenAnalytics(forceOpen === "analytics");
     setOpenResources(forceOpen === "resources");
     onForceOpenHandled?.();
@@ -165,6 +170,7 @@ export default function Sidebar({
         
         {/* <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} /> */}
         <Section keyName="mail" title="Mail" icon={Mail} open={openMail} setOpen={setOpenMail} items={mailItems} iconClassName="text-[hsl(var(--icon-color-1))]" />
+        <Section keyName="calendar" title="Calendar" icon={CalendarDays} open={openCalendar} setOpen={setOpenCalendar} items={calendarItems} iconClassName="text-blue-400" />
         <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} iconClassName="text-[hsl(var(--icon-color-2))]"/>
         
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} iconClassName="text-[hsl(var(--icon-color-3))]"/>
