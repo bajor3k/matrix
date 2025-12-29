@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
@@ -131,7 +130,7 @@ export default function CalendarPage() {
                   key={index}
                   className={cn(
                     "min-h-[120px] p-3 border-[0.5px] border-border/40 relative transition-all hover:bg-muted/5 cursor-pointer group",
-                    dayObj.isCurrentMonth ? "bg-background" : "bg-muted/5 text-muted-foreground/50"
+                    dayObj.isCurrentMonth ? "bg-background" : "bg-gray-50/50 dark:bg-muted/5" 
                   )}
                   onClick={() => dayObj.fullDate && openQuickAddDialogForDate(dayObj.fullDate)}
                 >
@@ -141,7 +140,9 @@ export default function CalendarPage() {
                       "text-sm font-medium w-8 h-8 flex items-center justify-center rounded-full transition-colors",
                       isCurrentDay 
                         ? "bg-orange-400 text-white shadow-sm" 
-                        : "text-foreground/70 group-hover:text-foreground"
+                        : dayObj.isCurrentMonth 
+                          ? "text-gray-900 dark:text-foreground/70 group-hover:text-black dark:group-hover:text-foreground" // Darker for light mode
+                          : "text-gray-400 dark:text-muted-foreground/50" // Readable gray for off-month
                     )}>
                       {dayObj.day}
                     </span>
@@ -157,9 +158,6 @@ export default function CalendarPage() {
                         title={`${event.title} (${format(event.start, 'h:mm a')})`}
                       />
                     ))}
-                    {dayEvents.length > 8 && (
-                      <span className="text-[10px] text-muted-foreground leading-none flex items-center">+</span>
-                    )}
                   </div>
                 </div>
               );
@@ -172,29 +170,29 @@ export default function CalendarPage() {
       <aside className="lg:w-80 shrink-0 space-y-6">
         <div className="bg-card rounded-xl border shadow-sm p-6 h-full flex flex-col">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="font-semibold text-lg tracking-tight">Upcoming</h3>
-            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Next 30 Days</span>
+            <h3 className="font-semibold text-lg tracking-tight text-gray-900 dark:text-foreground">Upcoming</h3>
+            <span className="text-xs text-gray-600 dark:text-muted-foreground font-medium uppercase tracking-wider">Next 30 Days</span>
           </div>
 
           <div className="space-y-6 flex-1">
             {upcomingEvents.length === 0 ? (
               <div className="text-center py-10">
-                <p className="text-muted-foreground text-sm">No upcoming events.</p>
+                <p className="text-gray-500 dark:text-muted-foreground text-sm">No upcoming events.</p>
               </div>
             ) : (
               upcomingEvents.map(event => (
                 <div key={event.id} className="flex gap-4 items-start group cursor-default">
-                   <div className="flex flex-col items-center min-w-[3rem]">
-                      <span className="text-xs font-bold text-muted-foreground uppercase">{format(event.start, 'MMM')}</span>
-                      <span className="text-xl font-bold text-foreground">{format(event.start, 'd')}</span>
-                   </div>
-                   <div className="w-[2px] h-10 bg-border/50 rounded-full" />
-                   <div className="pb-2">
-                      <p className="font-medium text-sm group-hover:text-primary transition-colors line-clamp-1">{event.title}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                  <div className="flex flex-col items-center min-w-[3rem]">
+                      <span className="text-xs font-bold text-gray-700 dark:text-muted-foreground uppercase">{format(event.start, 'MMM')}</span>
+                      <span className="text-xl font-bold text-gray-900 dark:text-foreground">{format(event.start, 'd')}</span>
+                  </div>
+                  <div className="w-[2px] h-10 bg-border/50 rounded-full" />
+                  <div className="pb-2">
+                      <p className="font-medium text-sm text-gray-900 dark:text-foreground group-hover:text-primary transition-colors line-clamp-1">{event.title}</p>
+                      <p className="text-xs text-gray-600 dark:text-muted-foreground mt-0.5">
                         {event.allDay ? 'All Day' : format(event.start, 'h:mm a')}
                       </p>
-                   </div>
+                  </div>
                 </div>
               ))
             )}
