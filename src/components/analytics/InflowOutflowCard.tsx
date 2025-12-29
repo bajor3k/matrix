@@ -65,7 +65,7 @@ export default function InflowOutflowCard() {
   // axis styling (subtle, no grid)
   const AXIS_TICK = "hsl(var(--muted-foreground))";
   const AXIS_LINE = "hsl(var(--border))";
-  const INFLOW_COLOR = "hsl(var(--chart-1))";
+  const INFLOW_COLOR = "hsl(var(--chart-3))";
   const OUTFLOW_COLOR = "hsl(var(--chart-5))";
 
   return (
