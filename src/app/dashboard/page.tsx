@@ -86,7 +86,6 @@ export default function DashboardPage() {
             {/* Holiday Section - Border Removed */}
             <div className="hidden md:flex items-center gap-2 pl-6 border-l">
               <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
-                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
                 <span className="text-muted-foreground">Next Holiday:</span>
                 <span>New Year's Day</span>
                 <span className="text-muted-foreground mx-1">•</span>
