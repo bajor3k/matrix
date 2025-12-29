@@ -32,6 +32,17 @@ interface MarketNews {
   summary: string;
 }
 
+interface SecFiling {
+  accessNumber: string;
+  symbol: string;
+  cik: string;
+  form: string;
+  filedDate: string;
+  acceptedDate: string;
+  reportUrl: string;
+  filingUrl: string;
+}
+
 type FedEvent = { date: string; timeET?: string; event: string; note?: string };
 type Earning = { date: string; ticker: string; company: string; time: "BMO" | "AMC" | "TBD" };
 
@@ -87,6 +98,7 @@ export default function DashboardPage() {
   const [marketData, setMarketData] = useState<MarketStatus | null>(null);
   const [nextHoliday, setNextHoliday] = useState<MarketHoliday | null>(null);
   const [news, setNews] = useState<MarketNews[]>([]);
+  const [filings, setFilings] = useState<SecFiling[]>([]);
 
   // Fetch All Data on Mount
   useEffect(() => {
@@ -119,6 +131,16 @@ export default function DashboardPage() {
         }
       })
       .catch((err) => console.error("News fetch error", err));
+    
+    // 4. SEC Filings
+    fetch("/api/external/sec-filings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setFilings(data.slice(0, 7)); // Show top 7 filings
+        }
+      })
+      .catch((err) => console.error("Filings fetch error", err));
   }, []);
 
   const stocks = [
@@ -225,23 +247,45 @@ export default function DashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-muted-foreground">
-                  <th className="text-left font-medium pb-2 pr-3">Date</th>
-                  <th className="text-left font-medium pb-2 pr-3">Time (ET)</th>
-                  <th className="text-left font-medium pb-2">Event</th>
+                <tr className="text-muted-foreground border-b border-border">
+                  <th className="text-left font-medium pb-2 pr-3 pl-2">Symbol</th>
+                  <th className="text-left font-medium pb-2 pr-3">Form</th>
+                  <th className="text-left font-medium pb-2 pr-3">Filed Date</th>
+                  <th className="text-right font-medium pb-2 pr-2">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {fedRows.map((e, i) => (
-                  <tr key={i} className="hover:bg-accent">
-                    <td className="py-2 pr-3 text-foreground">{e.date}</td>
-                    <td className="py-2 pr-3 text-foreground/80">{e.timeET || "—"}</td>
-                    <td className="py-2">
-                      <div className="text-foreground">{e.event}</div>
-                      {e.note && <div className="text-[12px] text-muted-foreground">{e.note}</div>}
+                {filings.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-4 text-center text-muted-foreground text-xs">
+                      Loading filings...
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  filings.map((f, i) => (
+                    <tr key={i} className="hover:bg-accent/50 transition-colors">
+                      <td className="py-2.5 pl-2 font-semibold text-foreground">{f.symbol}</td>
+                      <td className="py-2.5">
+                        <Badge variant="secondary" className="font-mono text-xs font-normal">
+                          {f.form}
+                        </Badge>
+                      </td>
+                      <td className="py-2.5 text-muted-foreground text-xs">
+                        {f.filedDate.split(' ')[0]}
+                      </td>
+                      <td className="py-2.5 pr-2 text-right">
+                        <a 
+                          href={f.filingUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-xs text-primary hover:underline hover:text-primary/80 font-medium"
+                        >
+                          View
+                        </a>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
