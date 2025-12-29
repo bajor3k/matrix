@@ -285,7 +285,7 @@ export default function DashboardPage() {
         {/* SEC Filings */}
         <Card title="SEC Filings" className="min-h-[360px]">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm sec-filings-table">
               <thead>
                 <tr className="text-muted-foreground border-b border-border">
                   <th className="text-left font-medium pb-2 pr-3 pl-2">Symbol</th>
@@ -313,7 +313,7 @@ export default function DashboardPage() {
                       <td className="py-2.5 text-muted-foreground text-xs">
                         {f.filedDate.split(' ')[0]}
                       </td>
-                      <td className="py-2.5 pr-2 text-right sec-filings-table action-col">
+                      <td className="py-2.5 pr-2 text-right action-col">
                         <a 
                           href={f.filingUrl} 
                           target="_blank" 
@@ -383,9 +383,9 @@ export default function DashboardPage() {
 
         {/* USA Spending Card */}
         <Card title="USA Spending" className="min-h-[260px]">
-          <div className="overflow-x-auto">
+          <div className="overflow-y-auto h-[260px]">
             <table className="w-full text-sm usa-spending-table">
-              <thead>
+              <thead className="sticky top-0 bg-card">
                 <tr className="text-muted-foreground border-b border-border">
                   <th className="text-left font-medium pb-2 pr-3 pl-2">Agency</th>
                   <th className="text-left font-medium pb-2 pr-3">Date</th>
@@ -401,7 +401,7 @@ export default function DashboardPage() {
                     </td>
                   </tr>
                 ) : (
-                  usaSpending.data.slice(0, 5).map((item, i) => (
+                  usaSpending.data.slice(0, 100).sort((a,b) => new Date(b.actionDate).getTime() - new Date(a.actionDate).getTime()).map((item, i) => (
                     <tr key={i} className="hover:bg-accent/50 transition-colors">
                       <td className="py-2.5 pl-2 text-foreground text-xs truncate max-w-[150px]" title={item.awardingAgencyName}>
                         {item.awardingAgencyName}
