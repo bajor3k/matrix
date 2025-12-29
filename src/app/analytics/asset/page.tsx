@@ -64,11 +64,11 @@ const topPerformingAssetsData = [
 ];
 
 const allocationData = [
-  { label: "US Equities", value: 40, color: "var(--palette-1)" },
-  { label: "International Equities", value: 20, color: "var(--palette-2)" },
-  { label: "Fixed Income", value: 25, color: "var(--palette-3)" },
-  { label: "Alternatives", value: 10, color: "var(--palette-5)" },
-  { label: "Cash & Equivalents", value: 5, color: "var(--palette-6)" },
+  { label: "US Equities", value: 40, color: "hsl(var(--chart-1))" },
+  { label: "International Equities", value: 20, color: "hsl(var(--chart-2))" },
+  { label: "Fixed Income", value: 25, color: "hsl(var(--chart-3))" },
+  { label: "Alternatives", value: 10, color: "hsl(var(--chart-4))" },
+  { label: "Cash & Equivalents", value: 5, color: "hsl(var(--chart-5))" },
 ];
 
 export default function AssetAnalyticsPage() {
