@@ -196,11 +196,11 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Holiday Section (Unchanged) */}
+              {/* Holiday Section */}
               {nextHoliday && (
                 <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50">
                   <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
-                    <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                    {/* Icon Removed Here */}
                     <span className="text-muted-foreground">Next Holiday:</span>
                     <span className="font-medium text-foreground">{nextHoliday.eventName}</span>
                     <span className="text-muted-foreground mx-1">•</span>
