@@ -113,6 +113,7 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
   'Standalone': [
     { name: 'CRM', icon: Users, href: '/CRM' },
     { name: 'News', icon: Newspaper, href: '/news' },
+    { name: 'Alerts', icon: AlertOctagon, href: '/alerts' },
     { name: 'Ticket', icon: KanbanSquare, href: '/ticket' },
   ]
 };
