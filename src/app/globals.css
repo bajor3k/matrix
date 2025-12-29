@@ -52,6 +52,14 @@
 
     --nav-divider: rgba(2, 6, 23, .10);
     --nav-border: rgba(2, 6, 23, .12);
+
+    --icon-color-1: 212 92% 51%; /* Blue */
+    --icon-color-2: 265 89% 60%; /* Purple */
+    --icon-color-3: 142 71% 45%; /* Green */
+    --icon-color-4: 45 100% 51%; /* Yellow */
+    --icon-color-5: 0 84% 60%; /* Red */
+    --icon-color-6: 35 100% 58%; /* Orange */
+    --icon-color-7: 190 80% 55%; /* Teal */
   }
 
   .dark {

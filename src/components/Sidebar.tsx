@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
+import { cn } from "@/lib/utils";
 
 export type SectionKey = "reports" | "crm" | "analytics" | "resources" | "mail";
 
@@ -35,7 +36,7 @@ const ticketItem: NavItem = navigationData['Standalone'].find(item => item.name 
 const settingsItem: NavItem = navigationData['Other'][0];
 
 
-function Row({ item, active, hiddenLabel }: { item: NavItem; active: boolean; hiddenLabel: boolean }) {
+function Row({ item, active, hiddenLabel, iconClassName }: { item: NavItem; active: boolean; hiddenLabel: boolean, iconClassName?: string }) {
   const Icon = item.icon ?? FileStack;
   return (
     <Link
@@ -46,7 +47,7 @@ function Row({ item, active, hiddenLabel }: { item: NavItem; active: boolean; hi
         ${hiddenLabel ? 'justify-center px-0' : 'px-3'}
         ${active ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}`}
     >
-      <Icon className="h-5 w-5 shrink-0" />
+      <Icon className={cn("h-5 w-5 shrink-0", iconClassName)} />
       {!hiddenLabel && <span className="truncate">{item.name}</span>}
     </Link>
   );
@@ -110,10 +111,11 @@ export default function Sidebar({
     open,
     setOpen,
     items,
-    href
+    href,
+    iconClassName
   }: {
     keyName: SectionKey;
-    title: string; icon: any; open: boolean; setOpen: (v: boolean) => void; items: NavItem[]; href?: string;
+    title: string; icon: any; open: boolean; setOpen: (v: boolean) => void; items: NavItem[]; href?: string; iconClassName?: string;
   }) => {
     if (!items || items.length === 0) return null;
     function onHeaderClick() {
@@ -138,7 +140,7 @@ export default function Sidebar({
          hover:bg-accent hover:text-accent-foreground ${collapsed ? 'px-0 justify-center' : 'px-3 justify-between'}`}
        >
         <span className="flex items-center gap-3">
-          <Icon className="h-5 w-5 shrink-0" />
+          <Icon className={cn("h-5 w-5 shrink-0", iconClassName)} />
           {!collapsed && title}
         </span>
 
@@ -160,10 +162,10 @@ export default function Sidebar({
       <div className="h-[calc(100%-60px)] overflow-y-auto">
         
         {/* <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} /> */}
-        <Section keyName="mail" title="Mail" icon={Mail} open={openMail} setOpen={setOpenMail} items={mailItems} />
-        <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} />
+        <Section keyName="mail" title="Mail" icon={Mail} open={openMail} setOpen={setOpenMail} items={mailItems} iconClassName="text-[hsl(var(--icon-color-1))]" />
+        <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} iconClassName="text-[hsl(var(--icon-color-2))]"/>
         
-        <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} />
+        <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} iconClassName="text-[hsl(var(--icon-color-3))]"/>
         
         <div className="mb-1">
           <Link
@@ -173,7 +175,7 @@ export default function Sidebar({
             className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isCrm2 ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
-              <Users className="h-5 w-5 shrink-0" />
+              <Users className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-4))]" />
               {!collapsed && crm2Item.name}
             </span>
           </Link>
@@ -187,7 +189,7 @@ export default function Sidebar({
             className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isNews ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
-              <Newspaper className="h-5 w-5 shrink-0" />
+              <Newspaper className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-5))]" />
               {!collapsed && newsItem.name}
             </span>
           </Link>
@@ -201,7 +203,7 @@ export default function Sidebar({
             className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isAlerts ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
-              <AlertOctagon className="h-5 w-5 shrink-0" />
+              <AlertOctagon className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-6))]" />
               {!collapsed && alertsItem.name}
             </span>
           </Link>
@@ -215,7 +217,7 @@ export default function Sidebar({
             className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isTicket ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
-              <KanbanSquare className="h-5 w-5 shrink-0" />
+              <KanbanSquare className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-7))]" />
               {!collapsed && ticketItem.name}
             </span>
           </Link>
