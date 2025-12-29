@@ -1,3 +1,4 @@
+
 // components/Sidebar.tsx
 "use client";
 
@@ -32,6 +33,7 @@ const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
 const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'CRM')!;
 const researchItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Research')!;
+const calendarItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Calendar')!;
 const newsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'News')!;
 const alertsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Alerts')!;
 const ticketItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Ticket')!;
@@ -170,7 +172,21 @@ export default function Sidebar({
         
         {/* <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} /> */}
         <Section keyName="mail" title="Mail" icon={Mail} open={openMail} setOpen={setOpenMail} items={mailItems} iconClassName="text-[hsl(var(--icon-color-1))]" />
-        <Section keyName="calendar" title="Calendar" icon={CalendarDays} open={openCalendar} setOpen={setOpenCalendar} items={calendarItems} iconClassName="text-blue-400" />
+        
+        <div className="mb-1">
+          <Link
+            href={calendarItem.href}
+            title={calendarItem.name}
+            data-active={isCalendar}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isCalendar ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
+          >
+            <span className="flex items-center gap-3">
+              <CalendarDays className="h-5 w-5 shrink-0 text-blue-400" />
+              {!collapsed && calendarItem.name}
+            </span>
+          </Link>
+        </div>
+
         <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} iconClassName="text-[hsl(var(--icon-color-2))]"/>
         
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} iconClassName="text-[hsl(var(--icon-color-3))]"/>

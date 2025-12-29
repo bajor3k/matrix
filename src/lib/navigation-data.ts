@@ -92,9 +92,7 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
       icon: UploadCloud
     },
   ],
-  'Calendar': [
-    { name: 'My Calendar', icon: CalendarDays, href: '/calendar' },
-  ],
+  'Calendar': [],
   'Analytics': [
     { name: 'Asset Analytics', icon: BarChart3, href: '/analytics/asset' },
     { name: 'Client Analytics', icon: Users, href: '/analytics/client' },
@@ -114,6 +112,7 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
       { name: 'Settings', icon: Settings, href: '/settings' },
   ],
   'Standalone': [
+    { name: 'Calendar', icon: CalendarDays, href: '/calendar' },
     { name: 'CRM', icon: Users, href: '/CRM' },
     { name: 'Research', icon: FlaskConical, href: '/research' },
     { name: 'News', icon: Newspaper, href: '/news' },
