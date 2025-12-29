@@ -63,10 +63,10 @@ export default function InflowOutflowCard() {
   const t = totals(data);
 
   // axis styling (subtle, no grid)
-  const AXIS_TICK = "rgba(255,255,255,0.55)";
-  const AXIS_LINE = "rgba(255,255,255,0.15)";
-  const INFLOW_COLOR = "var(--palette-1)";
-  const OUTFLOW_COLOR = "var(--palette-6)";
+  const AXIS_TICK = "hsl(var(--muted-foreground))";
+  const AXIS_LINE = "hsl(var(--border))";
+  const INFLOW_COLOR = "hsl(var(--chart-1))";
+  const OUTFLOW_COLOR = "hsl(var(--chart-5))";
 
   return (
     <Card className="h-full">
@@ -117,8 +117,12 @@ export default function InflowOutflowCard() {
               <Tooltip
                 cursor={{ stroke: AXIS_LINE }}
                 formatter={(v: number) => fmt.format(v)}
-                labelStyle={{ color: "#fff" }}
-                contentStyle={{ background: "rgba(0,0,0,0.7)", border: "1px solid rgba(255,255,255,0.1)" }}
+                labelStyle={{ color: "hsl(var(--foreground))" }}
+                contentStyle={{ 
+                    background: "hsl(var(--background))", 
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "var(--radius)"
+                }}
               />
               <Legend wrapperStyle={{ color: AXIS_TICK }} />
 
@@ -163,13 +167,13 @@ export default function InflowOutflowCard() {
 
         {/* Totals row (unchanged) */}
         <div className="grid grid-cols-3 gap-3">
-          <Card className="bg-transparent border border-white/10">
+          <Card className="bg-transparent">
             <CardContent className="py-3">
               <div className="text-xs text-muted-foreground">Total Inflows</div>
               <div className="text-lg font-semibold">{fmt.format(t.totalIn)}</div>
             </CardContent>
           </Card>
-          <Card className="bg-transparent border-white/10">
+          <Card className="bg-transparent">
             <CardContent className="py-3">
               <div className="text-xs text-muted-foreground">Net Flow</div>
               <div className="text-foreground text-lg font-semibold">
@@ -177,7 +181,7 @@ export default function InflowOutflowCard() {
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-transparent border-white/10">
+          <Card className="bg-transparent">
             <CardContent className="py-3">
               <div className="text-xs text-muted-foreground">Total Outflows</div>
               <div className="text-lg font-semibold">{fmt.format(t.totalOut)}</div>
