@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -331,7 +330,7 @@ export default function DashboardPage() {
                   ipos.map((ipo, i) => (
                     <tr key={i} className="hover:bg-accent/50 transition-colors">
                       <td className="py-2.5 pl-2 text-foreground text-xs">{ipo.date}</td>
-                      <td className="py-2.5 font-semibold text-primary text-xs">{ipo.symbol || "—"}</td>
+                      <td className="py-2.5 font-semibold text-blue-600 dark:text-blue-400 text-xs">{ipo.symbol || "—"}</td>
                       <td className="py-2.5 text-foreground/90 text-xs truncate max-w-[200px]" title={ipo.name}>
                         {ipo.name}
                       </td>
