@@ -221,7 +221,7 @@ export default function CalendarPage() {
       
       {/* Add Event Dialog */}
       <Dialog open={isAddEventDialogOpen} onOpenChange={setIsAddEventDialogOpen}>
-        <DialogContent className="sm:max-w-xl md:max-w-2xl lg:max-w-3xl max-h-[90vh] flex flex-col bg-white dark:bg-card/95 backdrop-blur-md border-gray-200 dark:border-border/50 shadow-lg">
+        <DialogContent className="sm:max-w-xl md:max-w-2xl lg:max-w-3xl max-h-[90vh] flex flex-col bg-white dark:bg-card/95 backdrop-blur-md border-gray-200 dark:border-white/10 shadow-lg">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-gray-900 dark:text-foreground">New Event</DialogTitle>
           </DialogHeader>
@@ -355,3 +355,5 @@ export default function CalendarPage() {
     </div>
   );
 }
+
+    
