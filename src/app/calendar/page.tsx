@@ -14,13 +14,15 @@ import {
   isSameDay,
   isSameMonth,
 } from 'date-fns';
-import { ChevronLeft, ChevronRight, Plus, PlusCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, PlusCircle, Bold, Italic, Underline, ListChecks, ListOrdered, TableIcon, Link2, Smile, Mic } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
@@ -37,6 +39,15 @@ export default function CalendarPage() {
     allDay: false,
     color: '#7C3AED',
   });
+  
+  // State for the full detailed dialog
+  const [fullEventTitle, setFullEventTitle] = useState('');
+  const [fullEventStartDate, setFullEventStartDate] = useState('');
+  const [fullEventStartTime, setFullEventStartTime] = useState('');
+  const [fullEventEndDate, setFullEventEndDate] = useState('');
+  const [fullEventEndTime, setFullEventEndTime] = useState('');
+  const [fullEventAllDay, setFullEventAllDay] = useState(false);
+
 
   const firstDayOfMonth = useMemo(() => startOfMonth(currentDate), [currentDate]);
   const lastDayOfMonth = useMemo(() => endOfMonth(currentDate), [currentDate]);
@@ -208,84 +219,137 @@ export default function CalendarPage() {
       
       {/* Add Event Dialog */}
       <Dialog open={isAddEventDialogOpen} onOpenChange={setIsAddEventDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-xl md:max-w-2xl lg:max-w-3xl max-h-[90vh] flex flex-col bg-white dark:bg-card/95 backdrop-blur-md border-gray-200 dark:border-border/50 shadow-lg">
           <DialogHeader>
-            <DialogTitle>Add New Event</DialogTitle>
+            <DialogTitle className="text-xl font-bold text-gray-900 dark:text-foreground">New Event</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="title">Event Title</Label>
-              <Input
-                id="title"
-                value={newEvent.title}
-                onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+          
+          <div className="flex-grow overflow-y-auto pr-2 py-4 space-y-6"> 
+            {/* Event Name */}
+            <div>
+              <Label htmlFor="eventName-dialog" className="text-gray-700 dark:text-foreground">Event Name</Label>
+              <Input 
+                id="eventName-dialog" 
+                value={fullEventTitle} 
+                onChange={(e) => setFullEventTitle(e.target.value)} 
+                placeholder="Enter event name..." 
+                className="bg-white dark:bg-input border-gray-300 dark:border-border/50 text-gray-900 dark:text-foreground placeholder:text-gray-400 dark:placeholder:text-muted-foreground focus:ring-primary" 
               />
             </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="all-day"
-                checked={newEvent.allDay}
-                onCheckedChange={(checked) => setNewEvent({ ...newEvent, allDay: !!checked })}
-              />
-              <Label htmlFor="all-day">All-day event</Label>
+
+            {/* Category */}
+            <div>
+              <Label htmlFor="eventCategory-dialog" className="text-gray-700 dark:text-foreground">Category</Label>
+              <div className="flex items-center gap-2">
+                <Select>
+                  <SelectTrigger id="eventCategory-dialog" className="bg-white dark:bg-input border-gray-300 dark:border-border/50 text-gray-900 dark:text-foreground focus:ring-primary flex-grow">
+                    <SelectValue placeholder="Uncategorized" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="uncategorized">Uncategorized</SelectItem>
+                    <SelectItem value="meeting">Meeting</SelectItem>
+                    <SelectItem value="client_review">Client Review</SelectItem>
+                    <SelectItem value="prospect_introduction">Prospect Introduction</SelectItem>
+                    <SelectItem value="social_event">Social Event</SelectItem>
+                    <SelectItem value="conference">Conference</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="link" className="p-0 h-auto text-primary hover:text-primary/80 whitespace-nowrap">Edit Categories</Button>
+              </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="start-date">Start Date</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start font-normal">
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {newEvent.start ? format(newEvent.start, 'PPP') : <span>Pick a date</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={newEvent.start}
-                      onSelect={(date) => setNewEvent({ ...newEvent, start: date, end: date })} // Also update end date for simplicity
-                    />
-                  </PopoverContent>
-                </Popover>
+
+            {/* Date & Time */}
+            <div className="space-y-3">
+              <Label className="text-gray-700 dark:text-foreground">Date &amp; Time</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-x-3 gap-y-2 items-center">
+                <div className="md:col-span-2">
+                  <Input type="text" placeholder="Start Date" value={fullEventStartDate} onChange={(e) => setFullEventStartDate(e.target.value)} className="bg-white dark:bg-input border-gray-300 dark:border-border/50 text-gray-900 dark:text-foreground placeholder:text-gray-400 dark:placeholder:text-muted-foreground" />
+                </div>
+                <div className="sm:col-span-1">
+                  <Input type="text" placeholder="Start Time" value={fullEventStartTime} onChange={(e) => setFullEventStartTime(e.target.value)} className="bg-white dark:bg-input border-gray-300 dark:border-border/50 text-gray-900 dark:text-foreground placeholder:text-gray-400 dark:placeholder:text-muted-foreground" />
+                </div>
+                <div className="text-center text-gray-500 dark:text-muted-foreground hidden md:block">to</div>
+                <div className="md:col-span-2">
+                  <Input type="text" placeholder="End Date" value={fullEventEndDate} onChange={(e) => setFullEventEndDate(e.target.value)} className="bg-white dark:bg-input border-gray-300 dark:border-border/50 text-gray-900 dark:text-foreground placeholder:text-gray-400 dark:placeholder:text-muted-foreground" />
+                </div>
+                <div className="sm:col-span-1">
+                  <Input type="text" placeholder="End Time" value={fullEventEndTime} onChange={(e) => setFullEventEndTime(e.target.value)} className="bg-white dark:bg-input border-gray-300 dark:border-border/50 text-gray-900 dark:text-foreground placeholder:text-gray-400 dark:placeholder:text-muted-foreground" />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="end-date">End Date</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start font-normal">
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {newEvent.end ? format(newEvent.end, 'PPP') : <span>Pick a date</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={newEvent.end}
-                      onSelect={(date) => setNewEvent({ ...newEvent, end: date })}
-                    />
-                  </PopoverContent>
-                </Popover>
+            </div>
+
+            {/* Options */}
+            <div className="flex items-center justify-between sm:justify-start space-x-6">
+              <div className="flex items-center space-x-2">
+                <Checkbox id="allDayEvent-dialog" checked={fullEventAllDay} onCheckedChange={(checked) => setFullEventAllDay(!!checked)} className="border-gray-400 dark:border-primary" />
+                <Label htmlFor="allDayEvent-dialog" className="font-normal text-gray-600 dark:text-muted-foreground">All day?</Label>
               </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="repeatsEvent-dialog" className="border-gray-400 dark:border-primary" />
+                <Label htmlFor="repeatsEvent-dialog" className="font-normal text-gray-600 dark:text-muted-foreground">Repeats?</Label>
+              </div>
+            </div>
+
+            {/* Status */}
+            <div>
+              <Label htmlFor="eventStatus-dialog" className="text-gray-700 dark:text-foreground">Status</Label>
+              <Select>
+                <SelectTrigger id="eventStatus-dialog" className="bg-white dark:bg-input border-gray-300 dark:border-border/50 text-gray-900 dark:text-foreground">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="busy">Busy</SelectItem>
+                  <SelectItem value="free">Free</SelectItem>
+                  <SelectItem value="tentative">Tentative</SelectItem>
+                  <SelectItem value="out_of_office">Out of Office</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Location */}
+            <div>
+              <Label htmlFor="eventLocation-dialog" className="text-gray-700 dark:text-foreground">Location</Label>
+              <Input id="eventLocation-dialog" placeholder="Enter location..." className="bg-white dark:bg-input border-gray-300 dark:border-border/50 text-gray-900 dark:text-foreground placeholder:text-gray-400 dark:placeholder:text-muted-foreground" />
+            </div>
+
+            {/* Description */}
+            <div>
+              <Label htmlFor="eventDescription-dialog" className="text-gray-700 dark:text-foreground">Description</Label>
+              <Textarea id="eventDescription-dialog" rows={5} placeholder="Add event details..." className="bg-white dark:bg-input border-gray-300 dark:border-border/50 text-gray-900 dark:text-foreground placeholder:text-gray-400 dark:placeholder:text-muted-foreground resize-none" />
+              <div className="flex items-center space-x-1 text-gray-500 dark:text-muted-foreground mt-2">
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-muted/50 h-8 w-8"><Bold className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-muted/50 h-8 w-8"><Italic className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-muted/50 h-8 w-8"><Underline className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-muted/50 h-8 w-8"><ListChecks className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-muted/50 h-8 w-8"><ListOrdered className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-muted/50 h-8 w-8"><TableIcon className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-muted/50 h-8 w-8"><Link2 className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-muted/50 h-8 w-8"><Smile className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-muted/50 h-8 w-8"><Mic className="h-4 w-4" /></Button>
+              </div>
+            </div>
+
+            {/* Attendees */}
+            <div>
+              <Label htmlFor="eventAttending-dialog" className="text-gray-700 dark:text-foreground">Attending</Label>
+              <Input id="eventAttending-dialog" placeholder="Search users..." className="bg-white dark:bg-input border-gray-300 dark:border-border/50 text-gray-900 dark:text-foreground placeholder:text-gray-400 dark:placeholder:text-muted-foreground" />
+            </div>
+            
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox id="sendEventInvitations-dialog" className="border-gray-400 dark:border-primary" />
+                <Label htmlFor="sendEventInvitations-dialog" className="text-sm font-normal text-gray-600 dark:text-muted-foreground">Send email invitations</Label>
+              </div>
+              <Button variant="link" className="p-0 h-auto text-primary hover:text-primary/80 text-sm whitespace-nowrap">Preview Invite</Button>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddEventDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleAddEvent}>Save Event</Button>
+
+          <DialogFooter className="pt-4 border-t border-gray-200 dark:border-border/30">
+            <DialogClose asChild><Button variant="outline" className="text-gray-700 dark:text-foreground border-gray-300 dark:border-border">Cancel</Button></DialogClose>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">Add Event</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
   );
 }
-
-// Mock Data - moved to a separate file for cleanliness but included here for completeness
-const today = new Date();
-const MOCK_EVENTS_INITIAL: Event[] = [
-  { id: '1', title: 'Q4 Portfolio Review', start: new Date(today.getFullYear(), today.getMonth(), 2, 10, 0), end: new Date(today.getFullYear(), today.getMonth(), 2, 11, 0), color: '#3b82f6', allDay: false },
-  { id: '2', title: 'Client Onboarding - Smith', start: new Date(today.getFullYear(), today.getMonth(), 5), end: new Date(today.getFullYear(), today.getMonth(), 5), color: '#10b981', allDay: true },
-  { id: '3', title: 'Team Sync', start: new Date(today.getFullYear(), today.getMonth(), 5, 14, 0), end: new Date(today.getFullYear(), today.getMonth(), 5, 15, 0), color: '#f97316', allDay: false },
-  { id: '4', title: 'Compliance Training', start: new Date(today.getFullYear(), today.getMonth(), 15), end: new Date(today.getFullYear(), today.getMonth(), 16), color: '#ef4444', allDay: true },
-  { id: '5', title: 'Follow up with Johnson account', start: new Date(today.getFullYear(), today.getMonth(), 18, 9, 0), end: new Date(today.getFullYear(), today.getMonth(), 18, 9, 30), color: '#8b5cf6', allDay: false },
-  { id: '6', title: 'Lunch with lead prospect', start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12, 0), end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 13, 0), color: '#10b981', allDay: false },
-  { id: '7', title: 'Dentist Appointment', start: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2, 16, 0), end: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2, 17, 0), color: '#64748b', allDay: false },
-];
