@@ -1,4 +1,3 @@
-
 import type { NavItem, ToolbarSection, ToolbarSectionKey } from '@/contexts/navigation-context';
 import {
   Home as HomeIcon,

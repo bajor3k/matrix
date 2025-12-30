@@ -175,11 +175,11 @@ export default function Sidebar({
           <Link
             href={dashboardItem.href}
             title={dashboardItem.name}
-            data-active={isDashboard}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isDashboard ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
+            data-active={pathname === dashboardItem.href}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${pathname === dashboardItem.href ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
-              <LayoutGrid className="h-5 w-5 shrink-0" />
+              <LayoutGrid className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-6))]" />
               {!collapsed && dashboardItem.name}
             </span>
           </Link>
