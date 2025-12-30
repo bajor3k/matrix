@@ -301,16 +301,17 @@
 
 /* Custom styling for specific tables */
 .sec-filings-table .action-col a.view-btn {
-    color: #3B82F6; /* blue-500 */
+    color: #E5E7EB; /* Light Gray for visibility */
     opacity: 1;
     font-weight: 500;
     cursor: pointer;
 }
 .dark .sec-filings-table .action-col a.view-btn {
-    color: #60A5FA; /* blue-400 */
+    color: #E5E7EB;
 }
 .sec-filings-table .action-col a.view-btn:hover {
     text-decoration: underline;
+    color: #ffffff;
 }
 
 .usa-spending-table td {
@@ -433,4 +434,17 @@
 #btn-see-more:hover {
     color: #ffffff;         /* Bright white on hover */
     text-decoration: underline; /* Optional: adds a clear "link" feel */
+}
+
+/* Add specific spacing between Amount and Description columns */
+.usa-spending-table th:nth-child(4), 
+.usa-spending-table td:nth-child(4) {
+    padding-left: 40px; /* Adjust this number to increase/decrease the gap */
+}
+
+/* Ensure general cell padding is consistent */
+.usa-spending-table th, 
+.usa-spending-table td {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
