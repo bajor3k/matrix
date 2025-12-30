@@ -201,7 +201,7 @@ export default function Sidebar({
             className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isInsights ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
-              <Brain className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-4))]" />
+              <GradientBrain className="h-5 w-5 shrink-0" />
               {!collapsed && insightsItem.name}
             </span>
           </Link>
@@ -266,5 +266,32 @@ export default function Sidebar({
         </Link>
       </div>
     </div>
+  );
+}
+
+// Custom Gradient Icon Component
+function GradientBrain({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="url(#brain-gradient)" // References the gradient ID defined below
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      style={{ filter: "drop-shadow(0 0 4px rgba(168, 85, 247, 0.5))" }} // Adds a subtle neon glow
+    >
+      <defs>
+        <linearGradient id="brain-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#d946ef" /> {/* Fuchsia/Pink */}
+          <stop offset="50%" stopColor="#8b5cf6" /> {/* Violet */}
+          <stop offset="100%" stopColor="#3b82f6" /> {/* Blue */}
+        </linearGradient>
+      </defs>
+      <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z" />
+      <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z" />
+    </svg>
   );
 }
