@@ -314,17 +314,6 @@
     color: #ffffff;
 }
 
-.usa-spending-table td {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 150px;
-}
-.usa-spending-table td:nth-child(3) {
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-}
-
 .bottom-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -333,7 +322,6 @@
   
 .ipo-card {
     width: 100%;
-    min-height: 260px; /* Consistent height */
 }
 
 @media (max-width: 1024px) { /* Use lg breakpoint for stacking */
@@ -406,7 +394,8 @@
 /* 2. Table Area: Grow to fill space */
 .usa-spending-card .table-container {
     flex-grow: 1;                /* VITAL: Grows to push footer down */
-    overflow-y: auto;       /* Scroll vertical only */
+    overflow-y: hidden;       /* No scrollbar on the small card */
+    padding: 1rem; /* p-4 */
 }
 
 /* 3. Footer Container: Transparent & Integrated */
@@ -428,6 +417,7 @@
     cursor: pointer;
     transition: color 0.2s;
     width: 100%;            /* Clickable area fills width */
+    padding: 8px;
 }
 
 #btn-see-more:hover {
@@ -453,4 +443,12 @@
     top: 0;
     background-color: #0d0d0d;
     z-index: 10;
+}
+
+.usa-spending-table {
+    border-collapse: collapse; /* Ensures sticky header works correctly */
+}
+
+.ipo-card .table-container {
+    overflow-x: auto;
 }

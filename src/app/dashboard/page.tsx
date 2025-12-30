@@ -1,7 +1,8 @@
+
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
-import { CalendarDays, Clock, Calendar } from "lucide-react";
+import { CalendarDays, Clock } from "lucide-react";
 import StockCard from "@/components/StockCard";
 // Alias the UI Card to avoid conflict with your local Card component below
 import { Card as UiCard, CardContent } from "@/components/ui/card"; 
@@ -189,6 +190,8 @@ export default function DashboardPage() {
     return [...usaSpending.data].sort((a,b) => new Date(b.actionDate).getTime() - new Date(a.actionDate).getTime());
   }, [usaSpending]);
 
+  const previewSpendingData = useMemo(() => sortedSpendingData.slice(0, 5), [sortedSpendingData]);
+
 
   return (
     <main className="p-6 space-y-6">
@@ -346,7 +349,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-2 border-b border-border px-4 py-3">
               <h3 className="text-sm font-semibold text-foreground">IPO Calendar</h3>
             </div>
-            <div className="p-4 table-container">
+            <div className="table-container p-4">
                 <table className="w-full text-sm">
                 <thead>
                     <tr className="text-muted-foreground border-b border-border">
@@ -395,7 +398,7 @@ export default function DashboardPage() {
         </div>
 
         {/* USA Spending */}
-        <div className="rounded-xl border bg-card text-card-foreground card usa-spending-card">
+        <div className="rounded-xl border bg-card text-card-foreground usa-spending-card">
             <div className="flex items-center gap-2 border-b border-border px-4 py-3">
               <h3 className="text-sm font-semibold text-foreground">USA Spending</h3>
             </div>
@@ -410,14 +413,14 @@ export default function DashboardPage() {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                    {!usaSpending || sortedSpendingData.length === 0 ? (
+                    {!usaSpending || previewSpendingData.length === 0 ? (
                     <tr>
                         <td colSpan={4} className="py-4 text-center text-muted-foreground text-xs">
                         {usaSpending === null ? 'Loading data...' : 'No recent contracts found.'}
                         </td>
                     </tr>
                     ) : (
-                    sortedSpendingData.map((item, i) => (
+                    previewSpendingData.map((item, i) => (
                         <tr key={i} className="hover:bg-accent/50 transition-colors">
                         <td className="py-2.5 pl-2 text-foreground text-xs truncate max-w-[150px]" title={item.awardingAgencyName}>
                             {item.awardingAgencyName}
@@ -435,11 +438,13 @@ export default function DashboardPage() {
                 </tbody>
                 </table>
             </div>
-            <div id="usa-spending-footer" style={{ display: sortedSpendingData.length > 5 ? 'block' : 'none' }}>
-                <button id="btn-see-more" onClick={() => setIsSpendingModalOpen(true)}>
-                    See More
-                </button>
-            </div>
+            {sortedSpendingData.length > 5 && (
+              <div id="usa-spending-footer">
+                  <button id="btn-see-more" onClick={() => setIsSpendingModalOpen(true)}>
+                      See More
+                  </button>
+              </div>
+            )}
         </div>
       </div>
       
@@ -484,3 +489,4 @@ export default function DashboardPage() {
     </main>
   );
 }
+
