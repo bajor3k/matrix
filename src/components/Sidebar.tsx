@@ -216,7 +216,7 @@ export default function Sidebar({
             className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isCrm2 ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
-              <Users className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-5))]" />
+              <Users className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-7))]" />
               {!collapsed && crm2Item.name}
             </span>
           </Link>
