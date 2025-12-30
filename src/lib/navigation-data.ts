@@ -1,3 +1,4 @@
+
 import type { NavItem, ToolbarSection, ToolbarSectionKey } from '@/contexts/navigation-context';
 import {
   Home as HomeIcon,
@@ -95,12 +96,12 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
     },
   ],
   'Analytics': [
-    { name: 'Asset Analytics', icon: BarChart3, href: '/analytics/asset' },
-    { name: 'Client Analytics', icon: Users, href: '/analytics/client' },
-    { name: 'Financial Analytics', icon: TrendingUp, href: '/analytics/financial' },
-    { name: 'Conversion Analytics', icon: Repeat, href: '/analytics/conversion' },
-    { name: 'Compliance Matrix', icon: ShieldAlert, href: '/analytics/compliance'},
-    { name: 'Contribution Matrix', icon: TrendingUp, href: '/analytics/contribution' },
+    { name: 'Asset', icon: BarChart3, href: '/analytics/asset' },
+    { name: 'Client', icon: Users, href: '/analytics/client' },
+    { name: 'Financial', icon: TrendingUp, href: '/analytics/financial' },
+    { name: 'Conversion', icon: Repeat, href: '/analytics/conversion' },
+    { name: 'Compliance', icon: ShieldAlert, href: '/analytics/compliance'},
+    { name: 'Contribution', icon: TrendingUp, href: '/analytics/contribution' },
   ],
   'Resources': [
     { name: 'OneDrive', icon: Cloud, href: '/resources' },
