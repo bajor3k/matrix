@@ -1,3 +1,4 @@
+
 // components/AppShell.tsx
 "use client";
 
@@ -11,7 +12,7 @@ const HEADER_H = 48; // px
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [forceOpen, setForceOpen] = useState<SectionKey | null>(null);
-  const SBW = collapsed ? 72 : 272;
+  const SBW = collapsed ? 72 : 200;
 
   function handleSidebarToggle() {
     setCollapsed(v => !v);
@@ -29,7 +30,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       style={
         {
           "--hh": `${HEADER_H}px`,
-          "--sbw": collapsed ? "72px" : "272px",
+          "--sbw": collapsed ? "72px" : "200px",
         } as React.CSSProperties
       }
     >
