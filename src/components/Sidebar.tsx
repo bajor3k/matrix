@@ -17,6 +17,7 @@ import {
   Mail,
   AlertOctagon,
   CalendarDays,
+  Brain,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
@@ -31,7 +32,7 @@ const calendarItems: NavItem[] = navigationData['Calendar'];
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
 const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'CRM')!;
-const researchItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Research')!;
+const insightsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'AI Insights')!;
 const calendarItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Calendar')!;
 const alertsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Alerts')!;
 const ticketItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Ticket')!;
@@ -78,7 +79,7 @@ export default function Sidebar({
   ].some(p => pathname.startsWith(p)) || pathname.startsWith("/dashboard"), [pathname]);
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
   const isCrm2 = useMemo(() => pathname === "/CRM", [pathname]);
-  const isResearch = useMemo(() => pathname === "/research", [pathname]);
+  const isInsights = useMemo(() => pathname === "/ai-insights", [pathname]);
   const isAlerts = useMemo(() => pathname === "/alerts", [pathname]);
   const isTicket = useMemo(() => pathname === "/ticket", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
@@ -190,14 +191,14 @@ export default function Sidebar({
         
         <div className="mb-1">
           <Link
-            href={researchItem.href}
-            title={researchItem.name}
-            data-active={isResearch}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isResearch ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
+            href={insightsItem.href}
+            title={insightsItem.name}
+            data-active={isInsights}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isInsights ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
-              <FlaskConical className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-4))]" />
-              {!collapsed && researchItem.name}
+              <Brain className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-4))]" />
+              {!collapsed && insightsItem.name}
             </span>
           </Link>
         </div>

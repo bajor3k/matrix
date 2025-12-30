@@ -42,6 +42,7 @@ import {
   UploadCloud,
   Cloud,
   Globe,
+  Brain,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -114,7 +115,7 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
   'Standalone': [
     { name: 'Calendar', icon: CalendarDays, href: '/calendar' },
     { name: 'CRM', icon: Users, href: '/CRM' },
-    { name: 'Research', icon: FlaskConical, href: '/research' },
+    { name: 'AI Insights', icon: Brain, href: '/ai-insights' },
     { name: 'Alerts', icon: AlertOctagon, href: '/alerts' },
     { name: 'Ticket', icon: KanbanSquare, href: '/ticket' },
   ]
