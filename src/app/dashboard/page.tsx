@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -411,14 +410,14 @@ export default function DashboardPage() {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                    {!usaSpending || usaSpending.data.length === 0 ? (
+                    {!usaSpending || sortedSpendingData.length === 0 ? (
                     <tr>
                         <td colSpan={4} className="py-4 text-center text-muted-foreground text-xs">
                         {usaSpending === null ? 'Loading data...' : 'No recent contracts found.'}
                         </td>
                     </tr>
                     ) : (
-                    sortedSpendingData.slice(0, 5).map((item, i) => (
+                    sortedSpendingData.map((item, i) => (
                         <tr key={i} className="hover:bg-accent/50 transition-colors">
                         <td className="py-2.5 pl-2 text-foreground text-xs truncate max-w-[150px]" title={item.awardingAgencyName}>
                             {item.awardingAgencyName}

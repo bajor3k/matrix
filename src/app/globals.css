@@ -405,9 +405,8 @@
 
 /* 2. Table Area: Grow to fill space */
 .usa-spending-card .table-container {
-    flex: 1;                /* VITAL: Grows to push footer down */
-    overflow: hidden;       /* Prevents scrolling inside the card */
-    margin-bottom: 0;       /* Remove extra spacing */
+    flex-grow: 1;                /* VITAL: Grows to push footer down */
+    overflow-y: auto;       /* Scroll vertical only */
 }
 
 /* 3. Footer Container: Transparent & Integrated */
@@ -447,4 +446,11 @@
 .usa-spending-table td {
     padding-top: 10px;
     padding-bottom: 10px;
+}
+
+.usa-spending-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #0d0d0d;
+    z-index: 10;
 }
