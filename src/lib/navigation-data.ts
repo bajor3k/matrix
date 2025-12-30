@@ -43,6 +43,7 @@ import {
   Cloud,
   Globe,
   Brain,
+  Bell,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -115,7 +116,7 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
     { name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
     { name: 'CRM', icon: Users, href: '/CRM' },
     { name: 'AI Insights', icon: Brain, href: '/ai-insights' },
-    { name: 'Alerts', icon: AlertOctagon, href: '/alerts' },
+    { name: 'Alerts', icon: Bell, href: '/alerts' },
     { name: 'Ticket', icon: KanbanSquare, href: '/ticket' },
   ]
 };

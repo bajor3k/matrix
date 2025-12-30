@@ -19,6 +19,7 @@ import {
   CalendarDays,
   Brain,
   LayoutGrid,
+  Bell,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
@@ -229,7 +230,7 @@ export default function Sidebar({
             className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isAlerts ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
           >
             <span className="flex items-center gap-3">
-              <AlertOctagon className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-7))]" />
+              <Bell className="h-5 w-5 shrink-0 text-[hsl(var(--chart-5))]" />
               {!collapsed && alertsItem.name}
             </span>
           </Link>
