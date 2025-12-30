@@ -112,6 +112,7 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
       { name: 'Settings', icon: Settings, href: '/settings' },
   ],
   'Standalone': [
+    { name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
     { name: 'CRM', icon: Users, href: '/CRM' },
     { name: 'AI Insights', icon: Brain, href: '/ai-insights' },
     { name: 'Alerts', icon: AlertOctagon, href: '/alerts' },

@@ -18,6 +18,7 @@ import {
   AlertOctagon,
   CalendarDays,
   Brain,
+  LayoutGrid,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
@@ -33,6 +34,7 @@ const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
 const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'CRM')!;
 const insightsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'AI Insights')!;
+const dashboardItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Dashboard')!;
 
 const alertsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Alerts')!;
 const ticketItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Ticket')!;
@@ -76,10 +78,11 @@ export default function Sidebar({
   const isAnalytics = useMemo(() => [
     "/analytics/asset", "/analytics/client", "/analytics/financial", 
     "/analytics/conversion", "/analytics/compliance", "/analytics/contribution"
-  ].some(p => pathname.startsWith(p)) || pathname.startsWith("/dashboard"), [pathname]);
+  ].some(p => pathname.startsWith(p)), [pathname]);
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
   const isCrm2 = useMemo(() => pathname === "/CRM", [pathname]);
   const isInsights = useMemo(() => pathname === "/ai-insights", [pathname]);
+  const isDashboard = useMemo(() => pathname === "/dashboard", [pathname]);
   const isAlerts = useMemo(() => pathname === "/alerts", [pathname]);
   const isTicket = useMemo(() => pathname === "/ticket", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
@@ -168,6 +171,20 @@ export default function Sidebar({
       {/* sections */}
       <div className="h-[calc(100%-60px)] overflow-y-auto">
         
+        <div className="mb-1">
+          <Link
+            href={dashboardItem.href}
+            title={dashboardItem.name}
+            data-active={isDashboard}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isDashboard ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
+          >
+            <span className="flex items-center gap-3">
+              <LayoutGrid className="h-5 w-5 shrink-0" />
+              {!collapsed && dashboardItem.name}
+            </span>
+          </Link>
+        </div>
+
         {/* <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} /> */}
         <Section keyName="mail" title="Mail" icon={Mail} open={openMail} setOpen={setOpenMail} items={mailItems} iconClassName="text-[hsl(var(--icon-color-1))]" />
         
