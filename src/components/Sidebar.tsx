@@ -1,3 +1,4 @@
+
 // components/Sidebar.tsx
 "use client";
 
@@ -74,7 +75,7 @@ export default function Sidebar({
 
   const isReports = useMemo(() => pathname?.startsWith("/reports"), [pathname]);
   const isCRM = useMemo(() => pathname?.startsWith("/crm"), [pathname]);
-  const isMail = useMemo(() => pathname?.startsWith("/mail"), [pathname]);
+  const isMail = useMemo(() => pathname?.startsWith("/mail") || pathname === "/calendar", [pathname]);
 
   const isAnalytics = useMemo(() => [
     "/analytics/asset", "/analytics/client", "/analytics/financial", 

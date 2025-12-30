@@ -95,6 +95,11 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
       href: '/mail/outbox',
       icon: UploadCloud
     },
+    {
+      name: 'Calendar',
+      href: '/calendar',
+      icon: CalendarDays
+    },
   ],
   'Analytics': [
     { name: 'Asset', icon: BarChart3, href: '/analytics/asset' },
