@@ -23,17 +23,17 @@ import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
 import { cn } from "@/lib/utils";
 
-export type SectionKey = "reports" | "crm" | "analytics" | "resources" | "mail" | "calendar";
+export type SectionKey = "reports" | "crm" | "analytics" | "resources" | "mail";
 
 const reportItems: NavItem[] = navigationData['Reports'];
 const crmItems: NavItem[] = navigationData['CRM'];
 const mailItems: NavItem[] = navigationData['Mail'];
-const calendarItems: NavItem[] = navigationData['Calendar'];
+
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
 const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'CRM')!;
 const insightsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'AI Insights')!;
-const calendarItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Calendar')!;
+
 const alertsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Alerts')!;
 const ticketItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Ticket')!;
 const settingsItem: NavItem = navigationData['Other'][0];
@@ -72,7 +72,7 @@ export default function Sidebar({
   const isReports = useMemo(() => pathname?.startsWith("/reports"), [pathname]);
   const isCRM = useMemo(() => pathname?.startsWith("/crm"), [pathname]);
   const isMail = useMemo(() => pathname?.startsWith("/mail"), [pathname]);
-  const isCalendar = useMemo(() => pathname?.startsWith("/calendar"), [pathname]);
+
   const isAnalytics = useMemo(() => [
     "/analytics/asset", "/analytics/client", "/analytics/financial", 
     "/analytics/conversion", "/analytics/compliance", "/analytics/contribution"
@@ -87,14 +87,14 @@ export default function Sidebar({
   const [openReports, setOpenReports] = useState(isReports);
   const [openCRM, setOpenCRM] = useState(isCRM);
   const [openMail, setOpenMail] = useState(isMail);
-  const [openCalendar, setOpenCalendar] = useState(isCalendar);
+
   const [openAnalytics, setOpenAnalytics] = useState(isAnalytics);
   const [openResources, setOpenResources] = useState(isResources);
 
   useEffect(() => setOpenReports(isReports), [isReports]);
   useEffect(() => setOpenCRM(isCRM), [isCRM]);
   useEffect(() => setOpenMail(isMail), [isMail]);
-  useEffect(() => setOpenCalendar(isCalendar), [isCalendar]);
+
   useEffect(() => setOpenAnalytics(isAnalytics), [isAnalytics]);
   useEffect(() => setOpenResources(isResources), [isResources]);
 
@@ -104,7 +104,7 @@ export default function Sidebar({
     setOpenReports(forceOpen === "reports");
     setOpenCRM(forceOpen === "crm");
     setOpenMail(forceOpen === "mail");
-    setOpenCalendar(forceOpen === "calendar");
+
     setOpenAnalytics(forceOpen === "analytics");
     setOpenResources(forceOpen === "resources");
     onForceOpenHandled?.();
@@ -171,19 +171,6 @@ export default function Sidebar({
         {/* <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} /> */}
         <Section keyName="mail" title="Mail" icon={Mail} open={openMail} setOpen={setOpenMail} items={mailItems} iconClassName="text-[hsl(var(--icon-color-1))]" />
         
-        <div className="mb-1">
-          <Link
-            href={calendarItem.href}
-            title={calendarItem.name}
-            data-active={isCalendar}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isCalendar ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
-          >
-            <span className="flex items-center gap-3">
-              <CalendarDays className="h-5 w-5 shrink-0 text-blue-400" />
-              {!collapsed && calendarItem.name}
-            </span>
-          </Link>
-        </div>
 
         <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} iconClassName="text-[hsl(var(--icon-color-2))]"/>
         

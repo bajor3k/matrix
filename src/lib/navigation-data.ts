@@ -52,7 +52,7 @@ export const toolbarSections: ToolbarSection[] = [
     { id: 'Resources', title: 'Resources' },
 ];
 
-export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' | 'Mail' | 'Calendar', NavItem[]> = {
+export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' | 'Mail', NavItem[]> = {
   'Reports': [
     { name: 'Advisory Fees', icon: BadgeDollarSign, href: '/reports/advisory-fees'},
     { name: 'Cash', icon: Wallet, href: '/reports/cash'},
@@ -95,7 +95,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
       icon: UploadCloud
     },
   ],
-  'Calendar': [],
   'Analytics': [
     { name: 'Asset Analytics', icon: BarChart3, href: '/analytics/asset' },
     { name: 'Client Analytics', icon: Users, href: '/analytics/client' },
@@ -113,7 +112,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
       { name: 'Settings', icon: Settings, href: '/settings' },
   ],
   'Standalone': [
-    { name: 'Calendar', icon: CalendarDays, href: '/calendar' },
     { name: 'CRM', icon: Users, href: '/CRM' },
     { name: 'AI Insights', icon: Brain, href: '/ai-insights' },
     { name: 'Alerts', icon: AlertOctagon, href: '/alerts' },
