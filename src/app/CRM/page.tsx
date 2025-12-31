@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -263,16 +262,27 @@ export default function CRM2() {
           <tbody>
             {filtered.map((firm, index) => {
               const isExpanded = expandedRows.has(index);
-              
+
               // Generate 2 clients for this firm
               const firmClients = [0, 1].map((offset) => {
                 const nameIndex = (index * 2 + offset) % CLIENT_NAMES.length;
                 const fullName = CLIENT_NAMES[nameIndex];
                 const [firstName, lastName] = fullName.split(" ");
-                // email: lastname@firmdomain
+                
+                // Email: lastname@firmdomain
                 const domain = firm.email.split("@")[1] || "gmail.com";
                 const clientEmail = `${lastName.toLowerCase()}@${domain}`;
-                return { name: fullName, email: clientEmail };
+                
+                // Login ID: XYZ + First Initial + First 3 of Last Name
+                const loginId = `XYZ${firstName[0]}${lastName.slice(0, 3)}`;
+                
+                // PIN: Random 4 digits
+                const pin = Math.floor(1000 + Math.random() * 9000);
+
+                // Phone: Random-ish variation of firm phone
+                const clientPhone = firm.phone.slice(0, -4) + Math.floor(1000 + Math.random() * 9000);
+
+                return { name: fullName, email: clientEmail, loginId, pin, phone: clientPhone };
               });
 
               return (
@@ -320,33 +330,38 @@ export default function CRM2() {
                     </td>
                   </tr>
 
-                  {/* EXPANDED CLIENTS ROW */}
-                  {isExpanded && (
-                    <tr className="bg-muted/30 border-t border-border/50">
-                      <td colSpan={5} className="p-4 px-10">
-                        <div className="rounded-xl border border-border bg-card p-4">
-                          <h4 className="mb-3 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                            Associated Clients
-                          </h4>
-                          <div className="grid gap-2">
-                            {firmClients.map((client, i) => (
-                              <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-background border border-border/50">
-                                <div className="flex items-center gap-3">
-                                  <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xs font-bold">
-                                    {client.name.charAt(0)}
-                                  </div>
-                                  <span className="font-medium text-sm">{client.name}</span>
-                                </div>
-                                <span className="text-sm text-muted-foreground font-mono">
-                                  {client.email}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
+                  {/* EXPANDED CLIENT ROWS (Rendered as proper table rows) */}
+                  {isExpanded && firmClients.map((client, i) => (
+                    <tr key={`client-${index}-${i}`} className="bg-muted/30 border-t border-border/40 hover:bg-muted/50">
+                      {/* Name (Indented) */}
+                      <td className="py-3 px-6 pl-12 font-medium text-sm text-foreground/80">
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground/40 text-xs">↳</span>
+                          {client.name}
                         </div>
                       </td>
+                      {/* Phone */}
+                      <td className="py-3 px-6 text-sm text-muted-foreground">
+                        {client.phone}
+                      </td>
+                      {/* Email */}
+                      <td className="py-3 px-6 text-sm text-muted-foreground">
+                        {client.email}
+                      </td>
+                      {/* Login ID (Takes the 'Custodian' slot) */}
+                      <td className="py-3 px-6">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                          ID: {client.loginId}
+                        </span>
+                      </td>
+                      {/* PIN (Takes the 'Action' slot) */}
+                      <td className="py-3 px-6 text-right">
+                         <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                          PIN: {client.pin}
+                        </span>
+                      </td>
                     </tr>
-                  )}
+                  ))}
                 </>
               );
             })}
