@@ -5,6 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 
 const initialFirms = [
   {
@@ -302,14 +303,9 @@ export default function CRM2() {
                   </div>
                 </td>
 
-                {/* Edit Button */}
+                {/* Chevron Icon (No Function) */}
                 <td className="py-4 px-6 text-right">
-                  <button
-                    onClick={() => openEditModal(index)}
-                    className="px-3 py-1 rounded-md bg-card border border-border hover:bg-accent"
-                  >
-                    Edit
-                  </button>
+                  <ChevronDown className="ml-auto h-4 w-4 text-muted-foreground opacity-50" />
                 </td>
               </tr>
             ))}
