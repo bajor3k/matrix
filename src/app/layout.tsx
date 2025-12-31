@@ -8,7 +8,6 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { NavigationProvider } from '@/contexts/navigation-context';
 import { ThemeProvider } from '@/components/theme-provider';
 import AppShell from '@/components/AppShell';
-import VaultGate from "./VaultGate";
 import { ClientLayout } from "@/components/ClientLayout";
 import Image from 'next/image';
 
@@ -23,23 +22,21 @@ export default function RootLayout({
       <head />
       <body className="bg-black text-zinc-100">
         <ClientLayout>
-          <VaultGate>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <AuthProvider>
-                <NavigationProvider>
-                  <TooltipProvider delayDuration={0}>
-                    <AppShell>{children}</AppShell>
-                    <Toaster />
-                  </TooltipProvider>
-                </NavigationProvider>
-              </AuthProvider>
-            </ThemeProvider>
-          </VaultGate>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AuthProvider>
+              <NavigationProvider>
+                <TooltipProvider delayDuration={0}>
+                  <AppShell>{children}</AppShell>
+                  <Toaster />
+                </TooltipProvider>
+              </NavigationProvider>
+            </AuthProvider>
+          </ThemeProvider>
         </ClientLayout>
         
       </body>
