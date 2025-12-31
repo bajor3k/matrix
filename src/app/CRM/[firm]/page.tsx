@@ -116,7 +116,7 @@ export default function FirmProfile() {
 
       {/* Firm */}
       <div className="bg-card p-6 rounded-2xl border border-border mt-1">
-        <div className="grid grid-cols-8 font-semibold text-muted-foreground pb-3 border-b border-border">
+        <div className="grid grid-cols-7 font-semibold text-muted-foreground pb-3 border-b border-border">
           <div>CRD</div>
           <div>Phone</div>
           <div>Street</div>
@@ -124,9 +124,8 @@ export default function FirmProfile() {
           <div>State</div>
           <div>Zip</div>
           <div>Email</div>
-          <div>Logo</div>
         </div>
-        <div className="grid grid-cols-8 py-3">
+        <div className="grid grid-cols-7 py-3">
           <div>{data.firmInfo.crd}</div>
           <div>{data.firmInfo.phone}</div>
            {(() => {
@@ -141,7 +140,6 @@ export default function FirmProfile() {
             );
           })()}
           <div>{data.firmInfo.email}</div>
-          <div></div>
         </div>
       </div>
 
