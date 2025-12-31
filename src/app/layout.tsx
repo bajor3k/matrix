@@ -41,17 +41,6 @@ export default function RootLayout({
             </ThemeProvider>
           </VaultGate>
         </ClientLayout>
-
-        <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
-          <div className="relative h-16 w-16 animate-pulse">
-            <Image 
-              src="/icons/animated/brain-logo.svg" 
-              alt="Matrix AI" 
-              fill 
-              className="object-contain grayscale invert opacity-80"
-            />
-          </div>
-        </div>
         
       </body>
     </html>
