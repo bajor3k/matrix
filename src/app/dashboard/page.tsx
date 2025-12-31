@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -498,6 +499,7 @@ export default function DashboardPage() {
                     ) : (
                     ipos.map((ipo, i) => {
                       const isPriced = ipo.status?.toLowerCase() === 'priced';
+                      const capitalizedStatus = ipo.status ? ipo.status.charAt(0).toUpperCase() + ipo.status.slice(1) : '';
                       return (
                         <tr key={i} className="hover:bg-accent/50 transition-colors">
                         <td className="py-2.5 pl-2 text-foreground text-xs">{formatIpoDate(ipo.date)}</td>
@@ -526,7 +528,7 @@ export default function DashboardPage() {
                                 'bg-muted text-muted-foreground'
                             }`}
                             >
-                            {ipo.status}
+                            {capitalizedStatus}
                             </Badge>
                         </td>
                         </tr>
@@ -545,7 +547,7 @@ export default function DashboardPage() {
             </div>
             <div className="table-container">
                 <table className="w-full text-sm usa-spending-table">
-                <thead className="bg-card">
+                <thead className="bg-card sticky top-0">
                     <tr className="text-muted-foreground border-b border-border">
                     <th className="text-left font-medium pb-2 pr-3 pl-2">Agency</th>
                     <th className="text-left font-medium pb-2 pr-3">Date</th>
@@ -598,7 +600,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="modal-body">
                     <table className="w-full text-sm usa-spending-table">
-                        <thead className="bg-card">
+                        <thead className="bg-card sticky top-0">
                             <tr className="text-muted-foreground border-b border-border">
                                 <th className="text-left font-medium pb-2 pr-3 pl-2">Agency</th>
                                 <th className="text-left font-medium pb-2 pr-3">Date</th>
@@ -609,7 +611,7 @@ export default function DashboardPage() {
                         <tbody className="divide-y divide-border">
                           {sortedSpendingData.map((item, i) => (
                               <tr key={i} className="hover:bg-accent/50 transition-colors">
-                              <td className="py-2.5 pl-2 text-foreground text-xs truncate max-w-[150px]" title={item.awardingAgencyName}>
+                              <td className="py-2.5 pl-2 text-foreground text-xs truncate max-w-[250px]" title={item.awardingAgencyName}>
                                   {item.awardingAgencyName}
                               </td>
                               <td className="py-2.5 text-muted-foreground text-xs">{formatSpendingDate(item.actionDate)}</td>
@@ -689,3 +691,4 @@ export default function DashboardPage() {
 
     
     
+
