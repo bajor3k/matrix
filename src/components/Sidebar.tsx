@@ -197,7 +197,7 @@ export default function Sidebar({
       {/* sections */}
       <div className="h-[calc(100%-60px)] overflow-y-auto">
         
-        <StandaloneItem item={dashboardItem} isActive={isDashboard} iconClassName="text-[hsl(var(--icon-color-3))]" />
+        <StandaloneItem item={dashboardItem} isActive={isDashboard} iconClassName="text-[hsl(var(--icon-color-6))]" />
         
         <Section keyName="mail" title="Mail" icon={Mail} open={openMail} setOpen={setOpenMail} items={mailItems} iconClassName="text-[hsl(var(--icon-color-1))]" />
         
@@ -252,26 +252,26 @@ export default function Sidebar({
   );
 }
 
+// Custom Gradient Icon Component for Bot (Neon Green)
 function GradientBot({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="url(#bot-gradient)" // Links to the gradient definition below
+      stroke="url(#bot-gradient-green)" // Updated ID
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
+      style={{ filter: "drop-shadow(0 0 4px rgba(74, 222, 128, 0.5))" }} // Green glow
     >
       <defs>
-        <linearGradient id="bot-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#d946ef" /> {/* Neon Purple */}
-          <stop offset="50%" stopColor="#22c55e" /> {/* Green */}
-          <stop offset="100%" stopColor="#ef4444" /> {/* Red */}
+        <linearGradient id="bot-gradient-green" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#a3e635" /> {/* Lime/Neon Green */}
+          <stop offset="100%" stopColor="#22c55e" /> {/* Bright Green */}
         </linearGradient>
       </defs>
-      {/* Robot Head Path (Matches Lucide 'Bot') */}
       <path d="M12 8V4H8" />
       <rect width="16" height="12" x="4" y="8" rx="2" />
       <path d="M2 14h2" />
