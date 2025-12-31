@@ -104,6 +104,16 @@ const formatSpendingDate = (dateString: string) => {
   return `${month}.${day}.${year}`;
 };
 
+// Helper to format IPO date as MM.DD.YYYY
+const formatIpoDate = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const year = date.getUTCFullYear();
+  return `${month}.${day}.${year}`;
+};
+
 
 /* ----------------------- Card Shell ----------------------- */
 function Card({
@@ -392,7 +402,7 @@ export default function DashboardPage() {
                     ) : (
                     ipos.map((ipo, i) => (
                         <tr key={i} className="hover:bg-accent/50 transition-colors">
-                        <td className="py-2.5 pl-2 text-foreground text-xs">{ipo.date}</td>
+                        <td className="py-2.5 pl-2 text-foreground text-xs">{formatIpoDate(ipo.date)}</td>
                         <td className="py-2.5 font-semibold text-blue-600 dark:text-blue-400 text-xs">{ipo.symbol || "—"}</td>
                         <td className="py-2.5 text-foreground/90 text-xs truncate max-w-[200px]" title={ipo.name}>
                             {ipo.name}
