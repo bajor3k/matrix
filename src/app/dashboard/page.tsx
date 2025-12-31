@@ -241,9 +241,7 @@ export default function DashboardPage() {
 
   const previewSpendingData = useMemo(() => sortedSpendingData.slice(0, 5), [sortedSpendingData]);
   
-  const handleTickerClick = async (ticker: string, status: string) => {
-    if (status.toLowerCase() !== 'priced' || !ticker) return;
-
+  const handleTickerClick = async (ticker: string) => {
     setSelectedTicker(ticker);
     setLoadingQuote(true);
     setIsDialogOpen(true);
@@ -255,7 +253,6 @@ export default function DashboardPage() {
       setQuoteData(data);
     } catch (error) {
       console.error("Error fetching quote:", error);
-      setQuoteData(null);
     } finally {
       setLoadingQuote(false);
     }
@@ -440,14 +437,21 @@ export default function DashboardPage() {
                         </td>
                     </tr>
                     ) : (
-                    ipos.map((ipo, i) => (
+                    ipos.map((ipo, i) => {
+                      const isPriced = ipo.status?.toLowerCase() === 'priced';
+                      return (
                         <tr key={i} className="hover:bg-accent/50 transition-colors">
                         <td className="py-2.5 pl-2 text-foreground text-xs">{formatIpoDate(ipo.date)}</td>
-                        <td 
-                          onClick={() => handleTickerClick(ipo.symbol, ipo.status)}
-                          className={`py-2.5 font-semibold text-xs ${ipo.status === 'priced' && ipo.symbol ? 'text-blue-600 dark:text-blue-400 cursor-pointer hover:underline' : ''}`}
-                        >
-                          {ipo.symbol || "—"}
+                        <td className="py-2.5 pr-3">
+                          <div
+                            onClick={() => isPriced && handleTickerClick(ipo.symbol)}
+                            className={`
+                              font-medium text-blue-600 
+                              ${isPriced ? 'cursor-pointer hover:underline' : 'cursor-default'}
+                            `}
+                          >
+                            {ipo.symbol || "—"}
+                          </div>
                         </td>
                         <td className="py-2.5 text-foreground/90 text-xs truncate max-w-[200px]" title={ipo.name}>
                             {ipo.name}
@@ -467,7 +471,8 @@ export default function DashboardPage() {
                             </Badge>
                         </td>
                         </tr>
-                    ))
+                      );
+                    })
                     )}
                 </tbody>
                 </table>
@@ -565,51 +570,58 @@ export default function DashboardPage() {
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-white dark:bg-slate-950">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              {selectedTicker} <Badge variant="outline">Current Quote</Badge>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              {selectedTicker} 
+              <Badge variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-100">
+                Real-Time
+              </Badge>
             </DialogTitle>
-             <DialogDescription>
-                Real-time market data from Finnhub
+            <DialogDescription>
+              Current market data provided by Finnhub
             </DialogDescription>
           </DialogHeader>
 
           {loadingQuote ? (
             <div className="flex justify-center p-8">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
             </div>
           ) : quoteData ? (
-            <div className="space-y-4">
-              <div className="flex items-baseline justify-between">
-                <span className="text-4xl font-bold">{fmt(quoteData.c)}</span>
-                <div className={`flex items-center gap-1 text-lg font-medium ${quoteData.d >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {quoteData.d >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
-                  {quoteData.d > 0 ? '+' : ''}{quoteData.d.toFixed(2)} ({quoteData.dp.toFixed(2)}%)
+            <div className="space-y-6 pt-2">
+              {/* Main Price Display */}
+              <div className="flex items-baseline justify-between border-b pb-4">
+                <div className="text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
+                  {fmt(quoteData.c)}
+                </div>
+                <div className={`flex items-center gap-1 text-lg font-semibold ${quoteData.d >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {quoteData.d >= 0 ? <TrendingUp className="h-6 w-6" /> : <TrendingDown className="h-6 w-6" />}
+                  <span>{quoteData.d > 0 ? '+' : ''}{quoteData.d.toFixed(2)} ({quoteData.dp.toFixed(2)}%)</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="flex justify-between border-b py-2">
-                  <span className="text-muted-foreground">Open</span>
-                  <span className="font-mono">{fmt(quoteData.o)}</span>
+              {/* Detailed Stats Grid */}
+              <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Open</span>
+                  <span className="font-mono font-medium text-slate-900 dark:text-slate-200">{fmt(quoteData.o)}</span>
                 </div>
-                <div className="flex justify-between border-b py-2">
-                  <span className="text-muted-foreground">Prev Close</span>
-                  <span className="font-mono">{fmt(quoteData.pc)}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Prev Close</span>
+                  <span className="font-mono font-medium text-slate-900 dark:text-slate-200">{fmt(quoteData.pc)}</span>
                 </div>
-                <div className="flex justify-between border-b py-2">
-                  <span className="text-muted-foreground">Day High</span>
-                  <span className="font-mono">{fmt(quoteData.h)}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Day High</span>
+                  <span className="font-mono font-medium text-slate-900 dark:text-slate-200">{fmt(quoteData.h)}</span>
                 </div>
-                <div className="flex justify-between border-b py-2">
-                  <span className="text-muted-foreground">Day Low</span>
-                  <span className="font-mono">{fmt(quoteData.l)}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Day Low</span>
+                  <span className="font-mono font-medium text-slate-900 dark:text-slate-200">{fmt(quoteData.l)}</span>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="p-4 text-center text-muted-foreground">
+            <div className="p-4 text-center text-gray-500">
               Unable to load quote data.
             </div>
           )}

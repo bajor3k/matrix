@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   try {
     const response = await fetch(
       `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`,
-      { next: { revalidate: 0 } } // Disable caching for real-time data
+      { next: { revalidate: 0 } } // No cache for real-time data
     );
 
     if (!response.ok) {
