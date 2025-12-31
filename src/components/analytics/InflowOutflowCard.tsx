@@ -167,13 +167,13 @@ export default function InflowOutflowCard() {
 
         {/* Totals row (unchanged) */}
         <div className="grid grid-cols-3 gap-3">
-          <Card className="bg-transparent">
+          <Card className="bg-transparent border-border/50">
             <CardContent className="py-3">
               <div className="text-xs text-muted-foreground">Total Inflows</div>
               <div className="text-lg font-semibold">{fmt.format(t.totalIn)}</div>
             </CardContent>
           </Card>
-          <Card className="bg-transparent">
+          <Card className="bg-transparent border-border/50">
             <CardContent className="py-3">
               <div className="text-xs text-muted-foreground">Net Flow</div>
               <div className="text-foreground text-lg font-semibold">
@@ -181,7 +181,7 @@ export default function InflowOutflowCard() {
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-transparent">
+          <Card className="bg-transparent border-border/50">
             <CardContent className="py-3">
               <div className="text-xs text-muted-foreground">Total Outflows</div>
               <div className="text-lg font-semibold">{fmt.format(t.totalOut)}</div>
