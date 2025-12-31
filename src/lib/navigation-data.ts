@@ -110,7 +110,11 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
     { name: 'Compliance', icon: ShieldAlert, href: '/analytics/compliance'},
     { name: 'Contribution', icon: TrendingUp, href: '/analytics/contribution' },
   ],
-  'Resources': [],
+  'Resources': [
+    { name: 'OneDrive', icon: Cloud, href: '/resources/onedrive' },
+    { name: 'Procedures', icon: FileText, href: '/resources/procedures' },
+    { name: 'External', icon: Globe, href: '/resources/external' },
+  ],
   'Other': [
       { name: 'Settings', icon: Settings, href: '/settings' },
   ],

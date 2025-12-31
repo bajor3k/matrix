@@ -203,7 +203,15 @@ export default function Sidebar({
         
         <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} iconClassName="text-[hsl(var(--icon-color-2))]"/>
         
-        <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} iconClassName="text-yellow-400"/>
+        <Section 
+          keyName="resources" 
+          title="Resources" 
+          icon={BookOpenText} 
+          open={openResources} 
+          setOpen={setOpenResources} 
+          items={resourceItems} 
+          iconClassName="text-yellow-500"
+        />
         
         <StandaloneItem item={insightsItem} isActive={isInsights} iconClassName="text-purple-400" />
         <StandaloneItem item={crm2Item} isActive={isCrm2} iconClassName="text-teal-400" />
