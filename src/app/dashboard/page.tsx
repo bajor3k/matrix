@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -357,38 +356,31 @@ export default function DashboardPage() {
 
           return (
             <div key={item.symbol} className="rounded-xl border bg-card text-card-foreground shadow-sm">
-              <div className="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
-                <h3 className="tracking-tight text-sm font-medium text-muted-foreground">
-                  {item.name} <span className="text-xs ml-1 opacity-70">({item.symbol})</span>
-                </h3>
-                {/* Icon based on trend */}
-                {quote ? (
-                   isPositive ? (
-                    <TrendingUp className="h-4 w-4 text-green-500" />
-                  ) : (
-                    <TrendingDown className="h-4 w-4 text-red-500" />
-                  )
-                ) : (
-                  <Activity className="h-4 w-4 text-muted-foreground" />
-                )}
-              </div>
-              <div className="p-6 pt-0">
-                <div className="text-2xl font-bold">
+              <div className="p-6 flex flex-row items-center justify-between">
+                {/* Left Side: Name & Symbol */}
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm font-medium text-muted-foreground">{item.name}</span>
+                  <span className="text-xs text-muted-foreground opacity-50 font-mono">{item.symbol}</span>
+                </div>
+
+                {/* Right Side: Price & Change */}
+                <div className="text-right">
+                  <div className="text-2xl font-bold">
+                    {quote ? (
+                      `$${quote.c.toFixed(2)}`
+                    ) : (
+                      <div className="h-8 w-24 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
+                    )}
+                  </div>
+                  
                   {quote ? (
-                    `$${quote.c.toFixed(2)}`
+                    <div className={`text-xs font-medium mt-1 ${isPositive ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"}`}>
+                      {isPositive ? "+" : ""}{quote.d.toFixed(2)} ({quote.dp.toFixed(2)}%)
+                    </div>
                   ) : (
-                    <span className="animate-pulse bg-gray-200 dark:bg-gray-800 rounded h-8 w-24 block" />
+                    <div className="mt-2 h-3 w-16 ml-auto animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
                   )}
                 </div>
-                <p className="text-xs flex items-center gap-1 mt-1">
-                  {quote ? (
-                    <span className={isPositive ? "text-green-500 font-medium" : "text-red-500 font-medium"}>
-                      {isPositive ? "+" : ""}{quote.d.toFixed(2)} ({quote.dp.toFixed(2)}%)
-                    </span>
-                  ) : (
-                    <span className="text-muted-foreground">Loading...</span>
-                  )}
-                </p>
               </div>
             </div>
           );
@@ -552,7 +544,7 @@ export default function DashboardPage() {
             </div>
             <div className="table-container">
                 <table className="w-full text-sm usa-spending-table">
-                <thead className="bg-transparent">
+                <thead className="bg-card">
                     <tr className="text-muted-foreground border-b border-border">
                     <th className="text-left font-medium pb-2 pr-3 pl-2">Agency</th>
                     <th className="text-left font-medium pb-2 pr-3">Date</th>
@@ -694,4 +686,5 @@ export default function DashboardPage() {
 
     
 
+    
     
