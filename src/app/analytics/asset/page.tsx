@@ -1,3 +1,4 @@
+
 "use client";
 import * as React from "react";
 import Image from "next/image";
@@ -10,6 +11,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { cn } from "@/lib/utils";
 import { PlaceholderCard } from "@/components/dashboard/placeholder-card";
 import { AllocationLegend } from "@/components/analytics/AllocationLegend";
+import { downloadTableExcel } from "@/lib/downloadTableExcel";
+import { useToast } from "@/hooks/use-toast";
 
 const DynamicAssetAllocationDonutChart = dynamic(
   () => import('@/components/charts/asset-allocation-donut-chart').then(mod => mod.AssetAllocationDonutChart),
@@ -72,6 +75,37 @@ const allocationData = [
 ];
 
 export default function AssetAnalyticsPage() {
+  const topAssetsTableRef = React.useRef<HTMLTableElement>(null);
+  const { toast } = useToast();
+
+  const handleExportTopAssets = async () => {
+    if (!topAssetsTableRef.current) {
+        toast({
+            title: "Error",
+            description: "Could not find the table to export.",
+            variant: "destructive",
+        });
+        return;
+    }
+    try {
+        await downloadTableExcel({
+            table: topAssetsTableRef.current,
+            fileName: "top_performing_assets",
+            sheetName: "Top Assets",
+        });
+        toast({
+            title: "Download Started",
+            description: "Your Excel file is being generated.",
+        });
+    } catch (error) {
+        toast({
+            title: "Download Failed",
+            description: "There was a problem exporting the data to Excel.",
+            variant: "destructive",
+        });
+    }
+  };
+
   return (
     <main className="min-h-screen flex-1 p-6 space-y-4 md:p-8">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-6">Assets Analytics</h1>
@@ -108,7 +142,7 @@ export default function AssetAnalyticsPage() {
       </div>
 
       <PlaceholderCard title="Top Performing Assets">
-        <Table>
+        <Table ref={topAssetsTableRef}>
           <TableHeader>
             <TableRow>
               <TableHead>Symbol</TableHead>
@@ -137,7 +171,7 @@ export default function AssetAnalyticsPage() {
           </TableBody>
         </Table>
         <div className="flex justify-end mt-4">
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleExportTopAssets}>
                 <Download className="mr-2 h-4 w-4" /> Export
             </Button>
         </div>
