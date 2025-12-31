@@ -40,8 +40,8 @@ export default function RootLayout({
           
         </VaultGate>
         {/* --- START: Right Chevron (Replaces Thumbs Up) --- */}
-        <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50 p-1 bg-background/50 backdrop-blur-sm rounded-l-md border-y border-l border-border/50 shadow-sm cursor-default">
-          <ChevronLeft className="h-6 w-6 text-muted-foreground opacity-70" />
+        <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50 p-1 bg-background/40 backdrop-blur-sm rounded-l-md border-y border-l border-border/20 dark:border-white/5 shadow-sm cursor-default">
+          <ChevronLeft className="h-6 w-6 text-muted-foreground opacity-50" />
         </div>
         {/* --- END: Right Chevron --- */}
       </body>
