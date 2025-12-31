@@ -1,7 +1,8 @@
+
 "use client";
 
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { setPersistence, browserSessionPersistence, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase"; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,8 +19,12 @@ export default function Login() {
     setError("");
 
     try {
+      // 1. SET PERSISTENCE TO 'SESSION' (Clears on tab close)
+      await setPersistence(auth, browserSessionPersistence);
+      
+      // 2. THEN SIGN IN
       await signInWithEmailAndPassword(auth, email, password);
-      // Success! The parent component will detect the login change automatically.
+      
     } catch (err: any) {
       console.error(err);
       setError("Access Denied: Invalid credentials.");
