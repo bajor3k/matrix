@@ -74,9 +74,6 @@ export default function ProceduresPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Operations Procedures</h1>
-          <p className="text-muted-foreground">
-            Search or select a team to find standard operating procedures.
-          </p>
         </div>
         <div className="relative w-full md:w-72">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
