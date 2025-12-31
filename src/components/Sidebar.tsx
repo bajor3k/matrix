@@ -21,6 +21,9 @@ import {
   Brain,
   LayoutGrid,
   Bell,
+  Robot,
+  FileText as OneDriveIcon,
+  Globe as ExternalIcon,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
@@ -31,15 +34,17 @@ export type SectionKey = "reports" | "crm" | "analytics" | "resources" | "mail";
 const reportItems: NavItem[] = navigationData['Reports'];
 const crmItems: NavItem[] = navigationData['CRM'];
 const mailItems: NavItem[] = navigationData['Mail'];
-
 const analyticsItems: NavItem[] = navigationData['Analytics'];
 const resourceItems: NavItem[] = navigationData['Resources'];
+
+// Standalone items
+const dashboardItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Dashboard')!;
 const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'CRM')!;
 const insightsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'AI Insights')!;
-const dashboardItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Dashboard')!;
-
 const alertsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Alerts')!;
 const ticketItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Ticket')!;
+const onedriveItem: NavItem = navigationData['Standalone'].find(item => item.name === 'OneDrive Procedures')!;
+const externalItem: NavItem = navigationData['Standalone'].find(item => item.name === 'External')!;
 const settingsItem: NavItem = navigationData['Other'][0];
 
 
@@ -81,25 +86,29 @@ export default function Sidebar({
     "/analytics/asset", "/analytics/client", "/analytics/financial", 
     "/analytics/conversion", "/analytics/compliance", "/analytics/contribution"
   ].some(p => pathname.startsWith(p)), [pathname]);
+  
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
+  
+  const isDashboard = useMemo(() => pathname === "/dashboard", [pathname]);
   const isCrm2 = useMemo(() => pathname === "/CRM", [pathname]);
   const isInsights = useMemo(() => pathname === "/ai-insights", [pathname]);
-  const isDashboard = useMemo(() => pathname === "/dashboard", [pathname]);
   const isAlerts = useMemo(() => pathname === "/alerts", [pathname]);
   const isTicket = useMemo(() => pathname === "/ticket", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
+  
+  const isOneDrive = useMemo(() => pathname === "/resources/onedrive", [pathname]);
+  const isExternal = useMemo(() => pathname === "/resources/external", [pathname]);
+
 
   const [openReports, setOpenReports] = useState(isReports);
   const [openCRM, setOpenCRM] = useState(isCRM);
   const [openMail, setOpenMail] = useState(isMail);
-
   const [openAnalytics, setOpenAnalytics] = useState(isAnalytics);
   const [openResources, setOpenResources] = useState(isResources);
 
   useEffect(() => setOpenReports(isReports), [isReports]);
   useEffect(() => setOpenCRM(isCRM), [isCRM]);
   useEffect(() => setOpenMail(isMail), [isMail]);
-
   useEffect(() => setOpenAnalytics(isAnalytics), [isAnalytics]);
   useEffect(() => setOpenResources(isResources), [isResources]);
 
@@ -168,88 +177,44 @@ export default function Sidebar({
     </div>
   )};
 
+  const StandaloneItem = ({ item, isActive, iconClassName }: { item: NavItem, isActive: boolean, iconClassName?: string }) => (
+    <div className="mb-1">
+        <Link
+          href={item.href}
+          title={item.name}
+          data-active={isActive}
+          className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isActive ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
+        >
+          <span className="flex items-center gap-3">
+            <item.icon className={cn("h-5 w-5 shrink-0", iconClassName)} />
+            {!collapsed && item.name}
+          </span>
+        </Link>
+    </div>
+  );
+
+
   return (
     <div className="flex h-full w-full flex-col p-3 pt-2">
       {/* sections */}
       <div className="h-[calc(100%-60px)] overflow-y-auto">
         
-        <div className="mb-1">
-          <Link
-            href={dashboardItem.href}
-            title={dashboardItem.name}
-            data-active={pathname === dashboardItem.href}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${pathname === dashboardItem.href ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
-          >
-            <span className="flex items-center gap-3">
-              <LayoutGrid className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-3))]" />
-              {!collapsed && dashboardItem.name}
-            </span>
-          </Link>
-        </div>
-
-        {/* <Section keyName="crm" title="CRM"       icon={Users}      open={openCRM}       setOpen={setOpenCRM}       items={crmItems} /> */}
+        <StandaloneItem item={dashboardItem} isActive={isDashboard} iconClassName="text-[hsl(var(--icon-color-3))]" />
+        
         <Section keyName="mail" title="Mail" icon={Mail} open={openMail} setOpen={setOpenMail} items={mailItems} iconClassName="text-[hsl(var(--icon-color-1))]" />
         
-
         <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} iconClassName="text-[hsl(var(--icon-color-2))]"/>
         
         <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} iconClassName="text-[hsl(var(--icon-color-4))]"/>
         
-        <div className="mb-1">
-          <Link
-            href={insightsItem.href}
-            title={insightsItem.name}
-            data-active={isInsights}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isInsights ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
-          >
-            <span className="flex items-center gap-3">
-              <GradientBrain className="h-5 w-5 shrink-0" />
-              {!collapsed && insightsItem.name}
-            </span>
-          </Link>
-        </div>
+        <StandaloneItem item={insightsItem} isActive={isInsights} iconClassName="text-purple-400" />
+        <StandaloneItem item={crm2Item} isActive={isCrm2} iconClassName="text-teal-400" />
 
-        <div className="mb-1">
-          <Link
-            href={crm2Item.href}
-            title={crm2Item.name}
-            data-active={isCrm2}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isCrm2 ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
-          >
-            <span className="flex items-center gap-3">
-              <Users className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-7))]" />
-              {!collapsed && crm2Item.name}
-            </span>
-          </Link>
-        </div>
+        <StandaloneItem item={onedriveItem} isActive={isOneDrive} iconClassName="text-[hsl(var(--icon-color-3))]" />
+        <StandaloneItem item={externalItem} isActive={isExternal} iconClassName="text-[hsl(var(--icon-color-4))]" />
 
-        <div className="mb-1">
-          <Link
-            href={alertsItem.href}
-            title={alertsItem.name}
-            data-active={isAlerts}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isAlerts ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
-          >
-            <span className="flex items-center gap-3">
-              <Bell className="h-5 w-5 shrink-0 text-[hsl(var(--chart-5))]" />
-              {!collapsed && alertsItem.name}
-            </span>
-          </Link>
-        </div>
-
-        <div className="mb-1">
-          <Link
-            href={ticketItem.href}
-            title={ticketItem.name}
-            data-active={isTicket}
-            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isTicket ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
-          >
-            <span className="flex items-center gap-3">
-              <KanbanSquare className="h-5 w-5 shrink-0 text-[hsl(var(--icon-color-1))]" />
-              {!collapsed && ticketItem.name}
-            </span>
-          </Link>
-        </div>
+        <StandaloneItem item={alertsItem} isActive={isAlerts} iconClassName="text-[hsl(var(--chart-5))]" />
+        <StandaloneItem item={ticketItem} isActive={isTicket} iconClassName="text-[hsl(var(--icon-color-1))]" />
 
       </div>
 
@@ -268,32 +233,5 @@ export default function Sidebar({
         </Link>
       </div>
     </div>
-  );
-}
-
-// Custom Gradient Icon Component
-function GradientBrain({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="url(#brain-gradient)" // References the gradient ID defined below
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      style={{ filter: "drop-shadow(0 0 4px rgba(168, 85, 247, 0.5))" }} // Adds a subtle neon glow
-    >
-      <defs>
-        <linearGradient id="brain-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#d946ef" /> {/* Fuchsia/Pink */}
-          <stop offset="50%" stopColor="#8b5cf6" /> {/* Violet */}
-          <stop offset="100%" stopColor="#3b82f6" /> {/* Blue */}
-        </linearGradient>
-      </defs>
-      <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z" />
-      <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z" />
-    </svg>
   );
 }

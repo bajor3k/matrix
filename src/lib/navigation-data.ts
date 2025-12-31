@@ -44,6 +44,7 @@ import {
   Globe,
   Brain,
   Bell,
+  Robot,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -109,19 +110,17 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
     { name: 'Compliance', icon: ShieldAlert, href: '/analytics/compliance'},
     { name: 'Contribution', icon: TrendingUp, href: '/analytics/contribution' },
   ],
-  'Resources': [
-    { name: 'OneDrive', icon: Cloud, href: '/resources' },
-    { name: 'Procedures', icon: FileText, href: '/resources' },
-    { name: 'External', icon: Globe, href: '/resources' },
-  ],
+  'Resources': [],
   'Other': [
       { name: 'Settings', icon: Settings, href: '/settings' },
   ],
   'Standalone': [
     { name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
     { name: 'CRM', icon: Users, href: '/CRM' },
-    { name: 'AI Insights', icon: Brain, href: '/ai-insights' },
+    { name: 'AI Insights', icon: Robot, href: '/ai-insights' },
     { name: 'Alerts', icon: Bell, href: '/alerts' },
     { name: 'Ticket', icon: KanbanSquare, href: '/ticket' },
+    { name: 'OneDrive Procedures', icon: FileText, href: '/resources/onedrive' },
+    { name: 'External', icon: Globe, href: '/resources/external' },
   ]
 };

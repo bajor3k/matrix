@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -7,22 +8,16 @@ import Link from "next/link";
 export default function ResourcesPage() {
   const resources = [
     {
-      title: "OneDrive",
-      description: "Access shared company files and cloud storage.",
-      icon: <Cloud className="h-6 w-6 text-blue-500" />,
-      href: "#", // Placeholder
-    },
-    {
-      title: "Procedures",
-      description: "Standard operating procedures and guidelines.",
+      title: "OneDrive Procedures",
+      description: "Access shared company files and standard operating procedures.",
       icon: <FileText className="h-6 w-6 text-emerald-500" />,
-      href: "#", // Placeholder
+      href: "/resources/onedrive",
     },
     {
-      title: "External",
-      description: "Third-party tools and external portal links.",
+      title: "External Tools",
+      description: "Links to third-party tools and external portals.",
       icon: <Globe className="h-6 w-6 text-purple-500" />,
-      href: "#", // Placeholder
+      href: "/resources/external",
     },
   ];
 
