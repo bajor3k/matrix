@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -5,11 +6,115 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
+const initialFirms = [
+  {
+    name: "Goliath Private Wealth",
+    phone: "555-901-2020",
+    email: "info@goliathpw.com",
+    tags: ["Pershing", "PAS"],
+    category: "Firm",
+  },
+  {
+    name: "Beacon Financial Group",
+    phone: "555-443-1122",
+    email: "team@beaconfg.com",
+    tags: ["Fidelity"],
+    category: "Firm",
+  },
+  {
+    name: "Summit Advisory Partners",
+    phone: "555-778-9033",
+    email: "contact@summitadvisors.com",
+    tags: ["Schwab"],
+    category: "Firm",
+  },
+  {
+    name: "Northstar Capital Management",
+    phone: "555-668-4521",
+    email: "hello@northstarcm.com",
+    tags: ["Goldman"],
+    category: "Firm",
+  },
+  {
+    name: "Evergreen Wealth Planning",
+    phone: "555-998-1123",
+    email: "support@evergreenwp.com",
+    tags: ["Pershing"],
+    category: "Firm",
+  },
+  {
+    name: "Apex Strategic Advisors",
+    phone: "555-491-7782",
+    email: "team@apexsa.com",
+    tags: ["PAS"],
+    category: "Firm",
+  },
+  {
+    name: "Horizon Private Clients",
+    phone: "555-312-4477",
+    email: "info@horizonpc.com",
+    tags: ["Fidelity"],
+    category: "Firm",
+  },
+  {
+    name: "Titanium Wealth Group",
+    phone: "555-889-0044",
+    email: "service@titaniumwg.com",
+    tags: ["Schwab"],
+    category: "Firm",
+  },
+  {
+    name: "Atlas Financial Network",
+    phone: "555-678-9911",
+    email: "office@atlasfn.com",
+    tags: ["Goldman"],
+    category: "Firm",
+  },
+  {
+    name: "Blue Ridge Investment House",
+    phone: "555-890-2233",
+    email: "contact@blueridgeih.com",
+    tags: ["Pershing"],
+    category: "Firm",
+  },
+];
+
+// --- Generate 20 Fake Clients based on existing Firms ---
+const CLIENT_NAMES = [
+  ["James", "Smith"], ["Maria", "Garcia"], ["Robert", "Johnson"], ["Lisa", "Davis"],
+  ["Michael", "Brown"], ["Jennifer", "Wilson"], ["William", "Moore"], ["Elizabeth", "Taylor"],
+  ["David", "Anderson"], ["Sarah", "Thomas"], ["Richard", "Jackson"], ["Karen", "White"],
+  ["Joseph", "Harris"], ["Nancy", "Martin"], ["Thomas", "Thompson"], ["Margaret", "Garcia"],
+  ["Charles", "Martinez"], ["Sandra", "Robinson"], ["Daniel", "Clark"], ["Ashley", "Rodriguez"]
+];
+
+// Map 2 clients to each existing firm
+const generatedClients = initialFirms.flatMap((firm, i) => {
+  const clientPair = [CLIENT_NAMES[i * 2], CLIENT_NAMES[i * 2 + 1]];
+  // Extract domain from firm email (e.g., 'jdoe@wealth.com' -> 'wealth.com')
+  const domain = firm.email.split('@')[1] || 'gmail.com';
+
+  return clientPair.map((name, idx) => ({
+    ...firm, // Inherit all firm settings (Custodians, etc.)
+    id: `client-${firm.name}-${idx}`,
+    name: `${name[0]} ${name[1]}`, // Overwrite Name
+    category: "Client", // Mark as Client
+    email: `${name[1].toLowerCase()}@${domain}`, // lastname@firm_domain
+    status: "Active",
+  }));
+});
+
+// Combine them
+const allCrmData = [...initialFirms, ...generatedClients];
+
+
 export default function CRM2() {
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
+
+  const [firms, setFirms] = useState(allCrmData);
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -22,69 +127,6 @@ export default function CRM2() {
     email: "",
     tags: [],
   });
-
-  const [firms, setFirms] = useState([
-    {
-      name: "Goliath Private Wealth",
-      phone: "555-901-2020",
-      email: "info@goliathpw.com",
-      tags: ["Pershing", "PAS"],
-    },
-    {
-      name: "Beacon Financial Group",
-      phone: "555-443-1122",
-      email: "team@beaconfg.com",
-      tags: ["Fidelity"],
-    },
-    {
-      name: "Summit Advisory Partners",
-      phone: "555-778-9033",
-      email: "contact@summitadvisors.com",
-      tags: ["Schwab"],
-    },
-    {
-      name: "Northstar Capital Management",
-      phone: "555-668-4521",
-      email: "hello@northstarcm.com",
-      tags: ["Goldman"],
-    },
-    {
-      name: "Evergreen Wealth Planning",
-      phone: "555-998-1123",
-      email: "support@evergreenwp.com",
-      tags: ["Pershing"],
-    },
-    {
-      name: "Apex Strategic Advisors",
-      phone: "555-491-7782",
-      email: "team@apexsa.com",
-      tags: ["PAS"],
-    },
-    {
-      name: "Horizon Private Clients",
-      phone: "555-312-4477",
-      email: "info@horizonpc.com",
-      tags: ["Fidelity"],
-    },
-    {
-      name: "Titanium Wealth Group",
-      phone: "555-889-0044",
-      email: "service@titaniumwg.com",
-      tags: ["Schwab"],
-    },
-    {
-      name: "Atlas Financial Network",
-      phone: "555-678-9911",
-      email: "office@atlasfn.com",
-      tags: ["Goldman"],
-    },
-    {
-      name: "Blue Ridge Investment House",
-      phone: "555-890-2233",
-      email: "contact@blueridgeih.com",
-      tags: ["Pershing"],
-    },
-  ]);
 
   // Tag colors
   const tagColors: Record<string, string> = {
@@ -135,6 +177,7 @@ export default function CRM2() {
     if (editIndex !== null) {
       const updated = [...firms];
       updated[editIndex] = {
+        ...updated[editIndex],
         ...formData,
         tags: parsedTags,
       };
@@ -145,6 +188,7 @@ export default function CRM2() {
         {
           ...formData,
           tags: parsedTags,
+          category: 'Firm'
         },
       ]);
     }
@@ -227,11 +271,11 @@ export default function CRM2() {
           <tbody>
             {filtered.map((firm, index) => (
               <tr
-                key={index}
+                key={firm.id || index}
                 className="border-t border-border hover:bg-accent transition"
               >
                 <td className="py-4 px-6 font-medium">
-                  <Link href={`/crm2.0/${encodeURIComponent(firm.name)}`} className="hover:underline">
+                  <Link href={`/CRM/${encodeURIComponent(firm.name)}`} className="hover:underline">
                     {firm.name}
                   </Link>
                 </td>
@@ -359,5 +403,3 @@ export default function CRM2() {
     </div>
   );
 }
-
-    
