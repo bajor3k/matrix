@@ -59,7 +59,18 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
     { name: 'Advisory Fees', icon: BadgeDollarSign, href: '/reports/advisory-fees'},
     { name: 'Cash', icon: Wallet, href: '/reports/cash'},
   ],
-  'CRM': [],
+  'CRM': [
+    {
+      name: "Home Office",
+      href: "/crm/home-office",
+      icon: Briefcase,
+    },
+    {
+      name: "Advisors",
+      href: "/crm/advisors",
+      icon: ContactIcon,
+    },
+  ],
   'Mail': [
     {
       name: 'Inbox',

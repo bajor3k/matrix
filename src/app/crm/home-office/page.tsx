@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -105,7 +104,7 @@ return {
 }); };
 
 
-export default function CRM2() {
+export default function CRMHomeOfficePage() {
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
