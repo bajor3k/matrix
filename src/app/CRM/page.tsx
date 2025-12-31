@@ -223,18 +223,6 @@ export default function CRM2() {
             className="w-full p-4 rounded-2xl bg-card border border-border outline-none focus:border-ring"
           />
         </div>
-
-        <div className="flex items-center gap-2">
-            <Button variant="secondary" size="sm" className="h-8 px-4 text-xs font-medium bg-slate-200 text-slate-900 hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-100">
-                All
-            </Button>
-            <Button variant="ghost" size="sm" className="h-8 px-4 text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100">
-                Firm
-            </Button>
-            <Button variant="ghost" size="sm" className="h-8 px-4 text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100">
-                Client
-            </Button>
-        </div>
       </div>
 
       {/* Add Firm Button */}
