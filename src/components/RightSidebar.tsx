@@ -1,3 +1,4 @@
+
 "use client";
 
 import { ChevronLeft, ChevronRight, Send } from "lucide-react";
@@ -14,7 +15,8 @@ export function RightSidebar({ isOpen, onToggle }: RightSidebarProps) {
     <div
       className={`
         fixed right-0 bottom-0 top-16 z-[60] w-96 
-        bg-background/80 backdrop-blur-xl border-l border-border/20 shadow-2xl
+        bg-background/80 backdrop-blur-xl shadow-2xl
+        border-l border-border/20 dark:border-white/5
         transition-transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "translate-x-full"}
       `}
@@ -22,7 +24,13 @@ export function RightSidebar({ isOpen, onToggle }: RightSidebarProps) {
       {/* --- Toggle Handle (Chevron) --- */}
       <div
         onClick={onToggle}
-        className="absolute -left-8 top-1/2 -translate-y-1/2 flex h-16 w-8 cursor-pointer items-center justify-center rounded-l-md border-y border-l border-border/20 bg-background/40 backdrop-blur-sm shadow-sm transition-colors hover:bg-background/60 dark:border-white/5"
+        className="
+          absolute -left-8 top-1/2 -translate-y-1/2 flex h-16 w-8 cursor-pointer items-center justify-center 
+          rounded-l-md shadow-sm transition-colors 
+          border-y border-l border-border/20 dark:border-white/5
+          bg-background/40 dark:bg-black/10 hover:bg-background/60 dark:hover:bg-black/20
+          backdrop-blur-sm
+        "
       >
         {isOpen ? (
           <ChevronRight className="h-5 w-5 text-muted-foreground opacity-50" />
@@ -42,11 +50,11 @@ export function RightSidebar({ isOpen, onToggle }: RightSidebarProps) {
         </div>
 
         {/* Footer (Input Area) */}
-        <div className="border-t border-border/20 bg-background/20 p-4">
+        <div className="border-t border-border/20 dark:border-white/5 bg-background/20 p-4">
           <div className="relative">
             <Textarea
               placeholder="Type your message..."
-              className="min-h-[80px] w-full resize-none rounded-xl border-border/30 bg-background/50 pr-12 text-sm focus:bg-background focus:ring-1 focus:ring-blue-500/50"
+              className="min-h-[80px] w-full resize-none rounded-xl border-border/30 dark:border-white/10 bg-background/50 pr-12 text-sm focus:bg-background focus:ring-1 focus:ring-blue-500/50"
             />
             <Button
               size="icon"
