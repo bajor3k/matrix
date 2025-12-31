@@ -45,6 +45,7 @@ import {
   Brain,
   Bell,
   Robot,
+  Megaphone,
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
@@ -134,5 +135,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
     { name: 'AI Insights', icon: Robot, href: '/ai-insights' },
     { name: 'Alerts', icon: Bell, href: '/alerts' },
     { name: 'Ticket', icon: KanbanSquare, href: '/ticket' },
+    { name: 'The Bullpen', icon: Megaphone, href: '/bullpen' },
   ]
 };
