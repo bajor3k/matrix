@@ -131,7 +131,7 @@ const MARKET_INDICES = [
   { symbol: 'SPY', name: 'S&P 500' },
   { symbol: 'DIA', name: 'Dow Jones' }, // Note: If 'DJI' returns no data, try 'DIA' (the ETF)
   { symbol: 'QQQ', name: 'Nasdaq' },
-  { symbol: 'IYM', name: 'Basic Mat.' }
+  { symbol: 'IYM', name: 'Russell 2000' }
 ];
 
 
@@ -691,5 +691,7 @@ export default function DashboardPage() {
     </main>
   );
 }
+
+    
 
     
