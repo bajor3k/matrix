@@ -20,6 +20,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import CrmFooterSection from "@/components/crm/CrmFooterSection";
+import { ChevronDown } from "lucide-react";
 
 
 const tagColors: Record<string, string> = {
@@ -156,6 +157,7 @@ export default function FirmProfile() {
                 <TableHead>Email</TableHead>
                 <TableHead className="text-right">Tickets</TableHead>
                 <TableHead className="text-right">Calls</TableHead>
+                <TableHead className="w-[50px]"></TableHead>
               </TableRow>
             </TableHeader>
 
@@ -172,6 +174,11 @@ export default function FirmProfile() {
                   </TableCell>
                   <TableCell className="text-right">
                     {member.calls}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end">
+                      <ChevronDown className="h-4 w-4 text-muted-foreground opacity-50" />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
