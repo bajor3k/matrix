@@ -1,0 +1,60 @@
+"use client";
+
+import { useState } from "react";
+import { ChevronLeft, ChevronRight, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+
+export function RightSidebar() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div
+      className={`
+        fixed right-0 bottom-0 top-16 z-50 w-96 
+        bg-background/80 backdrop-blur-xl border-l border-border/20 shadow-2xl
+        transition-transform duration-300 ease-in-out
+        ${isOpen ? "translate-x-0" : "translate-x-full"}
+      `}
+    >
+      {/* --- Toggle Handle (Chevron) --- */}
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        className="absolute -left-8 top-1/2 -translate-y-1/2 flex h-16 w-8 cursor-pointer items-center justify-center rounded-l-md border-y border-l border-border/20 bg-background/40 backdrop-blur-sm shadow-sm transition-colors hover:bg-background/60 dark:border-white/5"
+      >
+        {isOpen ? (
+          <ChevronRight className="h-5 w-5 text-muted-foreground opacity-50" />
+        ) : (
+          <ChevronLeft className="h-5 w-5 text-muted-foreground opacity-50" />
+        )}
+      </div>
+
+      {/* --- Sidebar Content --- */}
+      <div className="flex h-full flex-col">
+        {/* Header / Main Body */}
+        <div className="flex-1 p-6">
+          <div className="flex h-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/10 p-4 text-center text-muted-foreground/50">
+            <span className="mb-2 text-lg font-medium">Matrix Assistant</span>
+            <span className="text-sm">AI Chat coming soon...</span>
+          </div>
+        </div>
+
+        {/* Footer (Input Area) */}
+        <div className="border-t border-border/20 bg-background/20 p-4">
+          <div className="relative">
+            <Textarea
+              placeholder="Type your message..."
+              className="min-h-[80px] w-full resize-none rounded-xl border-border/30 bg-background/50 pr-12 text-sm focus:bg-background focus:ring-1 focus:ring-blue-500/50"
+            />
+            <Button
+              size="icon"
+              className="absolute bottom-2 right-2 h-8 w-8 rounded-lg bg-blue-600 hover:bg-blue-500"
+            >
+              <Send className="h-4 w-4 text-white" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

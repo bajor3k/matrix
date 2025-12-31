@@ -9,7 +9,7 @@ import { NavigationProvider } from '@/contexts/navigation-context';
 import { ThemeProvider } from '@/components/theme-provider';
 import AppShell from '@/components/AppShell';
 import VaultGate from "./VaultGate";
-import { ChevronLeft } from "lucide-react";
+import { RightSidebar } from "@/components/RightSidebar";
 
 
 export default function RootLayout({
@@ -39,11 +39,7 @@ export default function RootLayout({
           </ThemeProvider>
           
         </VaultGate>
-        {/* --- START: Right Chevron (Replaces Thumbs Up) --- */}
-        <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50 p-1 bg-background/40 backdrop-blur-sm rounded-l-md border-y border-l border-border/20 dark:border-white/5 shadow-sm cursor-default">
-          <ChevronLeft className="h-6 w-6 text-muted-foreground opacity-50" />
-        </div>
-        {/* --- END: Right Chevron --- */}
+        <RightSidebar />
       </body>
     </html>
   );
