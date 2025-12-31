@@ -441,8 +441,11 @@
 .usa-spending-table thead th {
     position: sticky;
     top: 0;
-    background-color: #0d0d0d;
+    background-color: transparent; /* Changed from #0d0d0d */
     z-index: 10;
+}
+.dark .usa-spending-table thead th {
+    background-color: #0d0d0d;
 }
 
 .usa-spending-table {
@@ -452,4 +455,3 @@
 .ipo-card .table-container {
     overflow-x: auto;
 }
-
