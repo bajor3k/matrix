@@ -43,7 +43,6 @@ const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name ==
 const insightsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'AI Insights')!;
 const alertsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Alerts')!;
 const ticketItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Ticket')!;
-const onedriveItem: NavItem = navigationData['Standalone'].find(item => item.name === 'OneDrive Procedures')!;
 const externalItem: NavItem = navigationData['Standalone'].find(item => item.name === 'External')!;
 const settingsItem: NavItem = navigationData['Other'][0];
 
@@ -96,7 +95,6 @@ export default function Sidebar({
   const isTicket = useMemo(() => pathname === "/ticket", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
   
-  const isOneDrive = useMemo(() => pathname === "/resources/onedrive", [pathname]);
   const isExternal = useMemo(() => pathname === "/resources/external", [pathname]);
 
 
@@ -213,7 +211,6 @@ export default function Sidebar({
         <StandaloneItem item={insightsItem} isActive={isInsights} iconClassName="text-purple-400" />
         <StandaloneItem item={crm2Item} isActive={isCrm2} iconClassName="text-teal-400" />
 
-        <StandaloneItem item={onedriveItem} isActive={isOneDrive} iconClassName="text-[hsl(var(--icon-color-3))]" />
         <StandaloneItem item={externalItem} isActive={isExternal} iconClassName="text-[hsl(var(--icon-color-4))]" />
 
         <StandaloneItem item={alertsItem} isActive={isAlerts} iconClassName="text-[hsl(var(--chart-5))]" />
