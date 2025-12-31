@@ -16,26 +16,14 @@ export const firmDetails = {
     },
     advisors: [
       {
-        name: "John Miller",
-        crd: "1234567",
-        email: "john.miller@goliathpw.com",
-        title: "Financial Advisor",
-        pin: "1129",
-        ip: "JML",
+        name: "James Smith",
+        email: "smith@goliathpw.com",
       },
     ],
     associates: [
       {
-        name: "Susan Brown",
-        role: "Client Associate",
-        email: "susan.brown@goliathpw.com",
-        pin: "4821",
-      },
-      {
-        name: "James Smith",
-        role: "Client Associate",
-        email: "james.smith@goliathpw.com",
-        pin: "9034",
+        name: "Maria Garcia",
+        email: "garcia@goliathpw.com",
       },
     ],
   },
@@ -54,21 +42,15 @@ export const firmDetails = {
       Fidelity: ["G123456", "G987654"],
     },
     advisors: [
-      {
-        name: "Alex Johnson",
-        crd: "7788991",
-        email: "alex.johnson@beaconfg.com",
-        title: "Financial Advisor",
-        pin: "3345",
-        ip: "AJH",
+       {
+        name: "Robert Johnson",
+        email: "johnson@beaconfg.com",
       },
     ],
     associates: [
       {
-        name: "Emily Brown",
-        role: "Client Associate",
-        email: "emily.brown@beaconfg.com",
-        pin: "1122",
+        name: "Lisa Davis",
+        email: "davis@beaconfg.com",
       },
     ],
   },
@@ -88,15 +70,16 @@ export const firmDetails = {
     },
     advisors: [
       {
-        name: "Michael Davis",
-        crd: "9911223",
-        email: "michael.davis@summitadvisors.com",
-        title: "Financial Advisor",
-        pin: "6781",
-        ip: "MDV",
-      },
+        name: "Michael Brown",
+        email: "brown@summitadvisors.com",
+      }
     ],
-    associates: [],
+    associates: [
+      {
+        name: "Jennifer Wilson",
+        email: "wilson@summitadvisors.com",
+      }
+    ],
   },
 
   "Northstar Capital Management": {
@@ -114,21 +97,15 @@ export const firmDetails = {
     },
     advisors: [
       {
-        name: "Sarah Miller",
-        crd: "5647382",
-        email: "sarah.miller@northstarcm.com",
-        title: "Financial Advisor",
-        pin: "2389",
-        ip: "SML",
-      },
+        name: "William Moore",
+        email: "moore@northstarcm.com",
+      }
     ],
     associates: [
       {
-        name: "Chris Wilson",
-        role: "Client Associate",
-        email: "chris.wilson@northstarcm.com",
-        pin: "3344",
-      },
+        name: "Elizabeth Taylor",
+        email: "taylor@northstarcm.com",
+      }
     ],
   },
 
@@ -147,15 +124,16 @@ export const firmDetails = {
     },
     advisors: [
       {
-        name: "Lisa Anderson",
-        crd: "2135467",
-        email: "lisa.anderson@evergreenwp.com",
-        title: "Financial Advisor",
-        pin: "5543",
-        ip: "LAN",
-      },
+        name: "David Anderson",
+        email: "anderson@evergreenwp.com",
+      }
     ],
-    associates: [],
+    associates: [
+       {
+        name: "Sarah Thomas",
+        email: "thomas@evergreenwp.com",
+      }
+    ],
   },
 
   "Apex Strategic Advisors": {
@@ -173,15 +151,16 @@ export const firmDetails = {
     },
     advisors: [
       {
-        name: "David Lee",
-        crd: "4537821",
-        email: "david.lee@apexsa.com",
-        title: "Financial Advisor",
-        pin: "9876",
-        ip: "DLE",
-      },
+        name: "Richard Jackson",
+        email: "jackson@apexsa.com",
+      }
     ],
-    associates: [],
+    associates: [
+      {
+        name: "Karen White",
+        email: "white@apexsa.com",
+      }
+    ],
   },
 
   "Horizon Private Clients": {
@@ -200,21 +179,15 @@ export const firmDetails = {
     },
     advisors: [
       {
-        name: "Anna Kim",
-        crd: "6758492",
-        email: "anna.kim@horizonpc.com",
-        title: "Financial Advisor",
-        pin: "1212",
-        ip: "AKM",
-      },
+        name: "Joseph Harris",
+        email: "harris@horizonpc.com",
+      }
     ],
     associates: [
       {
-        name: "Mark Taylor",
-        role: "Client Associate",
-        email: "mark.taylor@horizonpc.com",
-        pin: "5566",
-      },
+        name: "Nancy Martin",
+        email: "martin@horizonpc.com",
+      }
     ],
   },
 
@@ -233,15 +206,16 @@ export const firmDetails = {
     },
     advisors: [
       {
-        name: "Tom Parker",
-        crd: "8881113",
-        email: "tom.parker@titaniumwg.com",
-        title: "Financial Advisor",
-        pin: "4343",
-        ip: "TPK",
-      },
+        name: "Thomas Thompson",
+        email: "thompson@titaniumwg.com",
+      }
     ],
-    associates: [],
+    associates: [
+      {
+        name: "Margaret Garcia",
+        email: "garcia@titaniumwg.com",
+      }
+    ],
   },
 
   "Atlas Financial Network": {
@@ -258,16 +232,17 @@ export const firmDetails = {
       Goldman: ["GS-RLE-01"],
     },
     advisors: [
-      {
-        name: "Rachel Lee",
-        crd: "3216548",
-        email: "rachel.lee@atlasfn.com",
-        title: "Financial Advisor",
-        pin: "8765",
-        ip: "RLE",
-      },
+       {
+        name: "Charles Martinez",
+        email: "martinez@atlasfn.com",
+      }
     ],
-    associates: [],
+    associates: [
+      {
+        name: "Sandra Robinson",
+        email: "robinson@atlasfn.com",
+      }
+    ],
   },
 
   "Blue Ridge Investment House": {
@@ -285,20 +260,14 @@ export const firmDetails = {
     },
     advisors: [
       {
-        name: "Kevin Young",
-        crd: "8527413",
-        email: "kevin.young@blueridgeih.com",
-        title: "Financial Advisor",
-        pin: "2323",
-        ip: "KYG",
+        name: "Daniel Clark",
+        email: "clark@blueridgeih.com",
       },
     ],
     associates: [
       {
-        name: "Tom Bailey",
-        role: "Client Associate",
-        email: "tom.bailey@blueridgeih.com",
-        pin: "7788",
+        name: "Ashley Rodriguez",
+        email: "rodriguez@blueridgeih.com",
       },
     ],
   },

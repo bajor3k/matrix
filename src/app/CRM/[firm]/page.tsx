@@ -52,6 +52,9 @@ function parseAddress(fullAddress: string) {
   };
 }
 
+const generatePin = () => Math.floor(1000 + Math.random() * 9000).toString();
+const generateCrd = () => Math.floor(1000000 + Math.random() * 9000000).toString();
+
 export default function FirmProfile() {
   const { firm } = useParams();
   const decoded = decodeURIComponent(firm as string);
@@ -67,8 +70,24 @@ export default function FirmProfile() {
   }
   
   const teamMembers = [
-    ...(data.advisors || []).map(a => ({ ...a, title: a.title || "Financial Advisor" })),
-    ...(data.associates || []).map(a => ({ ...a, title: a.role || "Client Associate" }))
+    ...(data.advisors || []).map((a, index) => ({ 
+        ...a, 
+        role: "Financial Advisor",
+        isAdvisor: true,
+        tickets: "5",
+        calls: "3",
+        crd: a.crd || generateCrd(),
+        pin: a.pin || generatePin(),
+    })),
+    ...(data.associates || []).map((a, index) => ({ 
+        ...a, 
+        role: a.role || "Client Associate",
+        isAdvisor: false,
+        tickets: "12",
+        calls: "8",
+        crd: "-",
+        pin: a.pin || generatePin(),
+    }))
   ];
 
 
@@ -144,15 +163,15 @@ export default function FirmProfile() {
               {teamMembers.map((member: any) => (
                 <TableRow key={member.pin || member.email}>
                   <TableCell className="font-semibold">{member.name}</TableCell>
-                  <TableCell>{member.title}</TableCell>
-                  <TableCell>{member.pin || "—"}</TableCell>
-                  <TableCell>{member.crd || "—"}</TableCell>
+                  <TableCell>{member.role}</TableCell>
+                  <TableCell>{member.pin}</TableCell>
+                  <TableCell>{member.crd}</TableCell>
                   <TableCell>{member.email}</TableCell>
                   <TableCell className="text-right">
-                    {member.tickets ?? Math.floor(Math.random() * 20) +1}
+                    {member.tickets}
                   </TableCell>
                   <TableCell className="text-right">
-                    {member.calls ?? Math.floor(Math.random() * 10) + 1}
+                    {member.calls}
                   </TableCell>
                 </TableRow>
               ))}
