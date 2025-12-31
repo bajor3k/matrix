@@ -93,6 +93,18 @@ const formatSecDate = (dateString: string) => {
   return `${month}.${day}.${year}`;
 };
 
+// Helper to format date as MM.DD.YYYY
+const formatSpendingDate = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  // Using UTC methods ensures dates like "2025-11-20" don't shift to "19" due to timezones
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const year = date.getUTCFullYear();
+  return `${month}.${day}.${year}`;
+};
+
+
 /* ----------------------- Card Shell ----------------------- */
 function Card({
   title, icon, children, className = "",
@@ -435,7 +447,7 @@ export default function DashboardPage() {
                         <td className="py-2.5 pl-2 text-foreground text-xs truncate max-w-[150px]" title={item.awardingAgencyName}>
                             {item.awardingAgencyName}
                         </td>
-                        <td className="py-2.5 text-muted-foreground text-xs">{item.actionDate}</td>
+                        <td className="py-2.5 text-muted-foreground text-xs">{formatSpendingDate(item.actionDate)}</td>
                         <td className="py-2.5 text-right font-mono font-semibold text-emerald-400">
                             ${item.totalValue.toLocaleString()}
                         </td>
@@ -481,7 +493,7 @@ export default function DashboardPage() {
                               <td className="py-2.5 pl-2 text-foreground text-xs" title={item.awardingAgencyName}>
                                   {item.awardingAgencyName}
                               </td>
-                              <td className="py-2.5 text-muted-foreground text-xs">{item.actionDate}</td>
+                              <td className="py-2.5 text-muted-foreground text-xs">{formatSpendingDate(item.actionDate)}</td>
                               <td className="py-2.5 text-right font-mono font-semibold text-emerald-400">
                                   ${item.totalValue.toLocaleString()}
                               </td>
