@@ -598,7 +598,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="modal-body">
                     <table className="w-full text-sm usa-spending-table">
-                        <thead>
+                        <thead className="bg-card">
                             <tr className="text-muted-foreground border-b border-border">
                                 <th className="text-left font-medium pb-2 pr-3 pl-2">Agency</th>
                                 <th className="text-left font-medium pb-2 pr-3">Date</th>
@@ -609,7 +609,7 @@ export default function DashboardPage() {
                         <tbody className="divide-y divide-border">
                           {sortedSpendingData.map((item, i) => (
                               <tr key={i} className="hover:bg-accent/50 transition-colors">
-                              <td className="py-2.5 pl-2 text-foreground text-xs" title={item.awardingAgencyName}>
+                              <td className="py-2.5 pl-2 text-foreground text-xs truncate max-w-[150px]" title={item.awardingAgencyName}>
                                   {item.awardingAgencyName}
                               </td>
                               <td className="py-2.5 text-muted-foreground text-xs">{formatSpendingDate(item.actionDate)}</td>
