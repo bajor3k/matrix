@@ -69,7 +69,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* MAIN CONTENT                                              */}
       {/* --------------------------------------------------------- */}
       <main
-        className="relative z-10 px-4 py-6 transition-[margin-left] duration-200 bg-transparent"
+        className="relative z-10 p-6 transition-[margin-left] duration-200 bg-transparent"
         style={{
           marginLeft: "var(--sbw)",
           paddingTop: "var(--hh)",
