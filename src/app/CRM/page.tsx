@@ -220,16 +220,23 @@ export default function CRM2() {
     originalIndex: index,
     clients: generateClients(firm, index)
   }));
-// 2. Filter by Firm info OR Client name const filtered = firmsWithClients.filter((item) => { const text = search.toLowerCase(); const matchesTag = selectedTag === null || item.tags.includes(selectedTag);
 
-if (!text) return matchesTag;
-const matchesFirm =
-  item.name.toLowerCase().includes(text) ||
-  item.phone.toLowerCase().includes(text) ||
-  item.email.toLowerCase().includes(text);
-const matchesClient = item.clients.some(c => c.name.toLowerCase().includes(text));
-return (matchesFirm || matchesClient) && matchesTag;
-});
+  // 2. Filter by Firm info OR Client name
+  const filtered = firmsWithClients.filter((item) => {
+    const text = search.toLowerCase();
+    const matchesTag = selectedTag === null || item.tags.includes(selectedTag);
+
+    if (!text) return matchesTag;
+
+    const matchesFirm =
+      item.name.toLowerCase().includes(text) ||
+      item.phone.toLowerCase().includes(text) ||
+      item.email.toLowerCase().includes(text);
+    
+    const matchesClient = item.clients.some(c => c.name.toLowerCase().includes(text));
+
+    return (matchesFirm || matchesClient) && matchesTag;
+  });
 
 
   return (
@@ -429,5 +436,3 @@ return (matchesFirm || matchesClient) && matchesTag;
     </div>
   );
 }
-
-    
