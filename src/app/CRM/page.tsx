@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -330,15 +331,12 @@ export default function CRM2() {
                     </td>
                   </tr>
 
-                  {/* EXPANDED CLIENT ROWS (Rendered as proper table rows) */}
+                  {/* EXPANDED CLIENT ROWS */}
                   {isExpanded && firmClients.map((client, i) => (
                     <tr key={`client-${index}-${i}`} className="bg-muted/30 border-t border-border/40 hover:bg-muted/50">
-                      {/* Name (Indented) */}
+                      {/* Name (Indented, No Arrow) */}
                       <td className="py-3 px-6 pl-12 font-medium text-sm text-foreground/80">
-                        <div className="flex items-center gap-2">
-                          <span className="text-muted-foreground/40 text-xs">↳</span>
-                          {client.name}
-                        </div>
+                        {client.name}
                       </td>
                       {/* Phone */}
                       <td className="py-3 px-6 text-sm text-muted-foreground">
@@ -348,17 +346,13 @@ export default function CRM2() {
                       <td className="py-3 px-6 text-sm text-muted-foreground">
                         {client.email}
                       </td>
-                      {/* Login ID (Takes the 'Custodian' slot) */}
-                      <td className="py-3 px-6">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                          ID: {client.loginId}
-                        </span>
+                      {/* Login ID */}
+                      <td className="py-3 px-6 text-sm text-muted-foreground">
+                        ID: {client.loginId}
                       </td>
-                      {/* PIN (Takes the 'Action' slot) */}
-                      <td className="py-3 px-6 text-right">
-                         <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                          PIN: {client.pin}
-                        </span>
+                      {/* PIN */}
+                      <td className="py-3 px-6 text-right text-sm text-muted-foreground">
+                        PIN: {client.pin}
                       </td>
                     </tr>
                   ))}
