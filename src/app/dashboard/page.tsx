@@ -83,6 +83,16 @@ function timeAgo(unixTimestamp: number) {
   return Math.floor(seconds) + "s ago";
 }
 
+// Helper function for MM.DD.YYYY format
+const formatSecDate = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear(); // Uses full 4-digit year
+  return `${month}.${day}.${year}`;
+};
+
 /* ----------------------- Card Shell ----------------------- */
 function Card({
   title, icon, children, className = "",
@@ -321,7 +331,7 @@ export default function DashboardPage() {
                         </Badge>
                       </td>
                       <td className="py-2.5 text-muted-foreground text-xs">
-                        {f.filedDate.split(' ')[0]}
+                        {formatSecDate(f.filedDate)}
                       </td>
                       <td className="py-2.5 pr-2 text-right action-col">
                         <a 
@@ -489,4 +499,3 @@ export default function DashboardPage() {
     </main>
   );
 }
-
