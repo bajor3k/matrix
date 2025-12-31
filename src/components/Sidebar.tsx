@@ -22,8 +22,8 @@ import {
   LayoutGrid,
   Bell,
   Robot,
-  FileText as OneDriveIcon,
-  Globe as ExternalIcon,
+  FileText,
+  Globe,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
