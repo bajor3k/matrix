@@ -112,7 +112,7 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
   ],
   'Resources': [
     { name: 'OneDrive', icon: Cloud, href: '/resources/onedrive' },
-    { name: 'Procedures', icon: FileText, href: '/resources/procedures' },
+    { name: "Procedures", icon: FileText, href: "/resources/procedures" },
     { name: 'External', icon: Globe, href: '/resources/external' },
   ],
   'Other': [
@@ -120,7 +120,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
   ],
   'Standalone': [
     { name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
-    { name: 'CRM', icon: Users, href: '/CRM' },
     { name: 'AI Insights', icon: Robot, href: '/ai-insights' },
     { name: 'Alerts', icon: Bell, href: '/alerts' },
     { name: 'Ticket', icon: KanbanSquare, href: '/ticket' },

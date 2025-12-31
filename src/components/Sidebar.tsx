@@ -38,7 +38,6 @@ const resourceItems: NavItem[] = navigationData['Resources'];
 
 // Standalone items
 const dashboardItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Dashboard')!;
-const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name === 'CRM')!;
 const insightsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'AI Insights')!;
 const alertsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Alerts')!;
 const ticketItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Ticket')!;
@@ -76,7 +75,7 @@ export default function Sidebar({
   const pathname = usePathname();
 
   const isReports = useMemo(() => pathname?.startsWith("/reports"), [pathname]);
-  const isCRM = useMemo(() => pathname?.startsWith("/crm"), [pathname]);
+  const isCRM = useMemo(() => pathname?.startsWith("/CRM"), [pathname]);
   const isMail = useMemo(() => pathname?.startsWith("/mail") || pathname === "/calendar", [pathname]);
 
   const isAnalytics = useMemo(() => [
@@ -87,7 +86,6 @@ export default function Sidebar({
   const isResources = useMemo(() => pathname?.startsWith("/resources"), [pathname]);
   
   const isDashboard = useMemo(() => pathname === "/dashboard", [pathname]);
-  const isCrm2 = useMemo(() => pathname === "/CRM", [pathname]);
   const isInsights = useMemo(() => pathname === "/ai-insights", [pathname]);
   const isAlerts = useMemo(() => pathname === "/alerts", [pathname]);
   const isTicket = useMemo(() => pathname === "/ticket", [pathname]);
@@ -132,25 +130,25 @@ export default function Sidebar({
     keyName: SectionKey;
     title: string; icon: any; open: boolean; setOpen: (v: boolean) => void; items: NavItem[]; href?: string; iconClassName?: string;
   }) => {
-    if (!items || items.length === 0) return null;
-    function onHeaderClick() {
+    if (!items) return null; // Guard against null/undefined items
+
+    const onHeaderClick = () => {
       if (collapsed) {
-        // Request the parent to expand and open THIS section
         onExpandRequest(keyName as SectionKey);
       } else {
         setOpen(!open);
       }
-    }
-
-    const hasChildren = items.some(item => !!item.children);
-
-    const HeaderWrapper = ({children}: {children: React.ReactNode}) => href ? <Link href={href}>{children}</Link> : <>{children}</>;
-
+    };
+    
+    // Determine if the header should act as a link or a button
+    const HeaderComponent = href && !items.length ? Link : 'button';
+    const headerProps: any = href && !items.length ? { href } : { onClick: onHeaderClick };
+    
     return (
     <div className="mb-1">
-       <button
-        onClick={onHeaderClick}
-        aria-expanded={open}
+       <HeaderComponent
+        {...headerProps}
+        aria-expanded={items.length > 0 ? open : undefined}
         className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground
          hover:bg-accent hover:text-accent-foreground ${collapsed ? 'px-0 justify-center' : 'px-3 justify-between'}`}
        >
@@ -159,15 +157,17 @@ export default function Sidebar({
           {!collapsed && title}
         </span>
 
-        {!collapsed && (open ? <ChevronUp className="h-4 w-4 shrink-0"/> : <ChevronDown className="h-4 w-4 shrink-0"/>)}
-      </button>
-      <div className={`overflow-hidden transition-[max-height] duration-200 ease-in-out ${open && !collapsed ? "max-h-[500px]" : "max-h-0"}`}>
-        <div className="mt-1 space-y-1 pl-2 pr-1">
-          {items.map((it) => (
-            <Row key={it.href} item={it} active={pathname === it.href} hiddenLabel={!!collapsed} />
-          ))}
+        {!collapsed && items.length > 0 && (open ? <ChevronUp className="h-4 w-4 shrink-0"/> : <ChevronDown className="h-4 w-4 shrink-0"/>)}
+      </HeaderComponent>
+      {items.length > 0 && (
+        <div className={`overflow-hidden transition-[max-height] duration-200 ease-in-out ${open && !collapsed ? "max-h-[500px]" : "max-h-0"}`}>
+          <div className="mt-1 space-y-1 pl-2 pr-1">
+            {items.map((it) => (
+              <Row key={it.href} item={it} active={pathname === it.href} hiddenLabel={!!collapsed} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )};
 
@@ -226,7 +226,7 @@ export default function Sidebar({
           </Link>
         </div>
 
-        <StandaloneItem item={crm2Item} isActive={isCrm2} iconClassName="text-teal-400" />
+        <Section keyName="crm" title="CRM" icon={Users} open={openCRM} setOpen={setOpenCRM} items={crmItems} href="/CRM" iconClassName="text-teal-400" />
 
         <StandaloneItem item={alertsItem} isActive={isAlerts} iconClassName="text-[hsl(var(--chart-5))]" />
         <StandaloneItem item={ticketItem} isActive={isTicket} iconClassName="text-[hsl(var(--icon-color-1))]" />
