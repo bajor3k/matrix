@@ -2,11 +2,13 @@
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
-import { CalendarDays, Clock } from "lucide-react";
+import { CalendarDays, Clock, Loader2, TrendingUp, TrendingDown } from "lucide-react";
 import StockCard from "@/components/StockCard";
 // Alias the UI Card to avoid conflict with your local Card component below
 import { Card as UiCard, CardContent } from "@/components/ui/card"; 
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+
 
 /* ----------------------- Types ----------------------- */
 interface MarketStatus {
@@ -65,6 +67,17 @@ interface UsaSpendingData {
 
 type FedEvent = { date: string; timeET?: string; event: string; note?: string };
 type Earning = { date: string; ticker: string; company: string; time: "BMO" | "AMC" | "TBD" };
+
+interface QuoteData {
+  c: number;  // Current price
+  d: number;  // Change
+  dp: number; // Percent change
+  h: number;  // High
+  l: number;  // Low
+  o: number;  // Open
+  pc: number; // Previous close
+}
+
 
 /* ----------------------- Dummy Data (Static) ----------------------- */
 const FED_DATES_DUMMY: FedEvent[] = [
@@ -147,6 +160,10 @@ export default function DashboardPage() {
   const [ipos, setIpos] = useState<IpoEvent[]>([]);
   const [usaSpending, setUsaSpending] = useState<UsaSpendingData | null>(null);
   const [isSpendingModalOpen, setIsSpendingModalOpen] = useState(false);
+  const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
+  const [quoteData, setQuoteData] = useState<QuoteData | null>(null);
+  const [loadingQuote, setLoadingQuote] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
 
   // Fetch All Data on Mount
@@ -223,6 +240,29 @@ export default function DashboardPage() {
   }, [usaSpending]);
 
   const previewSpendingData = useMemo(() => sortedSpendingData.slice(0, 5), [sortedSpendingData]);
+  
+  const handleTickerClick = async (ticker: string, status: string) => {
+    if (status.toLowerCase() !== 'priced' || !ticker) return;
+
+    setSelectedTicker(ticker);
+    setLoadingQuote(true);
+    setIsDialogOpen(true);
+
+    try {
+      const res = await fetch(`/api/external/quote?symbol=${ticker}`);
+      if (!res.ok) throw new Error('Failed to fetch');
+      const data = await res.json();
+      setQuoteData(data);
+    } catch (error) {
+      console.error("Error fetching quote:", error);
+      setQuoteData(null);
+    } finally {
+      setLoadingQuote(false);
+    }
+  };
+
+  const fmt = (num: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+
 
 
   return (
@@ -403,7 +443,12 @@ export default function DashboardPage() {
                     ipos.map((ipo, i) => (
                         <tr key={i} className="hover:bg-accent/50 transition-colors">
                         <td className="py-2.5 pl-2 text-foreground text-xs">{formatIpoDate(ipo.date)}</td>
-                        <td className="py-2.5 font-semibold text-blue-600 dark:text-blue-400 text-xs">{ipo.symbol || "—"}</td>
+                        <td 
+                          onClick={() => handleTickerClick(ipo.symbol, ipo.status)}
+                          className={`py-2.5 font-semibold text-xs ${ipo.status === 'priced' && ipo.symbol ? 'text-blue-600 dark:text-blue-400 cursor-pointer hover:underline' : ''}`}
+                        >
+                          {ipo.symbol || "—"}
+                        </td>
                         <td className="py-2.5 text-foreground/90 text-xs truncate max-w-[200px]" title={ipo.name}>
                             {ipo.name}
                         </td>
@@ -518,6 +563,58 @@ export default function DashboardPage() {
             </div>
         </div>
       )}
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {selectedTicker} <Badge variant="outline">Current Quote</Badge>
+            </DialogTitle>
+             <DialogDescription>
+                Real-time market data from Finnhub
+            </DialogDescription>
+          </DialogHeader>
+
+          {loadingQuote ? (
+            <div className="flex justify-center p-8">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : quoteData ? (
+            <div className="space-y-4">
+              <div className="flex items-baseline justify-between">
+                <span className="text-4xl font-bold">{fmt(quoteData.c)}</span>
+                <div className={`flex items-center gap-1 text-lg font-medium ${quoteData.d >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {quoteData.d >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
+                  {quoteData.d > 0 ? '+' : ''}{quoteData.d.toFixed(2)} ({quoteData.dp.toFixed(2)}%)
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex justify-between border-b py-2">
+                  <span className="text-muted-foreground">Open</span>
+                  <span className="font-mono">{fmt(quoteData.o)}</span>
+                </div>
+                <div className="flex justify-between border-b py-2">
+                  <span className="text-muted-foreground">Prev Close</span>
+                  <span className="font-mono">{fmt(quoteData.pc)}</span>
+                </div>
+                <div className="flex justify-between border-b py-2">
+                  <span className="text-muted-foreground">Day High</span>
+                  <span className="font-mono">{fmt(quoteData.h)}</span>
+                </div>
+                <div className="flex justify-between border-b py-2">
+                  <span className="text-muted-foreground">Day Low</span>
+                  <span className="font-mono">{fmt(quoteData.l)}</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="p-4 text-center text-muted-foreground">
+              Unable to load quote data.
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
