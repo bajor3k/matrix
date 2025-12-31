@@ -80,34 +80,13 @@ const initialFirms = [
   },
 ];
 
-// --- Generate 20 Fake Clients based on existing Firms ---
 const CLIENT_NAMES = [
-  ["James", "Smith"], ["Maria", "Garcia"], ["Robert", "Johnson"], ["Lisa", "Davis"],
-  ["Michael", "Brown"], ["Jennifer", "Wilson"], ["William", "Moore"], ["Elizabeth", "Taylor"],
-  ["David", "Anderson"], ["Sarah", "Thomas"], ["Richard", "Jackson"], ["Karen", "White"],
-  ["Joseph", "Harris"], ["Nancy", "Martin"], ["Thomas", "Thompson"], ["Margaret", "Garcia"],
-  ["Charles", "Martinez"], ["Sandra", "Robinson"], ["Daniel", "Clark"], ["Ashley", "Rodriguez"]
+  "James Smith", "Maria Garcia", "Robert Johnson", "Lisa Davis",
+  "Michael Brown", "Jennifer Wilson", "William Moore", "Elizabeth Taylor",
+  "David Anderson", "Sarah Thomas", "Richard Jackson", "Karen White",
+  "Joseph Harris", "Nancy Martin", "Thomas Thompson", "Margaret Garcia",
+  "Charles Martinez", "Sandra Robinson", "Daniel Clark", "Ashley Rodriguez"
 ];
-
-// Map 2 clients to each existing firm
-const generatedClients = initialFirms.flatMap((firm, i) => {
-  const clientPair = [CLIENT_NAMES[i * 2], CLIENT_NAMES[i * 2 + 1]];
-  // Extract domain from firm email (e.g., 'jdoe@wealth.com' -> 'wealth.com')
-  const domain = firm.email.split('@')[1] || 'gmail.com';
-
-  return clientPair.map((name, idx) => ({
-    ...firm, // Inherit all firm settings (Custodians, etc.)
-    id: `client-${firm.name}-${idx}`,
-    name: `${name[0]} ${name[1]}`, // Overwrite Name
-    category: "Client", // Mark as Client
-    email: `${name[1].toLowerCase()}@${domain}`, // lastname@firm_domain
-    status: "Active",
-  }));
-});
-
-// Combine them
-const allCrmData = [...initialFirms, ...generatedClients];
-
 
 export default function CRM2() {
   const [search, setSearch] = useState("");
@@ -115,7 +94,19 @@ export default function CRM2() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
-  const [firms, setFirms] = useState(allCrmData);
+  const [firms, setFirms] = useState(initialFirms);
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+
+  const toggleRow = (index: number) => {
+    const newExpanded = new Set(expandedRows);
+    if (newExpanded.has(index)) {
+      newExpanded.delete(index);
+    } else {
+      newExpanded.add(index);
+    }
+    setExpandedRows(newExpanded);
+  };
+
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -270,49 +261,100 @@ export default function CRM2() {
           </thead>
 
           <tbody>
-            {filtered.map((firm, index) => (
-              <tr
-                key={firm.id || index}
-                className="border-t border-border hover:bg-accent transition"
-              >
-                <td className="py-4 px-6 font-medium">
-                  <Link href={`/CRM/${encodeURIComponent(firm.name)}`} className="hover:underline">
-                    {firm.name}
-                  </Link>
-                </td>
-                <td className="py-4 px-6 text-muted-foreground">{firm.phone}</td>
-                <td className="py-4 px-6 text-muted-foreground">{firm.email}</td>
-                {/* TAGS - CLICKABLE */}
-                <td className="py-4 px-6">
-                  <div className="flex gap-2 flex-wrap">
-                    {firm.tags.map((tag, i) => (
-                      <span
-                        key={i}
-                        onClick={() => toggleTagFilter(tag)}
-                        className={cn(
-                          `px-3 py-1 rounded-full text-sm border cursor-pointer transition`,
-                           tagColors[tag] || "bg-muted border-border",
-                           selectedTag === tag
-                              ? "ring-2 ring-ring ring-offset-2 ring-offset-background scale-105"
-                              : ""
-                        )}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </td>
+            {filtered.map((firm, index) => {
+              const isExpanded = expandedRows.has(index);
+              
+              // Generate 2 clients for this firm
+              const firmClients = [0, 1].map((offset) => {
+                const nameIndex = (index * 2 + offset) % CLIENT_NAMES.length;
+                const fullName = CLIENT_NAMES[nameIndex];
+                const [firstName, lastName] = fullName.split(" ");
+                // email: lastname@firmdomain
+                const domain = firm.email.split("@")[1] || "gmail.com";
+                const clientEmail = `${lastName.toLowerCase()}@${domain}`;
+                return { name: fullName, email: clientEmail };
+              });
 
-                {/* Chevron Icon (No Function) */}
-                <td className="py-4 px-6 text-right">
-                  <ChevronDown className="ml-auto h-4 w-4 text-muted-foreground opacity-50" />
-                </td>
-              </tr>
-            ))}
-             {filtered.length === 0 && (
+              return (
+                <>
+                  {/* FIRM ROW */}
+                  <tr key={`firm-${index}`} className="border-t border-border hover:bg-accent/50 transition">
+                    <td className="py-4 px-6 font-medium">
+                      <Link href={`/CRM/${encodeURIComponent(firm.name)}`} className="hover:underline">
+                        {firm.name}
+                      </Link>
+                    </td>
+                    <td className="py-4 px-6 text-muted-foreground">{firm.phone}</td>
+                    <td className="py-4 px-6 text-muted-foreground">{firm.email}</td>
+                    
+                    {/* Tags */}
+                    <td className="py-4 px-6">
+                      <div className="flex gap-2 flex-wrap">
+                        {firm.tags.map((tag, i) => (
+                          <span
+                            key={i}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleTagFilter(tag);
+                            }}
+                            className={cn(
+                              `px-3 py-1 rounded-full text-sm border cursor-pointer transition`,
+                              tagColors[tag] || "bg-muted border-border",
+                              selectedTag === tag ? "ring-2 ring-ring scale-105" : ""
+                            )}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+
+                    {/* Chevron (Toggle) */}
+                    <td className="py-4 px-6 text-right cursor-pointer" onClick={() => toggleRow(index)}>
+                      <ChevronDown 
+                        className={cn(
+                          "ml-auto h-4 w-4 text-muted-foreground transition-transform duration-200",
+                          isExpanded && "rotate-180"
+                        )} 
+                      />
+                    </td>
+                  </tr>
+
+                  {/* EXPANDED CLIENTS ROW */}
+                  {isExpanded && (
+                    <tr className="bg-muted/30 border-t border-border/50">
+                      <td colSpan={5} className="p-4 px-10">
+                        <div className="rounded-xl border border-border bg-card p-4">
+                          <h4 className="mb-3 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                            Associated Clients
+                          </h4>
+                          <div className="grid gap-2">
+                            {firmClients.map((client, i) => (
+                              <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-background border border-border/50">
+                                <div className="flex items-center gap-3">
+                                  <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xs font-bold">
+                                    {client.name.charAt(0)}
+                                  </div>
+                                  <span className="font-medium text-sm">{client.name}</span>
+                                </div>
+                                <span className="text-sm text-muted-foreground font-mono">
+                                  {client.email}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </>
+              );
+            })}
+            
+            {filtered.length === 0 && (
               <tr className="border-t border-border">
                 <td colSpan={5} className="text-center py-8 text-muted-foreground">
-                    No matching firms found.
+                  No matching firms found.
                 </td>
               </tr>
             )}
