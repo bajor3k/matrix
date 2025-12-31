@@ -274,8 +274,8 @@ export default function CRM2() {
                 const domain = firm.email.split("@")[1] || "gmail.com";
                 const clientEmail = `${lastName.toLowerCase()}@${domain}`;
                 
-                // Login ID: XYZ + First Initial + First 3 of Last Name
-                const loginId = `XYZ${firstName[0]}${lastName.slice(0, 3)}`;
+                // Login ID: XYZ + First Initial + First 3 of Last Name (ALL CAPS)
+                const loginId = `XYZ${firstName[0]}${lastName.slice(0, 3)}`.toUpperCase();
                 
                 // PIN: Random 4 digits
                 const pin = Math.floor(1000 + Math.random() * 9000);
