@@ -578,9 +578,6 @@ export default function DashboardPage() {
                 Real-Time
               </Badge>
             </DialogTitle>
-            <DialogDescription>
-              Current market data provided by Finnhub
-            </DialogDescription>
           </DialogHeader>
 
           {loadingQuote ? (
