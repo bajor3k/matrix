@@ -1,17 +1,19 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronLeft, ChevronRight, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
-export function RightSidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+interface RightSidebarProps {
+  isOpen: boolean;
+  onToggle: () => void;
+}
 
+export function RightSidebar({ isOpen, onToggle }: RightSidebarProps) {
   return (
     <div
       className={`
-        fixed right-0 bottom-0 top-16 z-50 w-96 
+        fixed right-0 bottom-0 top-16 z-[60] w-96 
         bg-background/80 backdrop-blur-xl border-l border-border/20 shadow-2xl
         transition-transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "translate-x-full"}
@@ -19,7 +21,7 @@ export function RightSidebar() {
     >
       {/* --- Toggle Handle (Chevron) --- */}
       <div
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={onToggle}
         className="absolute -left-8 top-1/2 -translate-y-1/2 flex h-16 w-8 cursor-pointer items-center justify-center rounded-l-md border-y border-l border-border/20 bg-background/40 backdrop-blur-sm shadow-sm transition-colors hover:bg-background/60 dark:border-white/5"
       >
         {isOpen ? (
