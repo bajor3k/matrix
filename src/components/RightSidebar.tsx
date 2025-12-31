@@ -13,7 +13,7 @@ export function RightSidebar({ isOpen, onToggle }: RightSidebarProps) {
   return (
     <div
       className={`
-        fixed right-0 top-0 h-full z-[60] w-96 
+        fixed right-0 bottom-0 top-16 z-40 w-96 
         bg-white/95 dark:bg-zinc-950/80 backdrop-blur-xl shadow-2xl
         border-l border-border/20 dark:border-white/5
         transition-transform duration-300 ease-in-out
@@ -39,7 +39,7 @@ export function RightSidebar({ isOpen, onToggle }: RightSidebarProps) {
       </div>
 
       {/* --- Sidebar Content --- */}
-      <div className="flex h-full flex-col pt-24">
+      <div className="flex h-full flex-col">
         {/* Header / Main Body */}
         <div className="flex-1 p-6">
           <div className="flex h-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/10 p-4 text-center text-muted-foreground/50">
