@@ -570,11 +570,11 @@ export default function DashboardPage() {
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md bg-white dark:bg-slate-950">
+        <DialogContent className="sm:max-w-md bg-white/20 dark:bg-slate-950/30 backdrop-blur-xl border border-white/20 shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-xl">
+            <DialogTitle className="flex items-center gap-2 text-xl text-slate-900 dark:text-white">
               {selectedTicker} 
-              <Badge variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-100">
+              <Badge variant="secondary" className="bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-500/30 border-0">
                 Real-Time
               </Badge>
             </DialogTitle>
@@ -582,43 +582,41 @@ export default function DashboardPage() {
 
           {loadingQuote ? (
             <div className="flex justify-center p-8">
-              <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+              <Loader2 className="h-8 w-8 animate-spin text-white/50" />
             </div>
           ) : quoteData ? (
             <div className="space-y-6 pt-2">
-              {/* Main Price Display */}
-              <div className="flex items-baseline justify-between border-b pb-4">
-                <div className="text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
+              <div className="flex items-baseline justify-between border-b border-white/10 pb-4">
+                <div className="text-5xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
                   {fmt(quoteData.c)}
                 </div>
-                <div className={`flex items-center gap-1 text-lg font-semibold ${quoteData.d >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                <div className={`flex items-center gap-1 text-lg font-semibold drop-shadow-sm ${quoteData.d >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                   {quoteData.d >= 0 ? <TrendingUp className="h-6 w-6" /> : <TrendingDown className="h-6 w-6" />}
                   <span>{quoteData.d > 0 ? '+' : ''}{quoteData.d.toFixed(2)} ({quoteData.dp.toFixed(2)}%)</span>
                 </div>
               </div>
 
-              {/* Detailed Stats Grid */}
               <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500">Open</span>
-                  <span className="font-mono font-medium text-slate-900 dark:text-slate-200">{fmt(quoteData.o)}</span>
+                  <span className="text-slate-600 dark:text-slate-400">Open</span>
+                  <span className="font-mono font-medium text-slate-900 dark:text-white">{fmt(quoteData.o)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500">Prev Close</span>
-                  <span className="font-mono font-medium text-slate-900 dark:text-slate-200">{fmt(quoteData.pc)}</span>
+                  <span className="text-slate-600 dark:text-slate-400">Prev Close</span>
+                  <span className="font-mono font-medium text-slate-900 dark:text-white">{fmt(quoteData.pc)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500">Day High</span>
-                  <span className="font-mono font-medium text-slate-900 dark:text-slate-200">{fmt(quoteData.h)}</span>
+                  <span className="text-slate-600 dark:text-slate-400">Day High</span>
+                  <span className="font-mono font-medium text-slate-900 dark:text-white">{fmt(quoteData.h)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500">Day Low</span>
-                  <span className="font-mono font-medium text-slate-900 dark:text-slate-200">{fmt(quoteData.l)}</span>
+                  <span className="text-slate-600 dark:text-slate-400">Day Low</span>
+                  <span className="font-mono font-medium text-slate-900 dark:text-white">{fmt(quoteData.l)}</span>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="p-4 text-center text-gray-500">
+            <div className="p-4 text-center text-slate-500 dark:text-slate-400">
               Unable to load quote data.
             </div>
           )}
