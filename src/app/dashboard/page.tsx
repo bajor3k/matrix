@@ -2,7 +2,7 @@
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
-import { CalendarDays, Clock, Loader2, TrendingUp, TrendingDown } from "lucide-react";
+import { CalendarDays, Clock, Loader2, TrendingUp, TrendingDown, DollarSign, Activity } from "lucide-react";
 import StockCard from "@/components/StockCard";
 // Alias the UI Card to avoid conflict with your local Card component below
 import { Card as UiCard, CardContent } from "@/components/ui/card"; 
@@ -127,6 +127,13 @@ const formatIpoDate = (dateString: string) => {
   return `${month}.${day}.${year}`;
 };
 
+const MARKET_INDICES = [
+  { symbol: 'SPY', name: 'S&P 500' },
+  { symbol: 'DIA', name: 'Dow Jones' }, // Note: If 'DJI' returns no data, try 'DIA' (the ETF)
+  { symbol: 'QQQ', name: 'Nasdaq' },
+  { symbol: 'IYM', name: 'Basic Mat.' }
+];
+
 
 /* ----------------------- Card Shell ----------------------- */
 function Card({
@@ -153,7 +160,8 @@ export default function DashboardPage() {
   const fedRows = useMemo(() => FED_DATES_DUMMY, []);
   
   // State
-  const [marketData, setMarketData] = useState<MarketStatus | null>(null);
+  const [marketIndicesData, setMarketIndicesData] = useState<Record<string, any>>({});
+  const [marketStatusData, setMarketStatusData] = useState<MarketStatus | null>(null);
   const [nextHoliday, setNextHoliday] = useState<MarketHoliday | null>(null);
   const [news, setNews] = useState<MarketNews[]>([]);
   const [filings, setFilings] = useState<SecFiling[]>([]);
@@ -171,7 +179,7 @@ export default function DashboardPage() {
     // 1. Market Status
     fetch("/api/external/market-status")
       .then((res) => res.json())
-      .then((data) => !data.error && setMarketData(data))
+      .then((data) => !data.error && setMarketStatusData(data))
       .catch((err) => console.error("Status fetch error", err));
 
     // 2. Market Holidays
@@ -225,14 +233,33 @@ export default function DashboardPage() {
       .then((res) => res.json())
       .then((data) => !data.error && setUsaSpending(data))
       .catch((err) => console.error("USA Spending fetch error", err));
-  }, []);
 
-  const stocks = [
-    { symbol: "SPY",  price: 687.54, changePct:  -1.18 },
-    { symbol: "DJI",  price: 134.55, changePct:  0.74 },
-    { symbol: "QQQ",  price: 218.03, changePct: -0.92 },
-    { symbol: "IYM", price: 171.44, changePct:  0.36 },
-  ];
+    // 7. Market Indices
+    const fetchMarketData = async () => {
+      const promises = MARKET_INDICES.map(async (index) => {
+        try {
+          const res = await fetch(`/api/external/quote?symbol=${index.symbol}`);
+          if (!res.ok) return { symbol: index.symbol, data: null };
+          const data = await res.json();
+          return { symbol: index.symbol, data };
+        } catch (e) {
+          console.error(`Error fetching ${index.symbol}`, e);
+          return { symbol: index.symbol, data: null };
+        }
+      });
+
+      const results = await Promise.all(promises);
+      const newMarketData: Record<string, any> = {};
+      results.forEach((item) => {
+        if (item.data) {
+          newMarketData[item.symbol] = item.data;
+        }
+      });
+      setMarketIndicesData(newMarketData);
+    };
+
+    fetchMarketData();
+  }, []);
   
   const sortedSpendingData = useMemo(() => {
     if (!usaSpending?.data) return [];
@@ -270,7 +297,7 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-semibold text-foreground">Welcome Josh</h1>
 
         {/* Market Status Component */}
-        {marketData && (
+        {marketStatusData && (
           <UiCard className="border-none shadow-none bg-transparent">
             <CardContent className="p-0 flex items-center gap-6 text-sm">
               {/* Status Section - Time Removed */}
@@ -278,27 +305,27 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-full">
                   <span className="relative flex h-2.5 w-2.5">
                     {/* Green Ping (Market Open) */}
-                    {marketData.isOpen && (
+                    {marketStatusData.isOpen && (
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     )}
                     
                     {/* Red Ping (Post-Market) */}
-                    {!marketData.isOpen && marketData.session === 'post-market' && (
+                    {!marketStatusData.isOpen && marketStatusData.session === 'post-market' && (
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                     )}
 
                     {/* Main Dot Color */}
                     <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
-                      marketData.isOpen 
+                      marketStatusData.isOpen 
                         ? 'bg-emerald-500' 
-                        : (marketData.session === 'post-market' ? 'bg-red-500' : 'bg-gray-400')
+                        : (marketStatusData.session === 'post-market' ? 'bg-red-500' : 'bg-gray-400')
                     }`}></span>
                   </span>
                   <span className="font-medium text-muted-foreground">
-                    {marketData.isOpen 
+                    {marketStatusData.isOpen 
                       ? "Market Open" 
-                      : (marketData.session 
-                          ? marketData.session.replace("-", " ").replace(/\b\w/g, c => c.toUpperCase()) 
+                      : (marketStatusData.session 
+                          ? marketStatusData.session.replace("-", " ").replace(/\b\w/g, c => c.toUpperCase()) 
                           : "Closed")}
                   </span>
                 </div>
@@ -322,12 +349,51 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* KPI ROW */}
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stocks.map((s) => (
-          <StockCard key={s.symbol} symbol={s.symbol} price={s.price} changePct={s.changePct} />
-        ))}
-      </section>
+      {/* Market Summary Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {MARKET_INDICES.map((item) => {
+          const quote = marketIndicesData[item.symbol];
+          const isPositive = quote?.d >= 0;
+
+          return (
+            <div key={item.symbol} className="rounded-xl border bg-card text-card-foreground shadow-sm">
+              <div className="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
+                <h3 className="tracking-tight text-sm font-medium text-muted-foreground">
+                  {item.name} <span className="text-xs ml-1 opacity-70">({item.symbol})</span>
+                </h3>
+                {/* Icon based on trend */}
+                {quote ? (
+                   isPositive ? (
+                    <TrendingUp className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <TrendingDown className="h-4 w-4 text-red-500" />
+                  )
+                ) : (
+                  <Activity className="h-4 w-4 text-muted-foreground" />
+                )}
+              </div>
+              <div className="p-6 pt-0">
+                <div className="text-2xl font-bold">
+                  {quote ? (
+                    `$${quote.c.toFixed(2)}`
+                  ) : (
+                    <span className="animate-pulse bg-gray-200 dark:bg-gray-800 rounded h-8 w-24 block" />
+                  )}
+                </div>
+                <p className="text-xs flex items-center gap-1 mt-1">
+                  {quote ? (
+                    <span className={isPositive ? "text-green-500 font-medium" : "text-red-500 font-medium"}>
+                      {isPositive ? "+" : ""}{quote.d.toFixed(2)} ({quote.dp.toFixed(2)}%)
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground">Loading...</span>
+                  )}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
       {/* Main Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
@@ -486,7 +552,7 @@ export default function DashboardPage() {
             </div>
             <div className="table-container">
                 <table className="w-full text-sm usa-spending-table">
-                <thead>
+                <thead className="bg-transparent">
                     <tr className="text-muted-foreground border-b border-border">
                     <th className="text-left font-medium pb-2 pr-3 pl-2">Agency</th>
                     <th className="text-left font-medium pb-2 pr-3">Date</th>
@@ -625,3 +691,5 @@ export default function DashboardPage() {
     </main>
   );
 }
+
+    
