@@ -177,8 +177,10 @@ export default function Sidebar({
     </div>
   )};
 
-  const StandaloneItem = ({ item, isActive, iconClassName }: { item: NavItem, isActive: boolean, iconClassName?: string }) => (
-    <div className="mb-1">
+  const StandaloneItem = ({ item, isActive, iconClassName }: { item: NavItem, isActive: boolean, iconClassName?: string }) => {
+    if (!item || !item.icon) return null; // Safety check
+    return (
+      <div className="mb-1">
         <Link
           href={item.href}
           title={item.name}
@@ -191,7 +193,8 @@ export default function Sidebar({
           </span>
         </Link>
     </div>
-  );
+    )
+  };
 
 
   return (

@@ -9,7 +9,7 @@ import {
   Briefcase,
   Workflow,
   KanbanSquare,
-  FileText,
+  FileText, // <--- Used for OneDrive Procedures
   BarChart3,
   Users,
   TrendingUp,
@@ -41,7 +41,7 @@ import {
   AlertOctagon,
   UploadCloud,
   Cloud,
-  Globe,
+  Globe, // <--- Used for External
   Brain,
   Bell,
   Robot,
