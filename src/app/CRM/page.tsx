@@ -1,9 +1,9 @@
-
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export default function CRM2() {
   const [search, setSearch] = useState("");
@@ -177,14 +177,28 @@ export default function CRM2() {
 
   return (
     <div className="text-foreground p-6 md:p-10">
-      {/* Search Bar */}
-      <div className="max-w-2xl mb-8 relative">
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search Partner Firms"
-          className="w-full p-4 rounded-2xl bg-card border border-border outline-none focus:border-ring"
-        />
+      <div className="flex justify-between items-center mb-8">
+        {/* Search Bar */}
+        <div className="max-w-2xl relative">
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search Partner Firms"
+            className="w-full p-4 rounded-2xl bg-card border border-border outline-none focus:border-ring"
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+            <Button variant="secondary" size="sm" className="h-8 px-4 text-xs font-medium bg-slate-200 text-slate-900 hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-100">
+                All
+            </Button>
+            <Button variant="ghost" size="sm" className="h-8 px-4 text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100">
+                Firm
+            </Button>
+            <Button variant="ghost" size="sm" className="h-8 px-4 text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100">
+                Client
+            </Button>
+        </div>
       </div>
 
       {/* Add Firm Button */}
@@ -345,3 +359,5 @@ export default function CRM2() {
     </div>
   );
 }
+
+    
