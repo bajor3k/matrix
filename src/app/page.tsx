@@ -4,10 +4,6 @@ import React, { useState, useEffect } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/lib/firebase"; 
 import Login from "@/components/Login"; 
-// ... Keep your existing dashboard imports below ...
-import IPOCalendar from "@/components/dashboard/IPOCalendar";
-import SECFilings from "@/components/dashboard/SECFilings";
-import USASpending from "@/components/dashboard/USASpending";
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
@@ -40,13 +36,14 @@ export default function Home() {
           </div>
           
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+            {/* Left Column */}
             <div className="col-span-4 space-y-4">
-              <IPOCalendar />
+              
             </div>
 
+            {/* Right Column */}
             <div className="col-span-3 space-y-4">
-              <SECFilings />
-              <USASpending />
+              
             </div>
           </div>
        </div>
