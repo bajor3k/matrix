@@ -43,7 +43,6 @@ const crm2Item: NavItem = navigationData['Standalone'].find(item => item.name ==
 const insightsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'AI Insights')!;
 const alertsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Alerts')!;
 const ticketItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Ticket')!;
-const externalItem: NavItem = navigationData['Standalone'].find(item => item.name === 'External')!;
 const settingsItem: NavItem = navigationData['Other'][0];
 
 
@@ -95,8 +94,6 @@ export default function Sidebar({
   const isTicket = useMemo(() => pathname === "/ticket", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
   
-  const isExternal = useMemo(() => pathname === "/resources/external", [pathname]);
-
 
   const [openReports, setOpenReports] = useState(isReports);
   const [openCRM, setOpenCRM] = useState(isCRM);
@@ -206,12 +203,10 @@ export default function Sidebar({
         
         <Section keyName="analytics" title="Analytics" icon={BarChart3}  open={openAnalytics} setOpen={setOpenAnalytics} items={analyticsItems} iconClassName="text-[hsl(var(--icon-color-2))]"/>
         
-        <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} iconClassName="text-[hsl(var(--icon-color-4))]"/>
+        <Section keyName="resources" title="Resources" icon={BookOpenText} open={openResources} setOpen={setOpenResources} items={resourceItems} iconClassName="text-yellow-400"/>
         
         <StandaloneItem item={insightsItem} isActive={isInsights} iconClassName="text-purple-400" />
         <StandaloneItem item={crm2Item} isActive={isCrm2} iconClassName="text-teal-400" />
-
-        <StandaloneItem item={externalItem} isActive={isExternal} iconClassName="text-[hsl(var(--icon-color-4))]" />
 
         <StandaloneItem item={alertsItem} isActive={isAlerts} iconClassName="text-[hsl(var(--chart-5))]" />
         <StandaloneItem item={ticketItem} isActive={isTicket} iconClassName="text-[hsl(var(--icon-color-1))]" />

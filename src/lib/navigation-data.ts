@@ -120,6 +120,5 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
     { name: 'AI Insights', icon: Robot, href: '/ai-insights' },
     { name: 'Alerts', icon: Bell, href: '/alerts' },
     { name: 'Ticket', icon: KanbanSquare, href: '/ticket' },
-    { name: 'External', icon: Globe, href: '/resources/external' },
   ]
 };
