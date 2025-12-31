@@ -1,32 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "@/lib/firebase"; 
-import Login from "@/components/Login"; 
+import React from "react";
 
 export default function Home() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // This listener automatically checks if you are logged in
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  // 1. Loading State (Black screen)
-  if (loading) return <div className="h-screen w-full bg-black" />;
-
-  // 2. Not Logged In -> Show Login Screen
-  if (!user) {
-    return <Login />;
-  }
-
-  // 3. Logged In -> Show Dashboard (Your existing code)
+  // No auth logic needed here anymore!
+  
   return (
     <main className="flex min-h-screen flex-col bg-background text-foreground">
        
