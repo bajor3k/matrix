@@ -1,4 +1,3 @@
-
 // components/Sidebar.tsx
 "use client";
 
@@ -24,6 +23,7 @@ import {
   Robot,
   FileText,
   Globe,
+  Bot,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
@@ -213,7 +213,20 @@ export default function Sidebar({
           iconClassName="text-yellow-500"
         />
         
-        <StandaloneItem item={insightsItem} isActive={isInsights} iconClassName="text-purple-400" />
+        <div className="mb-1">
+          <Link
+            href={insightsItem.href}
+            title={insightsItem.name}
+            data-active={isInsights}
+            className={`flex w-full items-center rounded-xl py-2 text-left font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground ${isInsights ? 'bg-accent text-accent-foreground' : ''} ${collapsed ? 'justify-center px-0' : 'px-3'}`}
+          >
+            <span className="flex items-center gap-3">
+              <GradientBot className="h-5 w-5 shrink-0" />
+              {!collapsed && insightsItem.name}
+            </span>
+          </Link>
+        </div>
+
         <StandaloneItem item={crm2Item} isActive={isCrm2} iconClassName="text-teal-400" />
 
         <StandaloneItem item={alertsItem} isActive={isAlerts} iconClassName="text-[hsl(var(--chart-5))]" />
@@ -236,5 +249,35 @@ export default function Sidebar({
         </Link>
       </div>
     </div>
+  );
+}
+
+function GradientBot({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="url(#bot-gradient)" // Links to the gradient definition below
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <defs>
+        <linearGradient id="bot-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#d946ef" /> {/* Neon Purple */}
+          <stop offset="50%" stopColor="#22c55e" /> {/* Green */}
+          <stop offset="100%" stopColor="#ef4444" /> {/* Red */}
+        </linearGradient>
+      </defs>
+      {/* Robot Head Path (Matches Lucide 'Bot') */}
+      <path d="M12 8V4H8" />
+      <rect width="16" height="12" x="4" y="8" rx="2" />
+      <path d="M2 14h2" />
+      <path d="M20 14h2" />
+      <path d="M15 13v2" />
+      <path d="M9 13v2" />
+    </svg>
   );
 }
