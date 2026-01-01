@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
    Lightbulb,
    ArrowUp,
@@ -45,12 +45,32 @@ const allRequestsSortByDate = [...DUMMY_FEEDBACK].sort((a, b) => new Date(b.date
 export default function FeedbackPage() {
   // This state is just for the UI demo to show clicking works
   const [feedbackList, setFeedbackList] = useState(allRequestsSortByDate);
+  const [sortBy, setSortBy] = useState("newest");
+
+  useEffect(() => {
+    let sortedList = [...DUMMY_FEEDBACK];
+    if (sortBy === "newest") {
+      sortedList.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    } else if (sortBy === "votes") {
+      sortedList.sort((a, b) => b.votes - a.votes);
+    }
+    setFeedbackList(sortedList);
+  }, [sortBy]);
+
 
    const handleVote = (id: string) => {
-      // Temporary logic to simulate a vote update in the UI
-      setFeedbackList(prev => prev.map(item => 
-           item.id === id ? { ...item, votes: item.votes + 1 } : item
-      ));
+      // This is a temporary update for UI demonstration.
+      // A real implementation would likely refetch or update state from a server response.
+      const updatedList = feedbackList.map(item =>
+        item.id === id ? { ...item, votes: item.votes + 1 } : item
+      );
+
+      // Re-sort the list after voting if sorting by votes
+      if (sortBy === 'votes') {
+        updatedList.sort((a, b) => b.votes - a.votes);
+      }
+      
+      setFeedbackList(updatedList);
   };
 
    return (
@@ -108,10 +128,13 @@ export default function FeedbackPage() {
                 All Suggestions ({feedbackList.length})
             </h2>
 
-             {/* Placeholder for sorting controls later */}
-            <select className="text-sm rounded-md border-zinc-300 dark:border-zinc-700 bg-transparent text-zinc-700 dark:text-zinc-300 p-1">
-                <option>Newest</option>
-                <option>Most Votes</option>
+            <select 
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="text-sm rounded-md border-zinc-300 dark:border-zinc-700 bg-transparent text-zinc-700 dark:text-zinc-300 p-1"
+            >
+                <option value="newest">Newest</option>
+                <option value="votes">Most Votes</option>
             </select>
         </div>
         
