@@ -346,7 +346,7 @@ function StatusBadge({ status }: { status: FeedbackStatus }) {
     switch (status) {
         case "new":
         case "planned":
-            return <span className="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">Open</span>;
+            return <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-400">Open</span>;
         case "in-production":
             return <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-500">In Production</span>;
         case "deployed":
@@ -355,5 +355,3 @@ function StatusBadge({ status }: { status: FeedbackStatus }) {
             return null;
     }
 }
-
-    
