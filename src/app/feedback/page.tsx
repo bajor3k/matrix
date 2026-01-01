@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -11,6 +10,7 @@ import {
   ChevronUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SubmitIdeaModal } from "@/components/feedback/SubmitIdeaModal";
 
 // --- DUMMY DATA FOR UI DEV ---
 type FeedbackStatus = "new" | "planned" | "in-production" | "deployed";
@@ -35,43 +35,58 @@ const DUMMY_FEEDBACK: FeedbackItem[] = [
   { id: "8", title: "Integration with Salesforce CRM", description: "Sync contacts directly with Salesforce.", votes: 32, status: "new", date: "2023-11-22" },
 ];
 
-// Helper to categorize data
-const topVoted = [...DUMMY_FEEDBACK].filter(f => f.status === 'new' || f.status === 'planned').sort((a, b) => b.votes - a.votes).slice(0, 2);
-const inProduction = DUMMY_FEEDBACK.filter(f => f.status === "in-production");
-const deployed = DUMMY_FEEDBACK.filter(f => f.status === "deployed");
-const allRequestsSortByDate = [...DUMMY_FEEDBACK].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-
 export default function FeedbackPage() {
-  // This state is just for the UI demo to show clicking works
-  const [feedbackList, setFeedbackList] = useState(allRequestsSortByDate);
+  const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>([]);
   const [sortBy, setSortBy] = useState("newest");
+  const [topVoted, setTopVoted] = useState<FeedbackItem[]>([]);
+  const [inProduction, setInProduction] = useState<FeedbackItem[]>([]);
+  const [deployed, setDeployed] = useState<FeedbackItem[]>([]);
 
   useEffect(() => {
-    let sortedList = [...DUMMY_FEEDBACK];
-    if (sortBy === "newest") {
+    // Initial sort and categorize
+    sortAndCategorize(DUMMY_FEEDBACK, "newest");
+  }, []);
+  
+  const sortAndCategorize = (list: FeedbackItem[], currentSortBy: string) => {
+    let sortedList = [...list];
+    if (currentSortBy === "newest") {
       sortedList.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    } else if (sortBy === "votes") {
+    } else if (currentSortBy === "votes") {
       sortedList.sort((a, b) => b.votes - a.votes);
     }
     setFeedbackList(sortedList);
-  }, [sortBy]);
+  
+    // Update categories based on the full, unsorted list to keep them consistent
+    setTopVoted([...DUMMY_FEEDBACK].filter(f => f.status === 'new' || f.status === 'planned').sort((a, b) => b.votes - a.votes).slice(0, 2));
+    setInProduction(DUMMY_FEEDBACK.filter(f => f.status === "in-production"));
+    setDeployed(DUMMY_FEEDBACK.filter(f => f.status === "deployed"));
+  };
+
+
+  useEffect(() => {
+    sortAndCategorize(feedbackList, sortBy);
+  }, [sortBy, feedbackList]);
 
 
    const handleVote = (id: string) => {
-      // This is a temporary update for UI demonstration.
-      // A real implementation would likely refetch or update state from a server response.
       const updatedList = feedbackList.map(item =>
         item.id === id ? { ...item, votes: item.votes + 1 } : item
       );
-
-      // Re-sort the list after voting if sorting by votes
-      if (sortBy === 'votes') {
-        updatedList.sort((a, b) => b.votes - a.votes);
-      }
-      
       setFeedbackList(updatedList);
   };
+  
+  const handleIdeaSubmit = (idea: { title: string; description: string }) => {
+    const newItem: FeedbackItem = {
+      id: String(Date.now()),
+      title: idea.title,
+      description: idea.description,
+      votes: 1,
+      status: 'new',
+      date: new Date().toISOString().split('T')[0],
+    };
+    setFeedbackList(prev => [newItem, ...prev]);
+  };
+
 
    return (
     <div className="flex h-full flex-col space-y-8 p-8">
@@ -83,10 +98,12 @@ export default function FeedbackPage() {
             Feedback & Roadmap
           </h1>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
-            <Plus className="mr-2 h-4 w-4" />
-            Submit Idea
-        </Button>
+        <SubmitIdeaModal onIdeaSubmit={handleIdeaSubmit}>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
+                <Plus className="mr-2 h-4 w-4" />
+                Submit Idea
+            </Button>
+        </SubmitIdeaModal>
       </div>
 
        {/* --- Top Section: Highlights Columns --- */}
