@@ -4,7 +4,7 @@ import React from "react";
 import { 
   Plus, 
   Settings, 
-  Filter, _
+  Filter,
   Download, 
   Upload, 
   Tag, 
