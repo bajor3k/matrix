@@ -493,39 +493,9 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Main Grid */}
+      {/* Main Grid: Swapped Positions (Filings Left, News Right) */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Market News */}
-        <Card title="Market News" className="min-h-[360px]">
-          <ul className="space-y-3">
-            {news.length === 0 ? (
-              <li className="text-muted-foreground text-sm">Loading news...</li>
-            ) : (
-              news.map((n) => (
-                <li
-                  key={n.id}
-                  className="group rounded-lg border border-border bg-background/50 p-3 hover:border-primary/20 transition-colors"
-                >
-                  <a href={n.url} target="_blank" rel="noopener noreferrer" className="block">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="text-sm text-foreground leading-5 font-medium group-hover:text-primary transition-colors">
-                        {n.headline}
-                      </div>
-                      <span className="text-[11px] text-muted-foreground whitespace-nowrap">
-                        {timeAgo(n.datetime)}
-                      </span>
-                    </div>
-                    <div className="mt-1.5 flex items-center justify-between">
-                      <div className="text-[11px] text-muted-foreground font-semibold">{n.source}</div>
-                    </div>
-                  </a>
-                </li>
-              ))
-            )}
-          </ul>
-        </Card>
-
-        {/* SEC Filings */}
+        {/* SEC Filings (NOW LEFT) */}
         <Card title="SEC Filings" className="min-h-[360px]">
           <div className="overflow-x-auto">
             <table className="w-full text-sm sec-filings-table">
@@ -572,6 +542,36 @@ export default function DashboardPage() {
               </tbody>
             </table>
           </div>
+        </Card>
+
+        {/* Market News (NOW RIGHT) */}
+        <Card title="Market News" className="min-h-[360px]">
+          <ul className="space-y-3">
+            {news.length === 0 ? (
+              <li className="text-muted-foreground text-sm">Loading news...</li>
+            ) : (
+              news.map((n) => (
+                <li
+                  key={n.id}
+                  className="group rounded-lg border border-border bg-background/50 p-3 hover:border-primary/20 transition-colors"
+                >
+                  <a href={n.url} target="_blank" rel="noopener noreferrer" className="block">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="text-sm text-foreground leading-5 font-medium group-hover:text-primary transition-colors">
+                        {n.headline}
+                      </div>
+                      <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                        {timeAgo(n.datetime)}
+                      </span>
+                    </div>
+                    <div className="mt-1.5 flex items-center justify-between">
+                      <div className="text-[11px] text-muted-foreground font-semibold">{n.source}</div>
+                    </div>
+                  </a>
+                </li>
+              ))
+            )}
+          </ul>
         </Card>
       </div>
 
