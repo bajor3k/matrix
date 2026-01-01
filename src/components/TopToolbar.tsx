@@ -3,7 +3,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Brain, ChevronLeft, ChevronRight, LogIn, LogOut, Loader2 } from 'lucide-react';
+import { Brain, ChevronLeft, ChevronRight, LogIn, LogOut, Loader2, MessageSquare } from 'lucide-react';
 import FullscreenToggle from './chrome/FullscreenToggle';
 import { ThemeToggle } from './theme-toggle';
 import { Button } from './ui/button';
@@ -38,6 +38,17 @@ export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
         >
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
         </Button>
+        <Link href="/feedback" passHref>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Submit Feedback"
+            title="Submit Feedback"
+            className="h-9 w-9 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+          >
+            <MessageSquare className="h-4 w-4" />
+          </Button>
+        </Link>
       </div>
 
       {/* RIGHT CLUSTER — STAYS AT FAR RIGHT */}
