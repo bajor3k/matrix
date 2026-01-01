@@ -300,9 +300,9 @@ export default function DashboardPage() {
         {/* Market Status Component */}
         {marketStatusData && (
           <UiCard className="border-none shadow-none bg-transparent">
-            <CardContent className="p-0 flex items-center gap-6 text-base">
+            <CardContent className="p-0 flex items-center gap-6">
               {/* Status Section - Time Removed */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-sm">
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-full">
                   <span className="relative flex h-2.5 w-2.5">
                     {/* Green Ping (Market Open) */}
@@ -334,12 +334,12 @@ export default function DashboardPage() {
 
               {/* Holiday Section - Softer Border */}
               {nextHoliday && (
-                <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50 dark:border-white/10">
-                  <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
-                    <span className="text-muted-foreground">Next Holiday:</span>
+                <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50 dark:border-white/10 text-sm">
+                  <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none text-muted-foreground">
+                    Next Holiday:
                     <span className="font-medium text-foreground">{nextHoliday.eventName}</span>
-                    <span className="text-muted-foreground mx-1">•</span>
-                    <span className="text-muted-foreground">
+                    <span className="mx-1">•</span>
+                    <span>
                       {new Date(nextHoliday.atDate + 'T00:00:00').toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </span>
                   </Badge>
