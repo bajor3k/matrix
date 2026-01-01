@@ -68,18 +68,26 @@ export default function FeedbackPage() {
   }, []);
 
   const handleVote = (id: string) => {
-    if (votedIds.has(id)) return; // Already voted, do nothing
+    const isVoted = votedIds.has(id);
+    const updatedDummyData = DUMMY_FEEDBACK.map(item => {
+      if (item.id === id) {
+        return { ...item, votes: isVoted ? item.votes - 1 : item.votes + 1 };
+      }
+      return item;
+    });
 
-    const updatedDummyData = DUMMY_FEEDBACK.map(item =>
-      item.id === id ? { ...item, votes: item.votes + 1 } : item
-    );
-    // Update the master list
     Object.assign(DUMMY_FEEDBACK, updatedDummyData);
 
-    // Add to voted set
-    setVotedIds(prev => new Set(prev).add(id));
-    
-    // Re-sort and categorize with the updated master list
+    setVotedIds(prev => {
+      const newVotedIds = new Set(prev);
+      if (isVoted) {
+        newVotedIds.delete(id);
+      } else {
+        newVotedIds.add(id);
+      }
+      return newVotedIds;
+    });
+
     sortAndCategorize(DUMMY_FEEDBACK, sortBy);
   };
   
@@ -226,11 +234,10 @@ function FeedbackListItem({ item, onVote, hasVoted }: { item: FeedbackItem, onVo
              {/* Vote Button */}
             <button 
               onClick={onVote} 
-              disabled={hasVoted}
               className={cn(
                 "flex flex-col items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 p-2 min-w-[60px] transition-colors group",
                 hasVoted 
-                  ? "bg-blue-50 dark:bg-blue-900/50 border-blue-200 dark:border-blue-700 cursor-default"
+                  ? "bg-blue-50 dark:bg-blue-900/50 border-blue-200 dark:border-blue-700"
                   : "hover:bg-zinc-100 dark:hover:bg-zinc-700"
               )}
             >
@@ -273,5 +280,3 @@ function StatusBadge({ status }: { status: FeedbackStatus }) {
             return null;
     }
 }
-
-    
