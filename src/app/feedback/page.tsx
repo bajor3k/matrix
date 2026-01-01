@@ -62,9 +62,6 @@ export default function FeedbackPage() {
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
             Feedback & Roadmap
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Vote on existing ideas or submit your own to help shape the Matrix.
-          </p>
         </div>
         <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
             <Plus className="mr-2 h-4 w-4" />
