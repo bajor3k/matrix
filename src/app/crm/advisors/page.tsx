@@ -55,7 +55,7 @@ export default function AdvisorsPage() {
           {/* Green Add Button */}
           <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white font-medium border-none shadow-sm">
             <Plus className="mr-2 h-4 w-4" />
-            Add Client
+            Add Contact
           </Button>
         </div>
       </div>
