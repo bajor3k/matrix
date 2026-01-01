@@ -8,11 +8,13 @@ import {
    CheckCircle2,
    Hammer,
    Plus,
-  ChevronUp
+  ChevronUp,
+  Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SubmitIdeaModal } from "@/components/feedback/SubmitIdeaModal";
 import { cn } from "@/lib/utils";
+import { differenceInBusinessDays, formatDistanceStrict } from "date-fns";
 
 // --- DUMMY DATA FOR UI DEV ---
 type FeedbackStatus = "new" | "planned" | "in-production" | "deployed";
@@ -24,18 +26,39 @@ interface FeedbackItem {
   votes: number;
   status: FeedbackStatus;
   date: string;
+  productionDate?: string;
+  deployedDate?: string;
 }
 
 const DUMMY_FEEDBACK: FeedbackItem[] = [
   { id: "1", title: "Real-time Options Chain Data", description: "Stream live options pricing directly into the dashboard.", votes: 142, status: "new", date: "2023-10-25" },
-  { id: "2", title: "Dark Pool Analytics Integration", description: "Visualize off-exchange trading volume activity.", votes: 98, status: "in-production", date: "2023-11-01" },
+  { id: "2", title: "Dark Pool Analytics Integration", description: "Visualize off-exchange trading volume activity.", votes: 98, status: "in-production", date: "2023-11-01", productionDate: "2024-02-15" },
   { id: "3", title: "Mobile App Notifications", description: "Push alerts for price targets and portfolio changes.", votes: 87, status: "planned", date: "2023-11-15" },
-  { id: "4", title: "Excel/CSV Export for Reports", description: "Allow downloading client reports in spreadsheet format.", votes: 76, status: "deployed", date: "2023-10-10" },
+  { id: "4", title: "Excel/CSV Export for Reports", description: "Allow downloading client reports in spreadsheet format.", votes: 76, status: "deployed", date: "2023-10-10", productionDate: "2023-11-20", deployedDate: "2023-12-05" },
   { id: "5", title: "Customizable Portfolio Groups", description: "Group clients by strategy or household custom tags.", votes: 65, status: "new", date: "2023-11-20" },
-  { id: "6", title: "AI Sentiment Analysis Tool", description: "Analyze news headlines for bullish/bearish sentiment.", votes: 54, status: "in-production", date: "2023-11-05" },
-  { id: "7", title: "Two-Factor Authentication (2FA)", description: "Enhanced security for advisor logins.", votes: 43, status: "deployed", date: "2023-09-01" },
+  { id: "6", title: "AI Sentiment Analysis Tool", description: "Analyze news headlines for bullish/bearish sentiment.", votes: 54, status: "in-production", date: "2023-11-05", productionDate: "2024-03-01" },
+  { id: "7", title: "Two-Factor Authentication (2FA)", description: "Enhanced security for advisor logins.", votes: 43, status: "deployed", date: "2023-09-01", productionDate: "2023-09-10", deployedDate: "2023-09-18" },
   { id: "8", title: "Integration with Salesforce CRM", description: "Sync contacts directly with Salesforce.", votes: 32, status: "new", date: "2023-11-22" },
 ];
+
+// --- HELPER FUNCTION ---
+function calculateDuration(start?: string, end?: string): string {
+    if (!start || !end) return "N/A";
+    try {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return "N/A";
+        // Using business days for a more realistic "work time" metric
+        const days = differenceInBusinessDays(endDate, startDate);
+        if (days < 0) return "N/A";
+        if (days === 0) return "Less than a day";
+        if (days === 1) return "1 business day";
+        return `${days} business days`;
+    } catch {
+        return "N/A";
+    }
+}
+
 
 export default function FeedbackPage() {
   const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>([]);
@@ -59,7 +82,7 @@ export default function FeedbackPage() {
     // Update highlight categories based on the full, original list to keep them consistent
     setTopVoted([...list].filter(f => f.status === 'new' || f.status === 'planned').sort((a, b) => b.votes - a.votes).slice(0, 2));
     setInProduction(list.filter(f => f.status === "in-production"));
-    setDeployed(list.filter(f => f.status === "deployed"));
+    setDeployed(list.filter(f => f.status === "deployed").sort((a,b) => new Date(b.deployedDate!).getTime() - new Date(a.deployedDate!).getTime()));
   };
 
   useEffect(() => {
@@ -160,11 +183,11 @@ export default function FeedbackPage() {
              icon={<CheckCircle2 className="h-5 w-5 text-green-500" />}
             borderColor="border-green-500/30"
             bgColor="bg-green-50/50 dark:bg-green-950/20"
-            items={deployed}
+            items={deployed.slice(0, 2)}
         />
       </div>
 
-       {/* --- Bottom Section: All Requests List --- */}
+       {/* --- Middle Section: All Requests List --- */}
       <div className="flex-1 space-y-4">
         <div className="flex items-center justify-between border-b border-zinc-200 dark:border-white/10 pb-4">
             <h2 className="text-lg font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
@@ -195,6 +218,20 @@ export default function FeedbackPage() {
                     hasVoted={votedIds.has(item.id)}
                 />
             ))}
+        </div>
+      </div>
+      
+       {/* --- Bottom Section: Deployed History --- */}
+      <div className="flex-1 space-y-4">
+        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-white/10 pb-4">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+            Deployed History
+          </h2>
+        </div>
+        <div className="space-y-3">
+          {deployed.map(item => (
+            <DeployedHistoryItem key={item.id} item={item} />
+          ))}
         </div>
       </div>
 
@@ -273,6 +310,37 @@ function FeedbackListItem({ item, onVote, hasVoted }: { item: FeedbackItem, onVo
     )
 }
 
+function DeployedHistoryItem({ item }: { item: FeedbackItem }) {
+    const duration = calculateDuration(item.productionDate, item.deployedDate);
+    return (
+        <div className="rounded-lg border border-zinc-200 dark:border-white/10 bg-[#f8f8f8] dark:bg-[#0c0c0c] p-4 flex items-start gap-4 transition-all hover:border-zinc-300 dark:hover:border-white/20">
+            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/50">
+                 <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-500" />
+            </div>
+             <div className="flex-1">
+                <div className="flex items-start justify-between mb-1">
+                     <h3 className="text-base font-semibold text-zinc-900 dark:text-white">{item.title}</h3>
+                     {item.deployedDate &&
+                        <span className="text-xs text-zinc-500 ml-2 whitespace-nowrap">
+                            Deployed on {new Date(item.deployedDate).toLocaleDateString()}
+                        </span>
+                     }
+                </div>
+                <div className="flex items-center gap-4 text-sm text-zinc-500 dark:text-zinc-400">
+                    <div className="flex items-center gap-1.5">
+                        <Clock className="h-4 w-4" />
+                        <span>Total Time: {duration}</span>
+                    </div>
+                     <div className="flex items-center gap-1.5">
+                        <ArrowUp className="h-4 w-4" />
+                        <span>Final Votes: {item.votes}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 // 3. Helper utility for status badges
 function StatusBadge({ status }: { status: FeedbackStatus }) {
     switch (status) {
@@ -287,3 +355,5 @@ function StatusBadge({ status }: { status: FeedbackStatus }) {
             return null;
     }
 }
+
+    
