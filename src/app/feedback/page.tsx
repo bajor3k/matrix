@@ -77,7 +77,7 @@ export default function FeedbackPage() {
     });
 
     // This is not ideal in a real app, but for the demo we mutate the "source of truth"
-    Object.assign(DUMMY_FEEDBACK, updatedDummyData);
+    DUMMY_FEEDBACK.splice(0, DUMMY_FEEDBACK.length, ...updatedDummyData);
 
     setVotedIds(prev => {
       const newVotedIds = new Set(prev);
@@ -104,8 +104,12 @@ export default function FeedbackPage() {
     };
     // Add new item to the DUMMY_FEEDBACK to make it part of the source of truth
     DUMMY_FEEDBACK.unshift(newItem);
-    // Also register that the user has "voted" for their own idea
-    handleVote(newItem.id); 
+    
+    // Create a new Set for voted IDs and add the new item's ID
+    const newVotedIds = new Set(votedIds);
+    newVotedIds.add(newItem.id);
+    setVotedIds(newVotedIds);
+    
     // Re-sort and categorize with the new item
     sortAndCategorize(DUMMY_FEEDBACK, sortBy);
   };
@@ -213,7 +217,7 @@ function HighlightColumn({ title, icon, borderColor, bgColor, items }: { title: 
                 {items.length === 0 ? (
                     <p className="text-sm text-zinc-500 italic">Nothing here yet.</p>
                 ) : items.map(item => (
-                    <div key={item.id} className="rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-[#0c0c0c] p-3 shadow-sm">
+                    <div key={item.id} className="rounded-lg border border-zinc-200 dark:border-white/10 bg-[#f8f8f8] dark:bg-[#0c0c0c] p-3 shadow-sm">
                         <h3 className="font-medium text-sm text-zinc-900 dark:text-zinc-100 line-clamp-1">{item.title}</h3>
                          <div className="flex items-center justify-between mt-2">
                              <StatusBadge status={item.status} />
@@ -233,7 +237,7 @@ function HighlightColumn({ title, icon, borderColor, bgColor, items }: { title: 
 // 2. The main list items at the bottom
 function FeedbackListItem({ item, onVote, hasVoted }: { item: FeedbackItem, onVote: () => void, hasVoted: boolean }) {
     return (
-        <div className="rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-[#0c0c0c] p-4 flex items-start gap-4 transition-all hover:border-zinc-300 dark:hover:border-white/20">
+        <div className="rounded-lg border border-zinc-200 dark:border-white/10 bg-[#f8f8f8] dark:bg-[#0c0c0c] p-4 flex items-start gap-4 transition-all hover:border-zinc-300 dark:hover:border-white/20">
             
              {/* Vote Button */}
             <button 
