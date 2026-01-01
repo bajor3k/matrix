@@ -1,13 +1,14 @@
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
-import { CalendarDays, Clock, Loader2, TrendingUp, TrendingDown, DollarSign, Activity, Eye } from "lucide-react";
+import { CalendarDays, Clock, Loader2, TrendingUp, TrendingDown, DollarSign, Activity, Eye, ArrowUpRight, ArrowDownRight, BarChart3 } from "lucide-react";
 import StockCard from "@/components/StockCard";
 // Alias the UI Card to avoid conflict with your local Card component below
 import { Card as UiCard, CardContent } from "@/components/ui/card"; 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 
 /* ----------------------- Types ----------------------- */
@@ -34,8 +35,6 @@ interface MarketNews {
   url: string;
   summary: string;
 }
-
-// Removed SecFiling interface
 
 interface IpoEvent {
   date: string;
@@ -71,6 +70,20 @@ interface FedFundsDataPoint {
   value: string;
 }
 
+interface MarketMover {
+  ticker: string;
+  price: string;
+  change_amount: string;
+  change_percentage: string;
+  volume: string;
+}
+
+interface MarketMoversData {
+  top_gainers: MarketMover[];
+  top_losers: MarketMover[];
+  most_actively_traded: MarketMover[];
+}
+
 type FedEvent = { date: string; timeET?: string; event: string; note?: string };
 type Earning = { date: string; ticker: string; company: string; time: "BMO" | "AMC" | "TBD" };
 
@@ -101,8 +114,6 @@ function timeAgo(unixTimestamp: number) {
   if (interval > 1) return Math.floor(interval) + "m ago";
   return Math.floor(seconds) + "s ago";
 }
-
-// Removed formatSecDate helper
 
 // Helper to format date as MM.DD.YYYY
 const formatSpendingDate = (dateString: string) => {
@@ -161,7 +172,7 @@ export default function DashboardPage() {
   const [marketStatusData, setMarketStatusData] = useState<MarketStatus | null>(null);
   const [nextHoliday, setNextHoliday] = useState<MarketHoliday | null>(null);
   const [news, setNews] = useState<MarketNews[]>([]);
-  // Removed filings state
+  
   const [ipos, setIpos] = useState<IpoEvent[]>([]);
   const [usaSpending, setUsaSpending] = useState<UsaSpendingData | null>(null);
   const [isSpendingModalOpen, setIsSpendingModalOpen] = useState(false);
@@ -174,6 +185,7 @@ export default function DashboardPage() {
   const [treasuryData, setTreasuryData] = useState<TreasuryDataPoint[]>([]);
   const [cpiData, setCpiData] = useState<CpiDataPoint[]>([]);
   const [fedFundsData, setFedFundsData] = useState<FedFundsDataPoint[]>([]);
+  const [marketMovers, setMarketMovers] = useState<MarketMoversData | null>(null);
   const [isTreasuryModalOpen, setIsTreasuryModalOpen] = useState(false);
 
 
@@ -209,7 +221,15 @@ export default function DashboardPage() {
       })
       .catch((err) => console.error("News fetch error", err));
     
-    // 4. SEC Filings (REMOVED)
+    // 4. Market Movers (Top Gainers/Losers)
+    fetch("/api/external/top-gainers-losers")
+      .then((res) => res.json())
+      .then((data) => {
+          if (!data.error && data.top_gainers) {
+              setMarketMovers(data);
+          }
+      })
+      .catch((err) => console.error("Movers fetch error", err));
 
     // 5. IPO Calendar
     fetch("/api/external/ipo-calendar")
@@ -340,22 +360,40 @@ export default function DashboardPage() {
 
   const fmt = (num: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
 
-  // Reusable Component for the Macro Indicators (Updated Layout)
+  // Reusable Component for the Macro Indicators
   const MacroCard = ({ title, value, subtext }: { title: string, value: string, subtext?: string }) => (
     <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
         <div className="p-6 flex flex-row items-center justify-between">
-            {/* Left Side: Title & Subtext */}
             <div className="flex flex-col gap-1">
                 <span className="text-sm font-medium text-muted-foreground">{title}</span>
                 {subtext && <span className="text-xs text-muted-foreground opacity-50">{subtext}</span>}
             </div>
-            {/* Right Side: Value */}
             <div className="text-right">
                 <div className="text-2xl font-bold">{value}</div>
             </div>
         </div>
     </div>
   );
+
+  // Sub-component for rendering mover rows
+  const MoverRow = ({ mover, type }: { mover: MarketMover, type: 'gainer' | 'loser' | 'active' }) => {
+      const isPositive = parseFloat(mover.change_percentage) >= 0;
+      return (
+        <div className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:bg-accent/50 px-2 rounded-md transition-colors cursor-pointer" onClick={() => handleTickerClick(mover.ticker)}>
+            <div className="flex flex-col">
+                <span className="font-semibold text-sm">{mover.ticker}</span>
+                <span className="text-xs text-muted-foreground opacity-70">Vol: {parseInt(mover.volume).toLocaleString()}</span>
+            </div>
+            <div className="text-right">
+                <div className="text-sm font-medium">${parseFloat(mover.price).toFixed(2)}</div>
+                <div className={`text-xs flex items-center justify-end ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                    {isPositive ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
+                    {mover.change_percentage}
+                </div>
+            </div>
+        </div>
+      );
+  }
 
 
   return (
@@ -468,17 +506,42 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Main Grid: Swapped Positions (Gainers/Losers Left, News Right) */}
+      {/* Main Grid: Gainers/Losers Left, News Right */}
       <div className="grid gap-6 lg:grid-cols-2">
         
-        {/* Top Gainers & Losers (Was SEC Filings) */}
-        <Card title="Top Gainers & Losers" className="min-h-[360px]">
-          <div className="flex h-full items-center justify-center text-sm text-muted-foreground italic">
-             Market Movers data integration pending...
-          </div>
+        {/* Top Gainers & Losers */}
+        <Card title="Market Movers" icon={<BarChart3 />} className="min-h-[360px] flex flex-col">
+            {!marketMovers ? (
+                 <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground">
+                    <Loader2 className="h-6 w-6 animate-spin mb-2" />
+                    <span className="text-sm italic">Loading market data...</span>
+                </div>
+            ) : (
+                <Tabs defaultValue="gainers" className="w-full flex-1 flex flex-col -mt-4">
+                    <div className="px-4 pt-4">
+                        <TabsList className="grid w-full grid-cols-3 mb-2">
+                            <TabsTrigger value="gainers" className="data-[state=active]:text-green-500">Gainers</TabsTrigger>
+                            <TabsTrigger value="losers" className="data-[state=active]:text-red-500">Losers</TabsTrigger>
+                            <TabsTrigger value="active">Active</TabsTrigger>
+                        </TabsList>
+                    </div>
+                    
+                    <div className="flex-1 overflow-y-auto max-h-[300px] px-4 pb-4">
+                        <TabsContent value="gainers" className="mt-0 space-y-1">
+                            {marketMovers.top_gainers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="gainer" />)}
+                        </TabsContent>
+                        <TabsContent value="losers" className="mt-0 space-y-1">
+                            {marketMovers.top_losers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="loser" />)}
+                        </TabsContent>
+                         <TabsContent value="active" className="mt-0 space-y-1">
+                            {marketMovers.most_actively_traded.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="active" />)}
+                        </TabsContent>
+                    </div>
+                </Tabs>
+            )}
         </Card>
 
-        {/* Market News (NOW RIGHT) */}
+        {/* Market News */}
         <Card title="Market News" className="min-h-[360px]">
           <ul className="space-y-3">
             {news.length === 0 ? (
