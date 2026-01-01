@@ -2,22 +2,24 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-const API_KEY = process.env.ALPHA_VANTAGE_API_KEY; 
+// YOUR API KEY PLUGGED IN HERE:
+const API_KEY = "Q5DHFIY1KIJ76U4I"; 
 const BASE_URL = 'https://www.alphavantage.co/query';
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const maturity = searchParams.get('maturity') || '10year'; // Default to 10-year
+    const maturity = searchParams.get('maturity') || '10year'; 
     const interval = searchParams.get('interval') || 'monthly';
-
-    if (!API_KEY) {
-      return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
-    }
 
     const url = `${BASE_URL}?function=TREASURY_YIELD&interval=${interval}&maturity=${maturity}&apikey=${API_KEY}`;
     
-    const response = await fetch(url);
+    // CRITICAL FIX: Alpha Vantage requires a 'User-Agent' header from Node.js environments
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'request'
+      }
+    });
     
     if (!response.ok) {
       throw new Error(`Alpha Vantage API error: ${response.statusText}`);
@@ -25,11 +27,13 @@ export async function GET(request: Request) {
 
     const data = await response.json();
 
-    // Check for API error messages in the JSON body
+    // Check for API-specific error messages
     if (data["Error Message"]) {
+         console.error("Alpha Vantage Error:", data["Error Message"]);
          return NextResponse.json({ error: data["Error Message"] }, { status: 400 });
     }
-    if (data["Information"]) { // Rate limit or other info
+    if (data["Information"]) { 
+         console.warn("Alpha Vantage Rate Limit:", data["Information"]);
          return NextResponse.json({ error: data["Information"] }, { status: 429 });
     }
 
