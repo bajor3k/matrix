@@ -43,18 +43,20 @@ export default function FeedbackPage() {
   const [deployed, setDeployed] = useState<FeedbackItem[]>([]);
 
   const sortAndCategorize = (list: FeedbackItem[], currentSortBy: string) => {
-    let sortedList = [...list];
+    // Filter the list for "All Suggestions" to only include open items
+    let openSuggestions = list.filter(item => item.status === 'new' || item.status === 'planned');
+
     if (currentSortBy === "newest") {
-      sortedList.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      openSuggestions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     } else if (currentSortBy === "votes") {
-      sortedList.sort((a, b) => b.votes - a.votes);
+      openSuggestions.sort((a, b) => b.votes - a.votes);
     }
-    setFeedbackList(sortedList);
+    setFeedbackList(openSuggestions);
   
-    // Update categories based on the full, unsorted list to keep them consistent
-    setTopVoted([...DUMMY_FEEDBACK].filter(f => f.status === 'new' || f.status === 'planned').sort((a, b) => b.votes - a.votes).slice(0, 2));
-    setInProduction(DUMMY_FEEDBACK.filter(f => f.status === "in-production"));
-    setDeployed(DUMMY_FEEDBACK.filter(f => f.status === "deployed"));
+    // Update highlight categories based on the full, original list to keep them consistent
+    setTopVoted([...list].filter(f => f.status === 'new' || f.status === 'planned').sort((a, b) => b.votes - a.votes).slice(0, 2));
+    setInProduction(list.filter(f => f.status === "in-production"));
+    setDeployed(list.filter(f => f.status === "deployed"));
   };
 
   useEffect(() => {
@@ -62,18 +64,14 @@ export default function FeedbackPage() {
     sortAndCategorize(DUMMY_FEEDBACK, "newest");
   }, []);
 
-  useEffect(() => {
-    sortAndCategorize(feedbackList, sortBy);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortBy]);
-
-
-   const handleVote = (id: string) => {
-      const updatedList = feedbackList.map(item =>
-        item.id === id ? { ...item, votes: item.votes + 1 } : item
-      );
-      // Re-sort the main list after voting, respecting the current sort order
-      sortAndCategorize(updatedList, sortBy);
+  const handleVote = (id: string) => {
+    const updatedDummyData = DUMMY_FEEDBACK.map(item =>
+      item.id === id ? { ...item, votes: item.votes + 1 } : item
+    );
+    // Update the master list
+    Object.assign(DUMMY_FEEDBACK, updatedDummyData);
+    // Re-sort and categorize with the updated master list
+    sortAndCategorize(DUMMY_FEEDBACK, sortBy);
   };
   
   const handleIdeaSubmit = (idea: { title: string; description: string }) => {
@@ -151,7 +149,10 @@ export default function FeedbackPage() {
 
             <select 
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
+              onChange={(e) => {
+                setSortBy(e.target.value);
+                sortAndCategorize(DUMMY_FEEDBACK, e.target.value);
+              }}
               className="text-sm rounded-md border-zinc-300 dark:border-zinc-700 bg-transparent text-zinc-700 dark:text-zinc-300 p-1"
             >
                 <option value="newest">Newest</option>
