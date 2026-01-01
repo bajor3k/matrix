@@ -44,7 +44,7 @@ import {
   Globe, // <--- Used for External
   Brain,
   Bell,
-  Robot,
+  Bot,
   Megaphone,
 } from "lucide-react";
 
@@ -132,9 +132,10 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
   ],
   'Standalone': [
     { name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
-    { name: 'AI Insights', icon: Robot, href: '/ai-insights' },
+    { name: 'AI Insights', icon: Bot, href: '/ai-insights' },
     { name: 'Alerts', icon: Bell, href: '/alerts' },
     { name: 'Ticket', icon: KanbanSquare, href: '/ticket' },
     { name: 'The Bullpen', icon: Megaphone, href: '/bullpen' },
+    { name: 'Wall Street', icon: TrendingUp, href: '/wall-street'},
   ]
 };
