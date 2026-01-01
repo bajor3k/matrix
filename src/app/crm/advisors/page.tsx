@@ -11,6 +11,8 @@ import {
   Search
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+// IMPORT THE NEW MODAL
+import { AddAdvisorModal } from "@/components/crm/AddAdvisorModal";
 
 export default function AdvisorsPage() {
   return (
@@ -52,11 +54,15 @@ export default function AdvisorsPage() {
             Options
           </Button>
 
-          {/* Green Add Button */}
-          <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white font-medium border-none shadow-sm">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Contact
-          </Button>
+          {/* --- WRAP THE ADD BUTTON WITH THE MODAL TRIGGER --- */}
+          <AddAdvisorModal>
+            <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white font-medium border-none shadow-sm">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Contact
+            </Button>
+          </AddAdvisorModal>
+          {/* -------------------------------------------------- */}
+
         </div>
       </div>
 
