@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -9,7 +8,6 @@ import {
   Download, 
   Upload, 
   Tag, 
-  MoreHorizontal,
   Search
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,8 +21,8 @@ export default function AdvisorsPage() {
         
         {/* Title & Count */}
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Clients</h1>
-          <div className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Advisors</h1>
+          <div className="rounded-full bg-zinc-200 px-3 py-1 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
             0
           </div>
         </div>
@@ -57,7 +55,7 @@ export default function AdvisorsPage() {
           {/* Green Add Button */}
           <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white font-medium border-none shadow-sm">
             <Plus className="mr-2 h-4 w-4" />
-            Add Client
+            Add Advisor
           </Button>
         </div>
       </div>
@@ -66,10 +64,11 @@ export default function AdvisorsPage() {
       <div className="flex flex-1 flex-col gap-6 lg:flex-row">
         
         {/* LEFT COLUMN: Data Table */}
-        <div className="flex-1 rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-white/10 dark:bg-zinc-900/50 overflow-hidden">
+        {/* UPDATED: bg-zinc-50 for off-white light mode */}
+        <div className="flex-1 rounded-xl border border-zinc-200 bg-zinc-50 shadow-sm dark:border-white/10 dark:bg-zinc-900/50 overflow-hidden">
           
           {/* Table Header Row */}
-          <div className="grid grid-cols-12 gap-4 border-b border-zinc-200 bg-zinc-50/50 px-4 py-3 text-sm font-medium text-zinc-500 dark:border-white/10 dark:bg-zinc-900/80 dark:text-zinc-400">
+          <div className="grid grid-cols-12 gap-4 border-b border-zinc-200 bg-zinc-100/50 px-4 py-3 text-sm font-medium text-zinc-500 dark:border-white/10 dark:bg-zinc-900/80 dark:text-zinc-400">
             <div className="col-span-1 flex items-center justify-center">
               <input type="checkbox" className="rounded border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800" />
             </div>
@@ -81,7 +80,7 @@ export default function AdvisorsPage() {
 
           {/* Table Body - Empty State */}
           <div className="flex flex-col items-center justify-center py-20 text-zinc-500 dark:text-zinc-400">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800/50">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-200/50 dark:bg-zinc-800/50">
               <Search className="h-8 w-8 text-zinc-400 dark:text-zinc-500" />
             </div>
             <p className="text-lg font-medium text-zinc-900 dark:text-white">No advisors found</p>
@@ -93,7 +92,8 @@ export default function AdvisorsPage() {
         <div className="w-full space-y-6 lg:w-80">
           
           {/* Tags Widget */}
-          <div className="rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-white/10 dark:bg-zinc-900/50 p-4">
+          {/* UPDATED: bg-zinc-50 for off-white light mode */}
+          <div className="rounded-xl border border-zinc-200 bg-zinc-50 shadow-sm dark:border-white/10 dark:bg-zinc-900/50 p-4">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-white">
                 <Tag className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
@@ -102,23 +102,24 @@ export default function AdvisorsPage() {
               <button className="text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400">Manage Tags</button>
             </div>
             <div className="flex flex-wrap gap-2">
-              <span className="rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1 text-xs text-zinc-600 dark:border-white/5 dark:bg-zinc-800 dark:text-zinc-400">
+              <span className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs text-zinc-600 dark:border-white/5 dark:bg-zinc-800 dark:text-zinc-400">
                 VIP
               </span>
-              <span className="rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1 text-xs text-zinc-600 dark:border-white/5 dark:bg-zinc-800 dark:text-zinc-400">
+              <span className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs text-zinc-600 dark:border-white/5 dark:bg-zinc-800 dark:text-zinc-400">
                 Prospect
               </span>
             </div>
           </div>
 
           {/* Import / Export Widget */}
-          <div className="rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-white/10 dark:bg-zinc-900/50 overflow-hidden">
-            <div className="bg-zinc-50/50 px-4 py-3 border-b border-zinc-200 dark:border-white/10 dark:bg-zinc-900/80">
+          {/* UPDATED: bg-zinc-50 for off-white light mode */}
+          <div className="rounded-xl border border-zinc-200 bg-zinc-50 shadow-sm dark:border-white/10 dark:bg-zinc-900/50 overflow-hidden">
+            <div className="bg-zinc-100/50 px-4 py-3 border-b border-zinc-200 dark:border-white/10 dark:bg-zinc-900/80">
                <h3 className="text-sm font-semibold text-zinc-900 dark:text-white">Data Tools</h3>
             </div>
             
-            <div className="divide-y divide-zinc-100 dark:divide-white/10">
-              <button className="flex w-full items-center gap-3 p-4 text-left hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors">
+            <div className="divide-y divide-zinc-200 dark:divide-white/10">
+              <button className="flex w-full items-center gap-3 p-4 text-left hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
                    <Upload className="h-4 w-4" />
                 </div>
@@ -128,7 +129,7 @@ export default function AdvisorsPage() {
                 </div>
               </button>
 
-              <button className="flex w-full items-center gap-3 p-4 text-left hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors">
+              <button className="flex w-full items-center gap-3 p-4 text-left hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400">
                    <Download className="h-4 w-4" />
                 </div>
@@ -145,4 +146,3 @@ export default function AdvisorsPage() {
     </div>
   );
 }
-    
