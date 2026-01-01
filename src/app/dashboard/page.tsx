@@ -134,7 +134,7 @@ const formatIpoDate = (dateString: string) => {
 
 const MARKET_INDICES = [
   { symbol: 'SPY', name: 'S&P 500' },
-  { symbol: 'DIA', name: 'Dow Jones' }, // Note: If 'DJI' returns no data, try 'DIA' (the ETF)
+  { symbol: 'DIA', name: 'Dow Jones' },
   { symbol: 'QQQ', name: 'Nasdaq' },
   { symbol: 'IYM', name: 'Russell 2000' }
 ];
@@ -313,6 +313,18 @@ export default function DashboardPage() {
 
   const fmt = (num: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
 
+  // Reusable Component for the Macro Indicators (to match Index styling)
+  const MacroCard = ({ title, value, subtext }: { title: string, value: string, subtext?: string }) => (
+    <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+        <div className="p-6 flex flex-col justify-between h-full">
+            <span className="text-sm font-medium text-muted-foreground">{title}</span>
+            <div className="mt-2">
+                <div className="text-2xl font-bold">{value}</div>
+                {subtext && <div className="text-xs text-muted-foreground mt-1">{subtext}</div>}
+            </div>
+        </div>
+    </div>
+  );
 
 
   return (
@@ -326,21 +338,16 @@ export default function DashboardPage() {
         {marketStatusData && (
           <UiCard className="border-none shadow-none bg-transparent">
             <CardContent className="p-0 flex items-center gap-6 text-base">
-              {/* Status Section - Time Removed */}
+              {/* Status Section */}
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-full">
                   <span className="relative flex h-2.5 w-2.5">
-                    {/* Green Ping (Market Open) */}
                     {marketStatusData.isOpen && (
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     )}
-                    
-                    {/* Red Ping (Post-Market) */}
                     {!marketStatusData.isOpen && marketStatusData.session === 'post-market' && (
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                     )}
-
-                    {/* Main Dot Color */}
                     <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
                       marketStatusData.isOpen 
                         ? 'bg-emerald-500' 
@@ -357,7 +364,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Holiday Section - Softer Border */}
+              {/* Holiday Section */}
               {nextHoliday && (
                 <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50 dark:border-white/10">
                   <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
@@ -375,7 +382,7 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* Market Summary Cards */}
+      {/* Row 1: Market Indices */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {MARKET_INDICES.map((item) => {
           const quote = marketIndicesData[item.symbol];
@@ -384,22 +391,14 @@ export default function DashboardPage() {
           return (
             <div key={item.symbol} className="rounded-xl border bg-card text-card-foreground shadow-sm">
               <div className="p-6 flex flex-row items-center justify-between">
-                {/* Left Side: Name & Symbol */}
                 <div className="flex flex-col gap-1">
                   <span className="text-sm font-medium text-muted-foreground">{item.name}</span>
                   <span className="text-xs text-muted-foreground opacity-50 font-mono">{item.symbol}</span>
                 </div>
-
-                {/* Right Side: Price & Change */}
                 <div className="text-right">
                   <div className="text-2xl font-bold">
-                    {quote ? (
-                      `$${quote.c.toFixed(2)}`
-                    ) : (
-                      <div className="h-8 w-24 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
-                    )}
+                    {quote ? `$${quote.c.toFixed(2)}` : <div className="h-8 w-24 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />}
                   </div>
-                  
                   {quote ? (
                     <div className={`text-xs font-medium mt-1 ${isPositive ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"}`}>
                       {isPositive ? "+" : ""}{quote.d.toFixed(2)} ({quote.dp.toFixed(2)}%)
@@ -412,6 +411,18 @@ export default function DashboardPage() {
             </div>
           );
         })}
+      </div>
+
+      {/* Row 2: Macro Indicators */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <MacroCard 
+            title="Treasury Yield" 
+            value={currentTreasuryYield ? `${currentTreasuryYield}%` : "--"} 
+            subtext="10-Year" 
+        />
+        <MacroCard title="CPI" value="--" subtext="Consumer Price Index" />
+        <MacroCard title="Inflation" value="--" subtext="Year-over-Year" />
+        <MacroCard title="Federal Funds Rate" value="--" subtext="Target Range" />
       </div>
 
       {/* Main Grid */}
@@ -609,40 +620,6 @@ export default function DashboardPage() {
           )}
         </Card>
       </div>
-
-      {/* Rates Row */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Treasury Yield */}
-        <Card title="Treasury Yield" className="min-h-[350px]">
-          <div className="flex h-full flex-col items-center justify-center space-y-4">
-             {treasuryData.length > 0 ? (
-                <>
-                    <div className="text-center">
-                        <div className="text-6xl font-bold tracking-tighter text-foreground">{currentTreasuryYield}%</div>
-                        <p className="text-sm text-muted-foreground mt-2">10-Year Constant Maturity</p>
-                        <p className="text-xs text-muted-foreground opacity-70">Updated: {treasuryData[0].date}</p>
-                    </div>
-                    <Button variant="outline" size="sm" onClick={() => setIsTreasuryModalOpen(true)}>
-                        <Eye className="mr-2 h-4 w-4" />
-                        See More
-                    </Button>
-                </>
-             ) : (
-                <div className="flex flex-col items-center justify-center text-muted-foreground">
-                    <Loader2 className="h-6 w-6 animate-spin mb-2" />
-                    <span className="text-sm italic">Loading Treasury Data...</span>
-                </div>
-             )}
-          </div>
-        </Card>
-
-        {/* Federal Funds Rate */}
-        <Card title="Federal Funds Rate" className="min-h-[350px]">
-          <div className="flex h-full items-center justify-center text-sm text-muted-foreground italic">
-            Fed Funds data integration pending...
-          </div>
-        </Card>
-      </div>
       
       {/* ----------------- MODALS ----------------- */}
 
@@ -686,7 +663,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Treasury Yield Modal */}
+      {/* Treasury Yield Modal (Hidden until See More implementation restored later) */}
       <Dialog open={isTreasuryModalOpen} onOpenChange={setIsTreasuryModalOpen}>
         <DialogContent className="sm:max-w-2xl bg-white/20 dark:bg-slate-950/30 backdrop-blur-xl border border-white/20 shadow-2xl">
           <DialogHeader>
@@ -720,7 +697,6 @@ export default function DashboardPage() {
           </div>
         </DialogContent>
       </Dialog>
-
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md bg-white/20 dark:bg-slate-950/30 backdrop-blur-xl border border-white/20 shadow-2xl">
