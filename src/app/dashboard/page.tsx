@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
-import { CalendarDays, Clock, Loader2, TrendingUp, TrendingDown, DollarSign, Activity, Eye, ArrowUpRight, ArrowDownRight, BarChart3, ExternalLink } from "lucide-react";
+import { CalendarDays, Clock, Loader2, TrendingUp, TrendingDown, DollarSign, Activity, Eye, ArrowUpRight, ArrowDownRight, BarChart3, ExternalLink, Search } from "lucide-react";
 import StockCard from "@/components/StockCard";
 // Alias the UI Card to avoid conflict with your local Card component below
 import { Card as UiCard, CardContent } from "@/components/ui/card"; 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -25,7 +26,6 @@ interface MarketHoliday {
   tradingHour: string;
 }
 
-// Updated for Alpha Vantage News & Sentiment
 interface MarketNews {
   title: string;
   url: string;
@@ -131,7 +131,6 @@ function timeAgo(dateInput: string | number | Date) {
   return "Just now";
 }
 
-// Helper to format date as MM.DD.YYYY
 const formatSpendingDate = (dateString: string) => {
   if (!dateString) return '';
   const date = new Date(dateString);
@@ -141,7 +140,6 @@ const formatSpendingDate = (dateString: string) => {
   return `${month}.${day}.${year}`;
 };
 
-// Helper to format IPO date as MM.DD.YYYY
 const formatIpoDate = (dateString: string) => {
   if (!dateString) return '';
   const date = new Date(dateString);
@@ -192,6 +190,8 @@ export default function DashboardPage() {
   const [marketStatusData, setMarketStatusData] = useState<MarketStatus | null>(null);
   const [nextHoliday, setNextHoliday] = useState<MarketHoliday | null>(null);
   const [news, setNews] = useState<MarketNews[]>([]);
+  const [newsTicker, setNewsTicker] = useState(""); // For the input field
+  const [loadingNews, setLoadingNews] = useState(false);
   
   const [ipos, setIpos] = useState<IpoEvent[]>([]);
   const [usaSpending, setUsaSpending] = useState<UsaSpendingData | null>(null);
@@ -231,15 +231,8 @@ export default function DashboardPage() {
       })
       .catch((err) => console.error("Holiday fetch error", err));
 
-    // 3. Market News & Sentiment (Updated)
-    fetch("/api/external/market-news")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setNews(data);
-        }
-      })
-      .catch((err) => console.error("News fetch error", err));
+    // 3. Initial News Fetch (General)
+    fetchNews();
     
     // 4. Market Movers (Top Gainers/Losers)
     fetch("/api/external/top-gainers-losers")
@@ -325,6 +318,36 @@ export default function DashboardPage() {
         .catch(err => console.error("Fed Funds fetch error", err));
 
   }, []);
+
+  // --- Functions ---
+
+  const fetchNews = async (ticker?: string) => {
+    setLoadingNews(true);
+    let url = "/api/external/market-news";
+    if (ticker) {
+        url += `?tickers=${ticker}`;
+    }
+    
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (Array.isArray(data)) {
+            setNews(data);
+        } else {
+            setNews([]); // Clear if no results
+        }
+    } catch (err) {
+        console.error("News fetch error", err);
+    } finally {
+        setLoadingNews(false);
+    }
+  };
+
+  const handleNewsSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+          fetchNews(newsTicker);
+      }
+  };
   
   const sortedSpendingData = useMemo(() => {
     if (!usaSpending?.data) return [];
@@ -530,7 +553,7 @@ export default function DashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         
         {/* Top Gainers & Losers */}
-        <Tabs defaultValue="gainers" className="flex flex-col h-full w-full">
+        <Tabs defaultValue="gainers" className="h-full w-full">
             <Card 
                 title="Market Movers" 
                 className="min-h-[360px] h-full flex flex-col"
@@ -578,18 +601,40 @@ export default function DashboardPage() {
             </Card>
         </Tabs>
 
-        {/* Market News (Updated Layout) */}
-        <Card title="Market News" className="min-h-[360px] h-full">
-          <ul className="space-y-3">
-            {news.length === 0 ? (
-              <li className="text-muted-foreground text-sm">Loading news...</li>
+        {/* Market News (With Search) */}
+        <Card 
+            title="Market News" 
+            className="min-h-[360px] h-full"
+            action={
+                <div className="relative">
+                    <Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
+                    <Input 
+                        placeholder="Ticker..." 
+                        value={newsTicker}
+                        onChange={(e) => setNewsTicker(e.target.value.toUpperCase())}
+                        onKeyDown={handleNewsSearch}
+                        className="h-7 w-[100px] pl-7 text-xs bg-background/50 border-border/50 focus:w-[140px] transition-all"
+                    />
+                </div>
+            }
+        >
+          <div className="space-y-3">
+            {loadingNews ? (
+                <div className="flex flex-col items-center justify-center text-muted-foreground py-12">
+                    <Loader2 className="h-6 w-6 animate-spin mb-2" />
+                    <span className="text-sm italic">Searching news...</span>
+                </div>
+            ) : news.length === 0 ? (
+              <div className="text-center text-muted-foreground py-8 text-sm">
+                  No recent news found for this ticker.
+              </div>
             ) : (
               news.slice(0, 6).map((n, i) => (
-                <li
+                <div
                   key={i}
-                  className="group rounded-lg border border-border bg-background/50 p-3 hover:border-primary/20 transition-colors"
+                  className="group rounded-lg border border-border bg-background/50 p-3 hover:border-primary/20 transition-colors cursor-pointer"
+                  onClick={() => window.open(n.url, '_blank')}
                 >
-                  <a href={n.url} target="_blank" rel="noopener noreferrer" className="block">
                     <div className="flex items-start justify-between gap-3">
                       <div className="text-sm text-foreground leading-5 font-medium group-hover:text-primary transition-colors line-clamp-2">
                         {n.title}
@@ -615,11 +660,10 @@ export default function DashboardPage() {
                       </div>
                       <ExternalLink className="h-3 w-3 text-muted-foreground opacity-50" />
                     </div>
-                  </a>
-                </li>
+                </div>
               ))
             )}
-          </ul>
+          </div>
         </Card>
       </div>
 

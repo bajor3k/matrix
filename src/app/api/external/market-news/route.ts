@@ -7,9 +7,18 @@ const BASE_URL = 'https://www.alphavantage.co/query';
 
 export async function GET(request: Request) {
   try {
-    // Using NEWS_SENTIMENT function
-    // limit=10 to keep the dashboard snappy
-    const url = `${BASE_URL}?function=NEWS_SENTIMENT&sort=LATEST&limit=10&apikey=${API_KEY}`;
+    const { searchParams } = new URL(request.url);
+    const tickers = searchParams.get('tickers'); // Get ticker from query
+
+    // Base params
+    let queryParams = `function=NEWS_SENTIMENT&sort=LATEST&limit=10&apikey=${API_KEY}`;
+    
+    // If a ticker is provided, append it
+    if (tickers) {
+        queryParams += `&tickers=${tickers}`;
+    }
+
+    const url = `${BASE_URL}?${queryParams}`;
     
     const response = await fetch(url, {
       headers: { 'User-Agent': 'request' }
@@ -24,7 +33,6 @@ export async function GET(request: Request) {
     if (data["Error Message"]) return NextResponse.json({ error: data["Error Message"] }, { status: 400 });
     if (data["Information"]) return NextResponse.json({ error: data["Information"] }, { status: 429 });
 
-    // The API returns an object with a "feed" array. We return just the feed.
     return NextResponse.json(data.feed || []);
   } catch (error) {
     console.error('Error fetching News Sentiment:', error);
