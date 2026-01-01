@@ -24,6 +24,7 @@ import {
   Globe,
   Bot,
   Megaphone,
+  TrendingUp,
 } from "lucide-react";
 import { navigationData } from "@/lib/navigation-data";
 import { useNavigation, type NavItem } from "@/contexts/navigation-context";
@@ -43,6 +44,7 @@ const insightsItem: NavItem = navigationData['Standalone'].find(item => item.nam
 const alertsItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Alerts')!;
 const ticketItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Ticket')!;
 const bullpenItem: NavItem = navigationData['Standalone'].find(item => item.name === 'The Bullpen')!;
+const wallStreetItem: NavItem = navigationData['Standalone'].find(item => item.name === 'Wall Street')!;
 const settingsItem: NavItem = navigationData['Other'][0];
 
 
@@ -92,6 +94,7 @@ export default function Sidebar({
   const isAlerts = useMemo(() => pathname === "/alerts", [pathname]);
   const isTicket = useMemo(() => pathname === "/ticket", [pathname]);
   const isBullpen = useMemo(() => pathname === "/bullpen", [pathname]);
+  const isWallStreet = useMemo(() => pathname === "/wall-street", [pathname]);
   const isSettings  = useMemo(() => pathname === "/settings", [pathname]);
   
 
@@ -234,6 +237,7 @@ export default function Sidebar({
         <StandaloneItem item={alertsItem} isActive={isAlerts} iconClassName="text-[hsl(var(--chart-5))]" />
         <StandaloneItem item={ticketItem} isActive={isTicket} iconClassName="text-[hsl(var(--icon-color-1))]" />
         <StandaloneItem item={bullpenItem} isActive={isBullpen} iconClassName="text-yellow-500" />
+        <StandaloneItem item={wallStreetItem} isActive={isWallStreet} iconClassName="text-green-400" />
 
       </div>
 
