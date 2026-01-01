@@ -75,6 +75,11 @@ interface CpiDataPoint {
   value: string;
 }
 
+interface FedFundsDataPoint {
+  date: string;
+  value: string;
+}
+
 type FedEvent = { date: string; timeET?: string; event: string; note?: string };
 type Earning = { date: string; ticker: string; company: string; time: "BMO" | "AMC" | "TBD" };
 
@@ -185,6 +190,7 @@ export default function DashboardPage() {
   // Macro Data State
   const [treasuryData, setTreasuryData] = useState<TreasuryDataPoint[]>([]);
   const [cpiData, setCpiData] = useState<CpiDataPoint[]>([]);
+  const [fedFundsData, setFedFundsData] = useState<FedFundsDataPoint[]>([]);
   const [isTreasuryModalOpen, setIsTreasuryModalOpen] = useState(false);
 
 
@@ -293,6 +299,16 @@ export default function DashboardPage() {
         })
         .catch(err => console.error("CPI fetch error", err));
 
+    // 10. Federal Funds Rate
+    fetch("/api/external/federal-funds-rate?interval=monthly")
+        .then(res => res.json())
+        .then(data => {
+            if (data.data) {
+                setFedFundsData(data.data);
+            }
+        })
+        .catch(err => console.error("Fed Funds fetch error", err));
+
   }, []);
   
   const sortedSpendingData = useMemo(() => {
@@ -313,6 +329,11 @@ export default function DashboardPage() {
     if (!cpiData || cpiData.length === 0) return null;
     return cpiData[0].value;
   }, [cpiData]);
+
+  const currentFedFundsRate = useMemo(() => {
+    if (!fedFundsData || fedFundsData.length === 0) return null;
+    return fedFundsData[0].value;
+  }, [fedFundsData]);
 
   const currentInflation = useMemo(() => {
     if (!cpiData || cpiData.length < 13) return null;
@@ -465,7 +486,11 @@ export default function DashboardPage() {
             value={currentInflation ? `${currentInflation}%` : "--"} 
             subtext="Year over Year" 
         />
-        <MacroCard title="Federal Funds Rate" value="--" subtext="Target Rate" />
+        <MacroCard 
+            title="Federal Funds Rate" 
+            value={currentFedFundsRate ? `${currentFedFundsRate}%` : "--"} 
+            subtext="Target Rate" 
+        />
       </div>
 
       {/* Main Grid */}
