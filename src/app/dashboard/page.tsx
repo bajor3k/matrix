@@ -1,13 +1,12 @@
-
-
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
-import { CalendarDays, Clock, Loader2, TrendingUp, TrendingDown, DollarSign, Activity } from "lucide-react";
+import { CalendarDays, Clock, Loader2, TrendingUp, TrendingDown, DollarSign, Activity, Eye } from "lucide-react";
 import StockCard from "@/components/StockCard";
 // Alias the UI Card to avoid conflict with your local Card component below
 import { Card as UiCard, CardContent } from "@/components/ui/card"; 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 
@@ -64,6 +63,11 @@ interface UsaSpendingData {
     totalValue: number;
     awardDescription: string;
   }[];
+}
+
+interface TreasuryDataPoint {
+  date: string;
+  value: string;
 }
 
 type FedEvent = { date: string; timeET?: string; event: string; note?: string };
@@ -174,6 +178,10 @@ export default function DashboardPage() {
   const [loadingQuote, setLoadingQuote] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  // New State for Treasury
+  const [treasuryData, setTreasuryData] = useState<TreasuryDataPoint[]>([]);
+  const [isTreasuryModalOpen, setIsTreasuryModalOpen] = useState(false);
+
 
   // Fetch All Data on Mount
   useEffect(() => {
@@ -260,6 +268,17 @@ export default function DashboardPage() {
     };
 
     fetchMarketData();
+
+    // 8. Treasury Yield (10 Year)
+    fetch("/api/external/treasury-yield?maturity=10year&interval=monthly")
+        .then(res => res.json())
+        .then(data => {
+            if (data.data) {
+                setTreasuryData(data.data);
+            }
+        })
+        .catch(err => console.error("Treasury fetch error", err));
+
   }, []);
   
   const sortedSpendingData = useMemo(() => {
@@ -268,6 +287,12 @@ export default function DashboardPage() {
   }, [usaSpending]);
 
   const previewSpendingData = useMemo(() => sortedSpendingData.slice(0, 5), [sortedSpendingData]);
+
+  // Current Treasury Value (Latest)
+  const currentTreasuryYield = useMemo(() => {
+    if (!treasuryData || treasuryData.length === 0) return null;
+    return treasuryData[0].value;
+  }, [treasuryData]);
   
   const handleTickerClick = async (ticker: string) => {
     setSelectedTicker(ticker);
@@ -300,7 +325,7 @@ export default function DashboardPage() {
         {/* Market Status Component */}
         {marketStatusData && (
           <UiCard className="border-none shadow-none bg-transparent">
-            <CardContent className="p-0 flex items-center gap-6 text-sm">
+            <CardContent className="p-0 flex items-center gap-6 text-base">
               {/* Status Section - Time Removed */}
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-full">
@@ -335,11 +360,11 @@ export default function DashboardPage() {
               {/* Holiday Section - Softer Border */}
               {nextHoliday && (
                 <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50 dark:border-white/10">
-                  <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none text-muted-foreground">
-                    Next Holiday:
+                  <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none">
+                    <span className="text-muted-foreground">Next Holiday:</span>
                     <span className="font-medium text-foreground">{nextHoliday.eventName}</span>
-                    <span className="mx-1">•</span>
-                    <span>
+                    <span className="text-muted-foreground mx-1">•</span>
+                    <span className="text-muted-foreground">
                       {new Date(nextHoliday.atDate + 'T00:00:00').toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </span>
                   </Badge>
@@ -584,13 +609,30 @@ export default function DashboardPage() {
           )}
         </Card>
       </div>
-      
+
       {/* Rates Row */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Treasury Yield */}
         <Card title="Treasury Yield" className="min-h-[350px]">
-          <div className="flex h-full items-center justify-center text-sm text-muted-foreground italic">
-            Treasury data integration pending...
+          <div className="flex h-full flex-col items-center justify-center space-y-4">
+             {treasuryData.length > 0 ? (
+                <>
+                    <div className="text-center">
+                        <div className="text-6xl font-bold tracking-tighter text-foreground">{currentTreasuryYield}%</div>
+                        <p className="text-sm text-muted-foreground mt-2">10-Year Constant Maturity</p>
+                        <p className="text-xs text-muted-foreground opacity-70">Updated: {treasuryData[0].date}</p>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => setIsTreasuryModalOpen(true)}>
+                        <Eye className="mr-2 h-4 w-4" />
+                        See More
+                    </Button>
+                </>
+             ) : (
+                <div className="flex flex-col items-center justify-center text-muted-foreground">
+                    <Loader2 className="h-6 w-6 animate-spin mb-2" />
+                    <span className="text-sm italic">Loading Treasury Data...</span>
+                </div>
+             )}
           </div>
         </Card>
 
@@ -601,7 +643,10 @@ export default function DashboardPage() {
           </div>
         </Card>
       </div>
+      
+      {/* ----------------- MODALS ----------------- */}
 
+      {/* USA Spending Modal */}
       {isSpendingModalOpen && (
         <div id="modal-spending" className="modal-overlay" style={{ display: 'block' }}>
             <div className="modal-content">
@@ -640,6 +685,42 @@ export default function DashboardPage() {
             </div>
         </div>
       )}
+
+      {/* Treasury Yield Modal */}
+      <Dialog open={isTreasuryModalOpen} onOpenChange={setIsTreasuryModalOpen}>
+        <DialogContent className="sm:max-w-2xl bg-white/20 dark:bg-slate-950/30 backdrop-blur-xl border border-white/20 shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl text-slate-900 dark:text-white">
+               10-Year Treasury Yield History
+            </DialogTitle>
+            <DialogDescription>
+                Historical yield data (Monthly)
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="max-h-[60vh] overflow-y-auto pr-2">
+            <table className="w-full text-sm">
+                <thead className="bg-white/5 sticky top-0 backdrop-blur-md">
+                    <tr className="border-b border-white/10 text-slate-500 dark:text-slate-400">
+                        <th className="text-left py-3 pl-2 font-medium">Date</th>
+                        <th className="text-right py-3 pr-2 font-medium">Yield (%)</th>
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                    {treasuryData.map((point, i) => (
+                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                            <td className="py-2.5 pl-2 text-slate-900 dark:text-white">{point.date}</td>
+                            <td className="py-2.5 pr-2 text-right font-mono text-emerald-600 dark:text-emerald-400 font-medium">
+                                {point.value}%
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+          </div>
+        </DialogContent>
+      </Dialog>
+
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md bg-white/20 dark:bg-slate-950/30 backdrop-blur-xl border border-white/20 shadow-2xl">
@@ -697,10 +778,3 @@ export default function DashboardPage() {
     </main>
   );
 }
-
-    
-
-    
-    
-
-    
