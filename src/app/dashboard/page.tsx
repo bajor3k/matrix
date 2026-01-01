@@ -107,7 +107,6 @@ const FED_DATES_DUMMY: FedEvent[] = [
 
 /* ----------------------- Helpers ----------------------- */
 
-// Parses "20231025T123000" -> Date object
 function parseNewsDate(dateString: string) {
   if (!dateString || dateString.length < 15) return new Date();
   const year = parseInt(dateString.substring(0, 4));
@@ -348,6 +347,11 @@ export default function DashboardPage() {
           fetchNews(newsTicker);
       }
   };
+
+  const handleMoverClick = (ticker: string) => {
+      setNewsTicker(ticker); // Populate the search box
+      fetchNews(ticker);     // Trigger the news search
+  };
   
   const sortedSpendingData = useMemo(() => {
     if (!usaSpending?.data) return [];
@@ -422,7 +426,7 @@ export default function DashboardPage() {
   const MoverRow = ({ mover, type }: { mover: MarketMover, type: 'gainer' | 'loser' | 'active' }) => {
       const isPositive = parseFloat(mover.change_percentage) >= 0;
       return (
-        <div className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:bg-accent/50 px-2 rounded-md transition-colors cursor-pointer" onClick={() => handleTickerClick(mover.ticker)}>
+        <div className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:bg-accent/50 px-2 rounded-md transition-colors cursor-pointer" onClick={() => handleMoverClick(mover.ticker)}>
             <div className="flex flex-col">
                 <span className="font-semibold text-sm">{mover.ticker}</span>
                 <span className="text-xs text-muted-foreground opacity-70">Vol: {parseInt(mover.volume).toLocaleString()}</span>
@@ -553,7 +557,7 @@ export default function DashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         
         {/* Top Gainers & Losers */}
-        <Tabs defaultValue="gainers" className="h-full w-full">
+        <Tabs defaultValue="gainers" className="flex flex-col h-full w-full">
             <Card 
                 title="Market Movers" 
                 className="min-h-[360px] h-full flex flex-col"
