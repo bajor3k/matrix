@@ -1,8 +1,7 @@
-
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
-import { CalendarDays, Clock, Loader2, TrendingUp, TrendingDown, DollarSign, Activity, Eye, ArrowUpRight, ArrowDownRight, BarChart3 } from "lucide-react";
+import { CalendarDays, Clock, Loader2, TrendingUp, TrendingDown, DollarSign, Activity, Eye, ArrowUpRight, ArrowDownRight, BarChart3, ExternalLink } from "lucide-react";
 import StockCard from "@/components/StockCard";
 // Alias the UI Card to avoid conflict with your local Card component below
 import { Card as UiCard, CardContent } from "@/components/ui/card"; 
@@ -26,15 +25,15 @@ interface MarketHoliday {
   tradingHour: string;
 }
 
+// Updated for Alpha Vantage News & Sentiment
 interface MarketNews {
-  id: number;
-  category: string;
-  datetime: number;
-  headline: string;
-  image: string;
-  source: string;
+  title: string;
   url: string;
+  time_published: string;
   summary: string;
+  banner_image: string;
+  source: string;
+  overall_sentiment_label: string;
 }
 
 interface IpoEvent {
@@ -107,13 +106,29 @@ const FED_DATES_DUMMY: FedEvent[] = [
 ];
 
 /* ----------------------- Helpers ----------------------- */
-function timeAgo(unixTimestamp: number) {
-  const seconds = Math.floor((new Date().getTime() - unixTimestamp * 1000) / 1000);
+
+// Parses "20231025T123000" -> Date object
+function parseNewsDate(dateString: string) {
+  if (!dateString || dateString.length < 15) return new Date();
+  const year = parseInt(dateString.substring(0, 4));
+  const month = parseInt(dateString.substring(4, 6)) - 1;
+  const day = parseInt(dateString.substring(6, 8));
+  const hour = parseInt(dateString.substring(9, 11));
+  const minute = parseInt(dateString.substring(11, 13));
+  const second = parseInt(dateString.substring(13, 15));
+  return new Date(Date.UTC(year, month, day, hour, minute, second));
+}
+
+function timeAgo(dateInput: string | number | Date) {
+  const date = typeof dateInput === 'string' ? parseNewsDate(dateInput) : new Date(dateInput);
+  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+  
   let interval = seconds / 3600;
+  if (interval > 24) return Math.floor(interval / 24) + "d ago";
   if (interval > 1) return Math.floor(interval) + "h ago";
   interval = seconds / 60;
   if (interval > 1) return Math.floor(interval) + "m ago";
-  return Math.floor(seconds) + "s ago";
+  return "Just now";
 }
 
 // Helper to format date as MM.DD.YYYY
@@ -216,12 +231,12 @@ export default function DashboardPage() {
       })
       .catch((err) => console.error("Holiday fetch error", err));
 
-    // 3. Market News
+    // 3. Market News & Sentiment (Updated)
     fetch("/api/external/market-news")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          setNews(data.slice(0, 5)); // Keep top 5 stories
+          setNews(data);
         }
       })
       .catch((err) => console.error("News fetch error", err));
@@ -523,19 +538,19 @@ export default function DashboardPage() {
                     <TabsList className="bg-transparent p-0 gap-1 h-auto">
                         <TabsTrigger 
                             value="gainers" 
-                            className="h-6 rounded-md px-2 text-xs font-medium bg-transparent text-muted-foreground data-[state=active]:bg-green-500/10 data-[state=active]:text-green-500 transition-all"
+                            className="h-6 rounded-md px-2 text-[10px] font-medium data-[state=active]:bg-green-500/10 data-[state=active]:text-green-600 transition-all"
                         >
                             Gainers
                         </TabsTrigger>
                         <TabsTrigger 
                             value="losers" 
-                            className="h-6 rounded-md px-2 text-xs font-medium bg-transparent text-muted-foreground data-[state=active]:bg-red-500/10 data-[state=active]:text-red-500 transition-all"
+                            className="h-6 rounded-md px-2 text-[10px] font-medium data-[state=active]:bg-red-500/10 data-[state=active]:text-red-600 transition-all"
                         >
                             Losers
                         </TabsTrigger>
                         <TabsTrigger 
                             value="active" 
-                            className="h-6 rounded-md px-2 text-xs font-medium bg-transparent text-muted-foreground data-[state=active]:bg-blue-500/10 data-[state=active]:text-blue-500 transition-all"
+                            className="h-6 rounded-md px-2 text-[10px] font-medium data-[state=active]:bg-blue-500/10 data-[state=active]:text-blue-600 transition-all"
                         >
                             Active
                         </TabsTrigger>
@@ -563,28 +578,42 @@ export default function DashboardPage() {
             </Card>
         </Tabs>
 
-        {/* Market News */}
+        {/* Market News (Updated Layout) */}
         <Card title="Market News" className="min-h-[360px] h-full">
           <ul className="space-y-3">
             {news.length === 0 ? (
               <li className="text-muted-foreground text-sm">Loading news...</li>
             ) : (
-              news.map((n) => (
+              news.slice(0, 6).map((n, i) => (
                 <li
-                  key={n.id}
+                  key={i}
                   className="group rounded-lg border border-border bg-background/50 p-3 hover:border-primary/20 transition-colors"
                 >
                   <a href={n.url} target="_blank" rel="noopener noreferrer" className="block">
                     <div className="flex items-start justify-between gap-3">
-                      <div className="text-sm text-foreground leading-5 font-medium group-hover:text-primary transition-colors">
-                        {n.headline}
+                      <div className="text-sm text-foreground leading-5 font-medium group-hover:text-primary transition-colors line-clamp-2">
+                        {n.title}
                       </div>
                       <span className="text-[11px] text-muted-foreground whitespace-nowrap">
-                        {timeAgo(n.datetime)}
+                        {timeAgo(n.time_published)}
                       </span>
                     </div>
-                    <div className="mt-1.5 flex items-center justify-between">
-                      <div className="text-[11px] text-muted-foreground font-semibold">{n.source}</div>
+                    <div className="mt-2 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                          <div className="text-[11px] text-muted-foreground font-semibold">{n.source}</div>
+                          {n.overall_sentiment_label && (
+                              <Badge 
+                                variant="outline" 
+                                className={`text-[9px] px-1.5 py-0 border-none 
+                                    ${n.overall_sentiment_label === 'Bullish' || n.overall_sentiment_label === 'Somewhat-Bullish' ? 'bg-green-500/10 text-green-500' : 
+                                      n.overall_sentiment_label === 'Bearish' || n.overall_sentiment_label === 'Somewhat-Bearish' ? 'bg-red-500/10 text-red-500' : 
+                                      'bg-slate-500/10 text-slate-500'}`}
+                              >
+                                {n.overall_sentiment_label}
+                              </Badge>
+                          )}
+                      </div>
+                      <ExternalLink className="h-3 w-3 text-muted-foreground opacity-50" />
                     </div>
                   </a>
                 </li>
