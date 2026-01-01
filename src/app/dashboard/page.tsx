@@ -70,6 +70,11 @@ interface TreasuryDataPoint {
   value: string;
 }
 
+interface CpiDataPoint {
+  date: string;
+  value: string;
+}
+
 type FedEvent = { date: string; timeET?: string; event: string; note?: string };
 type Earning = { date: string; ticker: string; company: string; time: "BMO" | "AMC" | "TBD" };
 
@@ -177,8 +182,9 @@ export default function DashboardPage() {
   const [loadingQuote, setLoadingQuote] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // New State for Treasury (Keeping this for when we hook up the API)
+  // Macro Data State
   const [treasuryData, setTreasuryData] = useState<TreasuryDataPoint[]>([]);
+  const [cpiData, setCpiData] = useState<CpiDataPoint[]>([]);
   const [isTreasuryModalOpen, setIsTreasuryModalOpen] = useState(false);
 
 
@@ -267,7 +273,7 @@ export default function DashboardPage() {
 
     fetchMarketData();
 
-    // 8. Treasury Yield (10 Year) - Keeping this active for later
+    // 8. Treasury Yield (10 Year)
     fetch("/api/external/treasury-yield?maturity=10year&interval=monthly")
         .then(res => res.json())
         .then(data => {
@@ -276,6 +282,16 @@ export default function DashboardPage() {
             }
         })
         .catch(err => console.error("Treasury fetch error", err));
+
+    // 9. CPI Data
+    fetch("/api/external/cpi?interval=monthly")
+        .then(res => res.json())
+        .then(data => {
+            if (data.data) {
+                setCpiData(data.data);
+            }
+        })
+        .catch(err => console.error("CPI fetch error", err));
 
   }, []);
   
@@ -286,11 +302,28 @@ export default function DashboardPage() {
 
   const previewSpendingData = useMemo(() => sortedSpendingData.slice(0, 5), [sortedSpendingData]);
 
-  // Current Treasury Value (Latest)
+  // --- Macro Data Calculations ---
+  
   const currentTreasuryYield = useMemo(() => {
     if (!treasuryData || treasuryData.length === 0) return null;
     return treasuryData[0].value;
   }, [treasuryData]);
+
+  const currentCPI = useMemo(() => {
+    if (!cpiData || cpiData.length === 0) return null;
+    return cpiData[0].value;
+  }, [cpiData]);
+
+  const currentInflation = useMemo(() => {
+    if (!cpiData || cpiData.length < 13) return null;
+    // Calculate YoY Inflation: ((Current CPI - CPI 12 months ago) / CPI 12 months ago) * 100
+    const current = parseFloat(cpiData[0].value);
+    const lastYear = parseFloat(cpiData[12].value); // Approx 1 year ago monthly
+    if (isNaN(current) || isNaN(lastYear) || lastYear === 0) return null;
+    
+    const inflation = ((current - lastYear) / lastYear) * 100;
+    return inflation.toFixed(2);
+  }, [cpiData]);
   
   const handleTickerClick = async (ticker: string) => {
     setSelectedTicker(ticker);
@@ -415,15 +448,23 @@ export default function DashboardPage() {
         })}
       </div>
 
-      {/* Row 2: Macro Indicators (Horizontal Layout) */}
+      {/* Row 2: Macro Indicators */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <MacroCard 
             title="Treasury Yield" 
             value={currentTreasuryYield ? `${currentTreasuryYield}%` : "--"} 
             subtext="10-Year Constant Maturity" 
         />
-        <MacroCard title="CPI" value="--" subtext="Consumer Price Index" />
-        <MacroCard title="Inflation" value="--" subtext="Year over Year" />
+        <MacroCard 
+            title="CPI" 
+            value={currentCPI ? currentCPI : "--"} 
+            subtext="Consumer Price Index" 
+        />
+        <MacroCard 
+            title="Inflation" 
+            value={currentInflation ? `${currentInflation}%` : "--"} 
+            subtext="Year over Year" 
+        />
         <MacroCard title="Federal Funds Rate" value="--" subtext="Target Rate" />
       </div>
 
