@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SubmitIdeaModal } from "@/components/feedback/SubmitIdeaModal";
+import { cn } from "@/lib/utils";
 
 // --- DUMMY DATA FOR UI DEV ---
 type FeedbackStatus = "new" | "planned" | "in-production" | "deployed";
@@ -41,6 +43,7 @@ export default function FeedbackPage() {
   const [topVoted, setTopVoted] = useState<FeedbackItem[]>([]);
   const [inProduction, setInProduction] = useState<FeedbackItem[]>([]);
   const [deployed, setDeployed] = useState<FeedbackItem[]>([]);
+  const [votedIds, setVotedIds] = useState<Set<string>>(new Set());
 
   const sortAndCategorize = (list: FeedbackItem[], currentSortBy: string) => {
     // Filter the list for "All Suggestions" to only include open items
@@ -65,11 +68,17 @@ export default function FeedbackPage() {
   }, []);
 
   const handleVote = (id: string) => {
+    if (votedIds.has(id)) return; // Already voted, do nothing
+
     const updatedDummyData = DUMMY_FEEDBACK.map(item =>
       item.id === id ? { ...item, votes: item.votes + 1 } : item
     );
     // Update the master list
     Object.assign(DUMMY_FEEDBACK, updatedDummyData);
+
+    // Add to voted set
+    setVotedIds(prev => new Set(prev).add(id));
+    
     // Re-sort and categorize with the updated master list
     sortAndCategorize(DUMMY_FEEDBACK, sortBy);
   };
@@ -84,7 +93,8 @@ export default function FeedbackPage() {
       date: new Date().toISOString().split('T')[0],
     };
     // Add new item to the DUMMY_FEEDBACK to make it part of the source of truth
-    DUMMY_FEEDBACK.unshift(newItem); 
+    DUMMY_FEEDBACK.unshift(newItem);
+    handleVote(newItem.id); // Also register that the user has "voted" for their own idea
     // Re-sort and categorize with the new item
     sortAndCategorize(DUMMY_FEEDBACK, sortBy);
   };
@@ -150,8 +160,9 @@ export default function FeedbackPage() {
             <select 
               value={sortBy}
               onChange={(e) => {
-                setSortBy(e.target.value);
-                sortAndCategorize(DUMMY_FEEDBACK, e.target.value);
+                const newSortBy = e.target.value;
+                setSortBy(newSortBy);
+                sortAndCategorize(DUMMY_FEEDBACK, newSortBy);
               }}
               className="text-sm rounded-md border-zinc-300 dark:border-zinc-700 bg-transparent text-zinc-700 dark:text-zinc-300 p-1"
             >
@@ -162,7 +173,12 @@ export default function FeedbackPage() {
         
          <div className="space-y-3">
             {feedbackList.map(item => (
-                <FeedbackListItem key={item.id} item={item} onVote={() => handleVote(item.id)} />
+                <FeedbackListItem 
+                    key={item.id} 
+                    item={item} 
+                    onVote={() => handleVote(item.id)}
+                    hasVoted={votedIds.has(item.id)}
+                />
             ))}
         </div>
       </div>
@@ -203,14 +219,31 @@ function HighlightColumn({ title, icon, borderColor, bgColor, items }: { title: 
 }
 
 // 2. The main list items at the bottom
-function FeedbackListItem({ item, onVote }: { item: FeedbackItem, onVote: () => void }) {
+function FeedbackListItem({ item, onVote, hasVoted }: { item: FeedbackItem, onVote: () => void, hasVoted: boolean }) {
     return (
         <div className="rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900/50 p-4 flex items-start gap-4 transition-all hover:border-zinc-300 dark:hover:border-white/20">
             
              {/* Vote Button */}
-            <button onClick={onVote} className="flex flex-col items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 p-2 min-w-[60px] hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors group">
-                <ChevronUp className="h-5 w-5 text-zinc-500 dark:text-zinc-400 group-hover:text-blue-500 transition-colors" />
-                <span className="font-bold text-lg text-zinc-700 dark:text-zinc-300 group-hover:text-blue-500 transition-colors">{item.votes}</span>
+            <button 
+              onClick={onVote} 
+              disabled={hasVoted}
+              className={cn(
+                "flex flex-col items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 p-2 min-w-[60px] transition-colors group",
+                hasVoted 
+                  ? "bg-blue-50 dark:bg-blue-900/50 border-blue-200 dark:border-blue-700 cursor-default"
+                  : "hover:bg-zinc-100 dark:hover:bg-zinc-700"
+              )}
+            >
+                <ChevronUp className={cn(
+                  "h-5 w-5 text-zinc-500 dark:text-zinc-400 transition-colors",
+                  hasVoted ? "text-blue-500" : "group-hover:text-blue-500"
+                )} />
+                <span className={cn(
+                  "font-bold text-lg text-zinc-700 dark:text-zinc-300 transition-colors",
+                  hasVoted ? "text-blue-500" : "group-hover:text-blue-500"
+                )}>
+                  {item.votes}
+                </span>
             </button>
             
              {/* Content */}
@@ -240,3 +273,5 @@ function StatusBadge({ status }: { status: FeedbackStatus }) {
             return null;
     }
 }
+
+    
