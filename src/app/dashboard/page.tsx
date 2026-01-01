@@ -115,7 +115,6 @@ const formatSecDate = (dateString: string) => {
 const formatSpendingDate = (dateString: string) => {
   if (!dateString) return '';
   const date = new Date(dateString);
-  // Using UTC methods ensures dates like "2025-11-20" don't shift to "19" due to timezones
   const month = String(date.getUTCMonth() + 1).padStart(2, '0');
   const day = String(date.getUTCDate()).padStart(2, '0');
   const year = date.getUTCFullYear();
@@ -178,7 +177,7 @@ export default function DashboardPage() {
   const [loadingQuote, setLoadingQuote] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // New State for Treasury
+  // New State for Treasury (Keeping this for when we hook up the API)
   const [treasuryData, setTreasuryData] = useState<TreasuryDataPoint[]>([]);
   const [isTreasuryModalOpen, setIsTreasuryModalOpen] = useState(false);
 
@@ -230,7 +229,6 @@ export default function DashboardPage() {
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          // Sort by date (nearest first) and take top 10
           const sorted = data.sort((a: IpoEvent, b: IpoEvent) => a.date.localeCompare(b.date));
           setIpos(sorted.slice(0, 10));
         }
@@ -269,7 +267,7 @@ export default function DashboardPage() {
 
     fetchMarketData();
 
-    // 8. Treasury Yield (10 Year)
+    // 8. Treasury Yield (10 Year) - Keeping this active for later
     fetch("/api/external/treasury-yield?maturity=10year&interval=monthly")
         .then(res => res.json())
         .then(data => {
@@ -313,14 +311,18 @@ export default function DashboardPage() {
 
   const fmt = (num: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
 
-  // Reusable Component for the Macro Indicators (to match Index styling)
+  // Reusable Component for the Macro Indicators (Updated Layout)
   const MacroCard = ({ title, value, subtext }: { title: string, value: string, subtext?: string }) => (
     <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-        <div className="p-6 flex flex-col justify-between h-full">
-            <span className="text-sm font-medium text-muted-foreground">{title}</span>
-            <div className="mt-2">
+        <div className="p-6 flex flex-row items-center justify-between">
+            {/* Left Side: Title & Subtext */}
+            <div className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-muted-foreground">{title}</span>
+                {subtext && <span className="text-xs text-muted-foreground opacity-50">{subtext}</span>}
+            </div>
+            {/* Right Side: Value */}
+            <div className="text-right">
                 <div className="text-2xl font-bold">{value}</div>
-                {subtext && <div className="text-xs text-muted-foreground mt-1">{subtext}</div>}
             </div>
         </div>
     </div>
@@ -413,16 +415,16 @@ export default function DashboardPage() {
         })}
       </div>
 
-      {/* Row 2: Macro Indicators */}
+      {/* Row 2: Macro Indicators (Horizontal Layout) */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <MacroCard 
             title="Treasury Yield" 
             value={currentTreasuryYield ? `${currentTreasuryYield}%` : "--"} 
-            subtext="10-Year" 
+            subtext="10-Year Constant Maturity" 
         />
         <MacroCard title="CPI" value="--" subtext="Consumer Price Index" />
-        <MacroCard title="Inflation" value="--" subtext="Year-over-Year" />
-        <MacroCard title="Federal Funds Rate" value="--" subtext="Target Range" />
+        <MacroCard title="Inflation" value="--" subtext="Year over Year" />
+        <MacroCard title="Federal Funds Rate" value="--" subtext="Target Rate" />
       </div>
 
       {/* Main Grid */}
