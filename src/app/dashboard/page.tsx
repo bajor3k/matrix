@@ -145,18 +145,22 @@ const MARKET_INDICES = [
 
 /* ----------------------- Card Shell ----------------------- */
 function Card({
-  title, icon, children, className = "",
+  title, icon, children, action, className = "",
 }: {
   title: string;
   icon?: React.ReactNode;
   children?: React.ReactNode;
+  action?: React.ReactNode;
   className?: string;
 }) {
   return (
     <div className={`rounded-xl border bg-card text-card-foreground ${className}`}>
-      <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-        {icon}
-        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
+        <div className="flex items-center gap-2">
+            {icon}
+            <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+        </div>
+        {action}
       </div>
       <div className="p-4">{children}</div>
     </div>
@@ -509,37 +513,55 @@ export default function DashboardPage() {
       {/* Main Grid: Gainers/Losers Left, News Right */}
       <div className="grid gap-6 lg:grid-cols-2">
         
-        {/* Top Gainers & Losers */}
-        <Card title="Market Movers" className="min-h-[360px] flex flex-col">
-            {!marketMovers ? (
-                 <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground">
-                    <Loader2 className="h-6 w-6 animate-spin mb-2" />
-                    <span className="text-sm italic">Loading market data...</span>
+        <Tabs defaultValue="gainers" className="flex flex-col h-full">
+            <Card 
+                title="Market Movers" 
+                className="min-h-[360px] flex flex-col"
+                action={
+                    <TabsList className="bg-transparent p-0 gap-1 h-auto">
+                        <TabsTrigger 
+                            value="gainers" 
+                            className="h-6 rounded-md px-2 text-xs font-medium bg-transparent text-muted-foreground data-[state=active]:bg-green-500/10 data-[state=active]:text-green-500 transition-all"
+                        >
+                            Gainers
+                        </TabsTrigger>
+                        <TabsTrigger 
+                            value="losers" 
+                            className="h-6 rounded-md px-2 text-xs font-medium bg-transparent text-muted-foreground data-[state=active]:bg-red-500/10 data-[state=active]:text-red-500 transition-all"
+                        >
+                            Losers
+                        </TabsTrigger>
+                        <TabsTrigger 
+                            value="active" 
+                            className="h-6 rounded-md px-2 text-xs font-medium bg-transparent text-muted-foreground data-[state=active]:bg-blue-500/10 data-[state=active]:text-blue-500 transition-all"
+                        >
+                            Active
+                        </TabsTrigger>
+                    </TabsList>
+                }
+            >
+                <div className="flex-1 overflow-y-auto max-h-[300px] pr-2">
+                    {!marketMovers ? (
+                        <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground py-12">
+                            <Loader2 className="h-6 w-6 animate-spin mb-2" />
+                            <span className="text-sm italic">Loading market data...</span>
+                        </div>
+                    ) : (
+                        <>
+                            <TabsContent value="gainers" className="mt-0 space-y-1">
+                                {marketMovers.top_gainers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="gainer" />)}
+                            </TabsContent>
+                            <TabsContent value="losers" className="mt-0 space-y-1">
+                                {marketMovers.top_losers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="loser" />)}
+                            </TabsContent>
+                            <TabsContent value="active" className="mt-0 space-y-1">
+                                {marketMovers.most_actively_traded.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="active" />)}
+                            </TabsContent>
+                        </>
+                    )}
                 </div>
-            ) : (
-                <Tabs defaultValue="gainers" className="w-full flex-1 flex flex-col -mt-4">
-                    <div className="px-4 pt-4">
-                        <TabsList className="grid w-full grid-cols-3 mb-2">
-                            <TabsTrigger value="gainers" className="data-[state=active]:text-green-500">Gainers</TabsTrigger>
-                            <TabsTrigger value="losers" className="data-[state=active]:text-red-500">Losers</TabsTrigger>
-                            <TabsTrigger value="active">Active</TabsTrigger>
-                        </TabsList>
-                    </div>
-                    
-                    <div className="flex-1 overflow-y-auto max-h-[300px] px-4 pb-4">
-                        <TabsContent value="gainers" className="mt-0 space-y-1">
-                            {marketMovers.top_gainers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="gainer" />)}
-                        </TabsContent>
-                        <TabsContent value="losers" className="mt-0 space-y-1">
-                            {marketMovers.top_losers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="loser" />)}
-                        </TabsContent>
-                         <TabsContent value="active" className="mt-0 space-y-1">
-                            {marketMovers.most_actively_traded.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="active" />)}
-                        </TabsContent>
-                    </div>
-                </Tabs>
-            )}
-        </Card>
+            </Card>
+        </Tabs>
 
         {/* Market News */}
         <Card title="Market News" className="min-h-[360px]">
