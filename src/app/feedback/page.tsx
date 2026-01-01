@@ -42,11 +42,6 @@ export default function FeedbackPage() {
   const [inProduction, setInProduction] = useState<FeedbackItem[]>([]);
   const [deployed, setDeployed] = useState<FeedbackItem[]>([]);
 
-  useEffect(() => {
-    // Initial sort and categorize
-    sortAndCategorize(DUMMY_FEEDBACK, "newest");
-  }, []);
-  
   const sortAndCategorize = (list: FeedbackItem[], currentSortBy: string) => {
     let sortedList = [...list];
     if (currentSortBy === "newest") {
@@ -62,17 +57,23 @@ export default function FeedbackPage() {
     setDeployed(DUMMY_FEEDBACK.filter(f => f.status === "deployed"));
   };
 
+  useEffect(() => {
+    // Initial sort and categorize
+    sortAndCategorize(DUMMY_FEEDBACK, "newest");
+  }, []);
 
   useEffect(() => {
     sortAndCategorize(feedbackList, sortBy);
-  }, [sortBy, feedbackList]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy]);
 
 
    const handleVote = (id: string) => {
       const updatedList = feedbackList.map(item =>
         item.id === id ? { ...item, votes: item.votes + 1 } : item
       );
-      setFeedbackList(updatedList);
+      // Re-sort the main list after voting, respecting the current sort order
+      sortAndCategorize(updatedList, sortBy);
   };
   
   const handleIdeaSubmit = (idea: { title: string; description: string }) => {
@@ -84,7 +85,10 @@ export default function FeedbackPage() {
       status: 'new',
       date: new Date().toISOString().split('T')[0],
     };
-    setFeedbackList(prev => [newItem, ...prev]);
+    // Add new item to the DUMMY_FEEDBACK to make it part of the source of truth
+    DUMMY_FEEDBACK.unshift(newItem); 
+    // Re-sort and categorize with the new item
+    sortAndCategorize(DUMMY_FEEDBACK, sortBy);
   };
 
 
