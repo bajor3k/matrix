@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -513,10 +514,11 @@ export default function DashboardPage() {
       {/* Main Grid: Gainers/Losers Left, News Right */}
       <div className="grid gap-6 lg:grid-cols-2">
         
-        <Tabs defaultValue="gainers" className="flex flex-col h-full">
+        {/* Top Gainers & Losers */}
+        <Tabs defaultValue="gainers" className="flex flex-col h-full w-full">
             <Card 
                 title="Market Movers" 
-                className="min-h-[360px] flex flex-col"
+                className="min-h-[360px] h-full flex flex-col"
                 action={
                     <TabsList className="bg-transparent p-0 gap-1 h-auto">
                         <TabsTrigger 
@@ -540,31 +542,29 @@ export default function DashboardPage() {
                     </TabsList>
                 }
             >
-                <div className="flex-1 overflow-y-auto max-h-[300px] pr-2">
-                    {!marketMovers ? (
-                        <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground py-12">
-                            <Loader2 className="h-6 w-6 animate-spin mb-2" />
-                            <span className="text-sm italic">Loading market data...</span>
-                        </div>
-                    ) : (
-                        <>
-                            <TabsContent value="gainers" className="mt-0 space-y-1">
-                                {marketMovers.top_gainers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="gainer" />)}
-                            </TabsContent>
-                            <TabsContent value="losers" className="mt-0 space-y-1">
-                                {marketMovers.top_losers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="loser" />)}
-                            </TabsContent>
-                            <TabsContent value="active" className="mt-0 space-y-1">
-                                {marketMovers.most_actively_traded.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="active" />)}
-                            </TabsContent>
-                        </>
-                    )}
-                </div>
+                {!marketMovers ? (
+                    <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground py-12">
+                        <Loader2 className="h-6 w-6 animate-spin mb-2" />
+                        <span className="text-sm italic">Loading market data...</span>
+                    </div>
+                ) : (
+                    <div className="flex-1 overflow-y-auto max-h-[300px] pr-2">
+                        <TabsContent value="gainers" className="mt-0 space-y-1">
+                            {marketMovers.top_gainers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="gainer" />)}
+                        </TabsContent>
+                        <TabsContent value="losers" className="mt-0 space-y-1">
+                            {marketMovers.top_losers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="loser" />)}
+                        </TabsContent>
+                        <TabsContent value="active" className="mt-0 space-y-1">
+                            {marketMovers.most_actively_traded.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="active" />)}
+                        </TabsContent>
+                    </div>
+                )}
             </Card>
         </Tabs>
 
         {/* Market News */}
-        <Card title="Market News" className="min-h-[360px]">
+        <Card title="Market News" className="min-h-[360px] h-full">
           <ul className="space-y-3">
             {news.length === 0 ? (
               <li className="text-muted-foreground text-sm">Loading news...</li>
