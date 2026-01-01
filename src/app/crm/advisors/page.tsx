@@ -21,7 +21,7 @@ export default function AdvisorsPage() {
         
         {/* Title & Count */}
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Advisors</h1>
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">client</h1>
           <div className="rounded-full bg-zinc-200 px-3 py-1 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
             0
           </div>
