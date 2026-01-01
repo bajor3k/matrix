@@ -76,6 +76,7 @@ export default function FeedbackPage() {
       return item;
     });
 
+    // This is not ideal in a real app, but for the demo we mutate the "source of truth"
     Object.assign(DUMMY_FEEDBACK, updatedDummyData);
 
     setVotedIds(prev => {
@@ -88,6 +89,7 @@ export default function FeedbackPage() {
       return newVotedIds;
     });
 
+    // Now re-sort and categorize based on the updated data and current sort order
     sortAndCategorize(DUMMY_FEEDBACK, sortBy);
   };
   
@@ -96,13 +98,14 @@ export default function FeedbackPage() {
       id: String(Date.now()),
       title: idea.title,
       description: idea.description,
-      votes: 1,
+      votes: 1, // Start with 1 vote from the submitter
       status: 'new',
       date: new Date().toISOString().split('T')[0],
     };
     // Add new item to the DUMMY_FEEDBACK to make it part of the source of truth
     DUMMY_FEEDBACK.unshift(newItem);
-    handleVote(newItem.id); // Also register that the user has "voted" for their own idea
+    // Also register that the user has "voted" for their own idea
+    handleVote(newItem.id); 
     // Re-sort and categorize with the new item
     sortAndCategorize(DUMMY_FEEDBACK, sortBy);
   };
@@ -170,6 +173,7 @@ export default function FeedbackPage() {
               onChange={(e) => {
                 const newSortBy = e.target.value;
                 setSortBy(newSortBy);
+                // When sort changes, re-run the sorting and categorization
                 sortAndCategorize(DUMMY_FEEDBACK, newSortBy);
               }}
               className="text-sm rounded-md border-zinc-300 dark:border-zinc-700 bg-transparent text-zinc-700 dark:text-zinc-300 p-1"
@@ -209,7 +213,7 @@ function HighlightColumn({ title, icon, borderColor, bgColor, items }: { title: 
                 {items.length === 0 ? (
                     <p className="text-sm text-zinc-500 italic">Nothing here yet.</p>
                 ) : items.map(item => (
-                    <div key={item.id} className="rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 p-3 shadow-sm">
+                    <div key={item.id} className="rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-[#0c0c0c] p-3 shadow-sm">
                         <h3 className="font-medium text-sm text-zinc-900 dark:text-zinc-100 line-clamp-1">{item.title}</h3>
                          <div className="flex items-center justify-between mt-2">
                              <StatusBadge status={item.status} />
@@ -229,7 +233,7 @@ function HighlightColumn({ title, icon, borderColor, bgColor, items }: { title: 
 // 2. The main list items at the bottom
 function FeedbackListItem({ item, onVote, hasVoted }: { item: FeedbackItem, onVote: () => void, hasVoted: boolean }) {
     return (
-        <div className="rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900/50 p-4 flex items-start gap-4 transition-all hover:border-zinc-300 dark:hover:border-white/20">
+        <div className="rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-[#0c0c0c] p-4 flex items-start gap-4 transition-all hover:border-zinc-300 dark:hover:border-white/20">
             
              {/* Vote Button */}
             <button 
