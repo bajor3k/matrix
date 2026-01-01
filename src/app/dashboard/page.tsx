@@ -510,7 +510,7 @@ export default function DashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         
         {/* Top Gainers & Losers */}
-        <Card title="Market Movers" icon={<BarChart3 />} className="min-h-[360px] flex flex-col">
+        <Card title="Market Movers" className="min-h-[360px] flex flex-col">
             {!marketMovers ? (
                  <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground">
                     <Loader2 className="h-6 w-6 animate-spin mb-2" />
