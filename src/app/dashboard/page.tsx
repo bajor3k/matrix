@@ -300,7 +300,7 @@ export default function DashboardPage() {
         {/* Market Status Component */}
         {marketStatusData && (
           <UiCard className="border-none shadow-none bg-transparent">
-            <CardContent className="p-0 flex items-center gap-6 text-sm">
+            <CardContent className="p-0 flex items-center gap-6 text-base">
               {/* Status Section - Time Removed */}
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-full">
@@ -684,4 +684,6 @@ export default function DashboardPage() {
     
 
     
+    
+
     
