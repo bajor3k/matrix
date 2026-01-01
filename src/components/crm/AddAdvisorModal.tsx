@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,7 +11,6 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input"; // Assuming you have a shadcn-like Input
 
 // Interface for form data
 interface AdvisorFormData {
@@ -55,7 +53,6 @@ export function AddAdvisorModal({ children }: { children: React.ReactNode }) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    // Handle checkboxes specifically
     if (e.target.type === 'checkbox') {
         setFormData(prev => ({ ...prev, [name]: (e.target as HTMLInputElement).checked }));
     } else {
@@ -66,12 +63,10 @@ export function AddAdvisorModal({ children }: { children: React.ReactNode }) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
-    // Add your submission logic here (e.g., Firebase call)
     setOpen(false);
-    setFormData(initialFormData); // Reset form
+    setFormData(initialFormData); 
   };
 
-  // Shared Input Styles for consistency across native selects/textareas and UI inputs
   const inputStyles = "flex h-10 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-zinc-800/50 dark:text-white dark:placeholder:text-zinc-500";
   const checkboxStyles = "h-5 w-5 rounded border-zinc-300 text-green-600 focus:ring-green-600 dark:border-zinc-700 dark:bg-zinc-800 dark:checked:bg-green-600";
   const labelStyles = "block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1";
@@ -81,8 +76,9 @@ export function AddAdvisorModal({ children }: { children: React.ReactNode }) {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      {/* Main Modal Content Container - max-w-4xl for wider layout */}
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-white/10 p-0 gap-0">
+      
+      {/* UPDATED: Added [&>button]:hidden to remove the X icon */}
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-white/10 p-0 gap-0 [&>button]:hidden">
         
         {/* Header */}
         <DialogHeader className="px-6 py-4 border-b border-zinc-200 dark:border-white/10 flex flex-row items-center justify-between">
@@ -90,9 +86,9 @@ export function AddAdvisorModal({ children }: { children: React.ReactNode }) {
              <span className="text-zinc-500 dark:text-zinc-400">Add a new</span> 
              <span className="font-bold">Person</span> 
              <span className="text-zinc-500 dark:text-zinc-400">-or- add a new</span>
-             <button className="text-blue-600 hover:underline dark:text-blue-400">Household</button> | 
-             <button className="text-blue-600 hover:underline dark:text-blue-400">Company</button> | 
-             <button className="text-blue-600 hover:underline dark:text-blue-400">Trust</button>
+             <button type="button" className="text-blue-600 hover:underline dark:text-blue-400">Household</button> | 
+             <button type="button" className="text-blue-600 hover:underline dark:text-blue-400">Company</button> | 
+             <button type="button" className="text-blue-600 hover:underline dark:text-blue-400">Trust</button>
           </DialogTitle>
           <DialogClose asChild>
             <Button variant="ghost" size="sm" className="text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-white">Cancel</Button>
@@ -102,7 +98,7 @@ export function AddAdvisorModal({ children }: { children: React.ReactNode }) {
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6">
           
-          {/* Row 1: Name Fields (5 columns) */}
+          {/* Row 1: Name */}
           <div>
             <label className={labelStyles}>Name</label>
             <div className="grid grid-cols-12 gap-3">
@@ -153,7 +149,7 @@ export function AddAdvisorModal({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          {/* Row 6: Email Address */}
+          {/* Row 6: Email */}
           <div>
             <label className={labelStyles}>Email Address</label>
             <div className="flex items-center gap-3">
@@ -169,7 +165,7 @@ export function AddAdvisorModal({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-           {/* Row 7: Phone Number */}
+           {/* Row 7: Phone */}
            <div>
             <label className={labelStyles}>Phone Number</label>
             <div className="flex items-center gap-3">
