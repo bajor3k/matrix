@@ -300,9 +300,9 @@ export default function DashboardPage() {
         {/* Market Status Component */}
         {marketStatusData && (
           <UiCard className="border-none shadow-none bg-transparent">
-            <CardContent className="p-0 flex items-center gap-6">
+            <CardContent className="p-0 flex items-center gap-6 text-sm">
               {/* Status Section - Time Removed */}
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-full">
                   <span className="relative flex h-2.5 w-2.5">
                     {/* Green Ping (Market Open) */}
@@ -334,7 +334,7 @@ export default function DashboardPage() {
 
               {/* Holiday Section - Softer Border */}
               {nextHoliday && (
-                <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50 dark:border-white/10 text-sm">
+                <div className="hidden md:flex items-center gap-2 pl-6 border-l border-border/50 dark:border-white/10">
                   <Badge variant="outline" className="gap-1.5 font-normal py-1 border-none text-muted-foreground">
                     Next Holiday:
                     <span className="font-medium text-foreground">{nextHoliday.eventName}</span>
@@ -585,6 +585,23 @@ export default function DashboardPage() {
         </Card>
       </div>
       
+      {/* Rates Row */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Treasury Yield */}
+        <Card title="Treasury Yield" className="min-h-[350px]">
+          <div className="flex h-full items-center justify-center text-sm text-muted-foreground italic">
+            Treasury data integration pending...
+          </div>
+        </Card>
+
+        {/* Federal Funds Rate */}
+        <Card title="Federal Funds Rate" className="min-h-[350px]">
+          <div className="flex h-full items-center justify-center text-sm text-muted-foreground italic">
+            Fed Funds data integration pending...
+          </div>
+        </Card>
+      </div>
+
       {isSpendingModalOpen && (
         <div id="modal-spending" className="modal-overlay" style={{ display: 'block' }}>
             <div className="modal-content">
