@@ -35,16 +35,7 @@ interface MarketNews {
   summary: string;
 }
 
-interface SecFiling {
-  accessNumber: string;
-  symbol: string;
-  cik: string;
-  form: string;
-  filedDate: string;
-  acceptedDate: string;
-  reportUrl: string;
-  filingUrl: string;
-}
+// Removed SecFiling interface
 
 interface IpoEvent {
   date: string;
@@ -111,15 +102,7 @@ function timeAgo(unixTimestamp: number) {
   return Math.floor(seconds) + "s ago";
 }
 
-// Helper function for MM.DD.YYYY format
-const formatSecDate = (dateString: string) => {
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const year = date.getFullYear(); // Uses full 4-digit year
-  return `${month}.${day}.${year}`;
-};
+// Removed formatSecDate helper
 
 // Helper to format date as MM.DD.YYYY
 const formatSpendingDate = (dateString: string) => {
@@ -178,7 +161,7 @@ export default function DashboardPage() {
   const [marketStatusData, setMarketStatusData] = useState<MarketStatus | null>(null);
   const [nextHoliday, setNextHoliday] = useState<MarketHoliday | null>(null);
   const [news, setNews] = useState<MarketNews[]>([]);
-  const [filings, setFilings] = useState<SecFiling[]>([]);
+  // Removed filings state
   const [ipos, setIpos] = useState<IpoEvent[]>([]);
   const [usaSpending, setUsaSpending] = useState<UsaSpendingData | null>(null);
   const [isSpendingModalOpen, setIsSpendingModalOpen] = useState(false);
@@ -226,15 +209,7 @@ export default function DashboardPage() {
       })
       .catch((err) => console.error("News fetch error", err));
     
-    // 4. SEC Filings
-    fetch("/api/external/sec-filings")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setFilings(data.slice(0, 7)); // Show top 7 filings
-        }
-      })
-      .catch((err) => console.error("Filings fetch error", err));
+    // 4. SEC Filings (REMOVED)
 
     // 5. IPO Calendar
     fetch("/api/external/ipo-calendar")
@@ -493,54 +468,13 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Main Grid: Swapped Positions (Filings Left, News Right) */}
+      {/* Main Grid: Swapped Positions (Gainers/Losers Left, News Right) */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* SEC Filings (NOW LEFT) */}
-        <Card title="SEC Filings" className="min-h-[360px]">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm sec-filings-table">
-              <thead>
-                <tr className="text-muted-foreground border-b border-border">
-                  <th className="text-left font-medium pb-2 pr-3 pl-2">Symbol</th>
-                  <th className="text-left font-medium pb-2 pr-3">Form</th>
-                  <th className="text-left font-medium pb-2 pr-3">Filed Date</th>
-                  <th className="text-right font-medium pb-2 pr-2">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {filings.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="py-4 text-center text-muted-foreground text-xs">
-                      Loading filings...
-                    </td>
-                  </tr>
-                ) : (
-                  filings.map((f, i) => (
-                    <tr key={i} className="hover:bg-accent/50 transition-colors">
-                      <td className="py-2.5 pl-2 font-semibold text-foreground">{f.symbol}</td>
-                      <td className="py-2.5">
-                        <Badge variant="secondary" className="font-mono text-xs font-normal">
-                          {f.form}
-                        </Badge>
-                      </td>
-                      <td className="py-2.5 text-muted-foreground text-xs">
-                        {formatSecDate(f.filedDate)}
-                      </td>
-                      <td className="py-2.5 pr-2 text-right action-col">
-                        <a 
-                          href={f.filingUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-xs view-btn"
-                        >
-                          View
-                        </a>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+        
+        {/* Top Gainers & Losers (Was SEC Filings) */}
+        <Card title="Top Gainers & Losers" className="min-h-[360px]">
+          <div className="flex h-full items-center justify-center text-sm text-muted-foreground italic">
+             Market Movers data integration pending...
           </div>
         </Card>
 
