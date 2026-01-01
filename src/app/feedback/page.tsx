@@ -168,7 +168,6 @@ export default function FeedbackPage() {
       <div className="flex-1 space-y-4">
         <div className="flex items-center justify-between border-b border-zinc-200 dark:border-white/10 pb-4">
             <h2 className="text-lg font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
-                <Lightbulb className="h-5 w-5 text-zinc-500" />
                 All Suggestions ({feedbackList.length})
             </h2>
 
