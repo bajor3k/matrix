@@ -38,6 +38,10 @@ export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
         >
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
         </Button>
+      </div>
+
+      {/* RIGHT CLUSTER — STAYS AT FAR RIGHT */}
+      <div className="ml-auto flex items-center gap-2">
         <Link href="/feedback" passHref>
           <Button
             variant="ghost"
@@ -49,10 +53,6 @@ export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
             <MessageSquare className="h-4 w-4" />
           </Button>
         </Link>
-      </div>
-
-      {/* RIGHT CLUSTER — STAYS AT FAR RIGHT */}
-      <div className="ml-auto flex items-center gap-2">
         <FullscreenToggle />
         <ThemeToggle />
       </div>
