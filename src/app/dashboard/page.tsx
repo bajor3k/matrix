@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -191,6 +192,7 @@ export default function DashboardPage() {
   const [nextHoliday, setNextHoliday] = useState<MarketHoliday | null>(null);
   const [news, setNews] = useState<MarketNews[]>([]);
   const [newsTicker, setNewsTicker] = useState(""); // For the input field
+  const [newsSentiment, setNewsSentiment] = useState("All");
   const [loadingNews, setLoadingNews] = useState(false);
   
   const [ipos, setIpos] = useState<IpoEvent[]>([]);
@@ -232,7 +234,7 @@ export default function DashboardPage() {
       .catch((err) => console.error("Holiday fetch error", err));
 
     // 3. Initial News Fetch (General)
-    fetchNews();
+    fetchNews("", "All");
     
     // 4. Market Movers (Top Gainers/Losers)
     fetch("/api/external/top-gainers-losers")
@@ -321,11 +323,18 @@ export default function DashboardPage() {
 
   // --- Functions ---
 
-  const fetchNews = async (ticker?: string) => {
+  const fetchNews = async (ticker?: string, sentiment?: string) => {
     setLoadingNews(true);
-    let url = "/api/external/market-news";
-    if (ticker) {
-        url += `?tickers=${ticker}`;
+    // Determine effective ticker and sentiment to use
+    const t = ticker !== undefined ? ticker : newsTicker;
+    const s = sentiment !== undefined ? sentiment : newsSentiment;
+
+    let url = "/api/external/market-news?sort=LATEST";
+    if (t) {
+        url += `&tickers=${t}`;
+    }
+    if (s && s !== 'All') {
+        url += `&sentiment=${s}`;
     }
     
     try {
@@ -345,13 +354,18 @@ export default function DashboardPage() {
 
   const handleNewsSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
-          fetchNews(newsTicker);
+          fetchNews(newsTicker, newsSentiment);
       }
+  };
+
+  const handleNewsTabChange = (value: string) => {
+      setNewsSentiment(value);
+      fetchNews(newsTicker, value);
   };
 
   const handleMoverClick = (ticker: string) => {
       setNewsTicker(ticker); // Populate the search box
-      fetchNews(ticker);     // Trigger the news search
+      fetchNews(ticker, newsSentiment);     // Trigger the news search
   };
   
   const sortedSpendingData = useMemo(() => {
@@ -617,20 +631,35 @@ export default function DashboardPage() {
             </Card>
         </Tabs>
 
-        {/* Market News (With Search) */}
+        {/* Market News (With Search & Sentiment Tabs) */}
         <Card 
             title="Market News" 
             className="min-h-[360px] h-full"
             action={
-                <div className="relative">
-                    <Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
-                    <Input 
-                        placeholder="Ticker..." 
-                        value={newsTicker}
-                        onChange={(e) => setNewsTicker(e.target.value.toUpperCase())}
-                        onKeyDown={handleNewsSearch}
-                        className="h-6 w-[80px] pl-7 text-[10px] bg-background/50 border-border/50 focus:w-[120px] transition-all"
-                    />
+                <div className="flex items-center gap-2 ml-auto">
+                    <Tabs defaultValue="All" value={newsSentiment} onValueChange={handleNewsTabChange} className="w-auto">
+                        <TabsList className="bg-transparent p-0 gap-1 h-auto">
+                            {["All", "Bullish", "Neutral", "Bearish"].map((sentiment) => (
+                                <TabsTrigger 
+                                    key={sentiment}
+                                    value={sentiment} 
+                                    className="h-6 rounded-md px-2 text-[10px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:text-foreground data-[state=active]:font-bold bg-transparent data-[state=active]:bg-transparent transition-all"
+                                >
+                                    {sentiment}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </Tabs>
+                    <div className="relative">
+                        <Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
+                        <Input 
+                            placeholder="Ticker..." 
+                            value={newsTicker}
+                            onChange={(e) => setNewsTicker(e.target.value.toUpperCase())}
+                            onKeyDown={handleNewsSearch}
+                            className="h-6 w-[80px] pl-7 text-[10px] bg-background/50 border-border/50 focus:w-[120px] transition-all"
+                        />
+                    </div>
                 </div>
             }
         >
@@ -642,7 +671,7 @@ export default function DashboardPage() {
                 </div>
             ) : news.length === 0 ? (
               <div className="text-center text-muted-foreground py-8 text-sm">
-                  No recent news found for this ticker.
+                  No recent news found.
               </div>
             ) : (
               news.slice(0, 6).map((n, i) => (
