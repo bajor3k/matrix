@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -426,17 +427,16 @@ export default function DashboardPage() {
   const MoverRow = ({ mover, type }: { mover: MarketMover, type: 'gainer' | 'loser' | 'active' }) => {
       const isPositive = parseFloat(mover.change_percentage) >= 0;
       return (
-        <div className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:bg-accent/50 px-2 rounded-md transition-colors cursor-pointer" onClick={() => handleMoverClick(mover.ticker)}>
-            <div className="flex flex-col">
-                <span className="font-semibold text-sm">{mover.ticker}</span>
-                <span className="text-xs text-muted-foreground opacity-70">Vol: {parseInt(mover.volume).toLocaleString()}</span>
-            </div>
-            <div className="text-right">
-                <div className="text-sm font-medium">${parseFloat(mover.price).toFixed(2)}</div>
-                <div className={`text-xs flex items-center justify-end ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                    {isPositive ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
-                    {mover.change_percentage}
-                </div>
+        <div 
+            className="grid grid-cols-5 gap-2 px-2 py-2 border-b border-border last:border-0 hover:bg-accent/50 rounded-md transition-colors cursor-pointer items-center" 
+            onClick={() => handleMoverClick(mover.ticker)}
+        >
+            <div className="font-semibold text-sm text-left">{mover.ticker}</div>
+            <div className="text-xs text-muted-foreground truncate text-left">{mover.ticker}</div> 
+            <div className="text-right text-xs text-muted-foreground opacity-90">{parseInt(mover.volume).toLocaleString()}</div>
+            <div className="text-right text-sm font-medium">${parseFloat(mover.price).toFixed(2)}</div>
+            <div className={`text-right text-xs font-medium flex items-center justify-end ${isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                {parseFloat(mover.change_percentage).toFixed(2)}%
             </div>
         </div>
       );
@@ -590,16 +590,28 @@ export default function DashboardPage() {
                         <span className="text-sm italic">Loading market data...</span>
                     </div>
                 ) : (
-                    <div className="flex-1 overflow-y-auto max-h-[300px] pr-2">
-                        <TabsContent value="gainers" className="mt-0 space-y-1">
-                            {marketMovers.top_gainers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="gainer" />)}
-                        </TabsContent>
-                        <TabsContent value="losers" className="mt-0 space-y-1">
-                            {marketMovers.top_losers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="loser" />)}
-                        </TabsContent>
-                        <TabsContent value="active" className="mt-0 space-y-1">
-                            {marketMovers.most_actively_traded.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="active" />)}
-                        </TabsContent>
+                    <div className="flex-1 flex flex-col min-h-0">
+                        {/* Static Header Row */}
+                        <div className="grid grid-cols-5 gap-2 px-2 py-2 text-[10px] font-semibold text-muted-foreground border-b border-border uppercase tracking-wider">
+                            <div className="text-left">Ticker</div>
+                            <div className="text-left">Company</div>
+                            <div className="text-right">Volume</div>
+                            <div className="text-right">Price</div>
+                            <div className="text-right">Change</div>
+                        </div>
+
+                        {/* Scrollable Rows */}
+                        <div className="overflow-y-auto pr-2">
+                            <TabsContent value="gainers" className="mt-0 space-y-0">
+                                {marketMovers.top_gainers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="gainer" />)}
+                            </TabsContent>
+                            <TabsContent value="losers" className="mt-0 space-y-0">
+                                {marketMovers.top_losers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="loser" />)}
+                            </TabsContent>
+                            <TabsContent value="active" className="mt-0 space-y-0">
+                                {marketMovers.most_actively_traded.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="active" />)}
+                            </TabsContent>
+                        </div>
                     </div>
                 )}
             </Card>
