@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -636,10 +635,20 @@ export default function DashboardPage() {
             title="Market News" 
             className="min-h-[360px] h-full"
             action={
-                <div className="flex items-center gap-2 ml-auto">
-                    <Tabs defaultValue="All" value={newsSentiment} onValueChange={handleNewsTabChange} className="w-auto">
+                <div className="flex items-center gap-2 flex-1">
+                    <div className="relative">
+                        <Search className="absolute left-1.5 top-1/2 h-2.5 w-2.5 -translate-y-1/2 text-muted-foreground" />
+                        <Input 
+                            placeholder="TICKER" 
+                            value={newsTicker}
+                            onChange={(e) => setNewsTicker(e.target.value.toUpperCase())}
+                            onKeyDown={handleNewsSearch}
+                            className="h-5 w-[70px] pl-5 text-[9px] bg-background/50 border-border/50 focus:w-[100px] transition-all"
+                        />
+                    </div>
+                    <Tabs defaultValue="All" value={newsSentiment} onValueChange={handleNewsTabChange} className="w-auto ml-auto">
                         <TabsList className="bg-transparent p-0 gap-1 h-auto">
-                            {["All", "Bullish", "Neutral", "Bearish"].map((sentiment) => (
+                            {["Bullish", "Neutral", "Bearish"].map((sentiment) => (
                                 <TabsTrigger 
                                     key={sentiment}
                                     value={sentiment} 
@@ -650,16 +659,6 @@ export default function DashboardPage() {
                             ))}
                         </TabsList>
                     </Tabs>
-                    <div className="relative">
-                        <Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
-                        <Input 
-                            placeholder="Ticker..." 
-                            value={newsTicker}
-                            onChange={(e) => setNewsTicker(e.target.value.toUpperCase())}
-                            onKeyDown={handleNewsSearch}
-                            className="h-6 w-[80px] pl-7 text-[10px] bg-background/50 border-border/50 focus:w-[120px] transition-all"
-                        />
-                    </div>
                 </div>
             }
         >
