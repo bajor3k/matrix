@@ -34,6 +34,7 @@ interface MarketNews {
   banner_image: string;
   source: string;
   overall_sentiment_label: string;
+  ticker_sentiment: { ticker: string; }[]; // Added to access tickers
 }
 
 interface IpoEvent {
@@ -700,6 +701,11 @@ export default function DashboardPage() {
                               >
                                 {n.overall_sentiment_label}
                               </Badge>
+                          )}
+                          {n.ticker_sentiment && n.ticker_sentiment.length > 0 && (
+                              <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
+                                  {n.ticker_sentiment[0].ticker}
+                              </span>
                           )}
                       </div>
                       <ExternalLink className="h-3 w-3 text-muted-foreground opacity-50" />
