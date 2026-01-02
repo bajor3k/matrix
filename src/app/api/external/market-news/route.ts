@@ -51,4 +51,6 @@ export async function GET(request: Request) {
     return NextResponse.json(feed.slice(0, 10));
   } catch (error) {
     console.error('Error fetching News Sentiment:', error);
-    return NextResponse.json({
+    return NextResponse.json({ error: 'Failed to fetch news' }, { status: 500 });
+  }
+}
