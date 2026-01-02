@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-const API_KEY = "Q5DHFIY1KIJ76U4I"; 
+const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
 const BASE_URL = 'https://www.alphavantage.co/query';
 
 export async function GET(request: Request) {
@@ -11,12 +11,12 @@ export async function GET(request: Request) {
     const interval = searchParams.get('interval') || 'monthly';
 
     const url = `${BASE_URL}?function=FEDERAL_FUNDS_RATE&interval=${interval}&apikey=${API_KEY}`;
-    
+
     // User-Agent header is required for Node.js
     const response = await fetch(url, {
       headers: { 'User-Agent': 'request' }
     });
-    
+
     if (!response.ok) {
       throw new Error(`Alpha Vantage API error: ${response.statusText}`);
     }
