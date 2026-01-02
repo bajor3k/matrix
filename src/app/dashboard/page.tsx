@@ -447,7 +447,7 @@ export default function DashboardPage() {
             <div className="font-semibold text-sm text-left">{mover.ticker}</div>
             <div className="text-right text-xs text-muted-foreground opacity-90">{parseInt(mover.volume).toLocaleString()}</div>
             <div className="text-right text-sm font-medium">${parseFloat(mover.price).toFixed(2)}</div>
-            <div className={`text-right text-xs font-medium flex items-center justify-end ${isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+            <div className={`text-right text-xs font-medium flex items-center justify-end ${isPositive ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500'}`}>
                 {parseFloat(mover.change_percentage).toFixed(2)}%
             </div>
         </div>
