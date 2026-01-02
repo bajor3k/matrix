@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -617,13 +616,13 @@ export default function DashboardPage() {
                         {/* Scrollable Rows */}
                         <div className="overflow-y-auto pr-2">
                             <TabsContent value="gainers" className="mt-0 space-y-0">
-                                {marketMovers.top_gainers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="gainer" />)}
+                                {marketMovers.top_gainers.slice(0, 13).map((m, i) => <MoverRow key={i} mover={m} type="gainer" />)}
                             </TabsContent>
                             <TabsContent value="losers" className="mt-0 space-y-0">
-                                {marketMovers.top_losers.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="loser" />)}
+                                {marketMovers.top_losers.slice(0, 13).map((m, i) => <MoverRow key={i} mover={m} type="loser" />)}
                             </TabsContent>
                             <TabsContent value="active" className="mt-0 space-y-0">
-                                {marketMovers.most_actively_traded.slice(0, 10).map((m, i) => <MoverRow key={i} mover={m} type="active" />)}
+                                {marketMovers.most_actively_traded.slice(0, 13).map((m, i) => <MoverRow key={i} mover={m} type="active" />)}
                             </TabsContent>
                         </div>
                     </div>
