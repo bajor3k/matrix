@@ -1,12 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack(config, { isServer }) {
-    config.module.rules.push({
-      test: /\.node$/,
-      use: 'node-loader',
-    });
-
-    return config;
+  experimental: {
+    allowedDevOrigins: [
+      "https://6000-firebase-studio-1747526771127.cluster-joak5ukfbnbyqspg4tewa33d24.cloudworkstations.dev",
+    ],
   },
 };
 
