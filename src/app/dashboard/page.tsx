@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -428,11 +427,10 @@ export default function DashboardPage() {
       const isPositive = parseFloat(mover.change_percentage) >= 0;
       return (
         <div 
-            className="grid grid-cols-5 gap-2 px-2 py-2 border-b border-border last:border-0 hover:bg-accent/50 rounded-md transition-colors cursor-pointer items-center" 
+            className="grid grid-cols-4 gap-2 px-2 py-2 border-b border-border last:border-0 hover:bg-accent/50 rounded-md transition-colors cursor-pointer items-center" 
             onClick={() => handleMoverClick(mover.ticker)}
         >
             <div className="font-semibold text-sm text-left">{mover.ticker}</div>
-            <div className="text-xs text-muted-foreground truncate text-left">{mover.ticker}</div> 
             <div className="text-right text-xs text-muted-foreground opacity-90">{parseInt(mover.volume).toLocaleString()}</div>
             <div className="text-right text-sm font-medium">${parseFloat(mover.price).toFixed(2)}</div>
             <div className={`text-right text-xs font-medium flex items-center justify-end ${isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
@@ -592,9 +590,8 @@ export default function DashboardPage() {
                 ) : (
                     <div className="flex-1 flex flex-col min-h-0">
                         {/* Static Header Row */}
-                        <div className="grid grid-cols-5 gap-2 px-2 py-2 text-[10px] font-semibold text-muted-foreground border-b border-border uppercase tracking-wider">
+                        <div className="grid grid-cols-4 gap-2 px-2 py-2 text-[10px] font-semibold text-muted-foreground border-b border-border uppercase tracking-wider">
                             <div className="text-left">Ticker</div>
-                            <div className="text-left">Company</div>
                             <div className="text-right">Volume</div>
                             <div className="text-right">Price</div>
                             <div className="text-right">Change</div>
