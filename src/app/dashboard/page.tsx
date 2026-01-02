@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
@@ -643,12 +644,12 @@ export default function DashboardPage() {
                             value={newsTicker}
                             onChange={(e) => setNewsTicker(e.target.value.toUpperCase())}
                             onKeyDown={handleNewsSearch}
-                            className="h-5 w-[70px] pl-5 text-[9px] bg-background/50 border-border/50 focus:w-[100px] transition-all"
+                            className="h-5 w-[70px] pl-5 text-[9px] bg-background/50 border-none focus-visible:ring-0 focus:w-[100px] transition-all"
                         />
                     </div>
                     <Tabs defaultValue="All" value={newsSentiment} onValueChange={handleNewsTabChange} className="w-auto ml-auto">
                         <TabsList className="bg-transparent p-0 gap-1 h-auto">
-                            {["Bullish", "Neutral", "Bearish"].map((sentiment) => (
+                            {["All", "Bullish", "Neutral", "Bearish"].map((sentiment) => (
                                 <TabsTrigger 
                                     key={sentiment}
                                     value={sentiment} 
