@@ -168,10 +168,10 @@ function Card({
 }) {
   return (
     <div className={`rounded-xl border bg-card text-card-foreground ${className}`}>
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
+      <div className="flex items-center border-b border-border px-4 py-3 gap-4">
         <div className="flex items-center gap-2">
             {icon}
-            <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+            <h3 className="text-sm font-semibold text-foreground whitespace-nowrap">{title}</h3>
         </div>
         {action}
       </div>
@@ -560,26 +560,28 @@ export default function DashboardPage() {
                 title="Market Movers" 
                 className="min-h-[360px] h-full flex flex-col"
                 action={
-                    <TabsList className="bg-transparent p-0 gap-1 h-auto">
-                        <TabsTrigger 
-                            value="gainers" 
-                            className="h-6 rounded-md px-2 text-[10px] font-medium data-[state=active]:bg-green-500/10 data-[state=active]:text-green-600 transition-all"
-                        >
-                            Gainers
-                        </TabsTrigger>
-                        <TabsTrigger 
-                            value="losers" 
-                            className="h-6 rounded-md px-2 text-[10px] font-medium data-[state=active]:bg-red-500/10 data-[state=active]:text-red-600 transition-all"
-                        >
-                            Losers
-                        </TabsTrigger>
-                        <TabsTrigger 
-                            value="active" 
-                            className="h-6 rounded-md px-2 text-[10px] font-medium data-[state=active]:bg-blue-500/10 data-[state=active]:text-blue-600 transition-all"
-                        >
-                            Active
-                        </TabsTrigger>
-                    </TabsList>
+                    <div className="ml-auto">
+                        <TabsList className="bg-transparent p-0 gap-1 h-auto">
+                            <TabsTrigger 
+                                value="gainers" 
+                                className="h-6 rounded-md px-2 text-[10px] font-medium data-[state=active]:bg-green-500/10 data-[state=active]:text-green-600 transition-all"
+                            >
+                                Gainers
+                            </TabsTrigger>
+                            <TabsTrigger 
+                                value="losers" 
+                                className="h-6 rounded-md px-2 text-[10px] font-medium data-[state=active]:bg-red-500/10 data-[state=active]:text-red-600 transition-all"
+                            >
+                                Losers
+                            </TabsTrigger>
+                            <TabsTrigger 
+                                value="active" 
+                                className="h-6 rounded-md px-2 text-[10px] font-medium data-[state=active]:bg-blue-500/10 data-[state=active]:text-blue-600 transition-all"
+                            >
+                                Active
+                            </TabsTrigger>
+                        </TabsList>
+                    </div>
                 }
             >
                 {!marketMovers ? (
@@ -626,7 +628,7 @@ export default function DashboardPage() {
                         value={newsTicker}
                         onChange={(e) => setNewsTicker(e.target.value.toUpperCase())}
                         onKeyDown={handleNewsSearch}
-                        className="h-7 w-[100px] pl-7 text-xs bg-background/50 border-border/50 focus:w-[140px] transition-all"
+                        className="h-6 w-[80px] pl-7 text-xs bg-background/50 border-border/50 focus:w-[120px] transition-all"
                     />
                 </div>
             }
