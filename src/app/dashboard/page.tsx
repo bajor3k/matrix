@@ -168,6 +168,7 @@ function Card({
 }) {
   return (
     <div className={`rounded-xl border bg-card text-card-foreground ${className}`}>
+      {/* Updated Header: Removed justify-between, added gap-4 */}
       <div className="flex items-center border-b border-border px-4 py-3 gap-4">
         <div className="flex items-center gap-2">
             {icon}
@@ -564,19 +565,19 @@ export default function DashboardPage() {
                         <TabsList className="bg-transparent p-0 gap-1 h-auto">
                             <TabsTrigger 
                                 value="gainers" 
-                                className="h-6 rounded-md px-2 text-[10px] font-medium data-[state=active]:bg-green-500/10 data-[state=active]:text-green-600 transition-all"
+                                className="h-6 rounded-md px-2 text-[10px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:text-foreground data-[state=active]:font-bold bg-transparent data-[state=active]:bg-transparent transition-all"
                             >
                                 Gainers
                             </TabsTrigger>
                             <TabsTrigger 
                                 value="losers" 
-                                className="h-6 rounded-md px-2 text-[10px] font-medium data-[state=active]:bg-red-500/10 data-[state=active]:text-red-600 transition-all"
+                                className="h-6 rounded-md px-2 text-[10px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:text-foreground data-[state=active]:font-bold bg-transparent data-[state=active]:bg-transparent transition-all"
                             >
                                 Losers
                             </TabsTrigger>
                             <TabsTrigger 
                                 value="active" 
-                                className="h-6 rounded-md px-2 text-[10px] font-medium data-[state=active]:bg-blue-500/10 data-[state=active]:text-blue-600 transition-all"
+                                className="h-6 rounded-md px-2 text-[10px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:text-foreground data-[state=active]:font-bold bg-transparent data-[state=active]:bg-transparent transition-all"
                             >
                                 Active
                             </TabsTrigger>
@@ -628,7 +629,7 @@ export default function DashboardPage() {
                         value={newsTicker}
                         onChange={(e) => setNewsTicker(e.target.value.toUpperCase())}
                         onKeyDown={handleNewsSearch}
-                        className="h-6 w-[80px] pl-7 text-xs bg-background/50 border-border/50 focus:w-[120px] transition-all"
+                        className="h-6 w-[80px] pl-7 text-[10px] bg-background/50 border-border/50 focus:w-[120px] transition-all"
                     />
                 </div>
             }
