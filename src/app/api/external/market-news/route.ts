@@ -1,4 +1,3 @@
-
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -10,23 +9,26 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const tickers = searchParams.get('tickers');
-    const sentiment = searchParams.get('sentiment'); // e.g., 'Bullish', 'Bearish'
+    const sentiment = searchParams.get('sentiment');
 
-    // Fetch more items (50) so we can filter them effectively
     let queryParams = `function=NEWS_SENTIMENT&sort=LATEST&limit=50&apikey=${API_KEY}`;
     
+    // Pass ticker to API
     if (tickers) {
         queryParams += `&tickers=${tickers}`;
     }
 
     const url = `${BASE_URL}?${queryParams}`;
     
+    // Cache for 1 hour
     const response = await fetch(url, {
-      headers: { 'User-Agent': 'request' }
+      headers: { 'User-Agent': 'request' },
+      next: { revalidate: 3600 } 
     });
     
     if (!response.ok) {
-      throw new Error(`Alpha Vantage API error: ${response.statusText}`);
+        if (response.status === 429) return NextResponse.json([]);
+        throw new Error(`Alpha Vantage API error: ${response.statusText}`);
     }
 
     const data = await response.json();
@@ -36,7 +38,18 @@ export async function GET(request: Request) {
 
     let feed = data.feed || [];
 
-    // Filter by Sentiment if requested
+    // 1. STRICT TICKER FILTER
+    // The API sometimes returns related news (like sector news) even if a ticker is requested.
+    // We manually verify the ticker is in the 'ticker_sentiment' list.
+    if (tickers) {
+        const targetTicker = tickers.toUpperCase();
+        feed = feed.filter((article: any) => {
+            if (!article.ticker_sentiment) return false;
+            return article.ticker_sentiment.some((t: any) => t.ticker === targetTicker);
+        });
+    }
+
+    // 2. SENTIMENT FILTER
     if (sentiment && sentiment !== 'All') {
         feed = feed.filter((item: any) => {
             const label = item.overall_sentiment_label;
@@ -47,10 +60,9 @@ export async function GET(request: Request) {
         });
     }
 
-    // Return top 10 after filtering
     return NextResponse.json(feed.slice(0, 10));
   } catch (error) {
     console.error('Error fetching News Sentiment:', error);
-    return NextResponse.json({ error: 'Failed to fetch news' }, { status: 500 });
+    return NextResponse.json([], { status: 200 });
   }
 }
