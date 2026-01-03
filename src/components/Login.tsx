@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { setPersistence, browserSessionPersistence, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase"; 
+import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Brain } from "lucide-react";
+import InteractiveBackground from "./InteractiveBackground";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -30,10 +31,11 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-black text-white">
-      
+    <div className="flex min-h-screen w-full flex-col bg-black text-white relative overflow-hidden">
+      <InteractiveBackground />
+
       {/* --- HEADER --- */}
-      <header className="flex w-full items-center justify-between px-8 py-6">
+      <header className="flex w-full items-center justify-between px-8 py-6 relative z-10">
         <div className="flex items-center gap-3">
           <Brain className="h-8 w-8 text-white" />
           <span className="text-xl font-bold tracking-tight">Matrix</span>
@@ -44,7 +46,7 @@ export default function Login() {
       </header>
 
       {/* --- CENTERED CONTENT --- */}
-      <div className="flex flex-1 items-center justify-center p-4">
+      <div className="flex flex-1 items-center justify-center p-4 relative z-10">
         <div className="w-full max-w-sm space-y-8 rounded-xl border border-white/10 bg-zinc-950 p-10 text-center shadow-2xl">
           <div className="space-y-2">
             <h1 className="text-3xl font-bold text-white tracking-tight">Matrix</h1>
@@ -68,12 +70,12 @@ export default function Login() {
               className="bg-black/50 border-white/10 text-white placeholder:text-zinc-600 focus-visible:ring-zinc-700"
               required
             />
-            
+
             {error && <p className="text-xs text-red-500 font-mono">{error}</p>}
 
-            <Button 
-              type="submit" 
-              className="w-full bg-white text-black hover:bg-zinc-200 font-semibold transition-all" 
+            <Button
+              type="submit"
+              className="w-full bg-white text-black hover:bg-zinc-200 font-semibold transition-all"
               disabled={loading}
             >
               {loading ? "Authenticating..." : "Initialize Session"}

@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import { Image as ImageIcon, Smile, X, BarChart2, FileVideo, Plus } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Image as ImageIcon, Smile, X, BarChart2, FileVideo, Plus, Search, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -20,8 +20,15 @@ export function CreatePost() {
     // Media State
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+    // GIF State
+    const [selectedGif, setSelectedGif] = useState<string | null>(null);
+    const [gifSearchQuery, setGifSearchQuery] = useState("");
+    const [gifResults, setGifResults] = useState<any[]>([]);
+    const [isLoadingGifs, setIsLoadingGifs] = useState(false);
+    const [showGifPicker, setShowGifPicker] = useState(false);
+
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const gifInputRef = useRef<HTMLInputElement>(null);
 
     // Poll State
     const [showPoll, setShowPoll] = useState(false);
@@ -32,9 +39,10 @@ export function CreatePost() {
         const file = e.target.files?.[0];
         if (file) {
             if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                setError("Media must be less than 5MB");
+                setError("Image must be less than 5MB");
                 return;
             }
+
             setSelectedImage(file);
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -45,11 +53,54 @@ export function CreatePost() {
         }
     };
 
-    const removeImage = () => {
+    const removeMedia = () => {
         setSelectedImage(null);
         setImagePreview(null);
+        setSelectedGif(null);
+
         if (fileInputRef.current) fileInputRef.current.value = "";
-        if (gifInputRef.current) gifInputRef.current.value = "";
+    };
+
+    // Auto-search GIFs as user types
+    useEffect(() => {
+        const searchGifs = async () => {
+            const query = gifSearchQuery.trim();
+            if (!query) {
+                setGifResults([]);
+                return;
+            }
+
+            setIsLoadingGifs(true);
+            try {
+                const API_KEY = "LIVDSRZULELA";
+                const limit = 8;
+                const response = await fetch(`https://g.tenor.com/v1/search?q=${query}&key=${API_KEY}&limit=${limit}`);
+                const data = await response.json();
+                setGifResults(data.results || []);
+            } catch (error) {
+                console.error("Error fetching GIFs:", error);
+            } finally {
+                setIsLoadingGifs(false);
+            }
+        };
+
+        // Debounce the search
+        const timeoutId = setTimeout(() => {
+            searchGifs();
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, [gifSearchQuery]);
+
+    const handleGifSelect = (gifUrl: string) => {
+        setSelectedGif(gifUrl);
+        setShowGifPicker(false);
+        setGifSearchQuery("");
+        setGifResults([]);
+
+        // Clear other media
+        setSelectedImage(null);
+        setImagePreview(null);
     };
 
     const onEmojiClick = (emojiData: EmojiClickData) => {
@@ -85,17 +136,19 @@ export function CreatePost() {
             return;
         }
 
-        if ((!postContent && !selectedImage && !hasPoll) || !user) return;
+        if ((!postContent && !selectedImage && !selectedGif && !hasPoll) || !user) return;
 
         // Optimistically clear UI
         const tempContent = content;
         const tempImage = selectedImage;
         const tempPreview = imagePreview;
+        const tempGif = selectedGif;
         const tempPoll = { show: showPoll, q: pollQuestion, o: pollOptions };
 
         setContent("");
         setSelectedImage(null);
         setImagePreview(null);
+        setSelectedGif(null);
         removePoll();
         setError(null);
 
@@ -104,9 +157,9 @@ export function CreatePost() {
             let pollData = null;
 
             // Upload image
-            if (selectedImage) {
-                const storageRef = ref(storage, `posts_images/${user.uid}/${Date.now()}_${selectedImage.name}`);
-                await uploadBytes(storageRef, selectedImage);
+            if (tempImage) {
+                const storageRef = ref(storage, `posts_images/${user.uid}/${Date.now()}_${tempImage.name}`);
+                await uploadBytes(storageRef, tempImage);
                 imageUrl = await getDownloadURL(storageRef);
             }
 
@@ -131,7 +184,8 @@ export function CreatePost() {
                 authorPhotoUrl: user.photoURL,
                 content: postContent,
                 imageUrl: imageUrl,
-                poll: pollData, // Add poll if exists
+                gifUrl: tempGif,
+                poll: pollData,
                 createdAt: serverTimestamp(),
                 likeCount: 0,
                 commentCount: 0,
@@ -144,6 +198,7 @@ export function CreatePost() {
             setContent(tempContent);
             setSelectedImage(tempImage);
             setImagePreview(tempPreview);
+            setSelectedGif(tempGif);
             if (tempPoll.show) {
                 setShowPoll(true);
                 setPollQuestion(tempPoll.q);
@@ -154,14 +209,14 @@ export function CreatePost() {
 
     if (!user) {
         return (
-            <div className="p-4 border border-white/10 rounded-lg bg-muted/50 text-center text-muted-foreground">
+            <div className="p-4 border border-gray-200 dark:border-white/10 rounded-lg bg-muted/50 text-center text-muted-foreground">
                 Please sign in to post in the Bullpen.
             </div>
         );
     }
 
     return (
-        <div className="flex gap-4 p-4 border-b border-white/10">
+        <div className="flex gap-4 p-4 border-b border-gray-200 dark:border-white/10">
             <Avatar>
                 <AvatarImage src={user.photoURL || undefined} alt={user.displayName || "User"} />
                 <AvatarFallback>{user.displayName?.charAt(0) || "U"}</AvatarFallback>
@@ -181,7 +236,21 @@ export function CreatePost() {
                             variant="secondary"
                             size="icon"
                             className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-70 hover:opacity-100"
-                            onClick={removeImage}
+                            onClick={removeMedia}
+                        >
+                            <X className="h-3 w-3" />
+                        </Button>
+                    </div>
+                )}
+
+                {selectedGif && (
+                    <div className="relative mt-2 mb-2 w-fit">
+                        <img src={selectedGif} alt="Selected GIF" className="max-h-60 rounded-lg object-cover" />
+                        <Button
+                            variant="secondary"
+                            size="icon"
+                            className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-70 hover:opacity-100"
+                            onClick={removeMedia}
                         >
                             <X className="h-3 w-3" />
                         </Button>
@@ -189,7 +258,7 @@ export function CreatePost() {
                 )}
 
                 {showPoll && (
-                    <div className="mt-3 p-3 border border-white/10 rounded-xl space-y-3 bg-muted/5">
+                    <div className="mt-3 p-3 border border-gray-200 dark:border-white/10 rounded-xl space-y-3 bg-muted/5">
                         <div className="flex justify-between items-center">
                             <Input
                                 placeholder="Ask a question..."
@@ -208,7 +277,7 @@ export function CreatePost() {
                                         placeholder={`Option ${index + 1}`}
                                         value={option}
                                         onChange={(e) => handleOptionChange(index, e.target.value)}
-                                        className="bg-background/50 border-white/10"
+                                        className="bg-background/50 border-gray-300 dark:border-white/10"
                                     />
                                     {index >= 2 && (
                                         <Button
@@ -245,7 +314,7 @@ export function CreatePost() {
                     </Alert>
                 )}
 
-                <div className="flex justify-between items-center border-t border-white/10 pt-2 mt-2">
+                <div className="flex justify-between items-center border-t border-gray-200 dark:border-white/10 pt-2 mt-2">
                     <div className="flex gap-1">
                         {/* Image Input */}
                         <input
@@ -265,23 +334,55 @@ export function CreatePost() {
                             <ImageIcon className="h-5 w-5" />
                         </Button>
 
-                        {/* GIF Input */}
-                        <input
-                            type="file"
-                            ref={gifInputRef}
-                            className="hidden"
-                            accept=".gif"
-                            onChange={handleImageSelect}
-                        />
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-purple-500 hover:text-purple-400 hover:bg-purple-500/10 h-8 w-8 transition-colors"
-                            onClick={() => gifInputRef.current?.click()}
-                            title="GIF"
-                        >
-                            <FileVideo className="h-5 w-5" />
-                        </Button>
+                        {/* GIF Picker */}
+                        <Popover open={showGifPicker} onOpenChange={setShowGifPicker}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-purple-500 hover:text-purple-400 hover:bg-purple-500/10 h-8 w-8 transition-colors"
+                                    title="GIF"
+                                >
+                                    <FileVideo className="h-5 w-5" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80 p-3 focus:outline-none" align="start">
+                                <div className="space-y-3">
+                                    <div className="flex gap-2">
+                                        <Input
+                                            placeholder="Search GIFs..."
+                                            value={gifSearchQuery}
+                                            onChange={(e) => setGifSearchQuery(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                                        {isLoadingGifs && (
+                                            <div className="col-span-2 text-center py-4">
+                                                <Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" />
+                                            </div>
+                                        )}
+                                        {!isLoadingGifs && gifResults.map((gif) => (
+                                            <button
+                                                key={gif.id}
+                                                className="relative aspect-video rounded-md overflow-hidden hover:opacity-80 transition-opacity"
+                                                onClick={() => handleGifSelect(gif.media[0].gif.url)}
+                                            >
+                                                <img
+                                                    src={gif.media[0].tinygif.url}
+                                                    alt={gif.content_description}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </button>
+                                        ))}
+                                        {!isLoadingGifs && gifResults.length === 0 && (
+                                            <div className="col-span-2 text-center text-sm text-muted-foreground py-4">
+                                                {gifSearchQuery ? "No GIFs found" : "Search for a GIF"}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
 
                         {/* Poll Button */}
                         <Button
@@ -319,7 +420,7 @@ export function CreatePost() {
 
                     <Button
                         onClick={handleSubmit}
-                        disabled={(!content.trim() && !selectedImage && !showPoll)}
+                        disabled={(!content.trim() && !selectedImage && !selectedGif && !showPoll)}
                         className="rounded-full px-6"
                     >
                         Post

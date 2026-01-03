@@ -6,12 +6,13 @@ import Link from 'next/link';
 import { Brain, ChevronLeft, ChevronRight, LogIn, LogOut, Loader2, MessageSquare } from 'lucide-react';
 import FullscreenToggle from './chrome/FullscreenToggle';
 import { ThemeToggle } from './theme-toggle';
+import { ProfileMenu } from './ProfileMenu';
 import { Button } from './ui/button';
 import { useAuth } from '@/contexts/auth-context';
 
 interface TopToolbarProps {
-    onToggleCollapsed: () => void;
-    collapsed: boolean;
+  onToggleCollapsed: () => void;
+  collapsed: boolean;
 }
 
 export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
@@ -55,6 +56,7 @@ export function TopToolbar({ onToggleCollapsed, collapsed }: TopToolbarProps) {
         </Link>
         <FullscreenToggle />
         <ThemeToggle />
+        <ProfileMenu />
       </div>
     </header>
   );

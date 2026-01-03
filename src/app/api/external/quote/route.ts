@@ -9,7 +9,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Symbol is required' }, { status: 400 });
   }
 
-  const apiKey = process.env.FINNHUB_API_KEY;
+  const apiKey = process.env.FINNHUB_API_KEY || 'd59g099r01qnj71jrga0d59g099r01qnj71jrgag';
 
   if (!apiKey) {
     return NextResponse.json({ error: 'API key not configured' }, { status: 500 });

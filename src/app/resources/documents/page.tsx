@@ -63,6 +63,13 @@ const recentActivityRaw = [
     { name: "Discretionary Wrap Form", type: "pdf", date: "Last Week" },
 ];
 
+// Mock Data for Recently Added
+const recentlyAddedRaw = [
+    { name: "Client Privacy Policy 2024", type: "pdf", date: "2024-03-15" },
+    { name: "AML Compliance Procedures", type: "word", date: "2024-03-12" },
+    { name: "Investment Policy Statement Template", type: "pdf", date: "2024-03-10" },
+];
+
 // Flatten the structure for individual cards, but keep category info
 const allDocuments = documentCategoriesRaw.flatMap(cat =>
     cat.files.map(file => ({
@@ -74,11 +81,11 @@ const allDocuments = documentCategoriesRaw.flatMap(cat =>
 
 const getFileIcon = (type: string) => {
     switch (type) {
-        case "excel": return <FileSpreadsheet className="h-5 w-5 text-emerald-500" />;
-        case "pdf": return <FileText className="h-5 w-5 text-red-500" />;
-        case "word": return <FileText className="h-5 w-5 text-blue-500" />;
-        case "form": return <FileText className="h-5 w-5 text-purple-500" />;
-        default: return <File className="h-5 w-5 text-gray-500" />;
+        case "excel": return <FileSpreadsheet className="h-6 w-6 text-emerald-500" />;
+        case "pdf": return <FileText className="h-6 w-6 text-red-500" />;
+        case "word": return <FileText className="h-6 w-6 text-blue-500" />;
+        case "form": return <FileText className="h-6 w-6 text-purple-500" />;
+        default: return <File className="h-6 w-6 text-gray-500" />;
     }
 };
 
@@ -111,25 +118,49 @@ export default function DocumentsPage() {
         id: `recent-${slugify(f.name)}`,
         category: "Recent Activity"
     }));
+    const recentlyAddedFiles = recentlyAddedRaw.map(f => ({
+        ...f,
+        id: `added-${slugify(f.name)}`,
+        category: "Recently Added"
+    }));
 
 
     // Helper for Sidebar List Items (Compact View)
-    const renderSidebarItem = (file: { name: string, type: string, date: string, id: string }) => (
-        <div
-            key={file.id}
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-secondary/40 transition-colors group/item text-sm cursor-pointer"
-            onClick={() => handleOpenFile(file.name)}
-        >
-            <div className="flex-shrink-0">
-                {/* Smaller icon for sidebar */}
-                <FileText className="h-4 w-4 text-muted-foreground" />
+    const renderSidebarItem = (file: { name: string, type: string, date: string, id: string }) => {
+        const isFav = favoriteIds.includes(file.id);
+        return (
+            <div
+                key={file.id}
+                className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-secondary/40 transition-colors group/item text-sm"
+            >
+                <div
+                    className="cursor-pointer text-muted-foreground hover:text-yellow-500 transition-colors"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(file.id);
+                    }}
+                    title={isFav ? "Remove from favorites" : "Add to favorites"}
+                >
+                    <Star className={cn("h-4 w-4", isFav && "fill-yellow-500 text-yellow-500")} />
+                </div>
+
+                <div className="flex-shrink-0 mt-0.5">
+                    {getFileIcon(file.type)}
+                </div>
+                <div
+                    className="min-w-0 flex-1 cursor-pointer"
+                    onClick={() => handleOpenFile(file.name)}
+                >
+                    <p className="font-medium text-foreground truncate">{file.name}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{file.type}</span>
+                        <span className="text-[10px] text-muted-foreground/60">•</span>
+                        <span className="text-[10px] text-muted-foreground">{file.date}</span>
+                    </div>
+                </div>
             </div>
-            <div className="min-w-0 flex-1">
-                <p className="font-medium text-foreground truncate">{file.name}</p>
-                <p className="text-[10px] text-muted-foreground">{file.date}</p>
-            </div>
-        </div>
-    );
+        );
+    };
 
 
     return (
@@ -158,19 +189,24 @@ export default function DocumentsPage() {
                                 const isFav = favoriteIds.includes(doc.id);
                                 return (
                                     <Card key={doc.id} className="group relative hover:shadow-md transition-all duration-200 border-border/60 overflow-hidden">
-                                        <div className="p-3 flex items-center gap-3 h-full">
-                                            <div className="flex-shrink-0 text-muted-foreground group-hover:text-primary transition-colors">
+                                        <div className="p-5 flex items-start gap-4 h-full">
+                                            <div className="flex-shrink-0 text-muted-foreground group-hover:text-primary transition-colors mt-1">
                                                 {getFileIcon(doc.type)}
                                             </div>
 
-                                            <div className="flex-1 min-w-0">
+                                            <div className="flex-1 min-w-0 space-y-1">
                                                 <h3
-                                                    className="font-medium text-sm hover:text-primary transition-colors cursor-pointer truncate"
+                                                    className="font-medium text-base hover:text-primary transition-colors cursor-pointer truncate"
                                                     onClick={() => handleOpenFile(doc.name)}
                                                     title={doc.name}
                                                 >
                                                     {doc.name}
                                                 </h3>
+                                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                                    <span className="uppercase font-medium">{doc.type}</span>
+                                                    <span>&bull;</span>
+                                                    <span>Last updated: {doc.date}</span>
+                                                </div>
                                             </div>
 
                                             <button
@@ -202,24 +238,54 @@ export default function DocumentsPage() {
                 <div className="xl:col-span-1 space-y-6">
                     {/* Favorites Card */}
                     {favoriteFiles.length > 0 && (
-                        <Card className="border-border/60">
-                            <div className="p-4 flex items-center gap-2">
-                                <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
-                                <h3 className="font-semibold text-lg">Favorites</h3>
-                            </div>
-                            <div className="p-3 space-y-1">
-                                {favoriteFiles.map(file => renderSidebarItem({ ...file, date: file.date }))}
+                        <Card className="group hover:shadow-md transition-all duration-200 border-border/60">
+                            <div className="p-6 space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+                                        <h3 className="font-semibold text-lg text-foreground tracking-tight">Favorites</h3>
+                                    </div>
+                                    <span className="text-xs font-medium text-muted-foreground bg-secondary/50 px-2.5 py-1 rounded-full">
+                                        {favoriteFiles.length} {favoriteFiles.length === 1 ? 'doc' : 'docs'}
+                                    </span>
+                                </div>
+                                <div className="space-y-2 pt-2">
+                                    {favoriteFiles.map(file => renderSidebarItem({ ...file, date: file.date }))}
+                                </div>
                             </div>
                         </Card>
                     )}
 
                     {/* Recent Activity Card */}
-                    <Card className="border-border/60">
-                        <div className="p-4">
-                            <h3 className="font-semibold text-lg">Recent Activity</h3>
+                    <Card className="group hover:shadow-md transition-all duration-200 border-border/60">
+                        <div className="p-6 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <FolderOpen className="h-5 w-5 text-muted-foreground" />
+                                    <h3 className="font-semibold text-lg text-foreground tracking-tight">Recent Activity</h3>
+                                </div>
+                            </div>
+                            <div className="space-y-2 pt-2">
+                                {recentActivityFiles.map(file => renderSidebarItem({ ...file, date: file.date }))}
+                            </div>
                         </div>
-                        <div className="p-3 space-y-1">
-                            {recentActivityFiles.map(file => renderSidebarItem({ ...file, date: file.date }))}
+                    </Card>
+
+                    {/* Recently Added Card */}
+                    <Card className="group hover:shadow-md transition-all duration-200 border-border/60">
+                        <div className="p-6 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <FolderOpen className="h-5 w-5 text-primary" />
+                                    <h3 className="font-semibold text-lg text-foreground tracking-tight">Recently Added</h3>
+                                </div>
+                                <span className="text-xs font-medium text-muted-foreground bg-secondary/50 px-2.5 py-1 rounded-full">
+                                    {recentlyAddedFiles.length} new
+                                </span>
+                            </div>
+                            <div className="space-y-2 pt-2">
+                                {recentlyAddedFiles.map(file => renderSidebarItem({ ...file, date: file.date }))}
+                            </div>
                         </div>
                     </Card>
                 </div>

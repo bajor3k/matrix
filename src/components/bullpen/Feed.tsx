@@ -44,13 +44,13 @@ export function Feed() {
     );
 
     return (
-        <div className="w-full max-w-2xl mx-auto border-x border-white/10 min-h-screen">
-            <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-white/10 p-4">
+        <div className="w-full max-w-2xl mx-auto border-x border-gray-200 dark:border-white/10 min-h-screen">
+            <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4">
                 <div className="relative w-full">
                     <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search posts..."
-                        className="pl-9 bg-background/50 border-white/10 focus-visible:ring-1"
+                        className="pl-9 bg-background/50 border-gray-300 dark:border-white/10 focus-visible:ring-1"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />

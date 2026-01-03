@@ -9,8 +9,9 @@ import {
 } from "@/components/ui/hover-card";
 import { db } from "@/firebase/config";
 import { collection, query, where, getDocs, doc, getDoc, collectionGroup } from "firebase/firestore";
-import { CalendarDays, MapPin, Quote } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { CalendarDays, MapPin, Quote, Cake } from "lucide-react";
+import { formatDistanceToNow, format } from "date-fns";
+import { getProfileData } from "@/lib/profile-utils";
 
 interface UserProfileHoverCardProps {
     uid: string;
@@ -31,6 +32,7 @@ export function UserProfileHoverCard({ uid, name, photoUrl, children }: UserProf
     const [joinedDate, setJoinedDate] = useState<Date | null>(null);
     const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [customProfile, setCustomProfile] = useState<any>(null);
 
     useEffect(() => {
         if (!isOpen || stats) return; // Don't fetch if closed or already fetched
@@ -38,6 +40,10 @@ export function UserProfileHoverCard({ uid, name, photoUrl, children }: UserProf
         const fetchData = async () => {
             setLoading(true);
             try {
+                // Load custom profile data from localStorage
+                const profileData = getProfileData(uid);
+                setCustomProfile(profileData);
+
                 // 1. Fetch User Profile (Bio, Join Date) - Optional
                 // We assume a 'users' collection might exist, or handled gracefully if not
                 const userRef = doc(db, "users", uid);
@@ -87,20 +93,30 @@ export function UserProfileHoverCard({ uid, name, photoUrl, children }: UserProf
             <HoverCardContent className="w-80 border-white/10 bg-black/90 backdrop-blur-xl">
                 <div className="flex justify-between space-x-4">
                     <Avatar>
-                        <AvatarImage src={photoUrl} />
-                        <AvatarFallback>{name.charAt(0)}</AvatarFallback>
+                        <AvatarImage src={customProfile?.photoUrl || photoUrl} />
+                        <AvatarFallback>{(customProfile?.name || name).charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div className="space-y-1">
-                        <h4 className="text-sm font-semibold">{name}</h4>
+                        <h4 className="text-sm font-semibold">{customProfile?.name || name}</h4>
                         <p className="text-sm text-muted-foreground">
                             {bio || (loading ? "Loading..." : "Matrix Member")}
                         </p>
-                        <div className="flex items-center pt-2">
-                            <CalendarDays className="mr-2 h-4 w-4 opacity-70" />
-                            <span className="text-xs text-muted-foreground">
-                                {joinedDate ? `Member for ${formatDistanceToNow(joinedDate)}` : "Member recently"}
-                            </span>
-                        </div>
+                        {customProfile?.dob && (
+                            <div className="flex items-center pt-2">
+                                <Cake className="mr-2 h-4 w-4 opacity-70" />
+                                <span className="text-xs text-muted-foreground">
+                                    {format(new Date(customProfile.dob), 'MMMM d, yyyy')}
+                                </span>
+                            </div>
+                        )}
+                        {!customProfile?.dob && joinedDate && (
+                            <div className="flex items-center pt-2">
+                                <CalendarDays className="mr-2 h-4 w-4 opacity-70" />
+                                <span className="text-xs text-muted-foreground">
+                                    {`Member for ${formatDistanceToNow(joinedDate)}`}
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -122,15 +138,6 @@ export function UserProfileHoverCard({ uid, name, photoUrl, children }: UserProf
                             {loading || !stats ? "-" : stats.commentsCount}
                         </div>
                         <div className="text-xs text-muted-foreground">Comments</div>
-                    </div>
-                </div>
-
-                <div className="mt-4 pt-4 border-t border-white/10">
-                    <div className="flex gap-2">
-                        <Quote className="h-4 w-4 text-blue-500/50 rotate-180 mb-auto shrink-0" />
-                        <p className="text-sm italic text-muted-foreground/80 font-serif">
-                            "Ideas are the currency of the future."
-                        </p>
                     </div>
                 </div>
             </HoverCardContent>

@@ -42,7 +42,7 @@ export const firmDetails = {
       Fidelity: ["G123456", "G987654"],
     },
     advisors: [
-       {
+      {
         name: "Robert Johnson",
         email: "johnson@beaconfg.com",
       },
@@ -129,7 +129,7 @@ export const firmDetails = {
       }
     ],
     associates: [
-       {
+      {
         name: "Sarah Thomas",
         email: "thomas@evergreenwp.com",
       }
@@ -232,7 +232,7 @@ export const firmDetails = {
       Goldman: ["GS-RLE-01"],
     },
     advisors: [
-       {
+      {
         name: "Charles Martinez",
         email: "martinez@atlasfn.com",
       }
@@ -269,6 +269,36 @@ export const firmDetails = {
         name: "Ashley Rodriguez",
         email: "rodriguez@blueridgeih.com",
       },
+    ],
+  },
+  "Home Office": {
+    firmInfo: {
+      crd: "100000",
+      phone: "555-000-0000",
+      email: "support@homeoffice.com",
+      address: "123 Main St, New York, NY 10001",
+      ip: "HO",
+    },
+    tags: ["Goldman", "Fidelity", "Schwab", "Pershing", "PAS"],
+    custodians: ["Goldman", "Fidelity", "Schwab", "Pershing", "PAS"],
+    codes: {
+      Goldman: ["HO-GS-01"],
+      Fidelity: ["HO-FID-01"],
+      Schwab: ["HO-SCH-01"],
+      Pershing: ["HO-PER-01"],
+      PAS: ["HO-PAS-01"],
+    },
+    advisors: [
+      {
+        name: "Admin User",
+        email: "admin@homeoffice.com",
+      }
+    ],
+    associates: [
+      {
+        name: "Support Staff",
+        email: "support@homeoffice.com",
+      }
     ],
   },
 };

@@ -64,6 +64,13 @@ const recentActivityRaw = [
   { name: "Gift & Gratuity Log", type: "excel", date: "Oct 24, 2023" },
 ];
 
+// Mock Data for Recently Added
+const recentlyAddedRaw = [
+  { name: "ESG Investment Guidelines", type: "pdf", date: "2024-03-18" },
+  { name: "Cybersecurity Best Practices", type: "word", date: "2024-03-15" },
+  { name: "Quarterly Reporting Checklist", type: "excel", date: "2024-03-12" },
+];
+
 // Enrich data with IDs
 const teamProcedures = teamProceduresRaw.map(team => ({
   ...team,
@@ -136,6 +143,15 @@ export default function ProceduresPage() {
     files: recentActivityRaw.map(f => ({
       ...f,
       id: `recent-${slugify(f.name)}`
+    }))
+  };
+
+  // Recently Added Team Object (Mock)
+  const recentlyAddedTeam = {
+    team: "Recently Added",
+    files: recentlyAddedRaw.map(f => ({
+      ...f,
+      id: `added-${slugify(f.name)}`
     }))
   };
 
@@ -258,6 +274,7 @@ export default function ProceduresPage() {
             <div className="sticky top-6 space-y-6">
               {renderTeamCard(filteredFavoritesTeam, true)}
               {renderTeamCard(recentActivityTeam, true)}
+              {renderTeamCard(recentlyAddedTeam, true)}
             </div>
           )}
         </div>
