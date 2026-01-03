@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fontSans.variable} ${fontMono.variable}`} suppressHydrationWarning>
       <head />
-      <body className="bg-black text-zinc-100">
+      <body className="bg-black text-zinc-100" suppressHydrationWarning>
         <ClientLayout>
           <ThemeProvider
             attribute="class"
@@ -38,7 +38,7 @@ export default function RootLayout({
             </AuthProvider>
           </ThemeProvider>
         </ClientLayout>
-        
+
       </body>
     </html>
   );

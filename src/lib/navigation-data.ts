@@ -49,16 +49,16 @@ import {
 } from "lucide-react";
 
 export const toolbarSections: ToolbarSection[] = [
-    { id: 'Reports', title: 'Reports' },
-    { id: 'CRM', title: 'CRM' },
-    { id: 'Analytics', title: 'Analytics' },
-    { id: 'Resources', title: 'Resources' },
+  { id: 'Reports', title: 'Reports' },
+  { id: 'CRM', title: 'CRM' },
+  { id: 'Analytics', title: 'Analytics' },
+  { id: 'Resources', title: 'Resources' },
 ];
 
 export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' | 'Mail', NavItem[]> = {
   'Reports': [
-    { name: 'Advisory Fees', icon: BadgeDollarSign, href: '/reports/advisory-fees'},
-    { name: 'Cash', icon: Wallet, href: '/reports/cash'},
+    { name: 'Advisory Fees', icon: BadgeDollarSign, href: '/reports/advisory-fees' },
+    { name: 'Cash', icon: Wallet, href: '/reports/cash' },
   ],
   'CRM': [
     {
@@ -119,16 +119,17 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
     { name: 'Client', icon: Users, href: '/analytics/client' },
     { name: 'Financial', icon: TrendingUp, href: '/analytics/financial' },
     { name: 'Conversion', icon: Repeat, href: '/analytics/conversion' },
-    { name: 'Compliance', icon: ShieldAlert, href: '/analytics/compliance'},
+    { name: 'Compliance', icon: ShieldAlert, href: '/analytics/compliance' },
     { name: 'Contribution', icon: TrendingUp, href: '/analytics/contribution' },
   ],
   'Resources': [
     { name: 'OneDrive', icon: Cloud, href: '/resources/onedrive' },
-    { name: "Procedures", icon: FileText, href: "/resources/procedures" },
+    { name: 'Procedures', icon: FileText, href: '/resources/procedures' },
+    { name: 'Documents', icon: FileStack, href: '/resources/documents' },
     { name: 'External', icon: Globe, href: '/resources/external' },
   ],
   'Other': [
-      { name: 'Settings', icon: Settings, href: '/settings' },
+    { name: 'Settings', icon: Settings, href: '/settings' },
   ],
   'Standalone': [
     { name: 'Dashboard', icon: LayoutGrid, href: '/dashboard' },
@@ -136,6 +137,6 @@ export const navigationData: Record<ToolbarSectionKey | 'Other' | 'Standalone' |
     { name: 'Alerts', icon: Bell, href: '/alerts' },
     { name: 'Ticket', icon: KanbanSquare, href: '/ticket' },
     { name: 'The Bullpen', icon: Megaphone, href: '/bullpen' },
-    { name: 'Wall Street', icon: TrendingUp, href: '/wall-street'},
+    { name: 'Wall Street', icon: TrendingUp, href: '/wall-street' },
   ]
 };

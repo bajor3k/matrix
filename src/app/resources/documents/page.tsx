@@ -1,0 +1,229 @@
+"use client";
+
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { FileText, FileSpreadsheet, File, Search, FolderOpen, Star, MoreVertical } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+// Helper to generate IDs
+const slugify = (str: string) => str.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+const documentCategoriesRaw = [
+    {
+        category: "General Support",
+        files: [
+            { name: "Request a Missing Resource", type: "form", date: "2024-03-01" },
+            { name: "Report a Broken Link", type: "form", date: "2024-03-01" },
+        ],
+    },
+    {
+        category: "Discretionary Forms",
+        files: [
+            { name: "Discretionary Wrap Form", type: "pdf", date: "2024-02-15" },
+            { name: "Discretionary Non-WRAP Form", type: "pdf", date: "2024-02-15" },
+            { name: "Non-Discretionary WRAP Form", type: "pdf", date: "2024-02-15" },
+            { name: "Non-Discretionary Non-WRAP Form", type: "pdf", date: "2024-02-15" },
+        ],
+    },
+    {
+        category: "Non-Custodial Forms",
+        files: [
+            { name: "Non-Custodial Discretionary Wrap Form", type: "pdf", date: "2024-01-20" },
+            { name: "Non-Custodial Discretionary Non-WRAP Form", type: "pdf", date: "2024-01-20" },
+            { name: "Non-Custodial Non-Discretionary WRAP Form", type: "pdf", date: "2024-01-20" },
+            { name: "Non-Custodial Non-Discretionary Non WRAP Form", type: "pdf", date: "2024-01-20" },
+        ],
+    },
+    {
+        category: "Client Onboarding",
+        files: [
+            { name: "Retirement Plan Advisory Agreement", type: "pdf", date: "2024-03-05" },
+            { name: "New Advisory Client Form", type: "pdf", date: "2024-03-10" },
+            { name: "New Advisory Client-Entity Form", type: "pdf", date: "2024-03-10" },
+            { name: "New Advisory Client-Trust/Estate Form", type: "pdf", date: "2024-03-10" },
+            { name: "New Client Profile Form - Qualified Plans", type: "pdf", date: "2024-02-28" },
+            { name: "Sanctuary Advisors Consulting Services Agreement", type: "pdf", date: "2024-01-15" },
+        ],
+    },
+    {
+        category: "Operational",
+        files: [
+            { name: "Trade Correction Forms", type: "pdf", date: "2024-02-05" },
+            { name: "Medallion Signature Request Form", type: "pdf", date: "2024-02-01" },
+        ],
+    },
+];
+
+// Mock Data for Recent Activity
+const recentActivityRaw = [
+    { name: "New Advisory Client Form", type: "pdf", date: "Today, 10:23 AM" },
+    { name: "Trade Correction Forms", type: "pdf", date: "Yesterday, 4:45 PM" },
+    { name: "Discretionary Wrap Form", type: "pdf", date: "Last Week" },
+];
+
+// Flatten the structure for individual cards, but keep category info
+const allDocuments = documentCategoriesRaw.flatMap(cat =>
+    cat.files.map(file => ({
+        ...file,
+        category: cat.category,
+        id: `${slugify(cat.category)}-${slugify(file.name)}`
+    }))
+);
+
+const getFileIcon = (type: string) => {
+    switch (type) {
+        case "excel": return <FileSpreadsheet className="h-5 w-5 text-emerald-500" />;
+        case "pdf": return <FileText className="h-5 w-5 text-red-500" />;
+        case "word": return <FileText className="h-5 w-5 text-blue-500" />;
+        case "form": return <FileText className="h-5 w-5 text-purple-500" />;
+        default: return <File className="h-5 w-5 text-gray-500" />;
+    }
+};
+
+export default function DocumentsPage() {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+
+    const toggleFavorite = (fileId: string) => {
+        setFavoriteIds(prev =>
+            prev.includes(fileId)
+                ? prev.filter(id => id !== fileId)
+                : [...prev, fileId]
+        );
+    };
+
+    const handleOpenFile = (fileName: string) => {
+        alert(`Opening ${fileName}...`);
+    };
+
+    // Filter Documents
+    const filteredDocuments = allDocuments.filter(doc =>
+        doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doc.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Sidebar Data
+    const favoriteFiles = allDocuments.filter(doc => favoriteIds.includes(doc.id));
+    const recentActivityFiles = recentActivityRaw.map(f => ({
+        ...f,
+        id: `recent-${slugify(f.name)}`,
+        category: "Recent Activity"
+    }));
+
+
+    // Helper for Sidebar List Items (Compact View)
+    const renderSidebarItem = (file: { name: string, type: string, date: string, id: string }) => (
+        <div
+            key={file.id}
+            className="flex items-center gap-3 p-2 rounded-lg hover:bg-secondary/40 transition-colors group/item text-sm cursor-pointer"
+            onClick={() => handleOpenFile(file.name)}
+        >
+            <div className="flex-shrink-0">
+                {/* Smaller icon for sidebar */}
+                <FileText className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <div className="min-w-0 flex-1">
+                <p className="font-medium text-foreground truncate">{file.name}</p>
+                <p className="text-[10px] text-muted-foreground">{file.date}</p>
+            </div>
+        </div>
+    );
+
+
+    return (
+        <div className="p-6 space-y-8 max-w-[1600px] mx-auto">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Documents</h1>
+                </div>
+                <div className="relative w-full md:w-96">
+                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        placeholder="Search documents..."
+                        className="pl-9 bg-background/50"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
+                {/* Main Content - Grid of Individual Cards */}
+                <div className="xl:col-span-3">
+                    {filteredDocuments.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredDocuments.map((doc) => {
+                                const isFav = favoriteIds.includes(doc.id);
+                                return (
+                                    <Card key={doc.id} className="group relative hover:shadow-md transition-all duration-200 border-border/60 overflow-hidden">
+                                        <div className="p-3 flex items-center gap-3 h-full">
+                                            <div className="flex-shrink-0 text-muted-foreground group-hover:text-primary transition-colors">
+                                                {getFileIcon(doc.type)}
+                                            </div>
+
+                                            <div className="flex-1 min-w-0">
+                                                <h3
+                                                    className="font-medium text-sm hover:text-primary transition-colors cursor-pointer truncate"
+                                                    onClick={() => handleOpenFile(doc.name)}
+                                                    title={doc.name}
+                                                >
+                                                    {doc.name}
+                                                </h3>
+                                            </div>
+
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleFavorite(doc.id);
+                                                }}
+                                                className="flex-shrink-0 text-muted-foreground hover:text-yellow-500 transition-colors focus:outline-none"
+                                            >
+                                                <Star className={cn("h-4 w-4", isFav && "fill-yellow-500 text-yellow-500")} />
+                                            </button>
+                                        </div>
+                                    </Card>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="py-12 text-center col-span-full">
+                            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted mb-4">
+                                <Search className="h-6 w-6 text-muted-foreground" />
+                            </div>
+                            <h3 className="text-lg font-medium text-foreground">No documents found</h3>
+                            <p className="text-muted-foreground mt-1">Try adjusting your search terms</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Sidebar */}
+                <div className="xl:col-span-1 space-y-6">
+                    {/* Favorites Card */}
+                    {favoriteFiles.length > 0 && (
+                        <Card className="border-border/60">
+                            <div className="p-4 flex items-center gap-2">
+                                <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+                                <h3 className="font-semibold text-lg">Favorites</h3>
+                            </div>
+                            <div className="p-3 space-y-1">
+                                {favoriteFiles.map(file => renderSidebarItem({ ...file, date: file.date }))}
+                            </div>
+                        </Card>
+                    )}
+
+                    {/* Recent Activity Card */}
+                    <Card className="border-border/60">
+                        <div className="p-4">
+                            <h3 className="font-semibold text-lg">Recent Activity</h3>
+                        </div>
+                        <div className="p-3 space-y-1">
+                            {recentActivityFiles.map(file => renderSidebarItem({ ...file, date: file.date }))}
+                        </div>
+                    </Card>
+                </div>
+            </div>
+        </div>
+    );
+}

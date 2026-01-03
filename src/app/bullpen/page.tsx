@@ -1,8 +1,6 @@
 // src/app/bullpen/page.tsx
+import { Feed } from "@/components/bullpen/Feed";
+
 export default function BullpenPage() {
-  return (
-    <div className="text-foreground p-6 md:p-10">
-      
-    </div>
-  );
+  return <Feed />;
 }
