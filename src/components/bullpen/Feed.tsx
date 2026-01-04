@@ -16,16 +16,27 @@ export function Feed() {
     useEffect(() => {
         const q = query(
             collection(db, "posts"),
-            orderBy("createdAt", "desc"),
             limit(50)
         );
 
-        const unsubscribe = onSnapshot(q, (snapshot) => {
+        const unsubscribe = onSnapshot(q, { includeMetadataChanges: true }, (snapshot) => {
+            if (snapshot.metadata.hasPendingWrites) {
+                console.log("Feed: Local update (Sync pending...)");
+            }
+
             const newPosts = snapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
             })) as Post[];
-            setPosts(newPosts);
+
+            const sortedPosts = [...newPosts].sort((a, b) => {
+                // For pending posts, use current time as fallback
+                const dateA = a.createdAt?.toDate?.() || new Date();
+                const dateB = b.createdAt?.toDate?.() || new Date();
+                return dateB.getTime() - dateA.getTime();
+            });
+            console.log("Feed sorted. Top post ID:", sortedPosts[0]?.id);
+            setPosts(sortedPosts);
             setLoading(false);
         });
 

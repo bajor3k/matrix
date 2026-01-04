@@ -10,15 +10,16 @@ interface Particle {
     vx: number;
     vy: number;
     radius: number;
-    angle: number;
-    orbitRadius: number;
-    orbitSpeed: number;
+    color: string;
+    angle: number; // Current angle for autonomous drift
+    speed: number; // Autonomous speed
+    spinSpeed: number; // Speed of swirl
 }
 
 export default function InteractiveBackground() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const particlesRef = useRef<Particle[]>([]);
-    const mouseRef = useRef({ x: 0, y: 0 });
+    const mouseRef = useRef({ x: 0, y: 0, active: false });
     const animationFrameRef = useRef<number>();
 
     useEffect(() => {
@@ -28,19 +29,26 @@ export default function InteractiveBackground() {
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        // Set canvas size
         const resizeCanvas = () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             initParticles();
         };
 
-        // Initialize particles
         const initParticles = () => {
             const particles: Particle[] = [];
-            const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
+            // High density for the "vortex" feel
+            // Lower density for a cleaner look
+            const count = Math.floor((canvas.width * canvas.height) / 2000);
 
-            for (let i = 0; i < particleCount; i++) {
+            const colors = [
+                "rgba(255, 255, 255, 0.4)", // White
+                "rgba(200, 240, 255, 0.3)", // Faint Cyan
+                "rgba(220, 220, 255, 0.25)", // Faint Blue
+                "rgba(255, 255, 255, 0.2)", // Translucent White
+            ];
+
+            for (let i = 0; i < count; i++) {
                 const x = Math.random() * canvas.width;
                 const y = Math.random() * canvas.height;
                 particles.push({
@@ -48,101 +56,106 @@ export default function InteractiveBackground() {
                     y,
                     baseX: x,
                     baseY: y,
-                    vx: 0,
-                    vy: 0,
-                    radius: Math.random() * 2 + 1,
+                    vx: (Math.random() - 0.5) * 0.2, // Initial slow drift
+                    vy: (Math.random() - 0.5) * 0.2,
+                    radius: Math.random() * 1.5 + 0.5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
                     angle: Math.random() * Math.PI * 2,
-                    orbitRadius: Math.random() * 30 + 20,
-                    orbitSpeed: (Math.random() - 0.5) * 0.01,
+                    speed: Math.random() * 0.5 + 0.1,
+                    spinSpeed: (Math.random() - 0.5) * 0.02,
                 });
             }
             particlesRef.current = particles;
         };
 
-        // Mouse move handler
         const handleMouseMove = (e: MouseEvent) => {
-            mouseRef.current = { x: e.clientX, y: e.clientY };
+            mouseRef.current = { x: e.clientX, y: e.clientY, active: true };
         };
 
-        // Animation loop
+        const handleMouseLeave = () => {
+            mouseRef.current.active = false;
+        };
+
         const animate = () => {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Clear the canvas fully each frame to remove trails
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            particlesRef.current.forEach((particle, i) => {
-                // Circular orbit movement
-                particle.angle += particle.orbitSpeed;
-                const targetX = particle.baseX + Math.cos(particle.angle) * particle.orbitRadius;
-                const targetY = particle.baseY + Math.sin(particle.angle) * particle.orbitRadius;
+            const mx = mouseRef.current.x;
+            const my = mouseRef.current.y;
+            const isActive = mouseRef.current.active;
 
-                // Mouse interaction
-                const dx = mouseRef.current.x - particle.x;
-                const dy = mouseRef.current.y - particle.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const maxDistance = 150;
+            particlesRef.current.forEach((p) => {
+                // --- Autonomous Motion ---
+                p.angle += 0.01;
+                p.vx += Math.cos(p.angle) * 0.01;
+                p.vy += Math.sin(p.angle) * 0.01;
 
-                if (distance < maxDistance) {
-                    const force = (maxDistance - distance) / maxDistance;
-                    particle.vx += (dx / distance) * force * 0.5;
-                    particle.vy += (dy / distance) * force * 0.5;
+                // --- Mouse Interaction ---
+                if (isActive) {
+                    const dx = mx - p.x;
+                    const dy = my - p.y;
+                    const distSq = dx * dx + dy * dy;
+                    const dist = Math.sqrt(distSq);
+                    const maxDist = 250;
+
+                    if (dist < maxDist) {
+                        const force = (maxDist - dist) / maxDist;
+                        const pullStrength = force * 0.05;
+
+                        // Pull towards mouse
+                        p.vx += (dx / dist) * pullStrength;
+                        p.vy += (dy / dist) * pullStrength;
+
+                        // Swirl/Vortex component
+                        const swirlX = -dy / dist;
+                        const swirlY = dx / dist;
+                        p.vx += swirlX * force * 0.15;
+                        p.vy += swirlY * force * 0.15;
+                    }
                 }
 
-                // Apply velocity and damping
-                particle.x += (targetX - particle.x) * 0.05 + particle.vx;
-                particle.y += (targetY - particle.y) * 0.05 + particle.vy;
-                particle.vx *= 0.95;
-                particle.vy *= 0.95;
+                // --- Apply Physics ---
+                p.x += p.vx;
+                p.y += p.vy;
 
-                // Draw particle
+                // Friction/Damping
+                p.vx *= 0.98;
+                p.vy *= 0.98;
+
+                // --- Screen Wrap ---
+                if (p.x < -10) p.x = canvas.width + 10;
+                if (p.x > canvas.width + 10) p.x = -10;
+                if (p.y < -10) p.y = canvas.height + 10;
+                if (p.y > canvas.height + 10) p.y = -10;
+
+                // --- Draw ---
                 ctx.beginPath();
-                ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${0.3 + Math.random() * 0.3})`;
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
                 ctx.fill();
-
-                // Draw connections
-                particlesRef.current.forEach((otherParticle, j) => {
-                    if (i === j) return;
-                    const dx = particle.x - otherParticle.x;
-                    const dy = particle.y - otherParticle.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < 100) {
-                        ctx.beginPath();
-                        ctx.moveTo(particle.x, particle.y);
-                        ctx.lineTo(otherParticle.x, otherParticle.y);
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 * (1 - distance / 100)})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                });
             });
 
             animationFrameRef.current = requestAnimationFrame(animate);
         };
 
-        // Setup
         resizeCanvas();
         window.addEventListener("resize", resizeCanvas);
         window.addEventListener("mousemove", handleMouseMove);
-
-        // Start animation
+        window.addEventListener("mouseleave", handleMouseLeave);
         animate();
 
-        // Cleanup
         return () => {
             window.removeEventListener("resize", resizeCanvas);
             window.removeEventListener("mousemove", handleMouseMove);
-            if (animationFrameRef.current) {
-                cancelAnimationFrame(animationFrameRef.current);
-            }
+            window.removeEventListener("mouseleave", handleMouseLeave);
+            if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
         };
     }, []);
 
     return (
         <canvas
             ref={canvasRef}
-            className="fixed inset-0 pointer-events-none z-0"
-            style={{ background: "transparent" }}
+            className="fixed inset-0 pointer-events-none z-0 bg-black"
         />
     );
 }

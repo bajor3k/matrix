@@ -90,13 +90,15 @@ export function PostCard({ post }: PostCardProps) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [localContent, setLocalContent] = useState(post.content);
     const [localEditedAt, setLocalEditedAt] = useState(post.editedAt);
+    const [localLikeCount, setLocalLikeCount] = useState(post.likeCount || 0);
 
     // Sync with prop changes
     useEffect(() => {
         setEditedContent(post.content);
         setLocalContent(post.content);
         setLocalEditedAt(post.editedAt);
-    }, [post.content, post.editedAt]);
+        setLocalLikeCount(post.likeCount || 0);
+    }, [post.content, post.editedAt, post.likeCount]);
 
     const [optimisticPoll, setOptimisticPoll] = useState(post.poll);
     const [hasPendingSync, setHasPendingSync] = useState(false);
@@ -135,7 +137,10 @@ export function PostCard({ post }: PostCardProps) {
 
         // Optimistic update
         const newIsLiked = !isLiked;
+        const previousLikeCount = localLikeCount;
+
         setIsLiked(newIsLiked);
+        setLocalLikeCount(prev => newIsLiked ? prev + 1 : Math.max(0, prev - 1));
 
         const postRef = doc(db, "posts", post.id);
         const likeRef = doc(db, "posts", post.id, "likes", user.uid);
@@ -151,6 +156,7 @@ export function PostCard({ post }: PostCardProps) {
         } catch (error) {
             console.error("Error toggling like:", error);
             setIsLiked(!newIsLiked); // Revert on error
+            setLocalLikeCount(previousLikeCount); // Revert on error
         }
     };
 
@@ -445,7 +451,7 @@ export function PostCard({ post }: PostCardProps) {
                             onClick={toggleLike}
                         >
                             <Heart className={cn("w-4 h-4", isLiked && "fill-current")} />
-                            <span className="text-xs">{post.likeCount || 0}</span>
+                            <span className="text-xs">{localLikeCount}</span>
                         </Button>
 
                         <Button

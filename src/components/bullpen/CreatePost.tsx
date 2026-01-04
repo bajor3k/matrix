@@ -178,7 +178,7 @@ export function CreatePost() {
             }
 
             // Create Post
-            await addDoc(collection(db, "posts"), {
+            const docRef = await addDoc(collection(db, "posts"), {
                 authorId: user.uid,
                 authorName: user.displayName || "Anonymous",
                 authorPhotoUrl: user.photoURL,
@@ -190,6 +190,8 @@ export function CreatePost() {
                 likeCount: 0,
                 commentCount: 0,
             });
+
+            console.log("Post created successfully with ID:", docRef.id);
 
         } catch (err: any) {
             console.error("Error creating post:", err);

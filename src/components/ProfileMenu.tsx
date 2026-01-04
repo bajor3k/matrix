@@ -10,9 +10,22 @@ import {
     DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import { ProfileModal } from '@/components/ProfileModal';
+import { useAuth } from '@/contexts/auth-context';
+import { useRouter } from 'next/navigation';
 
 export function ProfileMenu() {
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+    const { signOutGoogle } = useAuth();
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+            await signOutGoogle();
+            router.push('/');
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
 
     return (
         <>
@@ -33,7 +46,7 @@ export function ProfileMenu() {
                         <User className="mr-2 h-4 w-4" />
                         <span>My Profile</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem disabled>
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-100 focus:bg-red-600 cursor-pointer">
                         <LogOut className="mr-2 h-4 w-4" />
                         <span>Logout</span>
                     </DropdownMenuItem>

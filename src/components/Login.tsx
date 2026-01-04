@@ -40,9 +40,6 @@ export default function Login() {
           <Brain className="h-8 w-8 text-white" />
           <span className="text-xl font-bold tracking-tight">Matrix</span>
         </div>
-        <Button variant="ghost" className="text-zinc-400 hover:text-white hover:bg-white/10">
-          Login
-        </Button>
       </header>
 
       {/* --- CENTERED CONTENT --- */}

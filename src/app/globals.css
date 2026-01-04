@@ -224,7 +224,7 @@
 
 /* Apply to all headers and topbars globally */
 :where(
-  header,
+  header[data-topbar],
   .topbar,
   .app-header,
   .navbar,

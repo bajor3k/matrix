@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -281,7 +281,7 @@ export default function CRMHomeOfficePage() {
               const clientMatch = search && firm.clients.some(c => c.name.toLowerCase().includes(search.toLowerCase()));
               const isExpanded = expandedRows.has(firm.originalIndex) || !!clientMatch;
           return (
-            <>
+            <Fragment key={firm.originalIndex}>
               {/* FIRM ROW */}
               <tr key={`firm-${firm.originalIndex}`} className="border-t border-border hover:bg-accent/50 transition">
                 <td className="py-4 px-6 font-medium">
@@ -342,7 +342,7 @@ export default function CRMHomeOfficePage() {
                   </td>
                 </tr>
               ))}
-            </>
+            </Fragment>
           );
         })}
         {filtered.length === 0 && (

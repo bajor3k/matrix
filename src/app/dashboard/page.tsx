@@ -461,7 +461,7 @@ export default function DashboardPage() {
 
       {/* Header Section */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold text-foreground">Welcome Josh</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Dashboard Overview</h1>
 
         {/* Market Status Component */}
         {marketStatusData && (
@@ -795,9 +795,9 @@ export default function DashboardPage() {
                           <Badge
                             variant="outline"
                             className={`text-[10px] font-normal border-none px-2 py-0.5 ${ipo.status === 'priced' ? 'bg-emerald-500/10 text-emerald-500' :
-                                ipo.status === 'expected' ? 'bg-blue-500/10 text-blue-500' :
-                                  ipo.status === 'withdrawn' ? 'bg-red-500/10 text-red-500' :
-                                    'bg-muted text-muted-foreground'
+                              ipo.status === 'expected' ? 'bg-blue-500/10 text-blue-500' :
+                                ipo.status === 'withdrawn' ? 'bg-red-500/10 text-red-500' :
+                                  'bg-muted text-muted-foreground'
                               }`}
                           >
                             {capitalizedStatus}

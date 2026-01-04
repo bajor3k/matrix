@@ -18,6 +18,9 @@ export const firebaseConfig = {
 let app: FirebaseApp;
 if (getApps().length === 0) {
   app = initializeApp(firebaseConfig);
+  if (firebaseConfig.apiKey === "YOUR_API_KEY_HERE") {
+    console.warn("Firebase API Key is missing or using placeholder! Posts will not persist after refresh.");
+  }
 } else {
   app = getApps()[0];
 }
